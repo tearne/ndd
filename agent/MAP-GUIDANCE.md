@@ -70,16 +70,27 @@ All optional. Always in this order when present:
 - **Detail** — implementation-level precision (parameters, thresholds, algorithms). The user can stop reading before this. Marked with bold `**Detail**`.
 - **See also** — cross-cutting references that aren't parent/child. Marked with bold `**See also**`. Each entry says why the relationship matters.
 
+### Root node naming
+
+Default to the project's name at the root. Every file-root H1 must be unambiguous with every other heading in the map — duplicates break navigation (fragile auto-generated anchors, indistinguishable jump-picker entries).
+
+When the project name clashes with a prominent internal concept, pick whichever form reads best:
+
+- Domain scoping term for the root ("Audio Player", "Build Tool").
+- Suffix ("Deck Application Map", "Deck Map Subtree").
+- Parenthetical ("Deck (Application)").
+- Rename the internal node more specifically.
+
+Prefer a term that carries domain information over a generic "Application".
 
 ## Node sizing
 
 Aim for under ~800 characters per node. The real test: if a node feels like it warrants sub-sections, it's too big — split into children. Flag nodes that exceed this to the user.
 
 
-## The only-child rule
+## The only-child preference
 
-If a node would have no siblings and no children, it's not a node — it's the bottom of its parent.
-
+Prefer folding a singleton child into its parent. Keep it as its own node when it is a distinct concept in the user's model, or when its detail would bloat the parent. A useful test: if a sibling were later added, would this still be a node? If yes, keep it now.
 
 ## Content principles
 
@@ -101,12 +112,19 @@ The format is agnostic about how nodes are distributed across files:
 
 ## When to edit the map
 
-The map is exempt from the active change requirement — it can be updated at any time. However:
+Two rules govern every map edit.
 
-- **Only with user engagement.** Never update the map silently or in bulk. Discuss each structural change with the user, and only update one node at a time.
-- **During a change:** read the map during the Approach stage. Include map update tasks in the Plan when the mapped area is affected. If an active change already includes map tasks, mention this to the user before making additional edits.
-- **Outside a change:** the user may want to restructure the map spontaneously. Support this — it is the core comprehension-building activity.
+**Sync rule** — *The map describes what exists, not what is proposed.* Don't edit the map ahead of the code. Edits that describe pending work defer until the code is built.
 
+**Engagement rule** — *Every map edit is negotiated.* One node at a time, with user engagement. Never silent, never bulk. When an edit touches two or more nodes, enumerate them in chat up front and tick through them as each is settled. Per-node approval prompts are phrased as comprehension checks — "does that fit your mental model?", "is that clear enough?" — not yes/no gates.
+
+The map is exempt from the active-change requirement: edits that describe existing reality may happen at any time.
+
+### Map edits and the change lifecycle
+
+Map edits are negotiated per-node per the Engagement rule — never pre-staged as wholesale node bodies in an Approach. Map-only work happens as per-node negotiation directly, exempt from the change lifecycle alongside the existing active-change exemption.
+
+For code changes, Approach and Plan typically don't propose map edits and Build doesn't touch the map. Map catch-up follows the build as a per-node negotiation. The completed change's Conclusion may carry a starter draft. Tightly-bound exceptions where small map work rides along a code change are allowed when it genuinely fits.
 
 ## Maintaining the map
 
@@ -116,7 +134,7 @@ Signals that the map needs attention:
 - **Top-level boxes don't match the user's mental model** — restructure. The map follows the user's model, not the code's architecture.
 - **A node has grown verbose** — cut aggressively. Move precision to **Detail**.
 - **New concepts don't have a natural home** — the decomposition may need rethinking, not a misc section.
-- **An only-child exists** — fold it into its parent.
+- **An only-child exists that isn't a distinct concept** — fold it into its parent.
 
 Don't treat the map as append-only. Restructuring is not rework — it's what keeps the map useful.
 
