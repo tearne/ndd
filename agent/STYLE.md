@@ -22,6 +22,7 @@
 - Names answer "what does this do?" or "what does this represent?"
 - Use domain language — the vocabulary stakeholders use
 - No abbreviations that save typing but cost reading: `usr`, `cfg`, `proc`
+- Standard domain shorthand that doesn't cost readability is fine: `loc` for location, `rng` for random number generator, `params` for parameters
 - No technical names (`manager`, `processor`, `handler`) where a domain name exists
 
 ## 5. Comments explain *why*, not *what*
