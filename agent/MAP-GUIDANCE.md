@@ -28,9 +28,9 @@ Mark unmapped nodes with `(TODO)`. Place the tree at the end of the root node, a
 ```markdown
 # Node Name
 
-[Up](#parent)
-[Down](#child-one)
-[Down](#child-two)
+[Parent Name](#parent)
+[Child One](#child-one)
+[Child Two](#child-two)
 
 Terse conceptual description. Lead with the mental picture.
 
@@ -50,10 +50,11 @@ The user can stop reading before this; the agent reads through it.
 
 Each node carries markdown links encoding its position in the tree:
 
-- `[Up](#parent)` — one link to the parent. Omitted only for the root node.
-- `[Down](#child)` — one link per child.
+- `[Parent Name](#parent)` — one link to the parent. Omitted only for the root node.
+- `[Child Name](#child)` — one link per child.
+- Links use the actual node name as the link text, not a generic `Up`/`Down` label.
 - Links are standard markdown anchors, navigable with `gd` in editors with a markdown LSP (marksman recommended).
-- To see a node's siblings, go Up — the parent's Down list shows them all.
+- To see a node's siblings, follow the parent link — the parent's child links show them all.
 
 ### Who maintains what
 
@@ -82,7 +83,6 @@ When the project name clashes with a prominent internal concept, pick whichever 
 
 Prefer a term that carries domain information over a generic "Application".
 
-
 ## Node sizing
 
 Aim for under ~800 characters per node. The real test: if a node feels like it warrants sub-sections, it's too big — split into children. Flag nodes that exceed this to the user.
@@ -91,7 +91,6 @@ Aim for under ~800 characters per node. The real test: if a node feels like it w
 ## The only-child preference
 
 Prefer folding a singleton child into its parent. Keep it as its own node when it is a distinct concept in the user's model, or when its detail would bloat the parent. A useful test: if a sibling were later added, would this still be a node? If yes, keep it now.
-
 
 ## Content principles
 
@@ -126,7 +125,6 @@ The map is exempt from the active-change requirement: edits that describe existi
 Map edits are negotiated per-node per the Engagement rule — never pre-staged as wholesale node bodies in an Approach. Map-only work happens as per-node negotiation directly, exempt from the change lifecycle alongside the existing active-change exemption.
 
 For code changes, Approach and Plan typically don't propose map edits and Build doesn't touch the map. Map catch-up follows the build as a per-node negotiation. The completed change's Conclusion may carry a starter draft. Tightly-bound exceptions where small map work rides along a code change are allowed when it genuinely fits.
-
 
 ## Maintaining the map
 
