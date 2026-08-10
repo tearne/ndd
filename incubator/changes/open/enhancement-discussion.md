@@ -2,7 +2,7 @@
 
 Working notes for a discussion about potential enhancements to the COD process. Not yet a change proposal — capturing points, analysis, and open questions as we go. Radical changes and a possible new-repo spin-out are on the table.
 
-> **Resume here (2026-07-31):** Discussion-only, no active change, nothing building. Five points captured (P1–P5). Synthesis reached a *keystone hypothesis*: give the map a node lifecycle (proposed → built → approved + drift). The **design fork is now resolved** into a settled hybrid model — see "Resolved model — the hybrid" at the bottom. Remaining open items: **new-repo spin-out vs evolve-in-place**, **node-identity under rename**, and then shaping an actual plan. User prefers conversational options over multiple-choice dialogs.
+> **Resume here (2026-08-03):** Discussion-only, no active change, nothing building. Five points captured (P1–P5). Synthesis reached a *keystone hypothesis*: give the map a node lifecycle (proposed → built → approved + drift). The **design fork is resolved** into a settled hybrid model — see "Resolved model — the hybrid". The three previously-open items are now **decided** (see "Resolved directions" at the bottom): **incubate here, spin out to a new repo later** (new name TBD); **stable node IDs are in** (needs a node-structure definition); **a plan is next, with graceful degradation for simple projects as a first-class concern**. Next step: shape that plan. User prefers conversational options over multiple-choice dialogs.
 
 ## Points raised
 
@@ -144,8 +144,29 @@ Per-node re-approval is only humane because nodes are already capped small (~800
 - **drift = computed** (current content vs the version at the approval timestamp)
 - **"what changed" diff = derived via optional git** at display time
 
+### Resolved directions (2026-08-03)
+
+- **Incubate here, spin out later.** This is an evolution of COD, so it grows in this repo for now. It is expected to become its own repo once the shape settles, and will need a **new name** at that point. Treat "COD" as the working name only.
+- **Stable node IDs are in.** Nodes will carry a stable identity so approval stamps and drift baselines survive renames — accepting the small step past plain markdown. This requires **defining a node structure** (identity + the in-node scaffolding blocks the model already needs). That definition is now a work item, not an open question.
+- **A plan is needed next**, and it must treat **graceful degradation** as a first-class concern: a simpler project must be able to adopt this without heavy boilerplate. The lifecycle/approval/ID machinery should be opt-in and near-invisible until wanted, so small maps stay plain markdown.
+
 ### Still open
 
-- **New-repo spin-out vs evolve-in-place** — a lifecycle-aware map + viewer is arguably a different product from "COD the agent methodology".
-- **Node identity under rename** — approval stamps travel *with* the node (a plus), but if a node's identity is genuinely lost on rename, its stamps and drift baseline go with it. Sometimes correct (a rename is a real conceptual shift), sometimes a spurious re-review. Optional stable node IDs would fix it, at the cost of stepping slightly past plain markdown. The one place the pure-markdown model strains.
-- **Shaping an actual plan** once the above are settled.
+- **The new name** — deferred until the shape settles.
+- **Node structure specifics** — exact form of the stable ID and in-node metadata blocks. To be settled while shaping the plan.
+
+## Proposed decomposition
+
+The keystone (a lifecycle-aware map) breaks into a dependency-ordered sequence of changes. Node structure is the foundation everything else stamps onto, so it comes first; the viewer consumes everything, so it comes last. **Graceful degradation is a cross-cutting constraint on every change**, not a change of its own — each piece must stay invisible on a plain map that doesn't want it.
+
+1. **Node structure & identity** — define the node: what gives it durable identity (stable ID) and what scaffolding blocks it can carry, with the degenerate no-ID case staying plain markdown. Foundation for all that follows.
+
+2. **Build-state as location** — the proposal artefact (intent + proposed map subtree), the reality-only main map, and the merge seam. Establishes how proposed vs built is expressed structurally.
+
+3. **Approval mechanics** — per-node approval stamps, computed drift, and the per-stakeholder due-queue. Depends on node structure.
+
+4. **Retrospective diff (git-backed)** — the optional "what changed since your last approval" aid. Depends on approval stamps; degrades to nothing without git.
+
+5. **Viewer (browser + CLI)** — renders lifecycle state and drives navigate/approve/flag. Consumes everything above; a separate, later effort.
+
+First change to shape: **Node structure & identity** (`node-structure.md`).
