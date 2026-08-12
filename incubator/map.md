@@ -22,7 +22,7 @@ Three top-level concerns:
 Unified Map Method
 ├ Specification
 │ ├ Node
-│ │ ├ Node Identity (TODO)
+│ │ ├ Node Identity
 │ │ ├ Navigation Links (TODO)
 │ │ ├ Node Sections (TODO)
 │ │ │ └ Callouts (TODO)
@@ -111,7 +111,13 @@ id: w9c
 
 [Node](#node)
 
-(TODO)
+A node's name can change; its identity can't. The identity is a small immutable token in the yaml scaffolding block which survives node renames and moves. It exists so that anything pointing to the node stays attached.
+
+> [!IMPORTANT] Navigation uses node names, not the ID, so ordinary markdown tooling works and the ID is free to be meaningless.
+
+**Detail**
+
+The **scaffolding block** is fenced YAML directly under the heading containing metadata — today just `id`. It's agent-maintained, like the nav links, and a reader ignores it. The `id:` key is map-unique, lowercase alphanumeric, three or more characters (e.g. `k7f`) - a token rather than a readable slug to avoid edit or link temptation. A user may hand-draft a node without a block; the agent offers to add one when it next reviews the node, so identity is never silently missing.
 
 # Navigation Links
 
