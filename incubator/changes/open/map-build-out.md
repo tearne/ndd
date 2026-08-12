@@ -1,0 +1,56 @@
+# Map build-out
+
+**Mode:** Explore
+
+## Intent
+
+The method should describe itself in the map, not in the process docs beside it. `BOOTSTRAP.md` already hands the agent to the map as authoritative; now the map has to earn that — carrying the lifecycle, gates, seeds, and map conventions currently held in `AGENT.md`, `PROCESS.md`, `KEYWORDS.md`, and `MAP-GUIDANCE.md` as nodes. Only when the map holds the method can `CLAUDE.md` point at `BOOTSTRAP.md` and the incubator run on its own method for real — the dogfooding this whole line of work has been building toward. Two open questions ride along: where the method map lives so it doesn't collide with a client's own domain map, and how the map is split across files so agent traversal stays cheap.
+
+## Approach
+
+### Grow the existing three-concern tree
+
+The docs map cleanly onto the tree already there: the **Specification** subtree absorbs the map conventions (`MAP-GUIDANCE`), the **Change-Management** subtree absorbs the process and keywords (`PROCESS`, `KEYWORDS`, and `AGENT`'s rules and startup scan), and **Tooling** stays minimal. No new top-level structure — the map already decomposes the way the method does.
+
+### Concept in prose, precision in Detail, then delete the doc
+
+Each node carries the concept in its prose and the mechanics in a **Detail** section; the source doc is deleted once its content fully lives in nodes. A single source is the whole point — leaving parallel docs recreates the drift this line of work exists to remove.
+
+### Migration is a stale catch-up, done per node
+
+Moving existing reality (the docs) into the map is a catch-up, not a proposal, so it is negotiated one node at a time and is exempt from the Build lifecycle. What this change enacts through the lifecycle is the surrounding mutation: deleting the docs and repointing `CLAUDE.md`.
+
+### Stub the whole tree in one pass; author content one node at a time
+
+The skeleton — every method node as a heading with a scaffolding `id`, nav links, and a `(TODO)` marker — is laid down in a single structural pass. Prose and Detail are then filled strictly per node, each negotiated. Structure is agent-maintained; content is the user's.
+
+### Map stays at the project root; single file
+
+`map.md` stays at the incubator root — here the method *is* the project, so there is no domain map to collide with (the consumer packaging under `changes/agent/` is a separate concern, not enacted here). It stays a single file until size forces a split, keeping agent traversal one read.
+
+### Go live last
+
+Once the map holds the method and the docs are gone, `CLAUDE.md` is repointed from `AGENT.md` to `BOOTSTRAP.md` — the incubator then runs on its own method.
+
+
+## Plan
+
+**Topics**
+
+- Stub the method tree in one structural pass — every method node under Specification and Change-Management as a heading with a scaffolding `id`, nav links, and a `(TODO)` marker.
+
+- Migrate the map conventions into the Specification subtree, one node at a time, concept in prose and mechanics in Detail.
+
+- Migrate the process and keywords into the Change-Management subtree, one node at a time, concept in prose and mechanics in Detail.
+
+- Delete each of `MAP-GUIDANCE.md`, `PROCESS.md`, `KEYWORDS.md`, and `AGENT.md` once its content lives in nodes.
+
+- Repoint `CLAUDE.md` from `AGENT.md` to `BOOTSTRAP.md`.
+
+**Done when** the map carries the method — map conventions, process, and keywords as nodes — the four process docs are deleted, and `CLAUDE.md` loads `BOOTSTRAP.md`, so the incubator runs on its own method.
+
+## Log
+
+- Incubator itself carries no changelog (only packaged consumer copies under `changes/agent/`), so no version bump on entering Build.
+- Structural pass laid down: 23 stub nodes added to `map.md` (Specification and Change-Management subtrees plus a `Tooling` stub), each with a scaffolding `id`, nav links, and `(TODO)`. Existing authored nodes (root, Specification, Node, Change-Management) kept as-is; their child nav links and the root tree overview updated. `Change-Management` deliberately still carries no `id` (degradation demo preserved).
+- Proceeded with proposed defaults for the three open decomposition questions (Seeds under Change-Management; version-update/changes-dirs folded into prose; granularity as proposed) — user approved the tree as a starting point, to refine while engaging.
