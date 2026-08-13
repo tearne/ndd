@@ -25,9 +25,9 @@ Unified Map Method
 │ │ ├ Node Identity
 │ │ ├ Navigation Links
 │ │ ├ Node Sections
-│ │ │ └ Callouts (TODO)
-│ ├ Map Structure (TODO)
-│ ├ Node Sizing (TODO)
+│ │ │ └ Callouts
+│ ├ Map Structure
+│ ├ Node Sizing
 │ ├ Content Principles (TODO)
 │ └ Map Maintenance (TODO)
 ├ Change-Management
@@ -158,7 +158,11 @@ id: c5k
 
 [Node Sections](#node-sections)
 
-(TODO)
+A callout is a "don't skim this" flag on a point the prose already makes. It marks the load-bearing moments where skimming would lose the reader, such as a design trade-off, a non-obvious assumption, or a constraint that shapes the whole node. The prose still carries the meaning; the callout only raises a hand.
+
+**Detail**
+
+Rendered as a `> [!IMPORTANT]` blockquote. Used sparingly — reserved for points that genuinely reshape understanding, never as a highlighter for every notable fact.
 
 # Map Structure
 
@@ -168,7 +172,11 @@ id: m6x
 
 [Specification](#specification)
 
-(TODO)
+The map's shape is shown at a glance by a **tree overview** — a box-drawing sketch of the whole node tree — kept at the end of the root node. Nodes not yet written are marked `(TODO)`, so the intended shape is visible before the content is. The rendering is only a convenience: the real tree is encoded in the navigation links, and the overview is kept in step with them.
+
+**Detail**
+
+The overview is a fenced code block using box-drawing characters. A map is one file by default, splitting across several (linked by relative paths) only when size makes one file unwieldy; navigation works the same either way.
 
 # Node Sizing
 
@@ -178,7 +186,11 @@ id: z9p
 
 [Specification](#specification)
 
-(TODO)
+Keep nodes small and focussed on one concept. The rough upper bound for size is around 800 characters, but the real test is felt: if a node starts wanting sub-sections, it's outgrown one concept and should split into children.
+
+**Detail**
+
+Character counts exclude tables and diagrams. When a node runs over, the agent flags it rather than silently trimming, so splitting-versus-keeping stays the user's call.
 
 # Content Principles
 
