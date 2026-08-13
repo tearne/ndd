@@ -24,7 +24,7 @@ Unified Map Method
 │ ├ Node
 │ │ ├ Node Identity
 │ │ ├ Navigation Links
-│ │ ├ Node Sections (TODO)
+│ │ ├ Node Sections
 │ │ │ └ Callouts (TODO)
 │ ├ Map Structure (TODO)
 │ ├ Node Sizing (TODO)
@@ -144,7 +144,11 @@ id: s8r
 [Node](#node)
 [Callouts](#callouts)
 
-(TODO)
+The main user-facing parts of a node are each optional and include, in a fixed order: **prose**, **Callouts**, **Detail**, and **See also**. Prose is the mental picture and usually the only part the user must read, but even it can be dropped — a node may carry only Detail, for instance. A node using none of these is just a heading: an ordinary markdown section.
+
+**Detail**
+
+*Callouts* flag a load-bearing point and get their own child node. *Detail* is marked with bold `**Detail**` and holds implementation-level precision the user can stop before, such as parameters, thresholds, and algorithms. *See also* is marked with bold `**See also**` and lists cross-cutting references that aren't parent or child, each saying why the relationship matters.
 
 # Callouts
 
