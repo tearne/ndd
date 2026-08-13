@@ -1,9 +1,9 @@
 # Map writing conventions
 
 **Kind:** todo
-**Anchor:** p4h
+**Anchor:** f2n
 
-Accumulating language and formatting preferences for map prose, gathered while authoring nodes. To be distilled into a node (likely `Content Principles`) once there's a settled set, then applied on a rescan of `map.md` and the other documents.
+Accumulating language and formatting preferences for map prose, gathered while authoring nodes. To be distilled into the `Formatting` node once there's a settled set, then applied on a rescan of `map.md` and the other documents.
 
 ## Conventions
 

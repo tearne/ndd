@@ -28,7 +28,9 @@ Unified Map Method
 │ │ │ └ Callouts
 │ ├ Map Structure
 │ ├ Node Sizing
-│ ├ Content Principles (TODO)
+│ ├ Writing Style
+│ │ ├ Conceptual Writing
+│ │ └ Formatting
 │ └ Map Maintenance (TODO)
 ├ Change-Management
 │ ├ Modes (TODO)
@@ -61,7 +63,7 @@ id: sp1
 [Node](#node)
 [Map Structure](#map-structure)
 [Node Sizing](#node-sizing)
-[Content Principles](#content-principles)
+[Writing Style](#writing-style)
 [Map Maintenance](#map-maintenance)
 
 The conceptual map is the primary artefact. It holds the system's shape as a tree of concepts, structured the way the user thinks rather than how code is organised. Maintaining it is the comprehension-building activity; agents render it into code. Everything else in the method — how it changes, how it's viewed — serves this map.
@@ -192,15 +194,51 @@ Keep nodes small and focussed on one concept. The rough upper bound for size is 
 
 Character counts exclude tables and diagrams. When a node runs over, the agent flags it rather than silently trimming, so splitting-versus-keeping stays the user's call.
 
-# Content Principles
+# Writing Style
 
 ```yaml
 id: p4h
 ```
 
 [Specification](#specification)
+[Conceptual Writing](#conceptual-writing)
+[Formatting](#formatting)
 
-(TODO)
+How map prose is written, so nodes stay readable and durable. Two sides:
+
+- Conceptual Writing: what the prose *says*
+
+- Formatting: how it's typeset
+
+# Conceptual Writing
+
+```yaml
+id: h3v
+```
+
+[Writing Style](#writing-style)
+
+Two habits shape how a node reads, and one trap to avoid:
+
+- **Lead with the mental picture** before any implementation detail.
+
+- **Name the boxes before explaining them** — say "there are three mechanisms: A, B, C" and then give each its own node or bullet point.
+
+- Don't **couple to code structure**: prose may name a technical concept when load-bearing, but the map tracks the user's model, not the code's shape — so it shouldn't break when code is refactored.
+
+# Formatting
+
+```yaml
+id: f2n
+```
+
+[Writing Style](#writing-style)
+
+Typographic conventions for map prose.
+
+- Write each paragraph as one continuous line with no hard wraps, so it reflows under soft-wrap.
+
+- Separate bullet points with a blank line for readability.
 
 # Map Maintenance
 
