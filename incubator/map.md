@@ -40,8 +40,8 @@ Unified Map Method
 │ │ │ ├ Approach
 │ │ │ └ Plan
 │ │ └ Build mode
-│ │   └ Conclusion (TODO)
-│ ├ Seeds (TODO)
+│ │   └ Conclusion
+│ ├ Seeds
 │ ├ Startup Scan (TODO)
 │ ├ Gates and Permissions (TODO)
 │ └ Keywords (TODO)
@@ -405,7 +405,17 @@ id: o4j
 
 [Build mode](#build-mode)
 
-(TODO)
+The closing note, written only once the user confirms the build is done. It states where the change landed — not a story of how it got there.
+
+It records only what the ticked Plan and the Log don't already convey: deviations, documents touched, surprises. When there's nothing to add, "Completed." is enough.
+
+A [Wander](#modes) change has no Approach, but its Build [Log](#build-mode) already carries what happened, so the Conclusion still just names the landing point — and may rename the change to match where the work ended up.
+
+Its mere presence is the marker that the change is finished.
+
+**Detail**
+
+For a versioned project with substantive change the draft also proposes a changelog entry. On the user's approval the change is archived to `changes/archive/` (prefixed `YYYY-MM-DD-`), the `active.md` lock is removed, and any approved changelog entry is added.
 
 # Seeds
 
@@ -415,7 +425,14 @@ id: s3w
 
 [Change-Management](#change-management)
 
-(TODO)
+A seed is a thought captured before it's worked — the minimal head of a change document, held in `changes/open/` alongside worked changes so there's one place to find everything pending. It carries a title, a **Kind** (`todo` for expected work, `idea` for a candidate to weigh), an **Anchor** naming the map node id(s) it may relate to, and a line or two of germ text — but no [mode](#modes) yet.
+
+When a seed is picked up it **matures in place**: the same file's Kind line gives way to a Mode line and it gains an [Intent](#intent) grown from the germ text, then proceeds normally. No new file, no move — the anchor keeps it located on the map throughout.
+
+**Detail**
+
+The anchor is a node's stable [id](#node-identity), so a seed stays bound across renames and moves; the [Startup Scan](#startup-scan) surfaces a node's pending seeds. On capture the agent proposes the anchor(s) — the node under discussion or its nearest mapped ancestor, falling back to the root — and the user confirms in a line. Seeds are captured frictionlessly through the [aside](#aside-keyword) keyword.
+
 
 # Startup Scan
 
