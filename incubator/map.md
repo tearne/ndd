@@ -41,9 +41,9 @@ Unified Map Method
 │ │ │ └ Plan
 │ │ └ Build mode
 │ │   └ Conclusion
-│ ├ Startup Scan (TODO)
-│ ├ Gates and Permissions (TODO)
-│ └ Keywords (TODO)
+│ ├ Startup Scan
+│ ├ Gates and Permissions
+│ └ Keywords
 │   ├ Process Keyword (TODO)
 │   └ Aside Keyword (TODO)
 └ Tooling (TODO)
@@ -426,7 +426,13 @@ id: x7t
 
 [Change-Management](#change-management)
 
-(TODO)
+What the agent does first in every session: read everything in `changes/open/` and orient. Each change is placed by where it sits in the [lifecycle](#change-lifecycle) — a parked [Intent](#intent) not yet taken up, one mid-[approach](#approach) or awaiting a [plan](#plan), or one under [build](#build). The `active.md` lock names the change currently building, if any.
+
+From that the agent announces whether it's in plan or build mode, reports what's open, and proposes the next step — resuming an interrupted build, or picking up a parked Intent.
+
+**Detail**
+
+An interrupted build is recognised by `active.md` pointing at a change whose work is unfinished; the agent reads that change's [Log](#build-mode) to recover context rather than restarting. A change carrying [Feedback](#build-mode) but no [Conclusion](#conclusion) has been handed back to plan mode and needs replanning.
 
 # Gates and Permissions
 
@@ -436,7 +442,16 @@ id: g5m
 
 [Change-Management](#change-management)
 
-(TODO)
+The rules that gate what the agent may do without asking. Two kinds: **approval** — what counts as the user saying yes — and **write permission** — what the agent may change at each point.
+
+Approval is only a clear affirmative given in direct response to the agent's ask ("yes", "ok", "go ahead"). Silence, a tangent, or a reply that raises new questions is not approval.
+
+Writing is gated by mode and by an active change. In [plan mode](#plan-mode) the agent writes only inside `changes/`; project files are read-only. Writing a project file needs a change under [build](#build), recorded in `active.md`. Reading anything is always allowed.
+
+**Detail**
+
+Git write operations — commit, push, branch, reset — always require explicit user instruction; the agent never does them on its own initiative. Editing `changes/` (capturing a parked Intent, drafting stages) is exempt from the active-change requirement, as is editing the map to describe existing reality.
+
 
 # Keywords
 
@@ -448,7 +463,10 @@ id: k9y
 [Process Keyword](#process-keyword)
 [Aside Keyword](#aside-keyword)
 
-(TODO)
+Two message prefixes that let the user trigger a small side-action without derailing the current work. The agent handles the aside, confirms in a line, and returns to what it was doing. There are two:
+
+- [process](#process-keyword) captures an observation about the method itself;
+- [aside](#aside-keyword) parks a topic in a draft change ([Intent](#intent) only) for later.
 
 # Process Keyword
 
