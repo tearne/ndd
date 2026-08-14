@@ -34,8 +34,8 @@ Unified Map Method
 │ └ Map Maintenance
 ├ Change-Management
 │ ├ Modes
-│ ├ Change Lifecycle (TODO)
-│ │ ├ Intent (TODO)
+│ ├ Change Lifecycle
+│ │ ├ Intent
 │ │ ├ Approach (TODO)
 │ │ ├ Plan (TODO)
 │ │ ├ Build (TODO)
@@ -297,7 +297,21 @@ id: l5g
 [Build](#build)
 [Conclusion](#conclusion)
 
-(TODO)
+A change is a single markdown document that advances through a fixed sequence of stages:
+
+1. **Intent** — why the change is needed.
+2. **Approach** — how it will be carried out.
+3. **Plan** — the concrete steps or topics to execute.
+4. **Build** — doing the work against the plan.
+5. **Conclusion** — a retrospective once the work is accepted.
+
+Each stage is drafted into the document, then surfaced for the user's explicit approval before the next begins. Which stages apply is set by the [mode](#modes) — Wander collapses the sequence to Intent → Build → Conclusion.
+
+The document is the single carrier of state: where a change sits is read from what it contains, not from any status field. Chat carries only disclosures and summaries; the drafted stage text lives in the document.
+
+**Detail**
+
+The stages divide into two working postures. *Plan mode* spans Intent through Plan — research and reasoning, writing only to the change document. *Build mode* executes an approved Plan, writing to project files. The boundary is an approval gate, so no project file changes before a plan is agreed.
 
 # Intent
 
@@ -307,9 +321,11 @@ id: i8b
 
 [Change Lifecycle](#change-lifecycle)
 
-(TODO)
+The opening stage: why the change is needed expressed in domain language, not how it will be delivered unless relevant to the requirement. Kept brief and requiring user approval before anything else proceeds. For a [Wander](#modes) change the Intent is the only planning stage.
 
-# Approach
+**Detail**
+
+Intent is capped short (a ~500-character soft trigger); past that the agent flags borderline material and asks the user to adjudicate rather than surfacing it as final.
 
 ```yaml
 id: a2r
