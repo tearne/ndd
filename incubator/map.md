@@ -31,9 +31,9 @@ Unified Map Method
 │ ├ Writing Style
 │ │ ├ Conceptual Writing
 │ │ └ Formatting
-│ └ Map Maintenance (TODO)
+│ └ Map Maintenance
 ├ Change-Management
-│ ├ Modes (TODO)
+│ ├ Modes
 │ ├ Change Lifecycle (TODO)
 │ │ ├ Intent (TODO)
 │ │ ├ Approach (TODO)
@@ -248,7 +248,21 @@ id: t7v
 
 [Specification](#specification)
 
-(TODO)
+The map is never finished and never append-only. Keeping it useful means constant refactoring and engagement to keep the mental model accurate. Watch for the signals that a node has drifted from its job:
+
+- It starts wanting sub-sections — split it into children.
+
+- It has grown verbose — cut hard, push precision into Detail.
+
+- An only-child isn't really its own concept — fold it into its parent.
+
+- A new concept has no natural home — the decomposition needs rethinking, not a misc bucket.
+
+- The top-level boxes stop matching how the user thinks — restructure, because the map follows the user's model, not the code's.
+
+**Detail**
+
+A recurring check — the *ambiguity test*: for each node in the area you're touching, ask whether a fresh agent could build from it without guessing. Where it couldn't, that's a map-quality gap to flag, not an implementation problem.
 
 # Modes
 
@@ -258,7 +272,17 @@ id: e3n
 
 [Change-Management](#change-management)
 
-(TODO)
+Every change runs in one of three cadences, chosen for how much ceremony the work warrants. The agent proposes one after Intent is approved — default **Formal** — and the user confirms.
+
+- **Formal** — the full lifecycle with an executable task checklist as its Plan. The default, for work that benefits from explicit decisions and step-by-step tracking.
+
+- **Explore** — the same gates as Formal, but the Plan is topics plus a done-when condition rather than tasks. For work where depth and coverage matter more than a fixed step list.
+
+- **Wander** — Intent straight to Build, with a retrospective Conclusion and no Approach or Plan. For work too small or too fluid to plan; the agent flags topic drift and can offer to flush.
+
+**Detail**
+
+Mode can change mid-flight: pause, rewrite the change document into the target mode's shape, resume. A discarded Wander change is deleted rather than archived, and its name may be updated to reflect where the work actually ended up.
 
 # Change Lifecycle
 
