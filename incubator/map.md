@@ -15,7 +15,7 @@ The specification is the primary artefact. A navigable map of concepts — struc
 Three top-level concerns:
 
 - **Specification** — the conceptual map as the primary comprehension artefact.
-- **Change-Management** — how the spec evolves, through modes and gates.
+- **Change-Management** — how the spec evolves, through a change lifecycle and explicit gates.
 - **Tooling** — the viewer and index that serve both.
 
 ```
@@ -33,14 +33,13 @@ Unified Map Method
 │ │ └ Formatting
 │ └ Map Maintenance
 ├ Change-Management
-│ ├ Modes
+│ ├ Cadences
 │ ├ Change Lifecycle
-│ │ ├ Plan mode
+│ │ ├ Plan
 │ │ │ ├ Intent
-│ │ │ ├ Approach
-│ │ │ └ Plan
-│ │ └ Build mode
-│ │   └ Conclusion
+│ │ │ └ Approach
+│ │ ├ Build
+│ │ └ Conclude
 │ ├ Startup Scan
 │ ├ Gates and Permissions
 │ └ Keywords
@@ -96,13 +95,13 @@ id: cm4
 ```
 
 [Unified Map Method](#unified-map-method)
-[Modes](#modes)
+[Cadences](#cadences)
 [Change Lifecycle](#change-lifecycle)
 [Startup Scan](#startup-scan)
 [Gates and Permissions](#gates-and-permissions)
 [Keywords](#keywords)
 
-How the spec evolves: proposals move through modes and explicit user gates, and land as changes to the map. A node's build-state is expressed by *where it lives* — a proposal artefact versus the main map — not by a status field, keeping both surfaces plain markdown that differ only by a diff.
+How the spec evolves: a change is drafted in `changes/`, moves through a lifecycle under explicit user gates, and updates the map as reality catches up — then it's archived.
 
 # Node Identity
 
@@ -263,7 +262,7 @@ The map is never finished and never append-only. Keeping it useful means constan
 
 A recurring check — the *ambiguity test*: for each node in the area you're touching, ask whether a fresh agent could build from it without guessing. Where it couldn't, that's a map-quality gap to flag, not an implementation problem.
 
-# Modes
+# Cadences
 
 ```yaml
 id: e3n
@@ -271,17 +270,25 @@ id: e3n
 
 [Change-Management](#change-management)
 
-Each change can be executed using one of three approaches. The agent proposes one after Intent is approved — default **Formal** — and the user confirms.
+Each change runs at one of three cadences. They differ only in the shape of the [Plan](#plan) — [Build](#build) and [Conclude](#conclude) are the same whichever is chosen. The agent proposes one after Intent is approved — default **Formal** — and the user confirms.
 
-- **Formal** — waterfall-style with an executable task checklist as its Plan. The default, for work that benefits from explicit decisions and step-by-step tracking.
+| Cadence | Plan structure |
+|---------|----------------|
+| **Formal** | Intent → Approach → a task checklist |
+| **Explore** | Intent → Approach → topics + a *done-when* |
+| **Wander** | Intent only |
 
-- **Explore** — the same approval gates as Formal, but the Plan consists of topics plus a *done-when* condition rather than explicit tasks. For work where depth and coverage matter more than a fixed step list.
+- **Formal** is the default, for work that benefits from explicit decisions and step-by-step tracking.
 
-- **Wander** — jump straight from Intent to Build, with a retrospective Conclusion and no Approach or Plan. For work too small or too fluid to plan; the agent flags topic drift and can offer to flush.
+- **Explore** suits work where depth and coverage matter more than a fixed step list.
+
+- **Wander** is for work too small or too fluid to plan; the agent flags topic drift and can offer to flush.
 
 **Detail**
 
-Mode can change mid-flight: pause, rewrite the change document into the target mode's shape, resume. A discarded Wander change is deleted rather than archived, and its name may be updated to reflect where the work actually ended up.
+A **task checklist** is discrete tasks, each an atomic outcome ticked off as it lands. **Topics** are areas to work rather than steps to complete, closed by a single *done-when* condition instead of tick-boxes.
+
+Cadence can change mid-flight: pause, rewrite the change document into the target cadence's shape, resume. A discarded Wander change is deleted rather than archived, and its name may be updated to reflect where the work actually ended up.
 
 # Change Lifecycle
 
@@ -290,27 +297,24 @@ id: l5g
 ```
 
 [Change-Management](#change-management)
-[Plan mode](#plan-mode)
-[Build mode](#build-mode)
+[Plan](#plan)
+[Build](#build)
+[Conclude](#conclude)
 
-A change is a single markdown document that advances through a fixed sequence of stages:
+A change is a single markdown document that advances through three phases:
 
-1. **Intent** — why the change is needed.
-2. **Approach** — how it will be carried out.
-3. **Plan** — the concrete steps or topics to execute.
-4. **Build** — doing the work against the plan.
-5. **Conclusion** — a retrospective once the work is accepted.
+1. **[Plan](#plan)** — the write-only phase that produces the change document; the [cadence](#cadences) sets its internal shape.
+2. **[Build](#build)** — doing the work against whatever the Plan produced, the same whichever cadence made it.
+3. **[Conclude](#conclude)** — a retrospective once the work is accepted.
 
-Each stage is drafted into the document, then surfaced for the user's explicit approval before the next begins. Which stages apply is set by the [mode](#modes) — Wander collapses the sequence to Intent → Build → Conclusion.
+Each phase is drafted into the document, then surfaced for the user's explicit approval before the next begins.
 
-The document is the single carrier of state: where a change sits is read from what it contains, not from any status field. Chat carries only disclosures and summaries; the drafted stage text lives in the document.
+The document is the single carrier of state: where a change sits is read from what it contains, not from any status field. Chat carries only disclosures and summaries; the drafted text lives in the document.
 
-**Detail**
-
-The stages divide into two working postures. *Plan mode* spans Intent through Plan — research and reasoning, writing only to the change document. *Build mode* executes an approved Plan, writing to project files. The boundary is an approval gate, so no project file changes before a plan is agreed.
+The Plan → Build boundary is the load-bearing gate: project files stay untouched until a plan is approved.
 
 
-# Plan mode
+# Plan
 
 ```yaml
 id: v3d
@@ -319,9 +323,14 @@ id: v3d
 [Change Lifecycle](#change-lifecycle)
 [Intent](#intent)
 [Approach](#approach)
-[Plan](#plan)
 
-The write-only posture: research and reasoning that produces the change document and touches nothing else. Its three sections — [Intent](#intent), [Approach](#approach), [Plan](#plan) — are drafted one at a time, each surfaced for approval before the next. Project files are read-only during this stage; all writing lands in `changes/`.
+During this phase project files outside of `changes/` remain read-only: research and reasoning that produces the change document touches nothing else. It builds up in parts, each drafted then surfaced for approval before the next, culminating in the **worklist** that [Build](#build) executes. Which parts a change has is set by its [cadence](#cadences).
+
+The worklist lists only the actions to take, not the reasons for them — those belong in the [Approach](#approach).
+
+**Detail**
+
+Before surfacing the worklist the agent prunes it against fixed rules: one task per atomic outcome, no restated "why", no obvious sub-steps, no ceremony tasks (a bare "review" or "double-check") unless they mark a real gate, and no file paths the task name already implies.
 
 
 # Intent
@@ -330,9 +339,9 @@ The write-only posture: research and reasoning that produces the change document
 id: i8b
 ```
 
-[Plan mode](#plan-mode)
+[Plan](#plan)
 
-The opening stage: why the change is needed expressed in domain language, not how it will be delivered unless relevant to the requirement. Kept brief and requiring user approval before anything else proceeds. For a [Wander](#modes) change the Intent is the only planning stage.
+The opening part: why the change is needed expressed in domain language, not how it will be delivered unless relevant to the requirement. Kept brief and requiring user approval before anything else proceeds. For a [Wander](#cadences) change the Intent is the whole plan.
 
 An Intent can also be captured and **parked** — left on its own in `changes/open/` until someone picks it up and the lifecycle resumes. A parked Intent may optionally reference the map node(s) it concerns as *name (id)* — the name to navigate to now, the id in brackets to stay recoverable if the name later changes — but nothing requires it.
 
@@ -346,70 +355,47 @@ Intent is capped short (a ~500-character soft trigger); past that the agent flag
 id: a2r
 ```
 
-[Plan mode](#plan-mode)
+[Plan](#plan)
 
-How the change will be carried out, written as a list of decisions and their reasons — not a narrative and not a file-by-file rehearsal, which belongs to the [Plan](#plan). Each decision earns a line only if it carries a reason; self-evident choices need no subsection. Skipped entirely by [Wander](#modes).
+How the change will be carried out, written as a list of decisions and their reasons — not a narrative and not a file-by-file rehearsal, which belongs to the [worklist](#plan). Each decision earns a line only if it carries a reason; self-evident choices need no subsection. Skipped entirely by [Wander](#cadences).
 
 Alongside it sits an **Unresolved** list: the open items the agent can't settle alone, each pointing at the part of the Approach it affects. The agent surfaces the full list in chat so the user can see everything outstanding, then walks through them — for anything non-trivial, one at a time ("4 unresolved items […]. First one: …") rather than asking the user to address them all at once. Answers fold back into the prose and the list shrinks. An empty list means the Approach is ready for approval.
 
 **Detail**
 
-The agent re-reads and prunes its own draft before surfacing — anything not carrying a decision-and-reason comes out — then a ~1000-character soft trigger flags borderline material for the user to adjudicate. Once the Plan is written the Unresolved section is deleted; its absence is the signal that the Approach is settled.
+The agent re-reads and prunes its own draft before surfacing — anything not carrying a decision-and-reason comes out — then a ~1000-character soft trigger flags borderline material for the user to adjudicate. Once the worklist is written the Unresolved section is deleted; its absence is the signal that the Approach is settled.
 
-# Plan
-
-```yaml
-id: p9d
-```
-
-[Plan mode](#plan-mode)
-
-What [Build](#build) executes. The shape is set by the [mode](#modes):
-
-- **Formal** gives a checklist of discrete tasks, each an atomic outcome ticked off as it lands;
-
-- **Explore** gives a bulleted list of topics closed by a single *done-when* condition rather than tick-boxes.
-
-- [Wander](#modes) has no Plan.
-
-The Plan says only what to do, never why — the reasoning is the Approach's job.
-
-**Detail**
-
-before surfacing, the agent prunes the Plan against fixed rules: one task per atomic outcome, no restated "why", no obvious sub-steps, no ceremony tasks (a bare "review" or "double-check") unless they mark a real gate, and no file paths the task name already implies.
-
-
-# Build mode
+# Build
 
 ```yaml
 id: u6k
 ```
 
 [Change Lifecycle](#change-lifecycle)
-[Conclusion](#conclusion)
+[Conclude](#conclude)
 
-Executing the approved Plan against the real project files. The agent follows the Plan rather than redesigning mid-flight: work the tasks (or topics) in order, ticking each as it lands, posting concise progress but not pausing task by task. It interrupts only when something warrants it — a surprise, an ambiguity, or a plan that turns out wrong. If the path forward is unclear the agent stops, records the blocker, and hands back rather than improvising.
+Executing the approved plan against the real project files. The agent follows the plan rather than redesigning mid-flight — working through it in whatever shape it took, marking progress as each piece lands and posting concise updates without pausing step by step. It interrupts only when something warrants it — a surprise, an ambiguity, or a plan that turns out wrong. If the path forward is unclear the agent stops, records the blocker, and hands back rather than improvising.
 
-Only one change builds at a time, held by a lock. Throughout, the agent keeps a running **Log** at the foot of the document — a terse record of the unexpected (surprises, deviations, blockers, partial progress), so a resuming session knows what the ticked tasks don't convey. Routine execution going to plan needs no entry.
+Only one change builds at a time, held by a lock. Throughout, the agent keeps a running **Log** at the foot of the document — a terse record of the unexpected (surprises, deviations, blockers, partial progress), so a resuming session knows what the plan alone doesn't convey. Routine execution going to plan needs no entry.
 
 **Detail**
 
-The lock is `changes/open/active.md`, naming the one change under build; if it already exists, stop. On entering Build a versioned project agrees a bump kind, and every later hand-back for testing bumps patch. If the user later agrees the Plan needs revisiting, the agent writes a **Feedback** block — status (implemented / partial / not), notes on what to reconsider, and documentation impact — which returns the change to plan mode. A build that changed code keeps the lock even when handed back; only an untouched one may release it.
+The lock is `changes/open/active.md`, naming the one change under build; if it already exists, stop. On entering Build a versioned project agrees a bump kind, and every later hand-back for testing bumps patch. If the user later agrees the Plan needs revisiting, the agent writes a **Feedback** block — status (implemented / partial / not), notes on what to reconsider, and documentation impact — which returns the change to planning. A build that changed code keeps the lock even when handed back; only an untouched one may release it.
 
 
-# Conclusion
+# Conclude
 
 ```yaml
 id: o4j
 ```
 
-[Build mode](#build-mode)
+[Build](#build)
 
 The closing note, written only once the user confirms the build is done. It states where the change landed — not a story of how it got there.
 
-It records only what the ticked Plan and the Log don't already convey: deviations, documents touched, surprises. When there's nothing to add, "Completed." is enough.
+It records only what the plan and the Log don't already convey: deviations, documents touched, surprises. When there's nothing to add, "Completed." is enough.
 
-A [Wander](#modes) change has no Approach, but its Build [Log](#build-mode) already carries what happened, so the Conclusion still just names the landing point — and may rename the change to match where the work ended up.
+A [Wander](#cadences) change has no Approach, but its Build [Log](#build) already carries what happened, so Conclude still just names the landing point — and may rename the change to match where the work ended up.
 
 Its mere presence is the marker that the change is finished.
 
@@ -428,11 +414,11 @@ id: x7t
 
 What the agent does first in every session: read everything in `changes/open/` and orient. Each change is placed by where it sits in the [lifecycle](#change-lifecycle) — a parked [Intent](#intent) not yet taken up, one mid-[approach](#approach) or awaiting a [plan](#plan), or one under [build](#build). The `active.md` lock names the change currently building, if any.
 
-From that the agent announces whether it's in plan or build mode, reports what's open, and proposes the next step — resuming an interrupted build, or picking up a parked Intent.
+From that the agent announces whether it's planning or building, reports what's open, and proposes the next step — resuming an interrupted build, or picking up a parked Intent.
 
 **Detail**
 
-An interrupted build is recognised by `active.md` pointing at a change whose work is unfinished; the agent reads that change's [Log](#build-mode) to recover context rather than restarting. A change carrying [Feedback](#build-mode) but no [Conclusion](#conclusion) has been handed back to plan mode and needs replanning.
+An interrupted build is recognised by `active.md` pointing at a change whose work is unfinished; the agent reads that change's [Log](#build) to recover context rather than restarting. A change carrying [Feedback](#build) but no [Conclusion](#conclude) has been handed back to planning and needs replanning.
 
 # Gates and Permissions
 
@@ -446,11 +432,11 @@ The rules that gate what the agent may do without asking. Two kinds: **approval*
 
 Approval is only a clear affirmative given in direct response to the agent's ask ("yes", "ok", "go ahead"). Silence, a tangent, or a reply that raises new questions is not approval.
 
-Writing is gated by mode and by an active change. In [plan mode](#plan-mode) the agent writes only inside `changes/`; project files are read-only. Writing a project file needs a change under [build](#build), recorded in `active.md`. Reading anything is always allowed.
+Writing is gated by phase and by an active change. During [Plan](#plan) the agent writes only inside `changes/`; project files are read-only. Writing a project file needs a change under [build](#build), recorded in `active.md`. Reading anything is always allowed.
 
 **Detail**
 
-Git write operations — commit, push, branch, reset — always require explicit user instruction; the agent never does them on its own initiative. Editing `changes/` (capturing a parked Intent, drafting stages) is exempt from the active-change requirement, as is editing the map to describe existing reality.
+Git write operations — commit, push, branch, reset — always require explicit user instruction; the agent never does them on its own initiative. Editing `changes/` (capturing a parked Intent, drafting phases) is exempt from the active-change requirement, as is editing the map to describe existing reality.
 
 
 # Keywords
@@ -480,7 +466,7 @@ A message starting with `process:` records an observation about the method or th
 
 **Detail**
 
-The entry is dated and captures the observation plus any surrounding context (mode, active change, topic) that would otherwise be lost; the agent may rephrase for later readability. The file is append-only and created with a header if absent. It lives in the repository as an ordinary versioned file — not git-ignored — so the feedback is shared between collaborators; committing it stays a user action, like any git write.
+The entry is dated and captures the observation plus any surrounding context (phase, active change, topic) that would otherwise be lost; the agent may rephrase for later readability. The file is append-only and created with a header if absent. It lives in the repository as an ordinary versioned file — not git-ignored — so the feedback is shared between collaborators; committing it stays a user action, like any git write.
 
 
 # Aside Keyword
@@ -495,7 +481,7 @@ A message starting with `aside:` parks a topic for later without breaking the cu
 
 **Detail**
 
-A parked Intent from an aside may carry the optional node reference an [Intent](#intent) allows. In-proposal asides raised during planning fold into the change as it proceeds; those raised during [build](#build) sit until [Conclusion](#conclusion), when the user decides their fate — fold in, spin off as their own parked Intents, or discard.
+A parked Intent from an aside may carry the optional node reference an [Intent](#intent) allows. In-proposal asides raised during planning fold into the change as it proceeds; those raised during [build](#build) sit until [Conclude](#conclude), when the user decides their fate — fold in, spin off as their own parked Intents, or discard.
 
 
 # Tooling
