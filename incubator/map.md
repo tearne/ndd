@@ -36,8 +36,8 @@ Unified Map Method
 │ ├ Modes
 │ ├ Change Lifecycle
 │ │ ├ Intent
-│ │ ├ Approach (TODO)
-│ │ ├ Plan (TODO)
+│ │ ├ Approach
+│ │ ├ Plan
 │ │ ├ Build (TODO)
 │ │ └ Conclusion (TODO)
 │ ├ Seeds (TODO)
@@ -327,13 +327,21 @@ The opening stage: why the change is needed expressed in domain language, not ho
 
 Intent is capped short (a ~500-character soft trigger); past that the agent flags borderline material and asks the user to adjudicate rather than surfacing it as final.
 
+# Approach
+
 ```yaml
 id: a2r
 ```
 
 [Change Lifecycle](#change-lifecycle)
 
-(TODO)
+How the change will be carried out, written as a list of decisions and their reasons — not a narrative and not a file-by-file rehearsal, which belongs to the [Plan](#plan). Each decision earns a line only if it carries a reason; self-evident choices need no subsection. Skipped entirely by [Wander](#modes).
+
+Alongside it sits an **Unresolved** list: the open items the agent can't settle alone, each pointing at the part of the Approach it affects. The agent surfaces the full list in chat so the user can see everything outstanding, then walks through them — for anything non-trivial, one at a time ("4 unresolved items […]. First one: …") rather than asking the user to address them all at once. Answers fold back into the prose and the list shrinks. An empty list means the Approach is ready for approval.
+
+**Detail**
+
+The agent re-reads and prunes its own draft before surfacing — anything not carrying a decision-and-reason comes out — then a ~1000-character soft trigger flags borderline material for the user to adjudicate. Once the Plan is written the Unresolved section is deleted; its absence is the signal that the Approach is settled.
 
 # Plan
 
@@ -343,9 +351,19 @@ id: p9d
 
 [Change Lifecycle](#change-lifecycle)
 
-(TODO)
+What [Build](#build) executes. The shape is set by the [mode](#modes):
 
-# Build
+- **Formal** gives a checklist of discrete tasks, each an atomic outcome ticked off as it lands;
+
+- **Explore** gives a bulleted list of topics closed by a single *done-when* condition rather than tick-boxes.
+
+- [Wander](#modes) has no Plan.
+
+The Plan says only what to do, never why — the reasoning is the Approach's job.
+
+**Detail**
+
+before surfacing, the agent prunes the Plan against fixed rules: one task per atomic outcome, no restated "why", no obvious sub-steps, no ceremony tasks (a bare "review" or "double-check") unless they mark a real gate, and no file paths the task name already implies.
 
 ```yaml
 id: u6k
