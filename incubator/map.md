@@ -272,13 +272,13 @@ id: e3n
 
 [Change-Management](#change-management)
 
-Every change runs in one of three cadences, chosen for how much ceremony the work warrants. The agent proposes one after Intent is approved — default **Formal** — and the user confirms.
+Each change can be executed using one of three approaches. The agent proposes one after Intent is approved — default **Formal** — and the user confirms.
 
-- **Formal** — the full lifecycle with an executable task checklist as its Plan. The default, for work that benefits from explicit decisions and step-by-step tracking.
+- **Formal** — waterfall-style with an executable task checklist as its Plan. The default, for work that benefits from explicit decisions and step-by-step tracking.
 
-- **Explore** — the same gates as Formal, but the Plan is topics plus a done-when condition rather than tasks. For work where depth and coverage matter more than a fixed step list.
+- **Explore** — the same approval gates as Formal, but the Plan consists of topics plus a *done-when* condition rather than explicit tasks. For work where depth and coverage matter more than a fixed step list.
 
-- **Wander** — Intent straight to Build, with a retrospective Conclusion and no Approach or Plan. For work too small or too fluid to plan; the agent flags topic drift and can offer to flush.
+- **Wander** — jump straight from Intent to Build, with a retrospective Conclusion and no Approach or Plan. For work too small or too fluid to plan; the agent flags topic drift and can offer to flush.
 
 **Detail**
 
