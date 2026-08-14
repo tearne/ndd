@@ -41,7 +41,6 @@ Unified Map Method
 │ │ │ └ Plan
 │ │ └ Build mode
 │ │   └ Conclusion
-│ ├ Seeds
 │ ├ Startup Scan (TODO)
 │ ├ Gates and Permissions (TODO)
 │ └ Keywords (TODO)
@@ -99,7 +98,6 @@ id: cm4
 [Unified Map Method](#unified-map-method)
 [Modes](#modes)
 [Change Lifecycle](#change-lifecycle)
-[Seeds](#seeds)
 [Startup Scan](#startup-scan)
 [Gates and Permissions](#gates-and-permissions)
 [Keywords](#keywords)
@@ -336,6 +334,8 @@ id: i8b
 
 The opening stage: why the change is needed expressed in domain language, not how it will be delivered unless relevant to the requirement. Kept brief and requiring user approval before anything else proceeds. For a [Wander](#modes) change the Intent is the only planning stage.
 
+An Intent can also be captured and **parked** — left on its own in `changes/open/` until someone picks it up and the lifecycle resumes. A parked Intent may optionally reference the map node(s) it concerns as *name (id)* — the name to navigate to now, the id in brackets to stay recoverable if the name later changes — but nothing requires it.
+
 **Detail**
 
 Intent is capped short (a ~500-character soft trigger); past that the agent flags borderline material and asks the user to adjudicate rather than surfacing it as final.
@@ -416,22 +416,6 @@ Its mere presence is the marker that the change is finished.
 **Detail**
 
 For a versioned project with substantive change the draft also proposes a changelog entry. On the user's approval the change is archived to `changes/archive/` (prefixed `YYYY-MM-DD-`), the `active.md` lock is removed, and any approved changelog entry is added.
-
-# Seeds
-
-```yaml
-id: s3w
-```
-
-[Change-Management](#change-management)
-
-A seed is a thought captured before it's worked — the minimal head of a change document, held in `changes/open/` alongside worked changes so there's one place to find everything pending. It carries a title, a **Kind** (`todo` for expected work, `idea` for a candidate to weigh), an **Anchor** naming the map node id(s) it may relate to, and a line or two of germ text — but no [mode](#modes) yet.
-
-When a seed is picked up it **matures in place**: the same file's Kind line gives way to a Mode line and it gains an [Intent](#intent) grown from the germ text, then proceeds normally. No new file, no move — the anchor keeps it located on the map throughout.
-
-**Detail**
-
-The anchor is a node's stable [id](#node-identity), so a seed stays bound across renames and moves; the [Startup Scan](#startup-scan) surfaces a node's pending seeds. On capture the agent proposes the anchor(s) — the node under discussion or its nearest mapped ancestor, falling back to the root — and the user confirms in a line. Seeds are captured frictionlessly through the [aside](#aside-keyword) keyword.
 
 
 # Startup Scan
