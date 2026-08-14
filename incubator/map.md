@@ -35,11 +35,12 @@ Unified Map Method
 ├ Change-Management
 │ ├ Modes
 │ ├ Change Lifecycle
-│ │ ├ Intent
-│ │ ├ Approach
-│ │ ├ Plan
-│ │ ├ Build (TODO)
-│ │ └ Conclusion (TODO)
+│ │ ├ Plan mode
+│ │ │ ├ Intent
+│ │ │ ├ Approach
+│ │ │ └ Plan
+│ │ └ Build mode
+│ │   └ Conclusion (TODO)
 │ ├ Seeds (TODO)
 │ ├ Startup Scan (TODO)
 │ ├ Gates and Permissions (TODO)
@@ -291,11 +292,8 @@ id: l5g
 ```
 
 [Change-Management](#change-management)
-[Intent](#intent)
-[Approach](#approach)
-[Plan](#plan)
-[Build](#build)
-[Conclusion](#conclusion)
+[Plan mode](#plan-mode)
+[Build mode](#build-mode)
 
 A change is a single markdown document that advances through a fixed sequence of stages:
 
@@ -313,13 +311,28 @@ The document is the single carrier of state: where a change sits is read from wh
 
 The stages divide into two working postures. *Plan mode* spans Intent through Plan — research and reasoning, writing only to the change document. *Build mode* executes an approved Plan, writing to project files. The boundary is an approval gate, so no project file changes before a plan is agreed.
 
+
+# Plan mode
+
+```yaml
+id: v3d
+```
+
+[Change Lifecycle](#change-lifecycle)
+[Intent](#intent)
+[Approach](#approach)
+[Plan](#plan)
+
+The write-only posture: research and reasoning that produces the change document and touches nothing else. Its three sections — [Intent](#intent), [Approach](#approach), [Plan](#plan) — are drafted one at a time, each surfaced for approval before the next. Project files are read-only during this stage; all writing lands in `changes/`.
+
+
 # Intent
 
 ```yaml
 id: i8b
 ```
 
-[Change Lifecycle](#change-lifecycle)
+[Plan mode](#plan-mode)
 
 The opening stage: why the change is needed expressed in domain language, not how it will be delivered unless relevant to the requirement. Kept brief and requiring user approval before anything else proceeds. For a [Wander](#modes) change the Intent is the only planning stage.
 
@@ -333,7 +346,7 @@ Intent is capped short (a ~500-character soft trigger); past that the agent flag
 id: a2r
 ```
 
-[Change Lifecycle](#change-lifecycle)
+[Plan mode](#plan-mode)
 
 How the change will be carried out, written as a list of decisions and their reasons — not a narrative and not a file-by-file rehearsal, which belongs to the [Plan](#plan). Each decision earns a line only if it carries a reason; self-evident choices need no subsection. Skipped entirely by [Wander](#modes).
 
@@ -349,7 +362,7 @@ The agent re-reads and prunes its own draft before surfacing — anything not ca
 id: p9d
 ```
 
-[Change Lifecycle](#change-lifecycle)
+[Plan mode](#plan-mode)
 
 What [Build](#build) executes. The shape is set by the [mode](#modes):
 
@@ -365,13 +378,24 @@ The Plan says only what to do, never why — the reasoning is the Approach's job
 
 before surfacing, the agent prunes the Plan against fixed rules: one task per atomic outcome, no restated "why", no obvious sub-steps, no ceremony tasks (a bare "review" or "double-check") unless they mark a real gate, and no file paths the task name already implies.
 
+
+# Build mode
+
 ```yaml
 id: u6k
 ```
 
 [Change Lifecycle](#change-lifecycle)
+[Conclusion](#conclusion)
 
-(TODO)
+Executing the approved Plan against the real project files. The agent follows the Plan rather than redesigning mid-flight: work the tasks (or topics) in order, ticking each as it lands, posting concise progress but not pausing task by task. It interrupts only when something warrants it — a surprise, an ambiguity, or a plan that turns out wrong. If the path forward is unclear the agent stops, records the blocker, and hands back rather than improvising.
+
+Only one change builds at a time, held by a lock. Throughout, the agent keeps a running **Log** at the foot of the document — a terse record of the unexpected (surprises, deviations, blockers, partial progress), so a resuming session knows what the ticked tasks don't convey. Routine execution going to plan needs no entry.
+
+**Detail**
+
+The lock is `changes/open/active.md`, naming the one change under build; if it already exists, stop. On entering Build a versioned project agrees a bump kind, and every later hand-back for testing bumps patch. If the user later agrees the Plan needs revisiting, the agent writes a **Feedback** block — status (implemented / partial / not), notes on what to reconsider, and documentation impact — which returns the change to plan mode. A build that changed code keeps the lock even when handed back; only an untouched one may release it.
+
 
 # Conclusion
 
@@ -379,7 +403,7 @@ id: u6k
 id: o4j
 ```
 
-[Change Lifecycle](#change-lifecycle)
+[Build mode](#build-mode)
 
 (TODO)
 
