@@ -44,8 +44,8 @@ Unified Map Method
 │ ├ Startup Scan
 │ ├ Gates and Permissions
 │ └ Keywords
-│   ├ Process Keyword (TODO)
-│   └ Aside Keyword (TODO)
+│   ├ Process Keyword
+│   └ Aside Keyword
 └ Tooling (TODO)
 ```
 
@@ -476,7 +476,12 @@ id: r4c
 
 [Keywords](#keywords)
 
-(TODO)
+A message starting with `process:` records an observation about the method or the agent's conduct — friction, a suggestion, something to revisit — without acting on it. The agent appends it to `changes/process-feedback.md`, confirms in a line, and carries on with whatever was under way.
+
+**Detail**
+
+The entry is dated and captures the observation plus any surrounding context (mode, active change, topic) that would otherwise be lost; the agent may rephrase for later readability. The file is append-only and created with a header if absent. It lives in the repository as an ordinary versioned file — not git-ignored — so the feedback is shared between collaborators; committing it stays a user action, like any git write.
+
 
 # Aside Keyword
 
@@ -486,7 +491,12 @@ id: y2f
 
 [Keywords](#keywords)
 
-(TODO)
+A message starting with `aside:` parks a topic for later without breaking the current flow. The agent dispatches it one of two ways, by scope: a topic independent of the current work becomes a fresh parked [Intent](#intent) in `changes/open/`; a topic within an in-progress change is appended to an **Asides** subsection at the foot of that change document. When genuinely unsure which, the agent asks. Either way it acknowledges placement in a line and returns to what it was doing.
+
+**Detail**
+
+A parked Intent from an aside may carry the optional node reference an [Intent](#intent) allows. In-proposal asides raised during planning fold into the change as it proceeds; those raised during [build](#build) sit until [Conclusion](#conclusion), when the user decides their fate — fold in, spin off as their own parked Intents, or discard.
+
 
 # Tooling
 
