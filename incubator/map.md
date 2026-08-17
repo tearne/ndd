@@ -395,6 +395,8 @@ id: o4j
 
 The closing note, written only once the user confirms the build is done. It states where the change landed — not a story of how it got there.
 
+Any [aside](#aside-keyword) still open from the build is settled before Conclude begins; nothing is wrapped up with asides outstanding.
+
 It records only what the plan and the Log don't already convey: deviations, documents touched, surprises. When there's nothing to add, "Completed." is enough.
 
 A [Wander](#cadences) change has no Approach, but its Build [Log](#build) already carries what happened, so Conclude still just names the landing point — and may rename the change to match where the work ended up.
@@ -483,7 +485,7 @@ A message starting with `aside:` parks a topic for later without breaking the cu
 
 **Detail**
 
-A parked Intent from an aside may carry the optional node reference an [Intent](#intent) allows. In-proposal asides raised during planning fold into the change as it proceeds; those raised during [build](#build) sit until [Conclude](#conclude), when the user decides their fate — fold in, spin off as their own parked Intents, or discard.
+A parked Intent from an aside may carry the optional node reference an [Intent](#intent) allows. In-proposal asides raised during planning are folded in as planning reaches the part they touch. Those raised during build wait in the Asides subsection and must be settled before [Conclude](#conclude) begins: the agent surfaces any outstanding ones and the user decides each — fold in, spin off as its own parked Intent, or discard. An aside is never silently dropped.
 
 
 # Tooling
