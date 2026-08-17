@@ -138,6 +138,8 @@ The tree lives in the links, not in a separate index or the file layout. Each no
 
 The parent link is omitted only by the root; every other node has exactly one. Link text is the target node's actual name, so an editor with a markdown LSP (e.g. marksman) jumps straight there with `gd`. Because links are name-anchored, renaming a node is a mechanical re-point of the links that named it, and the ID never appears in a link. A user may omit links while drafting; the agent proposes them on review.
 
+Because links resolve by name, every heading must be unambiguous across the whole map — a duplicated heading collides as an anchor and breaks navigation.
+
 # Node Sections
 
 ```yaml
@@ -180,6 +182,8 @@ The map's shape is shown at a glance by a **tree overview** — a box-drawing sk
 **Detail**
 
 The overview is a fenced code block using box-drawing characters. A map is one file by default, splitting across several (linked by relative paths) only when size makes one file unwieldy; navigation works the same either way.
+
+The root defaults to the project's name, preferring a term that carries domain information over a generic label like "Application". When that name clashes with a prominent internal node, disambiguate with whichever reads best: a scoping term for the root, a suffix, a parenthetical, or a more specific name for the internal node.
 
 # Node Sizing
 
@@ -274,7 +278,7 @@ id: s5y
 
 [Edit Governance](#edit-governance)
 
-The map tracks reality. It may be edited to match reality at any time, but never *ahead* of it: an edit describing work not yet built waits until it is. Pending work is held as parked changes in `changes/`, off the map, so the map stays a record of what exists.
+The map tracks reality. It may be edited to match reality at any time, but never *ahead* of it: an edit describing work not yet built waits until it is. Pending work is held as parked changes in `changes/`, off the map, so the map stays a record of what exists. In a code change that means map catch-up waits until the change is concluded, then follows as its own per-node negotiation.
 
 # Engagement Rule
 
@@ -374,7 +378,7 @@ During this phase project files outside of `changes/` remain read-only: research
 
 A Plan need not be fully formed to exist. A change may sit at any degree of formation — from an [Intent](#intent)-only draft just parked via [aside](#aside-keyword), up to a complete worklist awaiting approval. These degrees aren't formal sub-stages, only how far the document has been drafted; but the [Startup Scan](#startup-scan) may name them to place an open change — in terms such as *parked at its Intent*, *mid-approach*, or *awaiting a worklist*.
 
-The worklist lists only the actions to take, not the reasons for them — those belong in the [Approach](#approach).
+The worklist lists only the actions to take, not the reasons for them — those belong in the [Approach](#approach). A task that touches a mapped concept names the node rather than the file that implements it, keeping the plan anchored to the map.
 
 **Detail**
 
@@ -450,6 +454,8 @@ A [Wander](#cadences) change has no Approach, but its Build [Log](#build) alread
 Its mere presence is the marker that the change is finished.
 
 **Detail**
+
+Conclude is capped short (a ~500-character soft trigger); past that the agent flags borderline material and asks the user to adjudicate rather than surfacing it as final. The cap is deliberate pressure against re-telling the journey — Conclude names the landing point, it doesn't narrate the route.
 
 For a versioned project with substantive change the draft also proposes a changelog entry. On the user's approval the change is archived to `changes/archive/` (prefixed `YYYY-MM-DD-`), the `active.md` lock is removed, and any approved changelog entry is added.
 
