@@ -294,13 +294,11 @@ id: t7v
 
 [Edit Governance](#edit-governance)
 
-The map is never finished and never append-only. Keeping it useful means constant refactoring and engagement to keep the mental model accurate. Watch for the signals that a node has drifted from its job:
+Keeping the map useful means constant engagement to keep the mental model accurate. Watch for the signals that a node has drifted from its job, such as:
 
 - It starts wanting sub-sections — split it into children.
 
 - It has grown verbose — cut hard, push precision into Detail.
-
-- An only-child isn't really its own concept — fold it into its parent.
 
 - A new concept has no natural home — the decomposition needs rethinking, not a misc bucket.
 
@@ -308,7 +306,7 @@ The map is never finished and never append-only. Keeping it useful means constan
 
 **Detail**
 
-A recurring check — the *ambiguity test*: for each node in the area you're touching, ask whether a fresh agent could build from it without guessing. Where it couldn't, that's a map-quality gap to flag, not an implementation problem.
+A recurring check — the *ambiguity test*: for each node in the area you're touching, ask yourself if a fresh agent could build from it without guessing. If it couldn't, that's a map-quality gap to flag, not an implementation problem.
 
 # Cadences
 
