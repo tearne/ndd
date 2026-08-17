@@ -326,6 +326,8 @@ id: v3d
 
 During this phase project files outside of `changes/` remain read-only: research and reasoning that produces the change document touches nothing else. It builds up in parts, each drafted then surfaced for approval before the next, culminating in the **worklist** that [Build](#build) executes. Which parts a change has is set by its [cadence](#cadences).
 
+A Plan need not be fully formed to exist. A change may sit at any degree of formation — from an [Intent](#intent)-only draft just parked via [aside](#aside-keyword), up to a complete worklist awaiting approval. These degrees aren't formal sub-stages, only how far the document has been drafted; but the [Startup Scan](#startup-scan) may name them to place an open change — in terms such as *parked at its Intent*, *mid-approach*, or *awaiting a worklist*.
+
 The worklist lists only the actions to take, not the reasons for them — those belong in the [Approach](#approach).
 
 **Detail**
@@ -412,7 +414,7 @@ id: x7t
 
 [Change-Management](#change-management)
 
-What the agent does first in every session: read everything in `changes/open/` and orient. Each change is placed by where it sits in the [lifecycle](#change-lifecycle) — a parked [Intent](#intent) not yet taken up, one mid-[approach](#approach) or awaiting a [plan](#plan), or one under [build](#build). The `active.md` lock names the change currently building, if any.
+What the agent does first in every session: read everything in `changes/open/` and orient. Each change is placed by where it sits in the [lifecycle](#change-lifecycle): still in [Plan](#plan) — formed anywhere from a just-parked [Intent](#intent) to a worklist awaiting approval — or under [build](#build). The `active.md` lock names the change currently building, if any.
 
 From that the agent announces whether it's planning or building, reports what's open, and proposes the next step — resuming an interrupted build, or picking up a parked Intent.
 
