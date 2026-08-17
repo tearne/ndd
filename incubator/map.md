@@ -16,7 +16,7 @@ Three top-level concerns:
 
 - **Specification** — the conceptual map as the primary comprehension artefact.
 - **Change-Management** — how the spec evolves, through a change lifecycle and explicit gates.
-- **Tooling** — the viewer and index that serve both.
+- **Tooling** — the generic markdown tooling the format is designed to exploit.
 
 ```
 Unified Map Method
@@ -45,7 +45,7 @@ Unified Map Method
 │ └ Keywords
 │   ├ Process Keyword
 │   └ Aside Keyword
-└ Tooling (TODO)
+└ Tooling
 ```
 
 **See also**
@@ -496,4 +496,4 @@ id: g8l
 
 [Unified Map Method](#unified-map-method)
 
-(TODO)
+The method needs no bespoke application — it rides generic markdown tooling. In an editor with a markdown language server (marksman, in Helix), the name-anchored [navigation links](#navigation-links) become jump-to-definition targets: `gd` walks the tree parent-to-child, and the symbol picker (Helix `Space+s`) lists every node by name for a direct jump anywhere. Nothing custom is required; the format is kept deliberately plain so richer surfaces stay cheap to build on top later.
