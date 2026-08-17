@@ -31,7 +31,10 @@ Unified Map Method
 │ ├ Writing Style
 │ │ ├ Conceptual Writing
 │ │ └ Formatting
-│ └ Map Maintenance
+│ └ Edit Governance
+│   ├ Sync Rule
+│   ├ Engagement Rule
+│   └ Map Maintenance
 ├ Change-Management
 │ ├ Cadences
 │ ├ Change Lifecycle
@@ -63,7 +66,7 @@ id: sp1
 [Map Structure](#map-structure)
 [Node Sizing](#node-sizing)
 [Writing Style](#writing-style)
-[Map Maintenance](#map-maintenance)
+[Edit Governance](#edit-governance)
 
 The conceptual map is the primary artefact. It holds the system's shape as a tree of concepts, structured the way the user thinks rather than how code is organised. Maintaining it is the comprehension-building activity; agents render it into code. Everything else in the method — how it changes, how it's viewed — serves this map.
 
@@ -238,13 +241,58 @@ Typographic conventions for map prose.
 
 - Separate bullet points with a blank line for readability.
 
+# Edit Governance
+
+```yaml
+id: e7m
+```
+
+[Specification](#specification)
+[Sync Rule](#sync-rule)
+[Engagement Rule](#engagement-rule)
+[Map Maintenance](#map-maintenance)
+
+The rules for changing the artefact itself. Three questions govern every edit:
+
+- *what* may be written — the [Sync Rule](#sync-rule);
+
+- *how* the change is made — the [Engagement Rule](#engagement-rule);
+
+- *when* a node is due for work — [Map Maintenance](#map-maintenance).
+
+Because these edits describe reality rather than intent, they fall outside the active-change requirement: no open change is needed, and they may happen at any time.
+
+**See also**
+
+- [Gates and Permissions](#gates-and-permissions) — the active-change requirement this exemption stands against.
+
+# Sync Rule
+
+```yaml
+id: s5y
+```
+
+[Edit Governance](#edit-governance)
+
+The map tracks reality. It may be edited to match reality at any time, but never *ahead* of it: an edit describing work not yet built waits until it is. Pending work is held as parked changes in `changes/`, off the map, so the map stays a record of what exists.
+
+# Engagement Rule
+
+```yaml
+id: n3g
+```
+
+[Edit Governance](#edit-governance)
+
+Every map edit is negotiated with the user, one node at a time — never silent, never in bulk. When a change touches several nodes they are named up front and settled one by one. The prompts are comprehension checks — "does that fit your mental model?" — not yes/no gates, because the aim is a shared mental picture, not sign-off.
+
 # Map Maintenance
 
 ```yaml
 id: t7v
 ```
 
-[Specification](#specification)
+[Edit Governance](#edit-governance)
 
 The map is never finished and never append-only. Keeping it useful means constant refactoring and engagement to keep the mental model accurate. Watch for the signals that a node has drifted from its job:
 
