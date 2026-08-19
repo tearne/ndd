@@ -1,6 +1,5 @@
-# Split the root into Contents and Rationale
+# Root split and Principles capture
 
-**Kind:** idea
-**Anchor:** m6x
+## Intent
 
-Consider restructuring the root so orientation and project-rationale text stop sharing one node. A top-level **Contents** node would hold the tree overview (and be the natural jump target for the quick-jump seed), with the project's own explanatory text — why this project exists — as a sub-node, perhaps **Rationale**. Weigh against the only-child preference and the current root's double duty.
+The root node does double duty: reader orientation (the tree overview and concern summary) and the method's founding rationale — which today lives only in an external `PRINCIPLES.md` the map can't even resolve. Split them. Give orientation its own **Contents** home, and bring COD's founding case into the map as **Principles** — comprehension as an activity, local sufficiency, trees over graphs, and the rest. Several of those principles are already enacted by existing nodes, so the same change points each such node at the principle it serves rather than repeating it, keeping the map true to its own artifact-economy discipline.

@@ -51,10 +51,6 @@ Unified Map Method
 └ Tooling
 ```
 
-**See also**
-
-- [PRINCIPLES.md](PRINCIPLES.md) — the founding rationale (comprehension as an activity) this method embodies.
-
 # Specification
 
 ```yaml
@@ -86,10 +82,6 @@ id: nd1
 A node represents **one** concept and includes a heading, an agent-maintained scaffolding block holding its metadata, name-anchored navigation links to its parent and children, and terse prose leading with the mental picture. Optional **Detail** and **See also** sections follow.
 
 The format is a strict superset of a plain-markdown section — strip the scaffolding and links and what remains is an ordinary heading with prose, so a map renders and navigates as plain markdown in any tool.
-
-**See also**
-
-- [MAP-GUIDANCE.md](MAP-GUIDANCE.md) — the authoritative anatomy and identity rules.
 
 # Change-Management
 
