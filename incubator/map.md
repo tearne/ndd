@@ -541,3 +541,18 @@ id: g8l
 [Unified Map Method](#unified-map-method)
 
 The method needs no bespoke application — it rides generic markdown tooling. In an editor with a markdown language server (marksman, in Helix), the name-anchored [navigation links](#navigation-links) become jump-to-definition targets: `gd` walks the tree parent-to-child, and the symbol picker (Helix `Space+s`) lists every node by name for a direct jump anywhere. Nothing custom is required; the format is kept deliberately plain so richer surfaces stay cheap to build on top later.
+
+# Principles
+
+```yaml
+id: p4c
+```
+
+[Unified Map Method](#unified-map-method)
+[Comprehension is an Activity](#comprehension-is-an-activity)
+[Enjoyment](#enjoyment)
+[Local Sufficiency](#local-sufficiency)
+[Cross-Agent Falsifiability](#cross-agent-falsifiability)
+[Interaction Grain](#interaction-grain)
+
+COD's founding case. Agent-augmented development broke the old bundle where writing code and understanding it were one act — production no longer carries comprehension along. The method restores a deliberate comprehension-building activity, maintaining the map, and hands rendering to the agent. Conceptual maintainability thus earns first-class standing alongside correctness, never the first thing sacrificed under deadline pressure. The principles below are the binding constraints every change answers to, and the home other nodes point at instead of restating a reason.
