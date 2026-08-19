@@ -4,15 +4,16 @@
 id: a3k
 ```
 
+[Principles](#principles)
 [Specification](#specification)
 [Change-Management](#change-management)
 [Tooling](#tooling)
 
-The specification is the primary artefact. A navigable map of concepts — structured the way the user thinks, not the way code is organised — is what the user builds and maintains to hold the system's shape; agents render it into code. Maintaining that map *is* the comprehension-building activity, and it is also where change is reasoned about. This method unifies the two: the same map that carries understanding is the surface on which change is planned and tracked.
+The method builds software by splitting the work in two: the user maintains a conceptual **map** of the system, and the agent renders that map into code. Its distinctive move is to make that same map the surface on which change is planned and tracked — specification and change process unified in one artefact.
 
 > [!IMPORTANT] "Unified Map Method" is a working name only; the real name is still open. The root carries a stable id, so choosing the name later is a rename that keeps the node's identity intact.
 
-Three top-level concerns:
+**Principles** holds the founding rationale — why the method exists at all. Three further concerns structure how it works:
 
 - **Specification** — the conceptual map as the primary comprehension artefact.
 - **Change-Management** — how the spec evolves, through a change lifecycle and explicit gates.
@@ -20,6 +21,13 @@ Three top-level concerns:
 
 ```
 Unified Map Method
+├ Principles
+│ ├ Comprehension is an Activity
+│ ├ Enjoyment
+│ ├ Local Sufficiency
+│ │ └ Trees over Graphs
+│ ├ Cross-Agent Falsifiability
+│ └ Interaction Grain
 ├ Specification
 │ ├ Node
 │ │ ├ Node Identity
@@ -555,4 +563,67 @@ id: p4c
 [Cross-Agent Falsifiability](#cross-agent-falsifiability)
 [Interaction Grain](#interaction-grain)
 
-COD's founding case. Agent-augmented development broke the old bundle where writing code and understanding it were one act — production no longer carries comprehension along. The method restores a deliberate comprehension-building activity, maintaining the map, and hands rendering to the agent. Conceptual maintainability thus earns first-class standing alongside correctness, never the first thing sacrificed under deadline pressure. The principles below are the binding constraints every change answers to, and the home other nodes point at instead of restating a reason.
+The method's founding case. Agent-augmented development broke the old bundle where writing code and understanding it were one act — production no longer carries comprehension along. The method restores a deliberate comprehension-building activity, maintaining the map, and hands rendering to the agent. Because it works at the structural level, the map also surfaces logic bugs — wrong flows, missing cases, bad boundaries — before any code is written. Conceptual maintainability thus earns first-class standing alongside correctness, never the first thing sacrificed under deadline pressure. The principles below are the binding constraints every change answers to, and the home other nodes point at instead of restating a reason.
+
+# Comprehension is an Activity
+
+```yaml
+id: c8a
+```
+
+[Principles](#principles)
+
+No artifact substitutes for the activity of structural thinking itself. Reading a spec doesn't build the model; maintaining the map does — the deliberate construction that keeps the user's structural grasp growing as fast as agents produce code.
+
+# Enjoyment
+
+```yaml
+id: j2e
+```
+
+[Principles](#principles)
+
+Structural thinking must stay enjoyable — it's the part strong practitioners value, and a process that reduces the user to reviewing agent diffs destroys engagement even when the software is correct. Enjoyment is a binding constraint, not a bonus.
+
+Its corollary is **artifact economy**: every word in a change document or map node competes for the reader's attention, so bloat and duplication turn a dialogic activity into a wading exercise. Concision isn't style here, it's protection.
+
+# Local Sufficiency
+
+```yaml
+id: s3l
+```
+
+[Principles](#principles)
+[Trees over Graphs](#trees-over-graphs)
+
+Reasoning about one part must not require holding the rest in mind — the mind registering that working memory suffices is what makes a system feel manageable. Cross-cutting concerns are the enemy: when one fact has consequences everywhere, no local model is ever enough. The cure is to promote each into a first-class named object, referenced locally rather than left implicit.
+
+# Trees over Graphs
+
+```yaml
+id: g6t
+```
+
+[Local Sufficiency](#local-sufficiency)
+
+A tree delivers local sufficiency for free: every node has one parent, one home, one context. Real domains have cross-cutting relations, but those are references between nodes, not extra parent edges — and complex internal behaviour (cycles, fan-out, retries) lives *inside* a node, not between them. The "peak tree", where a system's shape feels like a clean logical tree, is a real cognitive state; agents produce graph-shaped code from day one and skip past it, so the map preserves it deliberately.
+
+# Cross-Agent Falsifiability
+
+```yaml
+id: f9x
+```
+
+[Principles](#principles)
+
+If the map is the source of truth, independent agents can render it — and differences between renderings test its quality. A good map renders consistently where it matters; a bad one doesn't, exposing abstraction leaks and model-vs-reality drift without the user reading code. Full cross-rendering is expensive, kept for high-stakes moments; the everyday form is the ambiguity test — could a fresh agent build this node without guessing? — asked freely during planning or maintenance.
+
+# Interaction Grain
+
+```yaml
+id: r5i
+```
+
+[Principles](#principles)
+
+The agent must never advance the map faster than the user can engage with it. Every edit is negotiated one node at a time — the agent proposes, the user decides. Skip this and the user's role degrades to approving map diffs instead of code diffs: a better level of abstraction, but still passive review. Per-node negotiation is what turns map maintenance into comprehension-building, which is the whole point.

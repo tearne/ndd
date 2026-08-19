@@ -51,3 +51,21 @@ The work is map editing, so node bodies are negotiated one at a time during Buil
 - Add **See also** references from the operational nodes to the principle each enacts, trimming any rationale the principle now owns.
 
 **Done when** the map carries the Principles subtree, the root reads purely as orientation, and every operational node in the pairings above points at its principle rather than restating the reason.
+
+## Log
+
+- Build entered; `active.md` locks this change. Not versioned, so no bump.
+- **Principles subtree written** in `map.md` (appended after Tooling): parent `Principles` (id `p4c`) plus six children — `Comprehension is an Activity` (`c8a`), `Enjoyment` (`j2e`, carries the artifact-economy corollary), `Local Sufficiency` (`s3l`) with child `Trees over Graphs` (`g6t`), `Cross-Agent Falsifiability` (`f9x`), `Interaction Grain` (`r5i`). All trimmed hard per user; no Detail blocks except where load-bearing.
+- Cut during trimming, by agreement: the "two failed strategies" argument (dropped) and the conceptual-maintainability lineage (folded to a clause). Preserved: "map surfaces logic bugs before code" now sits in the Principles parent prose; "peak tree" in Trees over Graphs; ambiguity test in Cross-Agent Falsifiability.
+- **Root reworked**: added `Principles` as first child link + tree-box subtree; reframed opening from meta ("what a map is") to product register ("what the method does"), leaning on Specification for the map definition and Principles for the why. Naming standardised — "the method" in prose, "Unified Map Method" only as heading/links/callout (fixed a stray "COD" in the Principles node).
+- **REMAINING — final topic, the See also references.** Approved in principle, not yet applied. Nine nodes, each gains a `**See also**` entry (placed after any Detail block):
+  - `Specification` (`sp1`) → Comprehension is an Activity. **Trim first**: drop the clause "Maintaining it is the comprehension-building activity;" from its prose (keep "Agents render it into code."), let the See also carry that reason.
+  - `Node Sizing` (`z9p`) → Local Sufficiency — why nodes stay small.
+  - `Navigation Links` (`b3q`) → Trees over Graphs — **re-pointed** from the originally-approved Local Sufficiency, because the node is about the one-parent tree.
+  - `Map Structure` (`m6x`) → Trees over Graphs — why the sketched shape is a tree.
+  - `Node` (`nd1`) → Trees over Graphs — nodes form a tree, complexity kept inside a node.
+  - `Approach` (`a2r`) → Enjoyment — artifact economy: why the Approach is pruned to decisions-and-reasons.
+  - `Conclude` (`o4j`) → Enjoyment — artifact economy: why Conclude is capped and never re-tells the journey.
+  - `Map Maintenance` (`t7v`) → Cross-Agent Falsifiability. **Trim first**: shorten its Detail's re-explanation of the ambiguity test to just name the test and point, since the principle now owns it.
+  - `Engagement Rule` (`n3g`) → Interaction Grain — why edits go one node at a time.
+- User was mid-review of that See-also batch (had confirmed nothing yet in this turn) when they stopped. Resume by confirming the batch, then applying the nine edits. After that, all Plan topics are done → tell user, await confirmation, then Conclude.
