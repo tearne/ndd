@@ -72,9 +72,11 @@ id: sp1
 [Writing Style](#writing-style)
 [Edit Governance](#edit-governance)
 
-The conceptual map is the primary artefact. It holds the system's shape as a tree of concepts, structured the way the user thinks rather than how code is organised. Maintaining it is the comprehension-building activity; agents render it into code. Everything else in the method — how it changes, how it's viewed — serves this map.
+The conceptual map is the primary artefact. It holds the system's shape as a tree of concepts, structured the way the user thinks rather than how code is organised. Agents render it into code. Everything else in the method — how it changes, how it's viewed — serves this map.
 
-The map's unit is the **Node**.
+**See also**
+
+- [Comprehension is an Activity](#comprehension-is-an-activity) — maintaining the map is the comprehension-building activity this node's primacy serves.
 
 # Node
 
@@ -90,6 +92,10 @@ id: nd1
 A node represents **one** concept and includes a heading, an agent-maintained scaffolding block holding its metadata, name-anchored navigation links to its parent and children, and terse prose leading with the mental picture. Optional **Detail** and **See also** sections follow.
 
 The format is a strict superset of a plain-markdown section — strip the scaffolding and links and what remains is an ordinary heading with prose, so a map renders and navigates as plain markdown in any tool.
+
+**See also**
+
+- [Trees over Graphs](#trees-over-graphs) — nodes form the tree; a concept's complexity is kept inside its node rather than spread across links.
 
 # Change-Management
 
@@ -140,6 +146,10 @@ The parent link is omitted only by the root; every other node has exactly one. L
 
 Because links resolve by name, every heading must be unambiguous across the whole map — a duplicated heading collides as an anchor and breaks navigation.
 
+**See also**
+
+- [Trees over Graphs](#trees-over-graphs) — links encode the one-parent tree that keeps navigation walkable.
+
 # Node Sections
 
 ```yaml
@@ -185,6 +195,10 @@ The overview is a fenced code block using box-drawing characters. A map is one f
 
 The root defaults to the project's name, preferring a term that carries domain information over a generic label like "Application". When that name clashes with a prominent internal node, disambiguate with whichever reads best: a scoping term for the root, a suffix, a parenthetical, or a more specific name for the internal node.
 
+**See also**
+
+- [Trees over Graphs](#trees-over-graphs) — why the sketched shape is a tree, not a general graph.
+
 # Node Sizing
 
 ```yaml
@@ -198,6 +212,10 @@ Keep nodes small and focussed on one concept. The rough upper bound for size is 
 **Detail**
 
 Character counts exclude tables and diagrams. When a node runs over, the agent flags it rather than silently trimming, so splitting-versus-keeping stays the user's call.
+
+**See also**
+
+- [Local Sufficiency](#local-sufficiency) — why nodes stay small: a reader must grasp one node from the node alone.
 
 # Writing Style
 
@@ -290,6 +308,10 @@ id: n3g
 
 Every map edit is negotiated with the user, one node at a time — never silent, never in bulk. When a change touches several nodes they are named up front and settled one by one. The prompts are comprehension checks — "does that fit your mental model?" — not yes/no gates, because the aim is a shared mental picture, not sign-off.
 
+**See also**
+
+- [Interaction Grain](#interaction-grain) — why edits go one node at a time: the user's engagement can't be outrun.
+
 # Map Maintenance
 
 ```yaml
@@ -310,7 +332,7 @@ Keeping the map useful means constant engagement to keep the mental model accura
 
 **Detail**
 
-A recurring check — the *ambiguity test*: for each node in the area you're touching, ask yourself if a fresh agent could build from it without guessing. If it couldn't, that's a map-quality gap to flag, not an implementation problem.
+A recurring check is the *ambiguity test* (see [Cross-Agent Falsifiability](#cross-agent-falsifiability)), run over each node in the area you're touching; a node it flags is a map-quality gap, not an implementation problem.
 
 # Cadences
 
@@ -417,6 +439,10 @@ Alongside it sits an **Unresolved** list: the open items the agent can't settle 
 
 The agent re-reads and prunes its own draft before surfacing — anything not carrying a decision-and-reason comes out — then a ~1000-character soft trigger flags borderline material for the user to adjudicate. Once the worklist is written the Unresolved section is deleted; its absence is the signal that the Approach is settled.
 
+**See also**
+
+- [Enjoyment](#enjoyment) — artifact economy: why the Approach is pruned to decisions-and-reasons rather than left as narrative.
+
 # Build
 
 ```yaml
@@ -455,9 +481,13 @@ Its mere presence is the marker that the change is finished.
 
 **Detail**
 
-Conclude is capped short (a ~500-character soft trigger); past that the agent flags borderline material and asks the user to adjudicate rather than surfacing it as final. The cap is deliberate pressure against re-telling the journey — Conclude names the landing point, it doesn't narrate the route.
+Conclude is capped short (a ~500-character soft trigger); past that the agent flags borderline material and asks the user to adjudicate rather than surfacing it as final.
 
 For a versioned project with substantive change the draft also proposes a changelog entry. On the user's approval the change is archived to `changes/archive/` (prefixed `YYYY-MM-DD-`), the `active.md` lock is removed, and any approved changelog entry is added.
+
+**See also**
+
+- [Enjoyment](#enjoyment) — artifact economy: why Conclude is capped short and never re-tells the journey.
 
 
 # Startup Scan
@@ -585,7 +615,7 @@ id: j2e
 
 Structural thinking must stay enjoyable — it's the part strong practitioners value, and a process that reduces the user to reviewing agent diffs destroys engagement even when the software is correct. Enjoyment is a binding constraint, not a bonus.
 
-Its corollary is **artifact economy**: every word in a change document or map node competes for the reader's attention, so bloat and duplication turn a dialogic activity into a wading exercise. Concision isn't style here, it's protection.
+Its corollary is **artifact economy**: every word in a change document or map node competes for the reader's attention, so bloat and duplication turn a dialogic activity with the agent into a wading exercise. Concision isn't style here, it's protection.
 
 # Local Sufficiency
 
@@ -616,7 +646,9 @@ id: f9x
 
 [Principles](#principles)
 
-If the map is the source of truth, independent agents can render it — and differences between renderings test its quality. A good map renders consistently where it matters; a bad one doesn't, exposing abstraction leaks and model-vs-reality drift without the user reading code. Full cross-rendering is expensive, kept for high-stakes moments; the everyday form is the ambiguity test — could a fresh agent build this node without guessing? — asked freely during planning or maintenance.
+If the map is the source of truth, independent agents can render it — and differences between renderings test its quality. A good map renders consistently where it matters; a bad one doesn't, exposing abstraction leaks and model-vs-reality drift without the user reading code.
+
+Full cross-rendering is expensive, kept for high-stakes moments; the everyday form is the **ambiguity test** — could a fresh agent build this node without guessing? — asked freely during planning or maintenance.
 
 # Interaction Grain
 

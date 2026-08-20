@@ -14,3 +14,5 @@ Accumulating language and formatting preferences for map prose, gathered while a
 - **Two blank lines before a node title.** Separate one node from the next with two blank lines ahead of its `#` heading, so node boundaries are visually distinct when scrolling a single-file map.
 
 - **Bullets for enumerations the reader will scan.** When a node names a small set of parts, options, or questions, prefer a bulleted list over an in-sentence enumeration — it makes the set scannable and each item individually referenceable. (Applied in *Edit Governance*'s what/how/when framing.) Keep a blank line between bullets for readability.
+
+- **Inline link vs See also.** Use an *inline* cross-reference link when a sentence already names another node in passing — the reference rides the prose (e.g. the *ambiguity test* pointing at *Cross-Agent Falsifiability*). Reserve a *See also* entry for a standalone pointer to a related node the prose doesn't already invoke, and give it an explicit "why this matters." Neither replaces the parent/child navigation links.

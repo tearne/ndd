@@ -69,3 +69,19 @@ The work is map editing, so node bodies are negotiated one at a time during Buil
   - `Map Maintenance` (`t7v`) → Cross-Agent Falsifiability. **Trim first**: shorten its Detail's re-explanation of the ambiguity test to just name the test and point, since the principle now owns it.
   - `Engagement Rule` (`n3g`) → Interaction Grain — why edits go one node at a time.
 - User was mid-review of that See-also batch (had confirmed nothing yet in this turn) when they stopped. Resume by confirming the batch, then applying the nine edits. After that, all Plan topics are done → tell user, await confirmation, then Conclude.
+- **See-also topic completed**, node by node per Engagement Rule. Deviations from the drafted plan, all user-approved in-flight:
+  - `Specification`: also cut the redundant segue line "The map's unit is the **Node**." (child link already points at Node).
+  - Enjoyment node prose tweaked: "a dialogic activity" → "a dialogic activity with the agent" (clarity, user request).
+  - `Conclude`: extra Detail trim — dropped "The cap is deliberate pressure against re-telling the journey…" (repeated the node's own prose and the artifact-economy reason the See also now carries).
+  - `Map Maintenance`: rendered as an **inline** pointer — "the *ambiguity test* (see [Cross-Agent Falsifiability])" — instead of a `**See also**` block, at user request; Detail's re-definition of the test trimmed.
+- All Plan topics now done. Awaiting user confirmation to Conclude.
+
+## Conclusion
+
+Completed. The Principles subtree, root reorientation and nine principle-references all landed as planned; deviations are in the Log.
+
+Two things worth surfacing beyond the Log:
+
+- **Documentation impact:** the external `PRINCIPLES.md` was deliberately left untouched (its reconciliation belongs to the `distribution-and-upgrade` change). No other project docs affected.
+
+- **Spun-off convention:** the inline-link-vs-See-also question raised during the See-also pass was captured as a new bullet in the `map-writing-conventions.md` TODO rather than resolved here, keeping this change focused. It awaits distillation into the `Formatting` node.
