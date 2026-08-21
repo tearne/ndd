@@ -4,6 +4,7 @@
 id: a3k
 ```
 
+[META](#meta)
 [Principles](#principles)
 [Specification](#specification)
 [Change-Management](#change-management)
@@ -19,8 +20,33 @@ The method builds software by splitting the work in two: the user maintains a co
 - **Change-Management** — how the spec evolves, through a change lifecycle and explicit gates.
 - **Tooling** — the generic markdown tooling the format is designed to exploit.
 
+
+# META
+
+```yaml
+id: mt7
+```
+
+[Unified Map Method](#unified-map-method)
+[Contents](#contents)
+[Rationale](#rationale)
+
+Orientation for anyone landing here without knowing the format. This document is a conceptual **map**: a tree of named nodes, each a heading with a short description and links to its parent and children. Follow the links to walk the tree; the Contents node sketches the whole shape at a glance. Nodes gathered under META describe the map or product itself rather than a domain concept or specification. Contents — the tree overview — is the one mandatory meta-node; a product Rationale and a domain Glossary are optional.
+
+
+# Contents
+
+```yaml
+id: ct5
+```
+
+[META](#meta)
+
 ```
 Unified Map Method
+├ META
+│ ├ Contents
+│ └ Rationale
 ├ Principles
 │ ├ Comprehension is an Activity
 │ ├ Enjoyment
@@ -58,6 +84,17 @@ Unified Map Method
 │   └ Aside Keyword
 └ Tooling
 ```
+
+
+# Rationale
+
+```yaml
+id: r9k
+```
+
+[META](#meta)
+
+Why the method exists: its founding rationale is the [Principles](#principles) subtree, kept first-class among the domain concerns rather than restated here.
 
 
 # Specification
@@ -147,7 +184,7 @@ The tree lives in the links, not in a separate index or the file layout. Each no
 
 **Detail**
 
-The parent link is omitted only by the root; every other node has exactly one. Link text is the target node's actual name, so an editor with a markdown LSP (e.g. marksman) jumps straight there with `gd`. Because links are name-anchored, renaming a node is a mechanical re-point of the links that named it, and the ID never appears in a link. A user may omit links while drafting; the agent proposes them on review.
+The parent link is listed first and omitted only by the root; every other node has exactly one. Link text is the target node's actual name, so an editor with a markdown LSP (e.g. marksman) jumps straight there with `gd`. Because links are name-anchored, renaming a node is a mechanical re-point of the links that named it, and the ID never appears in a link. A user may omit links while drafting; the agent proposes them on review.
 
 Because links resolve by name, every heading must be unambiguous across the whole map — a duplicated heading collides as an anchor and breaks navigation.
 
@@ -195,7 +232,7 @@ id: m6x
 
 [Specification](#specification)
 
-The map's shape is shown at a glance by a **tree overview** — a box-drawing sketch of the whole node tree — kept at the end of the root node. Nodes not yet written are marked `(TODO)`, so the intended shape is visible before the content is. The rendering is only a convenience: the real tree is encoded in the navigation links, and the overview is kept in step with them.
+The map's shape is shown at a glance by a **tree overview** — a box-drawing sketch of the whole node tree — held in the [Contents](#contents) meta-node. Nodes not yet written are marked `(TODO)`, so the intended shape is visible before the content is. The rendering is only a convenience: the real tree is encoded in the navigation links, and the overview is kept in step with them.
 
 **Detail**
 
@@ -331,7 +368,7 @@ id: n3g
 
 [Edit Governance](#edit-governance)
 
-Every map edit is negotiated with the user, one node at a time — never silent, never in bulk. When a change touches several nodes they are named up front and settled one by one. The prompts are comprehension checks — "does that fit your mental model?" — not yes/no gates, because the aim is a shared mental picture, not sign-off.
+Every map edit is negotiated with the user, one node at a time — never silent, never in bulk. When a change touches several nodes they are named up front and settled one by one. Pitch each prompt to what the edit changes: a comprehension check like "does that fit your mental model?" when it reshapes the picture, a lighter or batched confirmation when it's mechanical.
 
 **See also**
 
