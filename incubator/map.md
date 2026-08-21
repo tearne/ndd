@@ -52,6 +52,7 @@ Non-Dead Design
 │ └ Rationale
 ├ Principles
 │ ├ Comprehension is an Activity
+│ ├ Intent Memory
 │ ├ Enjoyment
 │ ├ Local Sufficiency
 │ │ └ Trees over Graphs
@@ -716,6 +717,7 @@ id: p4c
 
 [Non-Dead Design](#non-dead-design)
 [Comprehension is an Activity](#comprehension-is-an-activity)
+[Intent Memory](#intent-memory)
 [Enjoyment](#enjoyment)
 [Local Sufficiency](#local-sufficiency)
 [Cross-Agent Falsifiability](#cross-agent-falsifiability)
@@ -735,6 +737,17 @@ id: c8a
 No artifact substitutes for the activity of structural thinking itself. Reading a spec doesn't build the model; maintaining the map does — the deliberate construction that keeps the user's structural grasp growing as fast as agents produce code.
 
 
+# Intent Memory
+
+```yaml
+id: q3v
+```
+
+[Principles](#principles)
+
+Code records what a system does, never why it is shaped that way. The reasoning behind a boundary or a trade-off lives in the author's head and leaves when they do. The map is where intent is remembered — prose that carries the why, so a decision survives past the moment and the person that made it.
+
+
 # Enjoyment
 
 ```yaml
@@ -743,7 +756,7 @@ id: j2e
 
 [Principles](#principles)
 
-Structural thinking must stay enjoyable — it's the part strong practitioners value, and a process that reduces the user to reviewing agent diffs destroys engagement even when the software is correct. Enjoyment is a binding constraint, not a bonus.
+Structural thinking must stay enjoyable — it's the part strong practitioners value, and a process that reduces the user to reviewing agent diffs destroys engagement. Engagement, not discipline, is what sustains comprehension over time: you keep understanding a system because staying in the structural thinking is rewarding, not by willpower. Enjoyment is a binding constraint, not a bonus.
 
 Its corollary is **artifact economy**: every word in a change document or map node competes for the reader's attention, so bloat and duplication turn a dialogic activity with the agent into a wading exercise. Concision isn't style here, it's protection.
 
