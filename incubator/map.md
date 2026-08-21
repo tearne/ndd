@@ -1,3 +1,4 @@
+<!-- ndd-version: unreleased -->
 # Non-Dead Design
 
 ```yaml
