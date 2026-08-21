@@ -59,6 +59,7 @@ Unified Map Method
 └ Tooling
 ```
 
+
 # Specification
 
 ```yaml
@@ -78,6 +79,7 @@ The conceptual map is the primary artefact. It holds the system's shape as a tre
 
 - [Comprehension is an Activity](#comprehension-is-an-activity) — maintaining the map is the comprehension-building activity this node's primacy serves.
 
+
 # Node
 
 ```yaml
@@ -89,13 +91,14 @@ id: nd1
 [Navigation Links](#navigation-links)
 [Node Sections](#node-sections)
 
-A node represents **one** concept and includes a heading, an agent-maintained scaffolding block holding its metadata, name-anchored navigation links to its parent and children, and terse prose leading with the mental picture. Optional **Detail** and **See also** sections follow.
+A node represents **one** concept and includes a heading, an agent-maintained scaffolding block holding its metadata, name-anchored navigation links to its parent and children, and terse prose leading with the mental picture. Optional *Detail* and *See also* sections follow.
 
 The format is a strict superset of a plain-markdown section — strip the scaffolding and links and what remains is an ordinary heading with prose, so a map renders and navigates as plain markdown in any tool.
 
 **See also**
 
 - [Trees over Graphs](#trees-over-graphs) — nodes form the tree; a concept's complexity is kept inside its node rather than spread across links.
+
 
 # Change-Management
 
@@ -112,6 +115,7 @@ id: cm4
 
 How the spec evolves: a change is drafted in `changes/`, moves through a lifecycle under explicit user gates, and updates the map as reality catches up — then it's archived.
 
+
 # Node Identity
 
 ```yaml
@@ -127,6 +131,7 @@ A node's name can change; its identity can't. The identity is a small immutable 
 **Detail**
 
 The **scaffolding block** is fenced YAML directly under the heading containing metadata — today just `id`. It's agent-maintained, like the nav links, and a reader ignores it. The `id:` key is map-unique, lowercase alphanumeric, three or more characters (e.g. `k7f`) - a token rather than a readable slug to avoid edit or link temptation. A user may hand-draft a node without a block; the agent offers to add one when it next reviews the node, so identity is never silently missing.
+
 
 # Navigation Links
 
@@ -150,6 +155,7 @@ Because links resolve by name, every heading must be unambiguous across the whol
 
 - [Trees over Graphs](#trees-over-graphs) — links encode the one-parent tree that keeps navigation walkable.
 
+
 # Node Sections
 
 ```yaml
@@ -159,11 +165,12 @@ id: s8r
 [Node](#node)
 [Callouts](#callouts)
 
-The main user-facing parts of a node are each optional and include, in a fixed order: **prose**, **Callouts**, **Detail**, and **See also**. Prose is the mental picture and usually the only part the user must read, but even it can be dropped — a node may carry only Detail, for instance. A node using none of these is just a heading: an ordinary markdown section.
+The main user-facing parts of a node are each optional and include, in a fixed order: **prose**, **Callouts**, **Detail**, and **See also**. Prose is the mental picture and usually the only part the user must read, but even it can be dropped — a node may carry only *Detail*, for instance. A node using none of these is just a heading: an ordinary markdown section.
 
 **Detail**
 
 *Callouts* flag a load-bearing point and get their own child node. *Detail* is marked with bold `**Detail**` and holds implementation-level precision the user can stop before, such as parameters, thresholds, and algorithms. *See also* is marked with bold `**See also**` and lists cross-cutting references that aren't parent or child, each saying why the relationship matters.
+
 
 # Callouts
 
@@ -178,6 +185,7 @@ A callout is a "don't skim this" flag on a point the prose already makes. It mar
 **Detail**
 
 Rendered as a `> [!IMPORTANT]` blockquote. Used sparingly — reserved for points that genuinely reshape understanding, never as a highlighter for every notable fact.
+
 
 # Map Structure
 
@@ -199,6 +207,7 @@ The root defaults to the project's name, preferring a term that carries domain i
 
 - [Trees over Graphs](#trees-over-graphs) — why the sketched shape is a tree, not a general graph.
 
+
 # Node Sizing
 
 ```yaml
@@ -217,6 +226,7 @@ Character counts exclude tables and diagrams. When a node runs over, the agent f
 
 - [Local Sufficiency](#local-sufficiency) — why nodes stay small: a reader must grasp one node from the node alone.
 
+
 # Writing Style
 
 ```yaml
@@ -233,6 +243,7 @@ How map prose is written, so nodes stay readable and durable. Two sides:
 
 - Formatting: how it's typeset
 
+
 # Conceptual Writing
 
 ```yaml
@@ -241,13 +252,18 @@ id: h3v
 
 [Writing Style](#writing-style)
 
-Two habits shape how a node reads, and one trap to avoid:
+A handful of habits shape how a node reads, and one trap to avoid:
 
 - **Lead with the mental picture** before any implementation detail.
 
 - **Name the boxes before explaining them** — say "there are three mechanisms: A, B, C" and then give each its own node or bullet point.
 
+- **Flow sentences unbroken** — prefer keeping a sentence whole over interrupting it. A parenthetical em-dash pair reads fine when the aside is one short clause, but once the middle grows long and multi-part the reader loses the opening before the sentence resumes: split it into separate sentences instead.
+
+- **Bullet a set the reader will scan** — when a node names a small set of parts, options, or questions, list them as bullets rather than an in-sentence enumeration, so each is scannable and individually referenceable.
+
 - Don't **couple to code structure**: prose may name a technical concept when load-bearing, but the map tracks the user's model, not the code's shape — so it shouldn't break when code is refactored.
+
 
 # Formatting
 
@@ -261,7 +277,14 @@ Typographic conventions for map prose.
 
 - Write each paragraph as one continuous line with no hard wraps, so it reflows under soft-wrap.
 
-- Separate bullet points with a blank line for readability.
+- Separate bullet points with a blank line when they run long enough to wrap; short single-line points don't need it.
+
+- Two blank lines before a node title, so node boundaries stand out when scrolling a single-file map.
+
+- Use *italics* when a sentence refers to a named section or element (*Callouts*, *Detail*, *See also*), and reserve **bold** for introducing a term of art on first use, so references don't read as competing sub-headings.
+
+- Prefer an inline cross-reference link when a sentence already names another node in passing; reserve a *See also* entry for a standalone pointer the prose doesn't already invoke, each with its own reason it matters.
+
 
 # Edit Governance
 
@@ -288,6 +311,7 @@ Because these edits describe reality rather than intent, they fall outside the a
 
 - [Gates and Permissions](#gates-and-permissions) — the active-change requirement this exemption stands against.
 
+
 # Sync Rule
 
 ```yaml
@@ -297,6 +321,7 @@ id: s5y
 [Edit Governance](#edit-governance)
 
 The map tracks reality. It may be edited to match reality at any time, but never *ahead* of it: an edit describing work not yet built waits until it is. Pending work is held as parked changes in `changes/`, off the map, so the map stays a record of what exists. In a code change that means map catch-up waits until the change is concluded, then follows as its own per-node negotiation.
+
 
 # Engagement Rule
 
@@ -312,6 +337,7 @@ Every map edit is negotiated with the user, one node at a time — never silent,
 
 - [Interaction Grain](#interaction-grain) — why edits go one node at a time: the user's engagement can't be outrun.
 
+
 # Map Maintenance
 
 ```yaml
@@ -324,7 +350,7 @@ Keeping the map useful means constant engagement to keep the mental model accura
 
 - It starts wanting sub-sections — split it into children.
 
-- It has grown verbose — cut hard, push precision into Detail.
+- It has grown verbose — cut hard, push precision into *Detail*.
 
 - A new concept has no natural home — the decomposition needs rethinking, not a misc bucket.
 
@@ -333,6 +359,7 @@ Keeping the map useful means constant engagement to keep the mental model accura
 **Detail**
 
 A recurring check is the *ambiguity test* (see [Cross-Agent Falsifiability](#cross-agent-falsifiability)), run over each node in the area you're touching; a node it flags is a map-quality gap, not an implementation problem.
+
 
 # Cadences
 
@@ -361,6 +388,7 @@ Each change runs at one of three cadences. They differ only in the shape of the 
 A **task checklist** is discrete tasks, each an atomic outcome ticked off as it lands. **Topics** are areas to work rather than steps to complete, closed by a single *done-when* condition instead of tick-boxes.
 
 Cadence can change mid-flight: pause, rewrite the change document into the target cadence's shape, resume. A discarded Wander change is deleted rather than archived, and its name may be updated to reflect where the work actually ended up.
+
 
 # Change Lifecycle
 
@@ -417,11 +445,12 @@ id: i8b
 
 The opening part: why the change is needed expressed in domain language, not how it will be delivered unless relevant to the requirement. Kept brief and requiring user approval before anything else proceeds. For a [Wander](#cadences) change the Intent is the whole plan.
 
-An Intent can also be captured and **parked** — left on its own in `changes/open/` until someone picks it up and the lifecycle resumes. A parked Intent may optionally reference the map node(s) it concerns as *name (id)* — the name to navigate to now, the id in brackets to stay recoverable if the name later changes — but nothing requires it.
+An Intent can also be captured and **parked** — left on its own in `changes/open/` until someone picks it up and the lifecycle resumes. A parked Intent may optionally reference the map node(s) it concerns as *name (id)*: the name to navigate to now, the id in brackets to stay recoverable if the name later changes. Nothing requires it, though.
 
 **Detail**
 
 Intent is capped short (a ~500-character soft trigger); past that the agent flags borderline material and asks the user to adjudicate rather than surfacing it as final.
+
 
 # Approach
 
@@ -443,6 +472,7 @@ The agent re-reads and prunes its own draft before surfacing — anything not ca
 
 - [Enjoyment](#enjoyment) — artifact economy: why the Approach is pruned to decisions-and-reasons rather than left as narrative.
 
+
 # Build
 
 ```yaml
@@ -458,7 +488,7 @@ Only one change builds at a time, held by a lock. Throughout, the agent keeps a 
 
 **Detail**
 
-The lock is `changes/open/active.md`, naming the one change under build; if it already exists, stop. On entering Build a versioned project agrees a bump kind, and every later hand-back for testing bumps patch. If the user later agrees the Plan needs revisiting, the agent writes a **Feedback** block — status (implemented / partial / not), notes on what to reconsider, and documentation impact — which returns the change to planning. A build that changed code keeps the lock even when handed back; only an untouched one may release it.
+The lock is `changes/open/active.md`, naming the one change under build; if it already exists, stop. On entering Build a versioned project agrees a bump kind, and every later hand-back for testing bumps patch. If the user later agrees the Plan needs revisiting, the agent writes a **Feedback** block: its status (implemented / partial / not), notes on what to reconsider, and any documentation impact. Writing it returns the change to planning. A build that changed code keeps the lock even when handed back; only an untouched one may release it.
 
 
 # Conclude
@@ -506,6 +536,7 @@ From that the agent announces whether it's planning or building, reports what's 
 
 An interrupted build is recognised by `active.md` pointing at a change whose work is unfinished; the agent reads that change's [Log](#build) to recover context rather than restarting. A change carrying [Feedback](#build) but no [Conclusion](#conclude) has been handed back to planning and needs replanning.
 
+
 # Gates and Permissions
 
 ```yaml
@@ -539,6 +570,7 @@ Two message prefixes that let the user trigger a small side-action without derai
 
 - [process](#process-keyword) captures an observation about the method itself;
 - [aside](#aside-keyword) parks a topic in a draft change ([Intent](#intent) only) for later.
+
 
 # Process Keyword
 
@@ -580,6 +612,7 @@ id: g8l
 
 The method needs no bespoke application — it rides generic markdown tooling. In an editor with a markdown language server (marksman, in Helix), the name-anchored [navigation links](#navigation-links) become jump-to-definition targets: `gd` walks the tree parent-to-child, and the symbol picker (Helix `Space+s`) lists every node by name for a direct jump anywhere. Nothing custom is required; the format is kept deliberately plain so richer surfaces stay cheap to build on top later.
 
+
 # Principles
 
 ```yaml
@@ -595,6 +628,7 @@ id: p4c
 
 The method's founding case. Agent-augmented development broke the old bundle where writing code and understanding it were one act — production no longer carries comprehension along. The method restores a deliberate comprehension-building activity, maintaining the map, and hands rendering to the agent. Because it works at the structural level, the map also surfaces logic bugs — wrong flows, missing cases, bad boundaries — before any code is written. Conceptual maintainability thus earns first-class standing alongside correctness, never the first thing sacrificed under deadline pressure. The principles below are the binding constraints every change answers to, and the home other nodes point at instead of restating a reason.
 
+
 # Comprehension is an Activity
 
 ```yaml
@@ -604,6 +638,7 @@ id: c8a
 [Principles](#principles)
 
 No artifact substitutes for the activity of structural thinking itself. Reading a spec doesn't build the model; maintaining the map does — the deliberate construction that keeps the user's structural grasp growing as fast as agents produce code.
+
 
 # Enjoyment
 
@@ -617,6 +652,7 @@ Structural thinking must stay enjoyable — it's the part strong practitioners v
 
 Its corollary is **artifact economy**: every word in a change document or map node competes for the reader's attention, so bloat and duplication turn a dialogic activity with the agent into a wading exercise. Concision isn't style here, it's protection.
 
+
 # Local Sufficiency
 
 ```yaml
@@ -628,6 +664,7 @@ id: s3l
 
 Reasoning about one part must not require holding the rest in mind — the mind registering that working memory suffices is what makes a system feel manageable. Cross-cutting concerns are the enemy: when one fact has consequences everywhere, no local model is ever enough. The cure is to promote each into a first-class named object, referenced locally rather than left implicit.
 
+
 # Trees over Graphs
 
 ```yaml
@@ -637,6 +674,7 @@ id: g6t
 [Local Sufficiency](#local-sufficiency)
 
 A tree delivers local sufficiency for free: every node has one parent, one home, one context. Real domains have cross-cutting relations, but those are references between nodes, not extra parent edges — and complex internal behaviour (cycles, fan-out, retries) lives *inside* a node, not between them. The "peak tree", where a system's shape feels like a clean logical tree, is a real cognitive state; agents produce graph-shaped code from day one and skip past it, so the map preserves it deliberately.
+
 
 # Cross-Agent Falsifiability
 
@@ -649,6 +687,7 @@ id: f9x
 If the map is the source of truth, independent agents can render it — and differences between renderings test its quality. A good map renders consistently where it matters; a bad one doesn't, exposing abstraction leaks and model-vs-reality drift without the user reading code.
 
 Full cross-rendering is expensive, kept for high-stakes moments; the everyday form is the **ambiguity test** — could a fresh agent build this node without guessing? — asked freely during planning or maintenance.
+
 
 # Interaction Grain
 
