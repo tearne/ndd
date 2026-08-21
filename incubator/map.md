@@ -1,4 +1,4 @@
-# Unified Map Method
+# Non-Dead Design
 
 ```yaml
 id: a3k
@@ -10,12 +10,15 @@ id: a3k
 [Change-Management](#change-management)
 [Tooling](#tooling)
 
-The method builds software by splitting the work in two: the user maintains a conceptual **map** of the system, and the agent renders that map into code. Its distinctive move is to make that same map the surface on which change is planned and tracked — specification and change process unified in one artefact.
+Non-Dead Design (**NDD**) aims to improve knowledge management for agentic software development. The name reflects three deaths it seeks to prevent.
 
-> [!IMPORTANT] "Unified Map Method" is a working name only; the real name is still open. The root carries a stable id, so choosing the name later is a rename that keeps the node's identity intact.
+- **Specifications die** as documents when they sit off the critical path — unread, unmaintained, drifting into fiction.
+- **Structural thinking dies** when the human no longer authors the codebase and the agent's output has nowhere to be reasoned about.
+- **Comprehension dies** when the developer's role stops being architecturally fun, because understanding is sustained by engagement, not discipline.
 
-**Principles** holds the founding rationale — why the method exists at all. Three further concerns structure how it works:
+The map is the one artefact that keeps all three alive: a conceptual **map** of the system, acting as the hub for specification and change management rather than a document off to one side. The method itself is expressed as a map.
 
+- **Principles** — the founding rationale in more detail.
 - **Specification** — the conceptual map as the primary comprehension artefact.
 - **Change-Management** — how the spec evolves, through a change lifecycle and explicit gates.
 - **Tooling** — the generic markdown tooling the format is designed to exploit.
@@ -27,7 +30,7 @@ The method builds software by splitting the work in two: the user maintains a co
 id: mt7
 ```
 
-[Unified Map Method](#unified-map-method)
+[Non-Dead Design](#non-dead-design)
 [Contents](#contents)
 [Rationale](#rationale)
 
@@ -43,7 +46,7 @@ id: ct5
 [META](#meta)
 
 ```
-Unified Map Method
+Non-Dead Design
 ├ META
 │ ├ Contents
 │ └ Rationale
@@ -69,14 +72,16 @@ Unified Map Method
 │   ├ Sync Rule
 │   ├ Engagement Rule
 │   └ Map Maintenance
+│     ├ Conceptual Drift
+│     └ Consistency Upkeep
 ├ Change-Management
-│ ├ Cadences
 │ ├ Change Lifecycle
 │ │ ├ Plan
 │ │ │ ├ Intent
 │ │ │ └ Approach
 │ │ ├ Build
 │ │ └ Conclude
+│ ├ Cadences
 │ ├ Startup Scan
 │ ├ Gates and Permissions
 │ └ Keywords
@@ -103,7 +108,7 @@ Why the method exists: its founding rationale is the [Principles](#principles) s
 id: sp1
 ```
 
-[Unified Map Method](#unified-map-method)
+[Non-Dead Design](#non-dead-design)
 [Node](#node)
 [Map Structure](#map-structure)
 [Node Sizing](#node-sizing)
@@ -143,9 +148,9 @@ The format is a strict superset of a plain-markdown section — strip the scaffo
 id: cm4
 ```
 
-[Unified Map Method](#unified-map-method)
-[Cadences](#cadences)
+[Non-Dead Design](#non-dead-design)
 [Change Lifecycle](#change-lifecycle)
+[Cadences](#cadences)
 [Startup Scan](#startup-scan)
 [Gates and Permissions](#gates-and-permissions)
 [Keywords](#keywords)
@@ -169,6 +174,10 @@ A node's name can change; its identity can't. The identity is a small immutable 
 
 The **scaffolding block** is fenced YAML directly under the heading containing metadata — today just `id`. It's agent-maintained, like the nav links, and a reader ignores it. The `id:` key is map-unique, lowercase alphanumeric, three or more characters (e.g. `k7f`) - a token rather than a readable slug to avoid edit or link temptation. A user may hand-draft a node without a block; the agent offers to add one when it next reviews the node, so identity is never silently missing.
 
+**See also**
+
+- [Consistency Upkeep](#consistency-upkeep) — proposing a missing id on review is a standing obligation.
+
 
 # Navigation Links
 
@@ -186,11 +195,14 @@ The tree lives in the links, not in a separate index or the file layout. Each no
 
 The parent link is listed first and omitted only by the root; every other node has exactly one. Link text is the target node's actual name, so an editor with a markdown LSP (e.g. marksman) jumps straight there with `gd`. Because links are name-anchored, renaming a node is a mechanical re-point of the links that named it, and the ID never appears in a link. A user may omit links while drafting; the agent proposes them on review.
 
+Child order is the parent's to arrange; when its children form a natural reading sequence, order them to reflect it.
+
 Because links resolve by name, every heading must be unambiguous across the whole map — a duplicated heading collides as an anchor and breaks navigation.
 
 **See also**
 
 - [Trees over Graphs](#trees-over-graphs) — links encode the one-parent tree that keeps navigation walkable.
+- [Consistency Upkeep](#consistency-upkeep) — the agent proposes missing links and watches child order as standing obligations.
 
 
 # Node Sections
@@ -243,6 +255,7 @@ The root defaults to the project's name, preferring a term that carries domain i
 **See also**
 
 - [Trees over Graphs](#trees-over-graphs) — why the sketched shape is a tree, not a general graph.
+- [Consistency Upkeep](#consistency-upkeep) — keeping this overview in step with the navigation links is a standing obligation.
 
 
 # Node Sizing
@@ -262,6 +275,7 @@ Character counts exclude tables and diagrams. When a node runs over, the agent f
 **See also**
 
 - [Local Sufficiency](#local-sufficiency) — why nodes stay small: a reader must grasp one node from the node alone.
+- [Consistency Upkeep](#consistency-upkeep) — flagging an oversize node is a standing obligation.
 
 
 # Writing Style
@@ -279,6 +293,10 @@ How map prose is written, so nodes stay readable and durable. Two sides:
 - Conceptual Writing: what the prose *says*
 
 - Formatting: how it's typeset
+
+**See also**
+
+- [Consistency Upkeep](#consistency-upkeep) — holding prose to these conventions is a standing obligation.
 
 
 # Conceptual Writing
@@ -382,8 +400,25 @@ id: t7v
 ```
 
 [Edit Governance](#edit-governance)
+[Conceptual Drift](#conceptual-drift)
+[Consistency Upkeep](#consistency-upkeep)
 
-Keeping the map useful means constant engagement to keep the mental model accurate. Watch for the signals that a node has drifted from its job, such as:
+When a node is due for work. Map upkeep has two faces:
+
+- **Conceptual Drift** — whether the structure still fits the user's model, a matter of judgement.
+
+- **Consistency Upkeep** — whether the artefact stays internally consistent, a standing checklist the agent runs without prompting.
+
+
+# Conceptual Drift
+
+```yaml
+id: d4p
+```
+
+[Map Maintenance](#map-maintenance)
+
+Watch for the signals that a node has drifted from its job, such as:
 
 - It starts wanting sub-sections — split it into children.
 
@@ -396,6 +431,29 @@ Keeping the map useful means constant engagement to keep the mental model accura
 **Detail**
 
 A recurring check is the *ambiguity test* (see [Cross-Agent Falsifiability](#cross-agent-falsifiability)), run over each node in the area you're touching; a node it flags is a map-quality gap, not an implementation problem.
+
+
+# Consistency Upkeep
+
+```yaml
+id: u8k
+```
+
+[Map Maintenance](#map-maintenance)
+
+The standing mechanical obligations the agent keeps up without being asked, each defined where it lives:
+
+- Keep the [tree overview](#map-structure) in step with the navigation links.
+
+- Propose a scaffolding [id](#node-identity) and [navigation links](#navigation-links) on any node reviewed without them.
+
+- Flag a node that outgrows its [size bound](#node-sizing) rather than silently trimming.
+
+- Hold prose to the [writing style](#writing-style) conventions.
+
+- Watch [child order](#navigation-links) for a natural reading sequence.
+
+This node indexes; each linked node holds the detail.
 
 
 # Cadences
@@ -645,7 +703,7 @@ A parked Intent from an aside may carry the optional node reference an [Intent](
 id: g8l
 ```
 
-[Unified Map Method](#unified-map-method)
+[Non-Dead Design](#non-dead-design)
 
 The method needs no bespoke application — it rides generic markdown tooling. In an editor with a markdown language server (marksman, in Helix), the name-anchored [navigation links](#navigation-links) become jump-to-definition targets: `gd` walks the tree parent-to-child, and the symbol picker (Helix `Space+s`) lists every node by name for a direct jump anywhere. Nothing custom is required; the format is kept deliberately plain so richer surfaces stay cheap to build on top later.
 
@@ -656,7 +714,7 @@ The method needs no bespoke application — it rides generic markdown tooling. I
 id: p4c
 ```
 
-[Unified Map Method](#unified-map-method)
+[Non-Dead Design](#non-dead-design)
 [Comprehension is an Activity](#comprehension-is-an-activity)
 [Enjoyment](#enjoyment)
 [Local Sufficiency](#local-sufficiency)
