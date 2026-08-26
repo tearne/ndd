@@ -1,4 +1,3 @@
-<!-- ndd-version: unreleased -->
 # Non-Dead Design
 
 ```yaml
@@ -34,8 +33,9 @@ id: mt7
 [Non-Dead Design](#non-dead-design)
 [Contents](#contents)
 [Rationale](#rationale)
+[Distribution](#distribution)
 
-Orientation for anyone landing here without knowing the format. This document is a conceptual **map**: a tree of named nodes, each a heading with a short description and links to its parent and children. Follow the links to walk the tree; the Contents node sketches the whole shape at a glance. Nodes gathered under META describe the map or product itself rather than a domain concept or specification. Contents — the tree overview — is the one mandatory meta-node; a product Rationale and a domain Glossary are optional.
+Orientation for anyone landing here without knowing the format. This document is a conceptual **map**: a tree of named nodes, each a heading with a short description and links to its parent and children. Follow the links to walk the tree; the Contents node sketches the whole shape at a glance. Nodes gathered under META describe the map or product itself rather than a domain concept or specification. Contents — the tree overview — is the one mandatory meta-node; a product Rationale, a Distribution account, and a domain Glossary are optional.
 
 
 # Contents
@@ -50,7 +50,8 @@ id: ct5
 Non-Dead Design
 ├ META
 │ ├ Contents
-│ └ Rationale
+│ ├ Rationale
+│ └ Distribution
 ├ Principles
 │ ├ Comprehension is an Activity
 │ ├ Intent Memory
@@ -102,6 +103,27 @@ id: r9k
 [META](#meta)
 
 Why the method exists: its founding rationale is the [Principles](#principles) subtree, kept first-class among the domain concerns rather than restated here.
+
+
+# Distribution
+
+```yaml
+id: d5v
+```
+
+[META](#meta)
+
+How the method reaches a project. The idempotent installer vendors NDD into the consumer's repo under `ndd/` and wires up the agent entry files, leaving the consumer's own map and change tree untouched. `main` is the single moving edge, with no cut releases. The shipped changelog names the current version and what changed between versions; the previous map is kept alongside as the agent's precise migration diff.
+
+**Detail**
+
+Running `install.sh` (source `raw.githubusercontent.com/tearne/ndd/main`, override via `NDD_BASE_URL`):
+
+1. Fetches `ndd.md`, `BOOTSTRAP.md` and `CHANGELOG.md` into `ndd/`; `BOOTSTRAP.md` is the consumer's agent entry point, which `CLAUDE.md`/`AGENTS.md` point at rather than copy.
+2. Backs up the previous `ndd.md` as `ndd.prev.md` only when it changed.
+3. Writes `CLAUDE.md`/`AGENTS.md` only when absent or already matching (warns otherwise), and gitignores `ndd/`, the entry files and `.claude/`.
+
+The current version lives at the top of `CHANGELOG.md` (semver + date).
 
 
 # Specification
