@@ -17,6 +17,10 @@ Read `ndd/BOOTSTRAP.md` and follow it before doing anything else.'
 
 GITIGNORE_ENTRIES=("ndd/" "CLAUDE.md" "AGENTS.md" ".claude/")
 
+# Suggested standards shipped alongside the method; a project adopts or ignores
+# them. Adding one is a one-line edit here.
+STANDARDS=(STYLE.md RUST.md POS.md VERSIONING.md CHANGELOG.md)
+
 main() {
   download_method
   own_entry_file CLAUDE.md "$CLAUDE_POINTER"
@@ -30,6 +34,15 @@ download_method() {
   refresh_map
   fetch BOOTSTRAP.md ndd/BOOTSTRAP.md
   fetch CHANGELOG.md ndd/CHANGELOG.md
+  download_standards
+}
+
+download_standards() {
+  mkdir -p ndd/standards
+  local guide
+  for guide in "${STANDARDS[@]}"; do
+    fetch "standards/$guide" "ndd/standards/$guide"
+  done
 }
 
 # Fetch the new map beside the old, and keep the old as ndd.prev.md only when it

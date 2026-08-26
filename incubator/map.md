@@ -9,6 +9,7 @@ id: a3k
 [Specification](#specification)
 [Change-Management](#change-management)
 [Tooling](#tooling)
+[Standards](#standards)
 
 Non-Dead Design (**NDD**) aims to improve knowledge management for agentic software development. The name reflects three deaths it seeks to prevent.
 
@@ -22,6 +23,7 @@ The map is the one artefact that keeps all three alive: a conceptual **map** of 
 - **Specification** — the conceptual map as the primary comprehension artefact.
 - **Change-Management** — how the spec evolves, through a change lifecycle and explicit gates.
 - **Tooling** — the generic markdown tooling the format is designed to exploit.
+- **Standards** — suggested coding standards NDD ships for the code agents write on a project.
 
 
 # META
@@ -90,7 +92,8 @@ Non-Dead Design
 │ └ Keywords
 │   ├ Process Keyword
 │   └ Aside Keyword
-└ Tooling
+├ Tooling
+└ Standards
 ```
 
 
@@ -730,6 +733,27 @@ id: g8l
 [Non-Dead Design](#non-dead-design)
 
 The method needs no bespoke application — it rides generic markdown tooling. In an editor with a markdown language server (marksman, in Helix), the name-anchored [navigation links](#navigation-links) become jump-to-definition targets: `gd` walks the tree parent-to-child, and the symbol picker (Helix `Space+s`) lists every node by name for a direct jump anywhere. Nothing custom is required; the format is kept deliberately plain so richer surfaces stay cheap to build on top later.
+
+
+# Standards
+
+```yaml
+id: s9d
+```
+
+[Non-Dead Design](#non-dead-design)
+
+Guidance for the code written by agents on user projects, distinct from the map spec that governs the *map*. NDD ships a set of **suggested** standards a project adopts, adapts, or ignores — installed as plain markdown under `ndd/standards/`, not folded into the map. This node is the index: an agent scans it to see what exists and opens only the guide a task touches. The code **Style** guide is an always-on default (deviate only when flagged and approved); the rest load on reference.
+
+**Detail**
+
+| Guide | Covers | When to load |
+|-------|--------|--------------|
+| `STYLE.md` | Core coding style | Always on |
+| `RUST.md` | Rust addendum to Style | Writing Rust |
+| `POS.md` | Python as a readable alternative to shell scripts for admin/small tasks | Writing a system-administration or small utility script |
+| `VERSIONING.md` | Semver conventions | Prompted: project setup, changes accumulating, or a breaking change |
+| `CHANGELOG.md` | Changelog format (dated or semver) | Drafting a changelog entry |
 
 
 # Principles

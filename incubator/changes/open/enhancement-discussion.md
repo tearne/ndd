@@ -52,6 +52,12 @@ Working notes for a discussion about potential enhancements to the COD process. 
 
 **Tensions / questions to hold:** how to represent proposed vs actual without the map becoming a tangle (per-node status? a diff/overlay layer? draft nodes?); does folding intent into nodes lose the narrative "why" that Approach captures across several nodes at once; if intent lives in the map, what (if anything) is left of the change document; this is the strongest driver yet toward richer-than-markdown storage + real tooling.
 
+### P6 — Optional post-change checklist at Conclude
+
+**Observation:** A change lifecycle could support an *optional* project-supplied checklist (e.g. `changes/CHECKLIST.md`) that the agent walks at the Completing/Conclude stage — run the tests, update the changelog, verify a project invariant. If the file exists the agent runs it and reports; if not, nothing happens. A pointer that may or may not exist, degrading silently — in keeping with graceful degradation for simple projects.
+
+**Provenance:** Surfaced while planning 125 (suggested standards), as a way to make "run the installer test" unforgettable. Judged out of proportion to that single risk, so parked here rather than built. Revisit only if a real recurring need appears.
+
 ## Open questions
 
 These are the decisions that will shape any plan. Deferred from the per-point discussion:
