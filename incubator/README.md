@@ -2,6 +2,19 @@
 
 Incubation space for the next evolution of COD — a lifecycle-aware conceptual map (build-state as location, per-node approval stamps, stable node IDs) with viewer tooling, and graceful degradation for simple projects. Expected to spin out into its own repository, under a new name, once the shape settles.
 
+## Installation
+
+Prerequisite: [`uv`](https://docs.astral.sh/uv/) (the installer runs as a `uv` script).
+
+Clone this repo wherever you like, then run the installer from the project you want to opt in:
+
+```
+git clone https://github.com/tearne/ndd
+cd your-project && path/to/ndd/opt-in.py
+```
+
+This vendors the method into `./ndd/` and wires up the agent entry files (`CLAUDE.md`/`AGENTS.md`). To upgrade later, `git pull` the checkout and re-run — the previous method map is kept as `ndd/ndd.prev.md`.
+
 ## Boundary
 
 **Nothing in `incubator/` is live COD.** The framework that real consumers install is the tree under the repository's top-level `agent/` directory, shipped by `opt-in.py`. This folder is inert to both:
