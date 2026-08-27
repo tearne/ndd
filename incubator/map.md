@@ -387,7 +387,7 @@ The rules for changing the artefact itself. Three questions govern every edit:
 
 - *when* a node is due for work — [Map Maintenance](#map-maintenance).
 
-Because these edits describe reality rather than intent, they fall outside the active-change requirement: no open change is needed, and they may happen at any time.
+Because these edits describe reality rather than intent, they fall outside the active-change requirement: no open change is needed, and they may happen at any time. That exemption lifts only the active-change constraint; the [Engagement Rule](#engagement-rule)'s per-node negotiation for map updates still applies.
 
 **See also**
 
@@ -626,6 +626,8 @@ The closing note, written only once the user confirms the build is done. It stat
 Any [aside](#aside-keyword) still open from the build is settled before Conclude begins; nothing is wrapped up with asides outstanding.
 
 It records only what the plan and the Log don't already convey: deviations, documents touched, surprises. When there's nothing to add, "Completed." is enough.
+
+If the change touched a mapped concept, its map catch-up follows here — and runs as its own per-node negotiation under the [Engagement Rule](#engagement-rule), never silently edited during conclusion.
 
 A [Wander](#cadences) change has no Approach, but its Build [Log](#build) already carries what happened, so Conclude still just names the landing point — and may rename the change to match where the work ended up.
 
