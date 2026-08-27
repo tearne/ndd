@@ -116,17 +116,17 @@ id: d5v
 
 [META](#meta)
 
-How the method reaches a project. The idempotent installer vendors NDD into the consumer's repo under `ndd/` and wires up the agent entry files, leaving the consumer's own map and change tree untouched. `main` is the single moving edge, with no cut releases. The shipped changelog names the current version and what changed between versions; the previous map is kept alongside as the agent's precise migration diff.
+To use NDD in a project the consumer clones the NDD repo and runs its `opt-in.py` from their own project (e.g. `../ndd/opt-in.py`); the idempotent installer vendors NDD under `ndd/` and wires the agent entry files, leaving the consumer's own map and changes untouched. `main` is the single moving edge for NDD, no cut releases; the shipped changelog names the current version, and the previous map is kept alongside as the agent's migration diff.
 
 **Detail**
 
-Running `install.sh` (source `raw.githubusercontent.com/tearne/ndd/main`, override via `NDD_BASE_URL`):
+`opt-in.py` is a POS-style `uv` script (`uv` required) that copies the method from its own checkout; upgrading is `git pull` then re-run. It:
+- vendors `ndd.md` (from the checkout's `map.md`), `BOOTSTRAP.md`, `CHANGELOG.md` and the whole `standards/` directory into `ndd/`;
+- backs up a changed `ndd.md` as `ndd.prev.md`;
+- writes `CLAUDE.md`/`AGENTS.md` only when absent or matching (warns otherwise); and
+- gitignores `ndd/`, the entry files and `.claude/`.
 
-1. Fetches `ndd.md`, `BOOTSTRAP.md` and `CHANGELOG.md` into `ndd/`; `BOOTSTRAP.md` is the consumer's agent entry point, which `CLAUDE.md`/`AGENTS.md` point at rather than copy.
-2. Backs up the previous `ndd.md` as `ndd.prev.md` only when it changed.
-3. Writes `CLAUDE.md`/`AGENTS.md` only when absent or already matching (warns otherwise), and gitignores `ndd/`, the entry files and `.claude/`.
-
-The current version lives at the top of `CHANGELOG.md` (semver + date).
+It refuses to run if the target `ndd/` resolves to its own source directory, guarding against vendoring directly into the checked out NDD git repository; every other target is allowed, which enables this repo to dogfood by self-vendoring. `opt-in.py --version` reads the top `CHANGELOG.md` heading (semver + date).
 
 
 # Specification

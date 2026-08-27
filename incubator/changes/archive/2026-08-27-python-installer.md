@@ -67,3 +67,9 @@ All resolved — the universal read-only rule removes the need for both a bespok
 - Friction 2 was moot in practice: this repo's `CLAUDE.md` was already gitignored/untracked, so `opt-in.py`'s consumer wiring already matched — no `--vendor-only` needed.
 - Converted the repo: removed the bespoke dev `CLAUDE.md`, ran `opt-in.py` here → `CLAUDE.md` is now the pure `@ndd/BOOTSTRAP.md` pointer, `ndd/` vendored and gitignored. The old bespoke dev instructions are fully covered by the shipped `BOOTSTRAP.md` (prohibited rules, map-authoritative, read-only rule, startup scan).
 - Legacy `changes/agent/` gitignore entry (from the old opt-in.py subdir install) left in place — cleanup belongs to go-live (130).
+
+## Conclusion
+
+Landed. Deployment is now `opt-in.py` — a POS-style `uv` script that copies the method from its own checkout into the consumer's `./ndd/`, replacing `curl … | bash`/`install.sh` and the remote fetch (`NDD_BASE_URL` dropped). `install.sh` deleted; `BOOTSTRAP.md` "Staying up to date" and the repo `README.md` Installation section repointed to the git-pull + re-run flow. `BOOTSTRAP.md` gained the "vendored method is read-only" rule, which dissolved the bespoke dev entry: this repo now self-hosts, `CLAUDE.md` being the pure `@ndd/BOOTSTRAP.md` pointer.
+
+Documents touched beyond the plan: the *Distribution (d5v)* map node, caught up to the local-clone reality. The stale lower `README.md` sections and the legacy `changes/agent/` gitignore entry are left for go-live (130).
