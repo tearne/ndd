@@ -503,15 +503,13 @@ Each change runs at one of three cadences. They differ only in the shape of the 
 
 - **Formal** is the default, for work that benefits from explicit decisions and step-by-step tracking.
 
-- **Explore** suits work where depth and coverage matter more than a fixed step list.
+- **Explore** suits work where depth and coverage matter more than a fixed step list — including a change that edits map nodes, whose per-node negotiation is closer to working a topic than to ticking off tasks.
 
 - **Wander** is for work too small or too fluid to plan; the agent flags topic drift and can offer to flush.
 
 **Detail**
 
 A **task checklist** is discrete tasks, each an atomic outcome ticked off as it lands. **Topics** are areas to work rather than steps to complete, closed by a single *done-when* condition instead of tick-boxes.
-
-Cadence can change mid-flight: pause, rewrite the change document into the target cadence's shape, resume. A discarded Wander change is deleted rather than archived, and its name may be updated to reflect where the work actually ended up.
 
 
 # Change Lifecycle
@@ -638,13 +636,13 @@ id: u6k
 
 [Change Lifecycle](#change-lifecycle)
 
-Executing the approved plan against the real project files. The agent follows the plan rather than redesigning mid-flight — working through it in whatever shape it took, marking progress as each piece lands and posting concise updates without pausing step by step. It interrupts only when something warrants it — a surprise, an ambiguity, or a plan that turns out wrong. If the path forward is unclear the agent stops, records the blocker, and hands back rather than improvising.
+Executing the approved plan against the real project files. The agent follows the plan rather than improvising or re-writing the plan mid-flight, marking progress and posting concise updates without pausing step by step. It interrupts only when something warrants it — a surprise, ambiguity, an error in the plan, or a task that [edits the map](#engagement-rule).
 
 Only one change builds at a time, held by a lock. Throughout, the agent keeps a running **Log** at the foot of the document — a terse record of the unexpected (surprises, deviations, blockers, partial progress), so a resuming session knows what the plan alone doesn't convey. Routine execution going to plan needs no entry.
 
 **Detail**
 
-The lock is `changes/open/active.md`, naming the one change under build; if it already exists, stop. On entering Build a versioned project agrees a bump kind, and every later hand-back for testing bumps patch. If the user later agrees the Plan needs revisiting, the agent writes a **Feedback** block: its status (implemented / partial / not), notes on what to reconsider, and any documentation impact. Writing it returns the change to planning. A build that changed code keeps the lock even when handed back; only an untouched one may release it.
+The lock is `changes/open/active.md`, naming the one change under build; if it already exists, stop. On entering Build a versioned project agrees a bump kind, and every later hand-back for testing bumps patch. The change can be returned to planning for rewriting any time the user chooses. A build that changed code keeps the lock even when handed back; only an untouched one may release it.
 
 
 # Conclude
@@ -686,13 +684,13 @@ id: x7t
 
 [Change-Management](#change-management)
 
-What the agent does first in every session: orient from `changes/open/`. A project with no `map.md` and no `changes/` tree hasn't started yet — the agent [bootstraps](#bootstrapping) it before anything else. Otherwise it reads everything in `changes/open/` and places each change by where it sits in the [lifecycle](#change-lifecycle): still in [Plan](#plan), formed anywhere from a just-parked [Intent](#intent) to a worklist awaiting approval, or under [build](#build). The `active.md` lock names the change currently building, if any.
+What the agent does first in every session: orient from `changes/open/`. A project with no `map.md` and no `changes/` tree hasn't started yet — the agent [bootstraps](#bootstrapping) it before anything else. Otherwise it reads everything in `changes/open/` and places each change by where it sits in the [lifecycle](#change-lifecycle). The `active.md` lock names the change currently building, if any.
 
 From that the agent announces whether it's planning or building, reports what's open, and proposes the next step — resuming an interrupted build, or picking up a parked Intent.
 
 **Detail**
 
-An interrupted build is recognised by `active.md` pointing at a change whose work is unfinished; the agent reads that change's [Log](#build) to recover context rather than restarting. A change carrying [Feedback](#build) but no [Conclusion](#conclude) has been handed back to planning and needs replanning.
+An interrupted build is recognised by `active.md` pointing at a change whose work is unfinished; the agent reads that change's [Log](#build) to recover context rather than restarting. A plan reopened mid-build says so in its [Log](#build) — with no [Conclusion](#conclude) yet, the change is back in planning.
 
 
 # Bootstrapping
