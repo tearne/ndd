@@ -299,9 +299,11 @@ id: z9p
 
 Keep nodes small and focussed on one concept. The rough upper bound for size is around 800 characters, but the real test is felt: if a node starts wanting sub-sections, it's outgrown one concept and should split into children.
 
+Whenever the agent touches a node it counts the characters and reports the number; over the bound it flags the node rather than silently trimming, so splitting-versus-keeping stays the user's call.
+
 **Detail**
 
-Character counts exclude tables and diagrams. When a node runs over, the agent flags it rather than silently trimming, so splitting-versus-keeping stays the user's call.
+The count covers the node's body and its *Detail*, and excludes *See also*, navigation links, tables and diagrams — a link list would otherwise penalise a well-connected node, while exempting *Detail* would let bulk be pushed downward to duck the bound.
 
 **See also**
 
@@ -474,7 +476,7 @@ The standing mechanical obligations the agent keeps up without being asked, each
 
 - Propose a scaffolding [id](#node-identity) and [navigation links](#navigation-links) on any node reviewed without them.
 
-- Flag a node that outgrows its [size bound](#node-sizing) rather than silently trimming.
+- Count any node touched against its [size bound](#node-sizing), reporting the number and flagging an oversize node rather than silently trimming.
 
 - Hold prose to the [writing style](#writing-style) conventions.
 
@@ -563,11 +565,13 @@ id: i8b
 
 The opening part: why the change is needed expressed in domain language, not how it will be delivered unless relevant to the requirement. Kept brief and requiring user approval before anything else proceeds. For a [Wander](#cadences) change the Intent is the whole plan.
 
+Its opening prose is capped at ~500 characters: each time the agent surfaces an Intent it counts them and reports the number, and past the cap asks the user to adjudicate rather than surfacing it as final. History, provenance and supporting context are welcome below the opening, in a subsection that the cap does not reach — the opening must scan in seconds, which is the point of the limit.
+
 An Intent can also be captured and **parked** — left on its own in `changes/open/` until someone picks it up and the lifecycle resumes. A parked Intent may optionally reference the map node(s) it concerns as *name (id)*: the name to navigate to now, the id in brackets to stay recoverable if the name later changes. Nothing requires it, though.
 
 **Detail**
 
-Intent is capped short (a ~500-character soft trigger); past that the agent flags borderline material and asks the user to adjudicate rather than surfacing it as final. The cap is workable because it has an outlet: scope notes and detail that arrive early go to [Held](#held), leaving the Intent to state the problem or the outcome and nothing more.
+Scope notes and detail that arrive early go to [Held](#held), leaving the opening to state the problem or the outcome and nothing more.
 
 
 # Approach
@@ -582,9 +586,11 @@ How the change will be carried out, written as a list of decisions and their rea
 
 Alongside it sits an **Unresolved** list: the open items the agent can't settle alone, each pointing at the part of the Approach it affects. The agent surfaces the full list in chat so the user can see everything outstanding, then walks through them — for anything non-trivial, one at a time ("4 unresolved items […]. First one: …") rather than asking the user to address them all at once. Answers fold back into the prose and the list shrinks. An empty list means the Approach is ready for approval.
 
+The Approach is capped at ~2000 characters, excluding Unresolved: each time the agent surfaces it, it counts them and reports the number, and past the cap asks the user to adjudicate.
+
 **Detail**
 
-The agent re-reads and prunes its own draft before surfacing — anything not carrying a decision-and-reason comes out — then a ~1000-character soft trigger flags borderline material for the user to adjudicate. Once the worklist is written the Unresolved section is deleted; its absence is the signal that the Approach is settled.
+The agent re-reads and prunes its own draft before surfacing — anything not carrying a decision-and-reason comes out — and counts again afterwards. Once the worklist is written the Unresolved section is deleted; its absence is the signal that the Approach is settled.
 
 **See also**
 
@@ -653,7 +659,7 @@ The closing note, written only once the user confirms the build is done. It stat
 
 Anything still [Held](#held) is released before Conclude begins — folded into the change, spun off as its own parked [Intent](#intent), or discarded by the user. Nothing is wrapped up with material outstanding.
 
-It records only what the plan and the Log don't already convey: deviations, documents touched, surprises. When there's nothing to add, "Completed." is enough.
+It records only what the plan and the Log don't already convey: deviations, documents touched, surprises. When there's nothing to add, "Completed." is enough. It is capped at ~500 characters: the agent counts them when surfacing the draft, reports the number, and past the cap asks the user to adjudicate.
 
 If the change touched a mapped concept, its map catch-up follows here — and runs as its own per-node negotiation under the [Engagement Rule](#engagement-rule), never silently edited during conclusion.
 
@@ -663,7 +669,7 @@ Its mere presence is the marker that the change is finished.
 
 **Detail**
 
-Conclude is capped short (a ~500-character soft trigger); past that the agent flags borderline material and asks the user to adjudicate rather than surfacing it as final.
+Conclude is capped short (see above); the count excludes any changelog entry proposed with it.
 
 For a versioned project with substantive change the draft also proposes a changelog entry. On the user's approval the change is archived to `changes/archive/` (prefixed `YYYY-MM-DD-`), the `active.md` lock is removed, and any approved changelog entry is added.
 
