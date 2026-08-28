@@ -5,11 +5,14 @@
 - Git write operations (commit, push, branch, reset).
 - Editing any project file while no change is active. The active change, if any, is recorded in `changes/open/active.md`. Reading is unrestricted; so is writing inside `changes/`.
 
-## The map is authoritative
+## Two maps: the method and your project
 
-The map — `ndd.md`, alongside this file — is the authoritative reference. Read it before acting.
+Two maps are in play, and they must not be confused:
 
-It is a tree of nodes. Each node is a heading with a short description, a link to its parent, and links to its children. Start at the root node — the one with no parent link — and follow the child links to navigate. The map explains its own conventions as you read.
+- The **method map** — `ndd.md`, alongside this file under `ndd/` — is the authoritative reference for *how NDD works*. It is read-only (see below); you read it to learn the method.
+- The **project map** — `map.md` in the project root — is *the work itself*: the conceptual map of this project that you build and maintain with the user. In a fresh project it may not exist yet — the Startup Scan detects that and routes to bootstrapping.
+
+Both are trees of nodes: each is a heading with a short description, a link to its parent, and links to its children. Start at the root node — the one with no parent link — and follow the child links to navigate. The method map explains its own conventions as you read; the project map follows those same conventions.
 
 ## The vendored method is read-only
 

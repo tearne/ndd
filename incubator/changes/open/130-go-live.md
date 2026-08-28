@@ -1,22 +1,24 @@
 # Go-live reorg
 
-**Mode:** _(to propose after Intent approval)_
+**Mode:** Formal
 
 ## Intent
+
+_(Approved 2026-08-28. Cadence: Formal. **Paused** to plan+build 140-map-bootstrapping first — no point shipping go-live if a project can't acquire its first map. Resume at Approach once 140 lands.)_
 
 Flip the repo from incubation to the live method, so the repository itself *is* NDD rather than a framework incubated inside it. Today the live method lives in `incubator/` while the repo root still holds the superseded COD framework (`agent/`, the old root `opt-in.py`, `PRINCIPLES.md`, old root `README`/`CHANGELOG`, `CLAUDE.md.bk`, and the old root `changes/`). Go-live lifts `incubator/`'s contents to the root and retires the old framework, then renames the GitHub repo to `ndd`, makes it public, and proves the clone-and-run `opt-in.py` install end-to-end against the live repo. The blocking work has landed: distribution fixes (120), standards migration (125, now `standards/`), and the installer switch (128, which retired `install.sh` for `opt-in.py`) — so the install proof is the local-clone flow, not `curl … | bash`.
 
 Note: repo rename, visibility change, and any branch/merge/push are user-performed — the agent never runs git-write or GitHub-admin operations on its own initiative.
 
 <!-- ============================================================= -->
-<!-- SCRATCH / WIP — parity check in progress. Not yet Approach.   -->
-<!-- Resume point: disposition the true orphans (§C), then get     -->
-<!-- Intent approval, propose Mode, write Approach + worklist.      -->
+<!-- SCRATCH / WIP — parity check DONE. §C orphans all resolved.   -->
+<!-- Resume point: get Intent approval, then propose Cadence,       -->
+<!-- write Approach + worklist.                                     -->
 <!-- ============================================================= -->
 
 ## Planning notes (WIP)
 
-**Lifecycle status:** 130 is in Plan. Intent has been **revised to current reality** (above) but is **not yet approved**. No Mode proposed. No active lock. Next: settle orphan dispositions, then Intent approval → Mode → Approach → worklist.
+**Lifecycle status:** 130 is in Plan. Intent has been **revised to current reality** (above) and is **awaiting approval**. §A/§B/§C parity all settled (§C orphans resolved this session). No Cadence proposed yet. No active lock. Next: Intent approval → Cadence → Approach → worklist.
 
 ### User decisions taken this session
 
@@ -45,10 +47,12 @@ Note: repo rename, visibility change, and any branch/merge/push are user-perform
 
 Each: decide fold-into-map vs. preserve-doc vs. accept-loss.
 
-1. **PRINCIPLES.md rationale depth.** All *principles* are covered as concepts in the **Principles (p4c)** subtree, but the deeper *rationale/urgency* narrative is dropped: (a) the paradigm-progression analogy (type systems → FP → ownership/borrow → conceptual maintainability), (b) the unbundling diagnosis (why production stopped carrying comprehension; why specs go unread), (c) the peak-tree urgency (agents emit graph-shaped code from day one, skipping the phase that felt good), (d) the explicit "three binding constraints" framing. Map is intentionally terse (Node Sizing ~800), so *some* loss is by-design — but decide which of these to fold in (candidate home: Principles node overview or new child) vs. accept.
-2. **Wander Conclusion length exception.** Old PROCESS: Conclusion soft-trigger 500, **but 1000 for Wander** (it carries Approach work retrospectively). Map **Conclude (o4j)** states ~500 universally. Decide: restore the Wander exception in the map, or accept universal 500.
-3. **`**Mode:**` line convention.** Change docs use a `**Mode:** <name>` line under the title (128/129/130 all do); the map never documents this convention (not in Plan/Cadences). Decide: document it (Cadences/Plan) or leave tacit.
-4. **"Read the codebase" in Approach + no-map projects.** Old PROCESS Approach said "Read the codebase; if a map exists, read it… identify coverage gaps." Map **Approach (a2r)** has no read-the-codebase instruction and assumes a map always exists. Decide: add the research instruction (and the no-map degradation) or accept.
+1. **PRINCIPLES.md rationale depth.** ✅ **RESOLVED — accept-loss on all four sub-threads.** (b) unbundling diagnosis is covered by Non-Dead Design root ("three deaths") + Principles overview; (c) peak-tree urgency is already in **Trees over Graphs (g6t)**; (d) the "three binding constraints" framing is carried implicitly (the principles *are* the binding constraints). (a) the paradigm-progression analogy (type systems → FP → ownership/borrow → conceptual maintainability) is **deliberately dropped**: the analogy leans on *deterministic, sound enforcement* — a decision procedure that makes the violation structurally unexpressible — whereas NDD's agent is a stochastic translator that guarantees nothing, and its real safeguard is an *activity* (map maintenance) plus a *statistical* cross-check (cross-agent falsifiability). Importing it would smuggle an overclaim into a deliberately terse node and needs too much hedging to earn its place. Original sub-thread text preserved in git history if ever revisited.
+2. **Wander Conclusion length exception.** ✅ **RESOLVED — accept universal 500.** The map already routes retrospective detail to the Build **Log**, not Conclude ("its Build Log already carries what happened, so Conclude still just names the landing point"), so the old 1000-for-Wander exception is obsolete. No map edit; the exception simply lapses.
+3. **`**Mode:**` line convention.** ✅ **RESOLVED — document it, renaming the label to Cadence.** The convention is real (128/129/130 all carry it) but "Mode" clashes with the map's own word. Fold a one-line mention into **Cadences (e3n)**, and standardise the change-doc title line to `**Cadence:** <name>` to match map vocabulary. (Go-live's own doc line, currently `**Mode:**`, updates too.)
+4. **"Read the codebase" in Approach + no-map projects.** ✅ **RESOLVED — split: fold (i), park (ii).**
+   - (i) *Research instruction* — fold one line into **Approach (a2r)**: the agent first researches the relevant map nodes (and the code where reality must be verified) to ground its decisions and surface coverage gaps. The map today only asserts research *happens* (Plan, v3d) without instructing the gap-finding, which is arguably more central to NDD than to COD.
+   - (ii) *No-map degradation* — accept-loss in go-live; parked as a fresh standalone Intent (`140-map-bootstrapping.md`). This is the adoption/bootstrapping question (Distribution installs the method but the consumer's map starts empty), substantive and orthogonal to go-live's repo-flip purpose — not an Approach one-liner.
 
 ### Also fold into 130 scope (already noted)
 

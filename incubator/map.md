@@ -88,6 +88,7 @@ Non-Dead Design
 │ │ └ Conclude
 │ ├ Cadences
 │ ├ Startup Scan
+│ ├ Bootstrapping
 │ ├ Gates and Permissions
 │ └ Keywords
 │   ├ Process Keyword
@@ -179,6 +180,7 @@ id: cm4
 [Change Lifecycle](#change-lifecycle)
 [Cadences](#cadences)
 [Startup Scan](#startup-scan)
+[Bootstrapping](#bootstrapping)
 [Gates and Permissions](#gates-and-permissions)
 [Keywords](#keywords)
 
@@ -652,13 +654,28 @@ id: x7t
 
 [Change-Management](#change-management)
 
-What the agent does first in every session: read everything in `changes/open/` and orient. Each change is placed by where it sits in the [lifecycle](#change-lifecycle): still in [Plan](#plan) — formed anywhere from a just-parked [Intent](#intent) to a worklist awaiting approval — or under [build](#build). The `active.md` lock names the change currently building, if any.
+What the agent does first in every session: orient from `changes/open/`. A project with no `map.md` and no `changes/` tree hasn't started yet — the agent [bootstraps](#bootstrapping) it before anything else. Otherwise it reads everything in `changes/open/` and places each change by where it sits in the [lifecycle](#change-lifecycle): still in [Plan](#plan), formed anywhere from a just-parked [Intent](#intent) to a worklist awaiting approval, or under [build](#build). The `active.md` lock names the change currently building, if any.
 
 From that the agent announces whether it's planning or building, reports what's open, and proposes the next step — resuming an interrupted build, or picking up a parked Intent.
 
 **Detail**
 
 An interrupted build is recognised by `active.md` pointing at a change whose work is unfinished; the agent reads that change's [Log](#build) to recover context rather than restarting. A change carrying [Feedback](#build) but no [Conclusion](#conclude) has been handed back to planning and needs replanning.
+
+
+# Bootstrapping
+
+```yaml
+id: b6t
+```
+
+[Change-Management](#change-management)
+
+How a project acquires its first map. A fresh install vendors only the method under `ndd/`, leaving the project itself empty — no `map.md`, no `changes/` tree — so the ordinary lifecycle has nothing to stand on. The agent detects this at the [Startup Scan](#startup-scan) and offers to bootstrap rather than proceeding as normal.
+
+It scaffolds the missing pieces and seeds the project map — `map.md` in the project root, distinct from the read-only method map at `ndd/ndd.md` — through discussion and any pre-existing documentation. How much to seed is the user's call: a single root node named for the system, or a fuller sketch — they may prefer to start capturing ideas before dwelling on setup.
+
+Adopting an existing codebase adds a survey: the agent reads existing assets and proposes nodes one at a time per the [Engagement Rule](#engagement-rule). Progress is bite-sized at the user's pace and may be postponed. Reality-reflecting map edits need no active change (see [Edit Governance](#edit-governance)), though wrapping a migration in one can keep it systematic.
 
 
 # Gates and Permissions
