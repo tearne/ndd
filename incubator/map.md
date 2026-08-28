@@ -61,7 +61,7 @@ Non-Dead Design
 │ ├ Local Sufficiency
 │ │ └ Trees over Graphs
 │ ├ Cross-Agent Falsifiability
-│ └ Interaction Grain
+│ └ Orient Then Focus
 ├ Specification
 │ ├ Node
 │ │ ├ Node Identity
@@ -415,11 +415,7 @@ id: n3g
 
 [Edit Governance](#edit-governance)
 
-Every map edit is negotiated with the user, one node at a time — never silent, never in bulk. When a change touches several nodes they are named up front and settled one by one. Pitch each prompt to what the edit changes: a comprehension check like "does that fit your mental model?" when it reshapes the picture, a lighter or batched confirmation when it's mechanical.
-
-**See also**
-
-- [Interaction Grain](#interaction-grain) — why edits go one node at a time: the user's engagement can't be outrun.
+[Orient Then Focus](#orient-then-focus) applied to the map: no edit is ever silent or made in bulk. Pitch each prompt to what the edit changes — a comprehension check like "does that fit your mental model?" when it reshapes the picture, a lighter or batched confirmation when it's mechanical.
 
 
 # Map Maintenance
@@ -595,6 +591,7 @@ The agent re-reads and prunes its own draft before surfacing — anything not ca
 **See also**
 
 - [Enjoyment](#enjoyment) — artifact economy: why the Approach is pruned to decisions-and-reasons rather than left as narrative.
+- [Orient Then Focus](#orient-then-focus) — the Unresolved walkthrough is that principle applied: the whole list surfaced, then one item at a time.
 
 
 # Build
@@ -787,7 +784,7 @@ id: p4c
 [Enjoyment](#enjoyment)
 [Local Sufficiency](#local-sufficiency)
 [Cross-Agent Falsifiability](#cross-agent-falsifiability)
-[Interaction Grain](#interaction-grain)
+[Orient Then Focus](#orient-then-focus)
 
 The method's founding case. Agent-augmented development broke the old bundle where writing code and understanding it were one act — production no longer carries comprehension along. The method restores a deliberate comprehension-building activity, maintaining the map, and hands rendering to the agent. Because it works at the structural level, the map also surfaces logic bugs — wrong flows, missing cases, bad boundaries — before any code is written. Conceptual maintainability thus earns first-class standing alongside correctness, never the first thing sacrificed under deadline pressure. The principles below are the binding constraints every change answers to, and the home other nodes point at instead of restating a reason.
 
@@ -863,7 +860,7 @@ If the map is the source of truth, independent agents can render it — and diff
 Full cross-rendering is expensive, kept for high-stakes moments; the everyday form is the **ambiguity test** — could a fresh agent build this node without guessing? — asked freely during planning or maintenance.
 
 
-# Interaction Grain
+# Orient Then Focus
 
 ```yaml
 id: r5i
@@ -871,4 +868,13 @@ id: r5i
 
 [Principles](#principles)
 
-The agent must never advance the map faster than the user can engage with it. Every edit is negotiated one node at a time — the agent proposes, the user decides. Skip this and the user's role degrades to approving map diffs instead of code diffs: a better level of abstraction, but still passive review. Per-node negotiation is what turns map maintenance into comprehension-building, which is the whole point.
+**Attention dies under overwhelm.** So whenever the agent has a set to present — unresolved items, a worklist, the open changes, several map nodes to edit — it surfaces the whole set in summary (e.g. bullet points), so the user is oriented, then works through it one item at a time, holding the rest itself.
+
+Both halves are load-bearing. The set alone is more than anyone can hold. Item-by-item alone leaves the user unsure where they are or how much is left. Together they give orientation without spending the attention that engagement needs, which is what keeps the agent from advancing faster than the user can follow.
+
+The focused half is where comprehension is built: each item is negotiated — the agent proposes, the user decides. Skip that and the user's role degrades to approving map diffs instead of code diffs — a better level of abstraction, but still passive review.
+
+**See also**
+
+- [Engagement Rule](#engagement-rule) — the map-edit instance: nodes named up front, then settled one by one.
+- [Enjoyment](#enjoyment) — attention lost to overwhelm is how comprehension stops being sustained by engagement.
