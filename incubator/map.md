@@ -83,7 +83,9 @@ Non-Dead Design
 │ ├ Change Lifecycle
 │ │ ├ Plan
 │ │ │ ├ Intent
-│ │ │ └ Approach
+│ │ │ ├ Approach
+│ │ │ ├ Worklist
+│ │ │ └ Held
 │ │ ├ Build
 │ │ └ Conclude
 │ ├ Cadences
@@ -543,16 +545,12 @@ id: v3d
 [Change Lifecycle](#change-lifecycle)
 [Intent](#intent)
 [Approach](#approach)
+[Worklist](#worklist)
+[Held](#held)
 
-During this phase project files outside of `changes/` remain read-only: research and reasoning that produces the change document touches nothing else. It builds up in parts, each drafted then surfaced for approval before the next, culminating in the **worklist** that [Build](#build) executes. Which parts a change has is set by its [cadence](#cadences).
+During this phase project files outside of `changes/` remain read-only: research and reasoning that produces the change document touches nothing else. It builds up in **parts** — the [Intent](#intent), the [Approach](#approach), the [Worklist](#worklist) — each drafted then surfaced for approval before the next, culminating in the worklist that [Build](#build) executes. Which parts a change has is set by its [cadence](#cadences).
 
 A Plan need not be fully formed to exist. A change may sit at any degree of formation — from an [Intent](#intent)-only draft just parked via [aside](#aside-keyword), up to a complete worklist awaiting approval. These degrees aren't formal sub-stages, only how far the document has been drafted; but the [Startup Scan](#startup-scan) may name them to place an open change — in terms such as *parked at its Intent*, *mid-approach*, or *awaiting a worklist*.
-
-The worklist lists only the actions to take, not the reasons for them — those belong in the [Approach](#approach). A task that touches a mapped concept names the node rather than the file that implements it, keeping the plan anchored to the map.
-
-**Detail**
-
-Before surfacing the worklist the agent prunes it against fixed rules: one task per atomic outcome, no restated "why", no obvious sub-steps, no ceremony tasks (a bare "review" or "double-check") unless they mark a real gate, and no file paths the task name already implies.
 
 
 # Intent
@@ -569,7 +567,7 @@ An Intent can also be captured and **parked** — left on its own in `changes/op
 
 **Detail**
 
-Intent is capped short (a ~500-character soft trigger); past that the agent flags borderline material and asks the user to adjudicate rather than surfacing it as final.
+Intent is capped short (a ~500-character soft trigger); past that the agent flags borderline material and asks the user to adjudicate rather than surfacing it as final. The cap is workable because it has an outlet: scope notes and detail that arrive early go to [Held](#held), leaving the Intent to state the problem or the outcome and nothing more.
 
 
 # Approach
@@ -594,6 +592,38 @@ The agent re-reads and prunes its own draft before surfacing — anything not ca
 - [Orient Then Focus](#orient-then-focus) — the Unresolved walkthrough is that principle applied: the whole list surfaced, then one item at a time.
 
 
+# Worklist
+
+```yaml
+id: w4k
+```
+
+[Plan](#plan)
+
+The closing part of a [Plan](#plan): the list of actions [Build](#build) executes. It lists only the actions to take, not the reasons for them — those belong in the [Approach](#approach). A task that touches a mapped concept names the node rather than the file that implements it, keeping the plan anchored to the map. An [Explore](#cadences) change carries topics and a *done-when* in its place; a [Wander](#cadences) change has neither.
+
+**Detail**
+
+Before surfacing the worklist the agent prunes it against fixed rules: one task per atomic outcome, no restated "why", no obvious sub-steps, no ceremony tasks (a bare "review" or "double-check") unless they mark a real gate, and no file paths the task name already implies.
+
+
+# Held
+
+```yaml
+id: h5d
+```
+
+[Plan](#plan)
+
+A section at the foot of the change document holding on-topic material that arrived before its part — a scope note during the [Intent](#intent), a task while the [Approach](#approach) is still settling. Writing it down when it arrives costs nothing and survives a lost session; it is exempt from the parts' caps, since nothing is meant to stay there.
+
+Opening each new part, the agent releases into it whatever now belongs. Anything still held once its part has passed is an unresolved issue in its own right, surfaced before [Conclude](#conclude) and blocking completion.
+
+**See also**
+
+- [Aside Keyword](#aside-keyword) — the other half of the split: a *separate* proposal is parked, not held.
+
+
 # Build
 
 ```yaml
@@ -601,7 +631,6 @@ id: u6k
 ```
 
 [Change Lifecycle](#change-lifecycle)
-[Conclude](#conclude)
 
 Executing the approved plan against the real project files. The agent follows the plan rather than redesigning mid-flight — working through it in whatever shape it took, marking progress as each piece lands and posting concise updates without pausing step by step. It interrupts only when something warrants it — a surprise, an ambiguity, or a plan that turns out wrong. If the path forward is unclear the agent stops, records the blocker, and hands back rather than improvising.
 
@@ -618,11 +647,11 @@ The lock is `changes/open/active.md`, naming the one change under build; if it a
 id: o4j
 ```
 
-[Build](#build)
+[Change Lifecycle](#change-lifecycle)
 
 The closing note, written only once the user confirms the build is done. It states where the change landed — not a story of how it got there.
 
-Any [aside](#aside-keyword) still open from the build is settled before Conclude begins; nothing is wrapped up with asides outstanding.
+Anything still [Held](#held) is released before Conclude begins — folded into the change, spun off as its own parked [Intent](#intent), or discarded by the user. Nothing is wrapped up with material outstanding.
 
 It records only what the plan and the Log don't already convey: deviations, documents touched, surprises. When there's nothing to add, "Completed." is enough.
 
@@ -707,7 +736,7 @@ id: k9y
 Two message prefixes that let the user trigger a small side-action without derailing the current work. The agent handles the aside, confirms in a line, and returns to what it was doing. There are two:
 
 - [process](#process-keyword) captures an observation about the method itself;
-- [aside](#aside-keyword) parks a topic in a draft change ([Intent](#intent) only) for later.
+- [aside](#aside-keyword) parks a **separate** proposal as its own draft change ([Intent](#intent) only).
 
 
 # Process Keyword
@@ -733,11 +762,11 @@ id: y2f
 
 [Keywords](#keywords)
 
-A message starting with `aside:` parks a topic for later without breaking the current flow. The agent dispatches it one of two ways, by scope: a topic independent of the current work becomes a fresh parked [Intent](#intent) in `changes/open/`; a topic within an in-progress change is appended to an **Asides** subsection at the foot of that change document. When genuinely unsure which, the agent asks. Either way it acknowledges placement in a line and returns to what it was doing.
+A message starting with `aside:` parks a topic for later without breaking the current flow: it becomes a fresh parked [Intent](#intent) in `changes/open/`, a proposal separate from whatever is under way. The agent acknowledges placement in a line and returns to what it was doing. Material belonging to the *current* change rather than a separate one is [Held](#held) instead.
 
 **Detail**
 
-A parked Intent from an aside may carry the optional node reference an [Intent](#intent) allows. In-proposal asides raised during planning are folded in as planning reaches the part they touch. Those raised during build wait in the Asides subsection and must be settled before [Conclude](#conclude) begins: the agent surfaces any outstanding ones and the user decides each — fold in, spin off as its own parked Intent, or discard. An aside is never silently dropped.
+A parked Intent from an aside may carry the optional node reference an [Intent](#intent) allows. An aside is never silently dropped.
 
 
 # Tooling
