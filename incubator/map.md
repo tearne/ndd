@@ -77,8 +77,8 @@ Non-Dead Design
 │   ├ Sync Rule
 │   ├ Engagement Rule
 │   └ Map Maintenance
-│     ├ Conceptual Drift
-│     └ Consistency Upkeep
+│     ├ Consistency Upkeep
+│     └ Judgement Scan
 ├ Change-Management
 │ ├ Change Lifecycle
 │ │ ├ Plan
@@ -203,11 +203,11 @@ A node's name can change; its identity can't. The identity is a small immutable 
 
 **Detail**
 
-The **scaffolding block** is fenced YAML directly under the heading containing metadata — today just `id`. It's agent-maintained, like the nav links, and a reader ignores it. The `id:` key is map-unique, lowercase alphanumeric, three or more characters (e.g. `k7f`) - a token rather than a readable slug to avoid edit or link temptation. A user may hand-draft a node without a block; the agent offers to add one when it next reviews the node, so identity is never silently missing.
+The **scaffolding block** is fenced YAML directly under the heading containing metadata — today just `id`. It's agent-maintained, like the nav links, and a reader ignores it. The `id:` key is map-unique, lowercase alphanumeric, three or more characters (e.g. `k7f`) - a token rather than a readable slug to avoid edit or link temptation. A user may hand-draft a node without a block; the mechanical review adds one and reports it, so identity is never silently missing.
 
 **See also**
 
-- [Consistency Upkeep](#consistency-upkeep) — proposing a missing id on review is a standing obligation.
+- [Consistency Upkeep](#consistency-upkeep) — a missing id is added automatically during the mechanical review.
 
 
 # Navigation Links
@@ -224,7 +224,7 @@ The tree lives in the links, not in a separate index or the file layout. Each no
 
 **Detail**
 
-The parent link is listed first and omitted only by the root; every other node has exactly one. Link text is the target node's actual name, so an editor with a markdown LSP (e.g. marksman) jumps straight there with `gd`. Because links are name-anchored, renaming a node is a mechanical re-point of the links that named it, and the ID never appears in a link. A user may omit links while drafting; the agent proposes them on review.
+The parent link is listed first and omitted only by the root; every other node has exactly one. Link text is the target node's actual name, so an editor with a markdown LSP (e.g. marksman) jumps straight there with `gd`. Because links are name-anchored, renaming a node is a mechanical re-point of the links that named it, and the ID never appears in a link. A user may omit links while drafting; the mechanical review adds them and reports it.
 
 Child order is the parent's to arrange; when its children form a natural reading sequence, order them to reflect it.
 
@@ -233,7 +233,7 @@ Because links resolve by name, every heading must be unambiguous across the whol
 **See also**
 
 - [Trees over Graphs](#trees-over-graphs) — links encode the one-parent tree that keeps navigation walkable.
-- [Consistency Upkeep](#consistency-upkeep) — the agent proposes missing links and watches child order as standing obligations.
+- [Consistency Upkeep](#consistency-upkeep) — missing links are added automatically during the mechanical review; child order is a [Judgement Scan](#judgement-scan) check.
 
 
 # Node Sections
@@ -264,7 +264,7 @@ A callout is a "don't skim this" flag on a point the prose already makes. It mar
 
 **Detail**
 
-Rendered as a `> [!IMPORTANT]` blockquote. Used sparingly — reserved for points that genuinely reshape understanding, never as a highlighter for every notable fact.
+Rendered as a `> [!IMPORTANT]` blockquote, never as a highlighter for every notable fact.
 
 
 # Map Structure
@@ -286,7 +286,7 @@ The root defaults to the project's name, preferring a term that carries domain i
 **See also**
 
 - [Trees over Graphs](#trees-over-graphs) — why the sketched shape is a tree, not a general graph.
-- [Consistency Upkeep](#consistency-upkeep) — keeping this overview in step with the navigation links is a standing obligation.
+- [Consistency Upkeep](#consistency-upkeep) — keeping this overview in step with the navigation links is part of the mechanical review.
 
 
 # Node Sizing
@@ -299,16 +299,16 @@ id: z9p
 
 Keep nodes small and focussed on one concept. The rough upper bound for size is around 800 characters, but the real test is felt: if a node starts wanting sub-sections, it's outgrown one concept and should split into children.
 
-Whenever the agent touches a node it counts the characters and reports the number; over the bound it flags the node rather than silently trimming, so splitting-versus-keeping stays the user's call.
+Each time the agent edits a node it counts the characters and reports the number. The count covers the node's body and its *Detail* section, taking an inline link as the length of its visible text. The [navigation links](#navigation-links), *See also*, tables and diagrams are excluded. Over the bound the agent flags the node rather than silently trimming, so splitting-versus-keeping stays the user's call.
 
 **Detail**
 
-The count covers the node's body and its *Detail*, and excludes *See also*, navigation links, tables and diagrams — a link list would otherwise penalise a well-connected node, while exempting *Detail* would let bulk be pushed downward to duck the bound.
+The count measures the node's own content, which is why *Detail* is included and *See also* is not: one explains the concept, the other points away from it.
 
 **See also**
 
 - [Local Sufficiency](#local-sufficiency) — why nodes stay small: a reader must grasp one node from the node alone.
-- [Consistency Upkeep](#consistency-upkeep) — flagging an oversize node is a standing obligation.
+- [Consistency Upkeep](#consistency-upkeep) — oversize nodes are reported in the mechanical review summary.
 
 
 # Writing Style
@@ -329,7 +329,7 @@ How map prose is written, so nodes stay readable and durable. Two sides:
 
 **See also**
 
-- [Consistency Upkeep](#consistency-upkeep) — holding prose to these conventions is a standing obligation.
+- [Judgement Scan](#judgement-scan) — prose is checked against these conventions during a scan.
 
 
 # Conceptual Writing
@@ -393,7 +393,7 @@ The rules for changing the artefact itself. Three questions govern every edit:
 
 - *when* a node is due for work — [Map Maintenance](#map-maintenance).
 
-Because these edits describe reality rather than intent, they fall outside the active-change requirement: no open change is needed, and they may happen at any time. That exemption lifts only the active-change constraint; the [Engagement Rule](#engagement-rule)'s per-node negotiation for map updates still applies.
+Because these edits describe reality rather than intent, they fall outside the active-change requirement — the **map exemption**: no open change is needed, and they may happen at any time. That exemption lifts only the active-change constraint; the [Engagement Rule](#engagement-rule)'s per-node negotiation for map updates still applies.
 
 **See also**
 
@@ -408,7 +408,7 @@ id: s5y
 
 [Edit Governance](#edit-governance)
 
-The map tracks reality. It may be edited to match reality at any time, but never *ahead* of it: an edit describing work not yet built waits until it is. Pending work is held as parked changes in `changes/`, off the map, so the map stays a record of what exists. In a code change that means map catch-up waits until the change is concluded, then follows as its own per-node negotiation.
+The map describes what exists, never what is planned: an edit describing work not yet built waits until the work is built.
 
 
 # Engagement Rule
@@ -429,37 +429,14 @@ id: t7v
 ```
 
 [Edit Governance](#edit-governance)
-[Conceptual Drift](#conceptual-drift)
 [Consistency Upkeep](#consistency-upkeep)
+[Judgement Scan](#judgement-scan)
 
-When a node is due for work. Map upkeep has two faces:
+Once a change is concluded and archived the agent performs a mechanical review and offers to initiate a deeper review.
 
-- **Conceptual Drift** — whether the structure still fits the user's model, a matter of judgement.
+- **Consistency Upkeep** — the mechanical review, runs unprompted across the whole map and reports in a single summary.
 
-- **Consistency Upkeep** — whether the artefact stays internally consistent, a standing checklist the agent runs without prompting.
-
-
-# Conceptual Drift
-
-```yaml
-id: d4p
-```
-
-[Map Maintenance](#map-maintenance)
-
-Watch for the signals that a node has drifted from its job, such as:
-
-- It starts wanting sub-sections — split it into children.
-
-- It has grown verbose — cut hard, push precision into *Detail*.
-
-- A new concept has no natural home — the decomposition needs rethinking, not a misc bucket.
-
-- The top-level boxes stop matching how the user thinks — restructure, because the map follows the user's model, not the code's.
-
-**Detail**
-
-A recurring check is the *ambiguity test* (see [Cross-Agent Falsifiability](#cross-agent-falsifiability)), run over each node in the area you're touching; a node it flags is a map-quality gap, not an implementation problem.
+- **Judgement Scan** — the review needing a reading and a decision, offered for the user to take up or decline.
 
 
 # Consistency Upkeep
@@ -470,19 +447,44 @@ id: u8k
 
 [Map Maintenance](#map-maintenance)
 
-The standing mechanical obligations the agent keeps up without being asked, each defined where it lives:
+The computable checks, run across the whole map once a change is archived. The agent needs no prompting and reports everything in one summary.
 
-- Keep the [tree overview](#map-structure) in step with the navigation links.
+- **Fixed, then reported**: the [tree overview](#map-structure) brought back in step with the navigation links; a missing scaffolding [id](#node-identity) or [navigation link](#navigation-links) added.
 
-- Propose a scaffolding [id](#node-identity) and [navigation links](#navigation-links) on any node reviewed without them.
+- **Reported only**: a table of nodes over the [size bound](#node-sizing), since splitting-versus-keeping is the user's call.
 
-- Count any node touched against its [size bound](#node-sizing), reporting the number and flagging an oversize node rather than silently trimming.
+- **Escalated**: anything a mechanical fix can't settle, such as a duplicated heading that needs a rename.
 
-- Hold prose to the [writing style](#writing-style) conventions.
 
-- Watch [child order](#navigation-links) for a natural reading sequence.
+# Judgement Scan
 
-This node indexes; each linked node holds the detail.
+```yaml
+id: d4p
+```
+
+[Map Maintenance](#map-maintenance)
+
+The checks that need a node read and a decision made, so they are offered rather than run: the agent proposes a scan and the user takes it up or declines. A scan names its scope — the whole map, or one area — and settles each node with the user.
+
+It looks for:
+
+- A node which should be split into children.
+
+- A node grown verbose.
+
+- An undocumented concept with no natural home.
+
+- Top-level boxes that stop matching how the user thinks.
+
+- Prose deviating from the [writing style](#writing-style) conventions.
+
+- Child order that no longer reads as a natural sequence.
+
+**Detail**
+
+A concept with no natural home means the decomposition is wrong; it is never solved by opening a misc bucket.
+
+The scan should also apply the *ambiguity test* (see [Cross-Agent Falsifiability](#cross-agent-falsifiability)) — could a fresh agent build this node without guessing? A node it flags is a map-quality gap, not an implementation problem.
 
 
 # Cadences
@@ -533,7 +535,7 @@ Each phase is drafted into the document, then surfaced for the user's explicit a
 
 The document is the single carrier of state: where a change sits is read from what it contains, not from any status field. Chat carries only disclosures and summaries; the drafted text lives in the document.
 
-The Plan → Build boundary is the load-bearing gate: project files stay untouched until a plan is approved.
+The Plan → Build boundary is the load-bearing gate: the change's own work waits until a plan is approved, apart from the [map exemption](#edit-governance).
 
 
 # Plan
@@ -548,7 +550,7 @@ id: v3d
 [Worklist](#worklist)
 [Held](#held)
 
-During this phase project files outside of `changes/` remain read-only: research and reasoning that produces the change document touches nothing else. It builds up in **parts** — the [Intent](#intent), the [Approach](#approach), the [Worklist](#worklist) — each drafted then surfaced for approval before the next, culminating in the worklist that [Build](#build) executes. Which parts a change has is set by its [cadence](#cadences).
+During this phase project files outside of `changes/` remain read-only, save for the [map exemption](#edit-governance): research and reasoning that produces the change document touches nothing else. It builds up in **parts** — the [Intent](#intent), the [Approach](#approach), the [Worklist](#worklist) — each drafted then surfaced for approval before the next, culminating in the worklist that [Build](#build) executes. Which parts a change has is set by its [cadence](#cadences).
 
 A Plan need not be fully formed to exist. A change may sit at any degree of formation — from an [Intent](#intent)-only draft just parked via [aside](#aside-keyword), up to a complete worklist awaiting approval. These degrees aren't formal sub-stages, only how far the document has been drafted; but the [Startup Scan](#startup-scan) may name them to place an open change — in terms such as *parked at its Intent*, *mid-approach*, or *awaiting a worklist*.
 
@@ -659,8 +661,6 @@ Anything still [Held](#held) is released before Conclude begins — folded into 
 
 It records only what the plan and the Log don't already convey: deviations, documents touched, surprises. When there's nothing to add, "Completed." is enough. It is capped at ~500 characters: the agent counts them when surfacing the draft, reports the number, and past the cap asks the user to adjudicate.
 
-If the change touched a mapped concept, its map catch-up follows here — and runs as its own per-node negotiation under the [Engagement Rule](#engagement-rule), never silently edited during conclusion.
-
 A [Wander](#cadences) change has no Approach, but its Build [Log](#build) already carries what happened, so Conclude still just names the landing point — and may rename the change to match where the work ended up.
 
 Its mere presence is the marker that the change is finished.
@@ -720,11 +720,11 @@ The rules that gate what the agent may do without asking. Two kinds: **approval*
 
 Approval is only a clear affirmative given in direct response to the agent's ask ("yes", "ok", "go ahead"). Silence, a tangent, or a reply that raises new questions is not approval.
 
-Writing is gated by phase and by an active change. During [Plan](#plan) the agent writes only inside `changes/`; project files are read-only. Writing a project file needs a change under [build](#build), recorded in `active.md`. Reading anything is always allowed.
+Writing is gated by phase and by an active change. During [Plan](#plan) the agent writes only inside `changes/`; project files are read-only. Writing a project file needs a change under [build](#build), recorded in `active.md`, unless the [map exemption](#edit-governance) applies. Reading anything is always allowed.
 
 **Detail**
 
-Git write operations — commit, push, branch, reset — always require explicit user instruction; the agent never does them on its own initiative. Editing `changes/` (capturing a parked Intent, drafting phases) is exempt from the active-change requirement, as is editing the map to describe existing reality.
+Git write operations — commit, push, branch, reset — always require explicit user instruction; the agent never does them on its own initiative. Editing `changes/` (capturing a parked Intent, drafting phases) is likewise exempt from the active-change requirement.
 
 
 # Keywords
@@ -890,7 +890,7 @@ id: f9x
 
 If the map is the source of truth, independent agents can render it — and differences between renderings test its quality. A good map renders consistently where it matters; a bad one doesn't, exposing abstraction leaks and model-vs-reality drift without the user reading code.
 
-Full cross-rendering is expensive, kept for high-stakes moments; the everyday form is the **ambiguity test** — could a fresh agent build this node without guessing? — asked freely during planning or maintenance.
+Full cross-rendering is expensive, kept for high-stakes moments; the everyday form is the **ambiguity test** — could a fresh agent build this node without guessing? — which a [Judgement Scan](#judgement-scan) applies to every node it covers.
 
 
 # Orient Then Focus

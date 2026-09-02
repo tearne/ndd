@@ -3,7 +3,7 @@
 ## Prohibited without explicit user instruction
 
 - Git write operations (commit, push, branch, reset).
-- Editing any project file while no change is active. The active change, if any, is recorded in `changes/open/active.md`. Reading is unrestricted; so is writing inside `changes/`.
+- Editing any project file while no change is active. The active change, if any, is recorded in `changes/open/active.md`. Reading is unrestricted; so is writing inside `changes/`. The project map is exempt too: it may be edited at any time to describe what already exists — the **map exemption** (see *Edit Governance*).
 
 ## Two maps: the method and your project
 
