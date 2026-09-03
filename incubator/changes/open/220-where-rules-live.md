@@ -40,3 +40,11 @@ The rule that never slipped all session was the character count, because it emit
 - **The map node** — describing the rendering as derived, with falsifiability applying to it; and restoring *name (id)* as its addressing convention.
 
 **Done when** the renamed file contains every rule that must fire, each addressed to its source node, and the map explains the arrangement without restating the imperatives.
+
+## Log
+
+- **Paused 2026-09-03 with the lock held.** No map or file edits have been made under this change — the map is untouched since 210 concluded. Topic 1 was mid-proposal.
+- Resume at topic 1, the map's own rules, which splits into two independent items with no ordering between them:
+  1. **Approval scope** — an approval covers what was surfaced; agreeing to a decision authorises drafting the prose that carries it, not writing it. Home is [Gates and Permissions](#gates-and-permissions), already 917 and over the bound before this change touched it. The open question at the pause: add the rule and leave the node at ~1049 for the 190 backlog, or split approval into its own child node (drafted at 317, leaving Gates at 724) as part of adding it. The node's own opening — "two kinds: approval and write permission" — argues for the split.
+  2. **Batch boundary** — the mechanical fast path applies only when every item in hand is a correction that changes no meaning. Home is [Engagement Rule](#engagement-rule) at 780; the drafted wording lands it at 812, or 778 if ", a lighter confirmation otherwise" is cut from the preceding sentence as now-redundant.
+- Then topics 2 and 3, untouched: the rendering itself (content, shape, name, surviving orientation) and the map node describing it as derived, with *name (id)* restored as its addressing convention.
