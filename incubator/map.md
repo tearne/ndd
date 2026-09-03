@@ -21,7 +21,7 @@ The map is the one artefact that keeps all three alive: a conceptual **map** of 
 
 - **Principles** — the founding rationale in more detail.
 - **Specification** — the conceptual map as the primary comprehension artefact.
-- **Change-Management** — how the spec evolves, through a change lifecycle and explicit gates.
+- **Change-Management** — how the spec evolves, through a change lifecycle and user-owned gates.
 - **Tooling** — the generic markdown tooling the format is designed to exploit.
 - **Standards** — suggested coding standards NDD ships for the code agents write on a project.
 
@@ -83,11 +83,14 @@ Non-Dead Design
 │ ├ Change Lifecycle
 │ │ ├ Plan
 │ │ │ ├ Intent
+│ │ │ ├ Context
+│ │ │ ├ Held
 │ │ │ ├ Approach
-│ │ │ ├ Worklist
-│ │ │ └ Held
+│ │ │ └ Worklist
 │ │ ├ Build
+│ │ │ └ Build Lock
 │ │ └ Conclude
+│ │   └ Archiving
 │ ├ Cadences
 │ ├ Startup Scan
 │ ├ Bootstrapping
@@ -186,7 +189,11 @@ id: cm4
 [Gates and Permissions](#gates-and-permissions)
 [Keywords](#keywords)
 
-How the spec evolves: a change is drafted in `changes/`, moves through a lifecycle under explicit user gates, and updates the map as reality catches up — then it's archived.
+How the spec evolves: a change is a single markdown file, drafted in `changes/open/`, that moves through a lifecycle under user-owned gates — then it's archived to `changes/archive/` under a date prefix. Beside it, `changes/open/active.md` holds the build lock.
+
+**Detail**
+
+A change's file name is its title in two to five hyphenated words, optionally behind a leading number that helps sequence the queue. Neither is an identity: rename an open change freely as it evolves, repointing `active.md` if it names it.
 
 
 # Node Identity
@@ -419,7 +426,9 @@ id: n3g
 
 [Edit Governance](#edit-governance)
 
-[Orient Then Focus](#orient-then-focus) applied to the map: no edit is ever silent or made in bulk. Pitch each prompt to what the edit changes — a comprehension check like "does that fit your mental model?" when it reshapes the picture, a lighter or batched confirmation when it's mechanical.
+[Orient Then Focus](#orient-then-focus) applied to the map: every edit runs in one order — draft it, check the prose against [Writing Style](#writing-style), surface it with its [character count](#node-sizing), then write only once the reply is [approval](#gates-and-permissions). No edit is silent or made in bulk. Pitch the prompt to what the edit changes — a comprehension check when it reshapes the picture, a lighter confirmation otherwise. A correction that changes no meaning — a typo, spacing, a stale link — is applied and reported rather than surfaced first.
+
+The rule binds the agent, not the user, who edits the map freely and unannounced. Told of such an edit, or noticing one, the agent re-reads the node and reports its new count and any knock-on it can see — what it owes for its own edits — and logs it only if it changes what the build must do.
 
 
 # Map Maintenance
@@ -484,7 +493,7 @@ It looks for:
 
 A concept with no natural home means the decomposition is wrong; it is never solved by opening a misc bucket.
 
-The scan should also apply the *ambiguity test* (see [Cross-Agent Falsifiability](#cross-agent-falsifiability)) — could a fresh agent build this node without guessing? A node it flags is a map-quality gap, not an implementation problem.
+The scan also applies the *ambiguity test* (see [Cross-Agent Falsifiability](#cross-agent-falsifiability)) — could a fresh agent build this node without guessing? A node it flags is a map-quality gap, not an implementation problem.
 
 
 # Cadences
@@ -507,7 +516,7 @@ Each change runs at one of three cadences. They differ only in the shape of the 
 
 - **Explore** suits work where depth and coverage matter more than a fixed step list — including a change that edits map nodes, whose per-node negotiation is closer to working a topic than to ticking off tasks.
 
-- **Wander** is for work too small or too fluid to plan; the agent flags topic drift and can offer to flush.
+- **Wander** is for work too small or too fluid to plan; the agent flags topic drift and can offer to flush. Having no Approach, its [Conclude](#conclude) leans on the Build [Log](#build) for what happened, and may rename the change to match where the work ended up.
 
 **Detail**
 
@@ -546,13 +555,14 @@ id: v3d
 
 [Change Lifecycle](#change-lifecycle)
 [Intent](#intent)
+[Context](#context)
+[Held](#held)
 [Approach](#approach)
 [Worklist](#worklist)
-[Held](#held)
 
-During this phase project files outside of `changes/` remain read-only, save for the [map exemption](#edit-governance): research and reasoning that produces the change document touches nothing else. It builds up in **parts** — the [Intent](#intent), the [Approach](#approach), the [Worklist](#worklist) — each drafted then surfaced for approval before the next, culminating in the worklist that [Build](#build) executes. Which parts a change has is set by its [cadence](#cadences).
+During the plan stage project files outside `changes/` remain read-only, save for the [map exemption](#edit-governance). The plan builds up in **parts** — the [Intent](#intent), [Approach](#approach), [Worklist](#worklist) — each drafted then surfaced for approval before the next, culminating in the worklist that [Build](#build) executes. Which parts a change has is set by its [cadence](#cadences). Two further sections sit outside that sequence, ungated: [Context](#context), which explains why the change exists, and [Held](#held), which catches material arriving before its part.
 
-A Plan need not be fully formed to exist. A change may sit at any degree of formation — from an [Intent](#intent)-only draft just parked via [aside](#aside-keyword), up to a complete worklist awaiting approval. These degrees aren't formal sub-stages, only how far the document has been drafted; but the [Startup Scan](#startup-scan) may name them to place an open change — in terms such as *parked at its Intent*, *mid-approach*, or *awaiting a worklist*.
+A Plan need not be fully formed to exist. A change may sit at any degree of formation — from an [Intent](#intent)-only draft just parked via [aside](#aside-keyword), up to a complete worklist awaiting approval. The [Startup Scan](#startup-scan) can summarise in informal terms such as *parked at its Intent*, *mid-approach*, or *awaiting a worklist*.
 
 
 # Intent
@@ -565,13 +575,40 @@ id: i8b
 
 The opening part: why the change is needed expressed in domain language, not how it will be delivered unless relevant to the requirement. Kept brief and requiring user approval before anything else proceeds. For a [Wander](#cadences) change the Intent is the whole plan.
 
-Its opening prose is capped at ~500 characters: each time the agent surfaces an Intent it counts them and reports the number, and past the cap asks the user to adjudicate rather than surfacing it as final. History, provenance and supporting context are welcome below the opening, in a subsection that the cap does not reach — the opening must scan in seconds, which is the point of the limit.
+Its prose is capped at ~500 characters, counted and reported each time the agent surfaces it, with anything over put to the user to adjudicate rather than surfaced as final. History and provenance belong in [Context](#context), which the cap does not reach — the opening must scan in seconds.
 
-An Intent can also be captured and **parked** — left on its own in `changes/open/` until someone picks it up and the lifecycle resumes. A parked Intent may optionally reference the map node(s) it concerns as *name (id)*: the name to navigate to now, the id in brackets to stay recoverable if the name later changes. Nothing requires it, though.
 
-**Detail**
+# Context
 
-Scope notes and detail that arrive early go to [Held](#held), leaving the opening to state the problem or the outcome and nothing more.
+```yaml
+id: c7d
+```
+
+[Plan](#plan)
+
+An optional section of the change document, sitting under the [Intent](#intent): the history, provenance and prior attempts a reader needs to make sense of why the change exists. Keeping it here is what lets the Intent stay one quick paragraph, and the Intent's cap does not reach it.
+
+It is the durable counterpart of [Held](#held). Context is written to last and travels to the archive with the change; Held is transient and must be empty before [Conclude](#conclude). Material waiting to be placed is held, material explaining why the change exists is Context.
+
+Keep it to the least that lets a later reader rediscover the full detail for themselves: enough flavour and pointers to pick the trail back up, never a retelling.
+
+
+# Held
+
+```yaml
+id: h5d
+```
+
+[Plan](#plan)
+
+A section at the foot of the change document holding on-topic material that arrived before its part — a scope note during the [Intent](#intent), a task while the [Approach](#approach) is still settling. Writing it down when it arrives costs nothing and survives a lost session; it is exempt from the parts' caps, since nothing is meant to stay there.
+
+Opening each new part, the agent releases into it whatever now belongs. Anything still held once its part has passed is an unresolved issue in its own right, surfaced before [Conclude](#conclude) and blocking completion.
+
+**See also**
+
+- [Aside Keyword](#aside-keyword) — the other half of the split: a *separate* proposal is parked, not held.
+- [Context](#context) — the durable counterpart: material that explains the change rather than waiting to be placed.
 
 
 # Approach
@@ -613,23 +650,6 @@ The closing part of a [Plan](#plan): the list of actions [Build](#build) execute
 Before surfacing the worklist the agent prunes it against fixed rules: one task per atomic outcome, no restated "why", no obvious sub-steps, no ceremony tasks (a bare "review" or "double-check") unless they mark a real gate, and no file paths the task name already implies.
 
 
-# Held
-
-```yaml
-id: h5d
-```
-
-[Plan](#plan)
-
-A section at the foot of the change document holding on-topic material that arrived before its part — a scope note during the [Intent](#intent), a task while the [Approach](#approach) is still settling. Writing it down when it arrives costs nothing and survives a lost session; it is exempt from the parts' caps, since nothing is meant to stay there.
-
-Opening each new part, the agent releases into it whatever now belongs. Anything still held once its part has passed is an unresolved issue in its own right, surfaced before [Conclude](#conclude) and blocking completion.
-
-**See also**
-
-- [Aside Keyword](#aside-keyword) — the other half of the split: a *separate* proposal is parked, not held.
-
-
 # Build
 
 ```yaml
@@ -637,14 +657,34 @@ id: u6k
 ```
 
 [Change Lifecycle](#change-lifecycle)
+[Build Lock](#build-lock)
 
-Executing the approved plan against the real project files. The agent follows the plan rather than improvising or re-writing the plan mid-flight, marking progress and posting concise updates without pausing step by step. It interrupts only when something warrants it — a surprise, ambiguity, an error in the plan, or a task that [edits the map](#engagement-rule).
+When executing the plan against the real project files the agent follows the plan rather than changing the plan mid-flight, marking progress and posting concise updates. It interrupts only when something warrants it — a planned pause, surprise, ambiguity, an error in the plan, or a task that [edits the map](#engagement-rule).
 
-Only one change builds at a time, held by a lock. Throughout, the agent keeps a running **Log** at the foot of the document — a terse record of the unexpected (surprises, deviations, blockers, partial progress), so a resuming session knows what the plan alone doesn't convey. Routine execution going to plan needs no entry.
+Only one change builds at a time, held by the [build lock](#build-lock). Throughout, the agent keeps a running **Log** at the foot of the document — a terse record of the unexpected (surprises, deviations, blockers, partial progress), so a resuming session has the necessary context. Routine execution going to plan needs no entry.
 
 **Detail**
 
-The lock is `changes/open/active.md`, naming the one change under build; if it already exists, stop. On entering Build a versioned project agrees a bump kind, and every later hand-back for testing bumps patch. The change can be returned to planning for rewriting any time the user chooses. A build that changed code keeps the lock even when handed back; only an untouched one may release it.
+A versioned project agrees a bump kind on build start, and bumps patch every hand-back for testing.
+
+The change can be returned to planning for rewriting any time the user chooses.
+
+
+# Build Lock
+
+```yaml
+id: b7n
+```
+
+[Build](#build)
+
+What keeps one change building at a time. Entering [Build](#build), the agent takes the lock by writing the change file name into `changes/open/active.md`, reporting success — or, if the file already exists, stopping without touching it, since another change is already mid-build.
+
+Releasing the lock deletes the file. A build that changed code keeps the lock even when handed back to planning; only an untouched one may release it, so unfinished work is never silently abandoned.
+
+**See also**
+
+- [Startup Scan](#startup-scan) — the lock is what tells a fresh session a build was interrupted.
 
 
 # Conclude
@@ -654,26 +694,32 @@ id: o4j
 ```
 
 [Change Lifecycle](#change-lifecycle)
+[Archiving](#archiving)
 
 The closing note, written only once the user confirms the build is done. It states where the change landed — not a story of how it got there.
 
-Anything still [Held](#held) is released before Conclude begins — folded into the change, spun off as its own parked [Intent](#intent), or discarded by the user. Nothing is wrapped up with material outstanding.
+Anything still [Held](#held) is released before Conclude begins — folded into the change, spun off as its own [parked change](#plan), or discarded by the user. Nothing is wrapped up with material outstanding.
 
-It records only what the plan and the Log don't already convey: deviations, documents touched, surprises. When there's nothing to add, "Completed." is enough. It is capped at ~500 characters: the agent counts them when surfacing the draft, reports the number, and past the cap asks the user to adjudicate.
-
-A [Wander](#cadences) change has no Approach, but its Build [Log](#build) already carries what happened, so Conclude still just names the landing point — and may rename the change to match where the work ended up.
+It records only what the plan and the Log don't already convey: deviations, documents touched, surprises. When there's nothing to add, "Completed." is enough. It is capped at ~500 characters, excluding any changelog entry proposed with it: the agent counts them when surfacing the draft, reports the number, and past the cap asks the user to adjudicate.
 
 Its mere presence is the marker that the change is finished.
-
-**Detail**
-
-Conclude is capped short (see above); the count excludes any changelog entry proposed with it.
-
-For a versioned project with substantive change the draft also proposes a changelog entry. On the user's approval the change is archived to `changes/archive/` (prefixed `YYYY-MM-DD-`), the `active.md` lock is removed, and any approved changelog entry is added.
 
 **See also**
 
 - [Enjoyment](#enjoyment) — artifact economy: why Conclude is capped short and never re-tells the journey.
+
+
+# Archiving
+
+```yaml
+id: a9v
+```
+
+[Conclude](#conclude)
+
+What happens once the user approves the [Conclude](#conclude) note: the change leaves `changes/open/` for `changes/archive/`, losing any leading number and gaining the ISO date it concluded — `140-config-file-format.md` becomes `2026-05-14-config-file-format.md`. The [build lock](#build-lock) is then released, and the project is free for the next change.
+
+A versioned project with substantive change also proposes a changelog entry with the draft note, added on the same approval.
 
 
 # Startup Scan
@@ -686,7 +732,7 @@ id: x7t
 
 What the agent does first in every session: orient from `changes/open/`. A project with no `map.md` and no `changes/` tree hasn't started yet — the agent [bootstraps](#bootstrapping) it before anything else. Otherwise it reads everything in `changes/open/` and places each change by where it sits in the [lifecycle](#change-lifecycle). The `active.md` lock names the change currently building, if any.
 
-From that the agent announces whether it's planning or building, reports what's open, and proposes the next step — resuming an interrupted build, or picking up a parked Intent.
+From that the agent announces whether it's planning or building, reports what's open, and proposes the next step — resuming an interrupted build, or picking up a parked change.
 
 **Detail**
 
@@ -703,7 +749,7 @@ id: b6t
 
 How a project acquires its first map. A fresh install vendors only the method under `ndd/`, leaving the project itself empty — no `map.md`, no `changes/` tree — so the ordinary lifecycle has nothing to stand on. The agent detects this at the [Startup Scan](#startup-scan) and offers to bootstrap rather than proceeding as normal.
 
-It scaffolds the missing pieces and seeds the project map — `map.md` in the project root, distinct from the read-only method map at `ndd/ndd.md` — through discussion and any pre-existing documentation. How much to seed is the user's call: a single root node named for the system, or a fuller sketch — they may prefer to start capturing ideas before dwelling on setup.
+It scaffolds the [`changes/` tree](#change-management) and seeds the project map — `map.md` in the project root, distinct from the read-only method map at `ndd/ndd.md` — through discussion and any pre-existing documentation. How much to seed is the user's call: a single root node named for the system, or a fuller sketch — they may prefer to start capturing ideas before dwelling on setup.
 
 Adopting an existing codebase adds a survey: the agent reads existing assets and proposes nodes one at a time per the [Engagement Rule](#engagement-rule). Progress is bite-sized at the user's pace and may be postponed. Reality-reflecting map edits need no active change (see [Edit Governance](#edit-governance)), though wrapping a migration in one can keep it systematic.
 
@@ -724,7 +770,7 @@ Writing is gated by phase and by an active change. During [Plan](#plan) the agen
 
 **Detail**
 
-Git write operations — commit, push, branch, reset — always require explicit user instruction; the agent never does them on its own initiative. Editing `changes/` (capturing a parked Intent, drafting phases) is likewise exempt from the active-change requirement.
+Git write operations — commit, push, branch, reset — always require explicit user instruction; the agent never does them on its own initiative. Editing `changes/` (capturing a parked change, drafting phases) is likewise exempt from the active-change requirement.
 
 
 # Keywords
@@ -766,11 +812,11 @@ id: y2f
 
 [Keywords](#keywords)
 
-A message starting with `aside:` parks a topic for later without breaking the current flow: it becomes a fresh parked [Intent](#intent) in `changes/open/`, a proposal separate from whatever is under way. The agent acknowledges placement in a line and returns to what it was doing. Material belonging to the *current* change rather than a separate one is [Held](#held) instead.
+A message starting with `aside:` parks a topic for later without breaking the current flow: it becomes a fresh parked change in `changes/open/`, an [Intent](#intent) and nothing more, a proposal separate from whatever is under way. The agent acknowledges placement in a line and returns to what it was doing. Material belonging to the *current* change rather than a separate one is [Held](#held) instead.
 
 **Detail**
 
-A parked Intent from an aside may carry the optional node reference an [Intent](#intent) allows. An aside is never silently dropped.
+An aside is never silently dropped.
 
 
 # Tooling
