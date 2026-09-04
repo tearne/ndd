@@ -95,6 +95,7 @@ Non-Dead Design
 │ ├ Startup Scan
 │ ├ Bootstrapping
 │ ├ Gates and Permissions
+│ │ └ Approval
 │ └ Keywords
 │   ├ Process Keyword
 │   └ Aside Keyword
@@ -426,7 +427,7 @@ id: n3g
 
 [Edit Governance](#edit-governance)
 
-[Orient Then Focus](#orient-then-focus) applied to the map: every edit runs in one order — draft it, check the prose against [Writing Style](#writing-style), surface it with its [character count](#node-sizing), then write only once the reply is [approval](#gates-and-permissions). No edit is silent or made in bulk. Pitch the prompt to what the edit changes — a comprehension check when it reshapes the picture. Corrections that change no meaning — a typo, spacing, a stale link — are applied and reported rather than surfaced, but only if every item in hand is one.
+[Orient Then Focus](#orient-then-focus) applied to the map: every edit runs in one order — draft it, surface it with its [character count](#node-sizing), then write only once the reply is [approval](#gates-and-permissions). No edit is silent or made in bulk. Pitch the prompt to what the edit changes — a comprehension check when it reshapes the picture. Corrections that change no meaning — a typo, spacing, a stale link — are applied and reported rather than surfaced, but only if every item in hand is one.
 
 The rule binds the agent, not the user, who edits the map freely and unannounced. Told of such an edit, or noticing one, the agent re-reads the node and reports its new count and any knock-on it can see — what it owes for its own edits — and logs it only if it changes what the build must do.
 
@@ -761,14 +762,13 @@ id: g5m
 ```
 
 [Change-Management](#change-management)
+[Approval](#approval)
 
 Two rules gating what the agent may do without asking:
 
 - **Approval** — what counts as the user saying yes.
 
 - **Write permission** — what the agent may change at each point.
-
-Approval requires a clear affirmative given in response to the agent asking ("yes", "ok", "go ahead"). Silence, a tangent, or a reply that raises new questions is not approval. It only covers what was surfaced and no more: agreeing to draft prose is not approval of the prose.
 
 Writing is gated by phase and by an active change. During [Plan](#plan) the agent writes only inside `changes/`; project files are read-only. Writing a project file needs a change under [build](#build), recorded in `active.md`, unless the [map exemption](#edit-governance) applies. Reading anything is always allowed.
 
@@ -777,6 +777,19 @@ Writing is gated by phase and by an active change. During [Plan](#plan) the agen
 Git write operations — commit, push, branch, reset — always require explicit user instruction; the agent never does them on its own initiative.
 
 Editing `changes/` (capturing a parked change, drafting phases) is likewise exempt from the active-change requirement.
+
+
+# Approval
+
+```yaml
+id: k4d
+```
+
+[Gates and Permissions](#gates-and-permissions)
+
+Approval requires a clear affirmative given in response to the agent asking ("yes", "ok", "go ahead"). Silence, a tangent, or a reply that raises new questions is not approval. It only covers what was surfaced and no more: agreeing to draft prose is not approval of the prose.
+
+How a draft is delivered is the user's choice — described in chat, or written into the file to be read in place. Delivery is never approval: however it arrives, the draft stands provisional until the user accepts or amends it.
 
 
 # Keywords
