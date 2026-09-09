@@ -217,13 +217,13 @@ id: f7m
 
 Each rule in the rendering is phrased to maximise compliance.
 
-- Each rule sits under its own short, numbered level-3 heading, so markdown tooling can jump to it and agent and user can name it when they discuss a rule.
+- Each rule sits under a short, numbered level-3 heading, so markdown tooling can navigate and rules can be named.
 
-- Its first sentence states the act as a trigger the agent can recognise in the moment. The rest gives the reason, since an agent generalises from the explanation rather than the bare instruction.
+- Its first sentence states the act as a trigger the agent can recognise, or says that it applies to everything the agent writes. The rest gives the reason — agents generalise from explanation rather than bare instruction.
 
 - A rule that forbids something names the required alternative instead — "leave git writes to the user", not "never commit" — because a bare prohibition raises the salience of the thing it forbids.
 
-- A rule that admits no exception ends by saying what to do when it cannot be followed, usually to stop and ask; an unconditional "always" invites the agent to fabricate compliance.
+- A rule with no exception ends by saying what to do when it cannot be followed, usually to stop and ask; an unconditional "always" invites the agent to fabricate compliance.
 
 - The rule closes with a link to its source node.
 

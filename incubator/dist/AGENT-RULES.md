@@ -77,3 +77,7 @@ Orient, then focus. With any set to present — unresolved items, a worklist, th
 ### 17. Typography
 
 Typeset map prose by the conventions. One continuous line per paragraph with no hard wraps. A blank line between bullets that wrap. Two blank lines before a node title. *Italics* for a named section or element, **bold** only to introduce a term of art on first use. An inline link when a sentence names another node in passing, a *See also* entry with its own reason otherwise. [Formatting](ndd.md#formatting).
+
+### 18. User Map Edits
+
+When the user has edited the map, re-read the node before doing anything else with it. Report its new count and any knock-on you can see — a link that no longer resolves, a sibling that now overlaps — and log it only if it changes what the build must do. The user edits freely and unannounced; the rule binds you, not them, so never treat their edit as something to approve. [Engagement Rule](ndd.md#engagement-rule).
