@@ -449,12 +449,13 @@ id: m6x
 ```
 
 [Specification](#specification)
+[Map Files](#map-files)
 
-The map's shape is shown at a glance by a **tree overview** — a box-drawing sketch of the whole node tree — held in the [Contents](#contents) meta-node. Nodes not yet written are marked `(TODO)`, so the intended shape is visible before the content is. The rendering is only a convenience: the real tree is encoded in the navigation links, and the overview is kept in step with them.
+The map's shape is shown at a glance by a **tree overview** — a box-drawing sketch of the whole node tree — held in the top node of each [map file](#map-files). Nodes not yet written are marked `(TODO)`, so the intended shape is visible before the content is. The rendering is only a convenience: the real tree is encoded in the navigation links, and the overview is kept in step with them.
 
 **Detail**
 
-The overview is a fenced code block using box-drawing characters. A map is one file by default, splitting across several (linked by relative paths) only when size makes one file unwieldy; navigation works the same either way.
+The overview is a fenced code block using box-drawing characters. A map is one file until a branch is split out into its own [map file](#map-files); navigation works the same either way.
 
 The root defaults to the project's name, preferring a term that carries domain information over a generic label like "Application". When that name clashes with a prominent internal node, disambiguate with whichever reads best: a scoping term for the root, a suffix, a parenthetical, or a more specific name for the internal node.
 
@@ -462,6 +463,28 @@ The root defaults to the project's name, preferring a term that carries domain i
 
 - [Trees over Graphs](#trees-over-graphs) — why the sketched shape is a tree, not a general graph.
 - [Tidy](#tidy) — keeping this overview in step with the navigation links is part of the mechanical review.
+
+
+# Map Files
+
+```yaml
+id: k2v
+```
+
+[Map Structure](#map-structure)
+
+A project has one map; a file is only where a branch of it lives. The entry point is `map.md` in the project root, the one file whose top node has no parent link. Any node's children may live beside or beneath it in a file with a name related to the node, with the extension `.map.md`: a *Testing* node's branch would likely be `testing.map.md`. The hanging node's child links point into that file and the branch's top node keeps a parent link back, so the tree is still read by following links, and the hanging node's prose explains the branch's scope.
+
+A branch is split out for size, or for a conceptual boundary worth seeing in the file list.
+
+**Detail**
+
+Each file's top node carries the overview of the nodes in that file, stopping where a branch continues in another file and naming it. A cross-file link is `[Release Steps](meta.map.md#release-steps)`. Headings must be unambiguous within a file; across files the file name disambiguates.
+
+**See also**
+
+- [Navigation Links](#navigation-links) — the links that carry the tree, within a file and across.
+- [Tidy](#tidy) — each file's overview is kept in step with the links in that file.
 
 
 # Node Sizing
