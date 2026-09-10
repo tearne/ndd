@@ -4,6 +4,7 @@ Notable changes to the NDD method. The current version is the topmost heading be
 
 ## Unreleased
 
+- Map Maintenance becomes a top-level Maintenance box: six named checks (Tidy, Shape, Prose, Consistency, Rendering, Backlog) in a table with triggers, offered after archival, at the Startup Scan, or before release.
 - Agent rules rendered from the map replace `BOOTSTRAP.md`; the method ships from a checked-in `dist/` via `install.py`, formerly `opt-in.py`.
 
 ## 1.0.0 — 2026-08-26
