@@ -9,3 +9,7 @@ Give the map a stakeholder sign-off axis, orthogonal to build-state, so non-auth
 Graceful degradation is first-class: a map with no stamps shows nothing, and the machinery stays invisible until a project reaches for it.
 
 Decomposition item 3 (keystone sequence in `enhancement-discussion.md`, which holds the full P2 rationale). Depends on node structure and identity, which is already built.
+
+## Unresolved
+
+- **Do node ids earn their place?** (folded from 240, 2026-09-10). Change 220 settled that nodes are cited outside the map by name alone, so the `id` has no consumer today: links resolve by name, citations do too, and the scaffolding block, the id rules in Node Identity and the review step that adds missing ids carry no weight. This change needs the block for its stamps but not the id; the id's one prospective consumer is 90, which resolves a node's history through git across renames. The Approach states whether the id stays for 90 or is dropped.
