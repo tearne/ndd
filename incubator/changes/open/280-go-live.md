@@ -1,10 +1,10 @@
 # Go-live reorg
 
-**Mode:** Formal
+**Cadence:** Formal
 
 ## Intent
 
-_(Approved 2026-08-28. Cadence: Formal. **Paused** to plan+build 140-map-bootstrapping first — no point shipping go-live if a project can't acquire its first map. Resume at Approach once 140 lands.)_
+_(Approved 2026-08-28. Cadence: Formal. Was paused for map bootstrapping, which has since landed. Renumbered from 130 on 2026-09-10 to run after the rest of the backlog. Resume at Approach.)_
 
 Flip the repo from incubation to the live method, so the repository itself *is* NDD rather than a framework incubated inside it. Today the live method lives in `incubator/` while the repo root still holds the superseded COD framework (`agent/`, the old root `opt-in.py`, `PRINCIPLES.md`, old root `README`/`CHANGELOG`, `CLAUDE.md.bk`, and the old root `changes/`). Go-live lifts `incubator/`'s contents to the root and retires the old framework, then renames the GitHub repo to `ndd`, makes it public, and proves the clone-and-run `opt-in.py` install end-to-end against the live repo. The blocking work has landed: distribution fixes (120), standards migration (125, now `standards/`), and the installer switch (128, which retired `install.sh` for `opt-in.py`) — so the install proof is the local-clone flow, not `curl … | bash`.
 
@@ -18,7 +18,7 @@ Note: repo rename, visibility change, and any branch/merge/push are user-perform
 
 ## Planning notes (WIP)
 
-**Lifecycle status:** 130 is in Plan. Intent has been **revised to current reality** (above) and is **awaiting approval**. §A/§B/§C parity all settled (§C orphans resolved this session). No Cadence proposed yet. No active lock. Next: Intent approval → Cadence → Approach → worklist.
+**Lifecycle status:** 280 (formerly 130) is in Plan. Intent has been **revised to current reality** (above) and is **awaiting approval**. §A/§B/§C parity all settled (§C orphans resolved this session). No Cadence proposed yet. No active lock. Next: Intent approval → Cadence → Approach → worklist.
 
 ### User decisions taken this session
 
@@ -54,7 +54,7 @@ Each: decide fold-into-map vs. preserve-doc vs. accept-loss.
    - (i) *Research instruction* — fold one line into **Approach (a2r)**: the agent first researches the relevant map nodes (and the code where reality must be verified) to ground its decisions and surface coverage gaps. The map today only asserts research *happens* (Plan, v3d) without instructing the gap-finding, which is arguably more central to NDD than to COD.
    - (ii) *No-map degradation* — accept-loss in go-live; parked as a fresh standalone Intent (`140-map-bootstrapping.md`). This is the adoption/bootstrapping question (Distribution installs the method but the consumer's map starts empty), substantive and orthogonal to go-live's repo-flip purpose — not an Approach one-liner.
 
-### Also fold into 130 scope (already noted)
+### Also fold into 280 scope (already noted)
 
 - `incubator/README.md` has stale lower sections ("Boundary", "Self-contained COD project") referencing the old `agent/` model — clean during go-live, not just lift.
 - Git-write / GitHub-admin steps (branch, merge, repo rename, make public, install proof) are **user-performed**.

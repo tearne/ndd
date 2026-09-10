@@ -932,7 +932,7 @@ The mechanical housekeeping, run across the whole map once a change is archived.
 
 - **Fixed, then reported**: the [tree overview](#map-structure) brought back in step with the navigation links; a missing scaffolding [id](#node-identity) or [navigation link](#navigation-links) added; a link re-pointed after a target renamed.
 
-- **Reported only**: a table of nodes over the [size bound](#node-sizing), since splitting-versus-keeping is the user's call.
+- **Reported only**: a table of nodes over the [size bound](#node-sizing), since splitting-versus-keeping is the user's call, made in [Shape](#shape).
 
 - **Escalated**: anything a mechanical fix can't settle, such as a duplicated heading that needs a rename.
 
@@ -949,7 +949,7 @@ A check on how the map is cut: whether the tree's divisions still match how the 
 
 It looks for:
 
-- A node carrying more ideas than its heading promises, which should be split into children.
+- A node carrying more ideas than its heading promises, which should be split into children. Tidy's size table feeds this, and the user may decide an oversize node earns its length.
 
 - Sibling nodes that say too little apart and should merge.
 
