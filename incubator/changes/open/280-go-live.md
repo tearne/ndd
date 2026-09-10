@@ -4,7 +4,7 @@
 
 ## Intent
 
-_(Approved 2026-08-28. Cadence: Formal. Was paused for map bootstrapping, which has since landed. Renumbered from 130 on 2026-09-10 to run after the rest of the backlog. Resume at Approach.)_
+_(Approved 2026-08-28. Cadence: Formal. Was paused for map bootstrapping, which has since landed. Renumbered from 130 on 2026-09-10 to run after the rest of the backlog; the sign-off theme (310–330) was later placed after it. Resume at Approach.)_
 
 Flip the repo from incubation to the live method, so the repository itself *is* NDD rather than a framework incubated inside it. Today the live method lives in `incubator/` while the repo root still holds the superseded COD framework (`agent/`, the old root `opt-in.py`, `PRINCIPLES.md`, old root `README`/`CHANGELOG`, `CLAUDE.md.bk`, and the old root `changes/`). Go-live lifts `incubator/`'s contents to the root and retires the old framework, then renames the GitHub repo to `ndd`, makes it public, and proves the clone-and-run `opt-in.py` install end-to-end against the live repo. The blocking work has landed: distribution fixes (120), standards migration (125, now `standards/`), and the installer switch (128, which retired `install.sh` for `opt-in.py`) — so the install proof is the local-clone flow, not `curl … | bash`.
 

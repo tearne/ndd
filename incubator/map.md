@@ -73,6 +73,8 @@ Non-Dead Design
 │ │ ├ Navigation Links
 │ │ ├ Node Sections
 │ │ │ └ Callouts
+│ │ └ Approval Stamp
+│ │   └ Fingerprint
 │ ├ Map Structure
 │ ├ Node Sizing
 │ ├ Writing Style
@@ -107,7 +109,8 @@ Non-Dead Design
 │ ├ Prose
 │ ├ Consistency
 │ ├ Rendering
-│ └ Backlog
+│ ├ Backlog
+│ └ Sign-off
 ├ Tooling
 └ Standards
 ```
@@ -284,6 +287,7 @@ id: nd1
 [Node Identity](#node-identity)
 [Navigation Links](#navigation-links)
 [Node Sections](#node-sections)
+[Approval Stamp](#approval-stamp)
 
 A node represents **one** concept and includes a heading, an agent-maintained scaffolding block holding its metadata, name-anchored navigation links to its parent and children, and terse prose leading with the mental picture. Optional *Detail* and *See also* sections follow.
 
@@ -323,13 +327,13 @@ id: w9c
 
 [Node](#node)
 
-A node's name can change; its identity can't. The identity is a small immutable token in the yaml scaffolding block which survives node renames and moves. It exists so that anything pointing to the node stays attached.
+A node's name can change; its identity can't. A small immutable token in the yaml scaffolding block survives node renames and moves.
 
 > [!IMPORTANT] Navigation uses node names, not the ID, so ordinary markdown tooling works and the ID is free to be meaningless.
 
 **Detail**
 
-The **scaffolding block** is fenced YAML directly under the heading containing metadata — today just `id`. It's agent-maintained, like the nav links, and a reader ignores it. The `id:` key is map-unique, lowercase alphanumeric, three or more characters (e.g. `k7f`) - a token rather than a readable slug to avoid edit or link temptation. A user may hand-draft a node without a block; the mechanical review adds one and reports it, so identity is never silently missing.
+The **scaffolding block** is fenced YAML directly under the heading containing the `id` and any [approval stamps](#approval-stamp). It's agent-maintained. The `id:` key is map-unique, lowercase alphanumeric, three or more characters (e.g. `k7f`) - a token rather than a readable slug to avoid edit or link temptation. A user may hand-draft a node without a block; the mechanical review adds one and reports it, so identity is never silently missing.
 
 **See also**
 
@@ -391,6 +395,51 @@ A callout is a "don't skim this" flag on a point the prose already makes. It mar
 **Detail**
 
 Rendered as a `> [!IMPORTANT]` blockquote, never as a highlighter for every notable fact.
+
+
+# Approval Stamp
+
+```yaml
+id: p8m
+```
+
+[Node](#node)
+[Fingerprint](#fingerprint)
+
+An approval stamp records that one person approved one node. Stamps live in the node's scaffolding block under an `approvals:` mapping keyed by a name or handle, so each person holds exactly one and a re-approval overwrites it. Because they are in the node rather than a separate ledger, they follow it through renames and moves. A node without the mapping is simply unapproved, and most maps never gain one.
+
+**Detail**
+
+Each value holds `at`, an ISO 8601 timestamp with offset, and `hash`, the [fingerprint](#fingerprint) of the text approved. Drift uses only the hash; the timestamp is kept so a later aid can find the version a person saw. Quote the key if it contains a colon or starts with punctuation.
+
+```yaml
+id: w9c
+approvals:
+  alice: {at: 2026-09-10T14:05:00+01:00, hash: 3f9a1c2e}
+  bob: {at: 2026-08-02T09:30:00+01:00, hash: 8d02b7e4}
+```
+
+**See also**
+
+- [Sign-off](#sign-off) — the check that reads the stamps.
+- [Node Identity](#node-identity) — the other thing the scaffolding block holds.
+
+
+# Fingerprint
+
+```yaml
+id: h4q
+```
+
+[Approval Stamp](#approval-stamp)
+
+A fingerprint is a hash of what a reader sees in a node. It covers the heading, prose, callouts, *Detail* and *See also*; it excludes the scaffolding block and navigation links.
+
+Comparing fingerprints is a test of equality: a node put back to earlier text regains its old fingerprint, and so clears for whoever approved that text.
+
+**Detail**
+
+Take the node from its heading line to the line before the next heading. Drop the scaffolding block and the navigation-link lines whole; inline links in the prose stay as written, markdown included. Remove every whitespace character. The fingerprint is the first eight hex digits of the SHA-256 of that UTF-8 string. An agent computes it by running code, never by reasoning.
 
 
 # Map Structure
@@ -905,8 +954,9 @@ id: t7v
 [Consistency](#consistency)
 [Rendering](#rendering)
 [Backlog](#backlog)
+[Sign-off](#sign-off)
 
-The reviews the agent can run or offer, grouped by what they read: the tree, the text, the ideas, the code, and the backlog. Every check is available on demand for an agreed scope; the *Trigger* column says where in the change cycle it is also run or offered. Only Tidy runs unprompted — the rest need the user's judgement, so they are offered and taken up or declined.
+The reviews the agent can run or offer, grouped by what they read: the tree, the text, the ideas, the code, the backlog, and the stamps. Every check is available on demand for an agreed scope; the *Trigger* column says where in the change cycle it is also run or offered. Only Tidy runs unprompted — the rest need the user's judgement, so they are offered and taken up or declined.
 
 | Reads | Check | Looks for | Trigger |
 |-------|-------|-----------|---------|
@@ -916,6 +966,7 @@ The reviews the agent can run or offer, grouped by what they read: the tree, the
 | The ideas | [Consistency](#consistency) | Contradictions, untreated competing concepts, redundancy, homeless concepts, ambiguous nodes | Offered before release |
 | The code | [Rendering](#rendering) | Where the code and files no longer match the map, in either direction | Offered before release |
 | The backlog | [Backlog](#backlog) | Parked changes gone stale, overlapping, superseded or out of order | Offered at Startup Scan |
+| The stamps | [Sign-off](#sign-off) | Nodes due for a named stakeholder — fingerprint no longer matching their stamp, or no stamp at all | On request |
 
 Deferring map upkeep for a stretch — an emergency fix, a push elsewhere — is safe because of this table: nothing is marked, each trigger point re-offers, and release gates the whole-map checks.
 
@@ -1044,6 +1095,24 @@ It looks for:
 - Two changes that overlap and should merge.
 
 - Numbers that no longer say what should come next — the leading numbers are the backlog's order, so the remedy is renumbering.
+
+
+# Sign-off
+
+```yaml
+id: f2s
+```
+
+[Maintenance](#maintenance)
+
+A stakeholder approves the map a few nodes at a time. Each node can carry an [approval stamp](#approval-stamp) per person, recording when they approved it and a [fingerprint](#fingerprint) of the text they saw. On approval the agent writes a fresh stamp — scaffolding, so written and reported rather than negotiated.
+
+Nothing is marked when a node changes. Drift is found by comparing: a node is *due* for a person when its fingerprint no longer matches their stamp, or it has none for them. A map with no stamps shows nothing, and the agent never adds one unprompted.
+
+**See also**
+
+- [Orient Then Focus](#orient-then-focus) — due nodes are summarised, then walked one at a time.
+- [Node Sizing](#node-sizing) — re-approval is a re-read of one short node, which is what keeps it humane.
 
 
 # Tooling
