@@ -8,20 +8,18 @@ id: a3k
 [Principles](#principles)
 [Specification](#specification)
 [Change-Management](#change-management)
+[Maintenance](#maintenance)
 [Tooling](#tooling)
 [Standards](#standards)
 
-Non-Dead Design (**NDD**) aims to improve knowledge management for agentic software development. The name reflects three deaths it seeks to prevent.
-
-- **Specifications die** as documents when they sit off the critical path — unread, unmaintained, drifting into fiction.
-- **Structural thinking dies** when the human no longer authors the codebase and the agent's output has nowhere to be reasoned about.
-- **Comprehension dies** when the developer's role stops being architecturally fun, because understanding is sustained by engagement, not discipline.
+Non-Dead Design (**NDD**) aims to improve knowledge management for agentic software development. The name reflects the [three deaths](#three-deaths) it seeks to prevent: of specifications, of structural thinking, and of comprehension.
 
 The map is the one artefact that keeps all three alive: a conceptual **map** of the system, acting as the hub for specification and change management rather than a document off to one side. The method itself is expressed as a map.
 
 - **Principles** — the founding rationale in more detail.
 - **Specification** — the conceptual map as the primary comprehension artefact.
 - **Change-Management** — how the spec evolves, through a change lifecycle and user-owned gates.
+- **Maintenance** — the reviews that keep the map, the code and the backlog in step.
 - **Tooling** — the generic markdown tooling the format is designed to exploit.
 - **Standards** — suggested coding standards NDD ships for the code agents write on a project.
 
@@ -61,6 +59,7 @@ Non-Dead Design
 │     ├ Rule Form
 │     └ Rule Selection
 ├ Principles
+│ ├ Three Deaths
 │ ├ Comprehension is an Activity
 │ ├ Intent Memory
 │ ├ Enjoyment
@@ -81,10 +80,7 @@ Non-Dead Design
 │ │ └ Formatting
 │ └ Edit Governance
 │   ├ Sync Rule
-│   ├ Engagement Rule
-│   └ Map Maintenance
-│     ├ Consistency Upkeep
-│     └ Judgement Scan
+│   └ Engagement Rule
 ├ Change-Management
 │ ├ Change Lifecycle
 │ │ ├ Plan
@@ -105,6 +101,13 @@ Non-Dead Design
 │ └ Keywords
 │   ├ Process Keyword
 │   └ Aside Keyword
+├ Maintenance
+│ ├ Tidy
+│ ├ Shape
+│ ├ Prose
+│ ├ Consistency
+│ ├ Rendering
+│ └ Backlog
 ├ Tooling
 └ Standards
 ```
@@ -159,7 +162,7 @@ id: l2s
 
 [Distribution](#distribution)
 
-The checklist for cutting a release of NDD. After [archiving](#archiving) the agent asks, whether it is time to release and the user decides. If several changes are obviously shipping together no need to ask. If releasing, confirm the user wantws each of the following:
+The checklist for cutting a release of NDD. After [archiving](#archiving) the agent asks whether it is time to release and the user decides. If several changes are obviously shipping together no need to ask. If releasing, the [Maintenance](#maintenance) due before release are offered, then the agent confirms the user wants each of the following:
 
 1. Bump the version: a new entry at the top of `CHANGELOG.md`.
 2. Run `./build.py` so `dist/` matches the sources.
@@ -330,7 +333,7 @@ The **scaffolding block** is fenced YAML directly under the heading containing m
 
 **See also**
 
-- [Consistency Upkeep](#consistency-upkeep) — a missing id is added automatically during the mechanical review.
+- [Tidy](#tidy) — a missing id is added automatically during the mechanical review.
 
 
 # Navigation Links
@@ -356,7 +359,7 @@ Because links resolve by name, every heading must be unambiguous across the whol
 **See also**
 
 - [Trees over Graphs](#trees-over-graphs) — links encode the one-parent tree that keeps navigation walkable.
-- [Consistency Upkeep](#consistency-upkeep) — missing links are added automatically during the mechanical review; child order is a [Judgement Scan](#judgement-scan) check.
+- [Tidy](#tidy) — missing links are added automatically during the mechanical review; child order is a [Shape](#shape) check.
 
 
 # Node Sections
@@ -409,7 +412,7 @@ The root defaults to the project's name, preferring a term that carries domain i
 **See also**
 
 - [Trees over Graphs](#trees-over-graphs) — why the sketched shape is a tree, not a general graph.
-- [Consistency Upkeep](#consistency-upkeep) — keeping this overview in step with the navigation links is part of the mechanical review.
+- [Tidy](#tidy) — keeping this overview in step with the navigation links is part of the mechanical review.
 
 
 # Node Sizing
@@ -431,7 +434,7 @@ The count measures the node's own content, which is why *Detail* is included and
 **See also**
 
 - [Local Sufficiency](#local-sufficiency) — why nodes stay small: a reader must grasp one node from the node alone.
-- [Consistency Upkeep](#consistency-upkeep) — oversize nodes are reported in the mechanical review summary.
+- [Tidy](#tidy) — oversize nodes are reported in the mechanical review summary.
 
 
 # Writing Style
@@ -452,7 +455,7 @@ How map prose is written, so nodes stay readable and durable. Two sides:
 
 **See also**
 
-- [Judgement Scan](#judgement-scan) — prose is checked against these conventions during a scan.
+- [Prose](#prose) — prose is checked against these conventions during the check.
 
 
 # Conceptual Writing
@@ -508,7 +511,6 @@ id: e7m
 [Specification](#specification)
 [Sync Rule](#sync-rule)
 [Engagement Rule](#engagement-rule)
-[Map Maintenance](#map-maintenance)
 
 The rules for changing the artefact itself. Three questions govern every edit:
 
@@ -516,7 +518,7 @@ The rules for changing the artefact itself. Three questions govern every edit:
 
 - *how* the change is made — the [Engagement Rule](#engagement-rule);
 
-- *when* a node is due for work — [Map Maintenance](#map-maintenance).
+- *when* a node is due for work — [Maintenance](#maintenance).
 
 Because these edits describe reality rather than intent, they fall outside the active-change requirement — the **map exemption**: no open change is needed, and they may happen at any time. That exemption lifts only the active-change constraint; the [Engagement Rule](#engagement-rule)'s per-node negotiation for map updates still applies.
 
@@ -547,71 +549,6 @@ id: n3g
 [Orient Then Focus](#orient-then-focus) applied to the map: every edit runs in one order — draft it, surface it with its [character count](#node-sizing), then write only once the reply is [approval](#gates-and-permissions). No edit is silent or made in bulk. Pitch the prompt to what the edit changes — a comprehension check when it reshapes the picture. Corrections that change no meaning — a typo, spacing, a stale link — are applied and reported rather than surfaced, but only if every item in hand is one.
 
 The rule binds the agent, not the user, who edits the map freely and unannounced. Told of such an edit, or noticing one, the agent re-reads the node and reports its new count and any knock-on it can see — what it owes for its own edits — and logs it only if it changes what the build must do.
-
-
-# Map Maintenance
-
-```yaml
-id: t7v
-```
-
-[Edit Governance](#edit-governance)
-[Consistency Upkeep](#consistency-upkeep)
-[Judgement Scan](#judgement-scan)
-
-Once a change is concluded and archived the agent performs a mechanical review and offers to initiate a deeper review.
-
-- **Consistency Upkeep** — the mechanical review, runs unprompted across the whole map and reports in a single summary.
-
-- **Judgement Scan** — the review needing a reading and a decision, offered for the user to take up or decline.
-
-
-# Consistency Upkeep
-
-```yaml
-id: u8k
-```
-
-[Map Maintenance](#map-maintenance)
-
-The computable checks, run across the whole map once a change is archived. The agent needs no prompting and reports everything in one summary.
-
-- **Fixed, then reported**: the [tree overview](#map-structure) brought back in step with the navigation links; a missing scaffolding [id](#node-identity) or [navigation link](#navigation-links) added.
-
-- **Reported only**: a table of nodes over the [size bound](#node-sizing), since splitting-versus-keeping is the user's call.
-
-- **Escalated**: anything a mechanical fix can't settle, such as a duplicated heading that needs a rename.
-
-
-# Judgement Scan
-
-```yaml
-id: d4p
-```
-
-[Map Maintenance](#map-maintenance)
-
-The checks that need a node read and a decision made, so they are offered rather than run: the agent proposes a scan and the user takes it up or declines. A scan names its scope — the whole map, or one area — and settles each node with the user.
-
-It looks for:
-
-- A node which should be split into children.
-
-- A node grown verbose.
-
-- An undocumented concept with no natural home.
-
-- Top-level boxes that stop matching how the user thinks.
-
-- Prose deviating from the [writing style](#writing-style) conventions.
-
-- Child order that no longer reads as a natural sequence.
-
-**Detail**
-
-A concept with no natural home means the decomposition is wrong; it is never solved by opening a misc bucket.
-
-The scan also applies the *ambiguity test* (see [Cross-Agent Falsifiability](#cross-agent-falsifiability)) — could a fresh agent build this node without guessing? A node it flags is a map-quality gap, not an implementation problem.
 
 
 # Cadences
@@ -837,7 +774,7 @@ id: a9v
 
 Once the user approves the [Conclude](#conclude) note, the change leaves `changes/open/` for `changes/archive/`, losing any leading number and gaining the ISO date it concluded — `140-config-file-format.md` becomes `2026-05-14-config-file-format.md`. The [build lock](#build-lock) is then released, and the project is free for the next change.
 
-A versioned project with substantive change also proposes a changelog entry with the draft note, added on the same approval. If the project map defines release steps, the agent then asks whether it is time to run them.
+A versioned project with substantive change also proposes a changelog entry with the draft note, added on the same approval. The [Maintenance](#maintenance) due after archival then follow: Tidy runs, Shape and Prose are offered. If the project map defines release steps, the agent asks whether it is time to run them, and if so offers the checks due before release first.
 
 
 # Startup Scan
@@ -850,7 +787,7 @@ id: x7t
 
 What the agent does first in every session: orient from `changes/open/`. A project with no `map.md` and no `changes/` tree hasn't started yet — the agent [bootstraps](#bootstrapping) it before anything else. Otherwise it reads everything in `changes/open/` and places each change by where it sits in the [lifecycle](#change-lifecycle). The `active.md` lock names the change currently building, if any.
 
-From that the agent announces whether it's planning or building, reports what's open, and proposes the next step — resuming an interrupted build, or picking up a parked change.
+From that the agent announces whether it's planning or building, reports what's open, offers the [Backlog](#backlog) check, and proposes the next step — resuming an interrupted build, or picking up a parked change.
 
 **Detail**
 
@@ -955,6 +892,160 @@ A message starting with `aside:` parks a topic for later without breaking the cu
 An aside is never silently dropped.
 
 
+# Maintenance
+
+```yaml
+id: t7v
+```
+
+[Non-Dead Design](#non-dead-design)
+[Tidy](#tidy)
+[Shape](#shape)
+[Prose](#prose)
+[Consistency](#consistency)
+[Rendering](#rendering)
+[Backlog](#backlog)
+
+The reviews the agent can run or offer, grouped by what they read: the tree, the text, the ideas, the code, and the backlog. Every check is available on demand for an agreed scope; the *Trigger* column says where in the change cycle it is also run or offered. Only Tidy runs unprompted — the rest need the user's judgement, so they are offered and taken up or declined.
+
+| Reads | Check | Looks for | Trigger |
+|-------|-------|-----------|---------|
+| The tree | [Tidy](#tidy) | Tree overview, ids, links and the size table — all mechanical | Runs after archival |
+| The tree | [Shape](#shape) | Nodes to split or merge, a top-level division or child order that no longer fits | Offered after archival |
+| The text | [Prose](#prose) | Nodes off the writing conventions or saying more than their idea needs | Offered after archival |
+| The ideas | [Consistency](#consistency) | Contradictions, untreated competing concepts, redundancy, homeless concepts, ambiguous nodes | Offered before release |
+| The code | [Rendering](#rendering) | Where the code and files no longer match the map, in either direction | Offered before release |
+| The backlog | [Backlog](#backlog) | Parked changes gone stale, overlapping, superseded or out of order | Offered at Startup Scan |
+
+Deferring map upkeep for a stretch — an emergency fix, a push elsewhere — is safe because of this table: nothing is marked, each trigger point re-offers, and release gates the whole-map checks.
+
+
+# Tidy
+
+```yaml
+id: u8k
+```
+
+[Maintenance](#maintenance)
+
+The mechanical housekeeping, run across the whole map once a change is archived. The agent needs no prompting and reports everything in one summary; anything it touches is a [correction](#engagement-rule), never a change of meaning.
+
+- **Fixed, then reported**: the [tree overview](#map-structure) brought back in step with the navigation links; a missing scaffolding [id](#node-identity) or [navigation link](#navigation-links) added; a link re-pointed after a target renamed.
+
+- **Reported only**: a table of nodes over the [size bound](#node-sizing), since splitting-versus-keeping is the user's call.
+
+- **Escalated**: anything a mechanical fix can't settle, such as a duplicated heading that needs a rename.
+
+
+# Shape
+
+```yaml
+id: d4p
+```
+
+[Maintenance](#maintenance)
+
+A check on how the map is cut: whether the tree's divisions still match how the user thinks of the system.
+
+It looks for:
+
+- A node carrying more ideas than its heading promises, which should be split into children.
+
+- Sibling nodes that say too little apart and should merge.
+
+- The top-level division of the map no longer matching how the user thinks of the system.
+
+- Child order that no longer reads as a natural sequence.
+
+
+# Prose
+
+```yaml
+id: p2w
+```
+
+[Maintenance](#maintenance)
+
+A check on how nodes read, applied even where the tree is cut well.
+
+It looks for:
+
+- Prose deviating from the [writing style](#writing-style) conventions.
+
+- A node saying more than its idea needs — wordy where the [size bound](#node-sizing) is only the mechanical symptom.
+
+
+# Consistency
+
+```yaml
+id: k4c
+```
+
+[Maintenance](#maintenance)
+
+A check on whether the map's ideas hold together. It reads across nodes rather than within one, so it costs more than a check on one node.
+
+It looks for:
+
+- Two nodes that contradict each other.
+
+- Competing concepts left untreated — two ways of seeing the same thing, neither chosen.
+
+- Redundancy — the same thing said in two places.
+
+- A concept in use with no definition or natural home.
+
+- A node that fails the ambiguity test — could a fresh agent build it without guessing?
+
+**Detail**
+
+The ambiguity test is the everyday form of [Cross-Agent Falsifiability](#cross-agent-falsifiability): a node it flags is a map-quality gap, not an implementation problem.
+
+
+# Rendering
+
+```yaml
+id: r3n
+```
+
+[Maintenance](#maintenance)
+
+A check on whether what exists still reads as a rendering of the map. The agent compares an agreed scope — the whole map, or one area — against the code and files, and reports each place they disagree. Each disagreement is settled one way or the other: the map corrected to what exists, or the code corrected under a change.
+
+It looks for:
+
+- A node describing what is no longer there.
+
+- Something built that no node describes.
+
+- A mechanism the map tells one way and the code another.
+
+- A node the code could have satisfied several ways — ambiguity seen from the code side, for the map to close.
+
+It is the single-agent form of [Cross-Agent Falsifiability](#cross-agent-falsifiability). Because it reads the code it is the costliest check, and the catch-up when map upkeep has been deferred for a while.
+
+
+# Backlog
+
+```yaml
+id: b7k
+```
+
+[Maintenance](#maintenance)
+
+A check on the parked changes in `changes/open/`, offered at the [Startup Scan](#startup-scan) once the open changes have been reported, since they have just been read. Each parked change is settled with the user: kept as it is, updated, renumbered, merged, or discarded.
+
+It looks for:
+
+- A change citing a node or change that no longer exists.
+
+- A change the project has moved past — built by other means, or no longer wanted.
+
+- Two changes that overlap and should merge.
+
+- Numbers that no longer say what should come next — the leading numbers are the backlog's order, so the remedy is renumbering.
+
+
 # Tooling
 
 ```yaml
@@ -994,6 +1085,7 @@ id: p4c
 ```
 
 [Non-Dead Design](#non-dead-design)
+[Three Deaths](#three-deaths)
 [Comprehension is an Activity](#comprehension-is-an-activity)
 [Intent Memory](#intent-memory)
 [Enjoyment](#enjoyment)
@@ -1002,6 +1094,25 @@ id: p4c
 [Orient Then Focus](#orient-then-focus)
 
 The method's founding case. Agent-augmented development broke the old bundle where writing code and understanding it were one act — production no longer carries comprehension along. The method restores a deliberate comprehension-building activity, maintaining the map, and hands rendering to the agent. Because it works at the structural level, the map also surfaces logic bugs — wrong flows, missing cases, bad boundaries — before any code is written. Conceptual maintainability thus earns first-class standing alongside correctness, never the first thing sacrificed under deadline pressure. The principles below are the binding constraints every change answers to, and the home other nodes point at instead of restating a reason.
+
+
+# Three Deaths
+
+```yaml
+id: d3t
+```
+
+[Principles](#principles)
+
+The three deaths the method's name refers to, each a way understanding is lost once agents write the code.
+
+- **Specifications die** as documents when they sit off the critical path — unread, unmaintained, drifting into fiction.
+
+- **Structural thinking dies** when the human no longer authors the codebase and the agent's output has nowhere to be reasoned about.
+
+- **Comprehension dies** when the developer's role stops being architecturally fun, because understanding is sustained by engagement, not discipline.
+
+The map is the countermeasure to all three, and the [Maintenance](#maintenance) are what keep it from the first.
 
 
 # Comprehension is an Activity
@@ -1072,7 +1183,7 @@ id: f9x
 
 If the map is the source of truth, independent agents can render it — and differences between renderings test its quality. A good map renders consistently where it matters; a bad one doesn't, exposing abstraction leaks and model-vs-reality drift without the user reading code.
 
-Full cross-rendering is expensive, kept for high-stakes moments; the everyday form is the **ambiguity test** — could a fresh agent build this node without guessing? — which a [Judgement Scan](#judgement-scan) applies to every node it covers.
+Full cross-rendering is expensive, kept for high-stakes moments. Its everyday forms are two [Maintenance](#maintenance) checks. The **ambiguity test** asks whether a fresh agent could build a node without guessing, and [Consistency](#consistency) applies it from the map side. [Rendering](#rendering) tests the one rendering that exists against the map from the code side.
 
 
 # Orient Then Focus

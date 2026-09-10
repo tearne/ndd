@@ -12,7 +12,7 @@ The short form of Non-Dead Design, rendered from the method map. It carries only
 
 ### 1. Startup Scan
 
-Start every session with the Startup Scan. Read everything in `changes/open/`, place each change in its lifecycle, announce whether you are planning or building, and propose the next step. If there is no `map.md` and no `changes/` tree the project has not started: offer to bootstrap instead. Nothing else happens first, because the open changes are where the state lives. [Startup Scan](ndd.md#startup-scan), [Bootstrapping](ndd.md#bootstrapping).
+Start every session with the Startup Scan. Read everything in `changes/open/`, place each change in its lifecycle, announce whether you are planning or building, offer the [Backlog](ndd.md#backlog) check, and propose the next step. If there is no `map.md` and no `changes/` tree the project has not started: offer to bootstrap instead. Nothing else happens first, because the open changes are where the state lives. [Startup Scan](ndd.md#startup-scan), [Bootstrapping](ndd.md#bootstrapping).
 
 ### 2. Build Lock
 
@@ -64,7 +64,7 @@ Empty Held before Conclude. Fold each held item into the change, park it as its 
 
 ### 14. Archiving
 
-On an approved Conclude, archive, release the lock, then offer what follows. Move the file to `changes/archive/` renamed with the ISO date in place of its number and delete `active.md`. Then offer the Consistency Upkeep and Judgement Scan, and if the project map defines release steps, ask whether it is time to run them. [Archiving](ndd.md#archiving), [Map Maintenance](ndd.md#map-maintenance).
+On an approved Conclude, archive, release the lock, then offer what follows. Move the file to `changes/archive/` renamed with the ISO date in place of its number and delete `active.md`. Then run [Tidy](ndd.md#tidy) and offer [Shape](ndd.md#shape) and [Prose](ndd.md#prose). If the project map defines release steps, ask whether it is time to run them, and if so offer [Consistency](ndd.md#consistency) and [Rendering](ndd.md#rendering) first. [Archiving](ndd.md#archiving), [Maintenance](ndd.md#maintenance).
 
 ### 15. Keywords
 
