@@ -10,15 +10,16 @@
 # prior method map is kept as ndd/ndd.prev.map.md so migration can be reasoned
 # about.
 #
-# Nothing is rendered: what ships is the checkout's own map.md, ndd.map.md,
-# CHANGELOG.md, AGENT-RULES.md and standards/. The NDD repository reads those
-# files directly and is never installed into itself. Clone the repo wherever
+# Nothing is rendered: what ships is the checkout itself, minus the exclusions
+# in NOT_SHIPPED. The NDD repository reads its own files directly and is never
+# installed into itself. Clone the repo wherever
 # you like and run this from the project you want to opt in, e.g.
 #   cd my-project && path/to/ndd/install.py
 
 import argparse
 import os
 import re
+import shutil
 import sys
 from pathlib import Path
 
@@ -27,7 +28,11 @@ from rich.console import Console
 console = Console()
 
 SOURCE = Path(__file__).parent
-SHIPPED = ["map.md", "ndd.map.md", "CHANGELOG.md", "AGENT-RULES.md", "standards"]
+# Everything in the checkout ships except development residue: the change
+# records, git, the repository's own entry files (the client gets its own), and
+# this installer. A stray file therefore ships visibly rather than a needed one
+# going missing silently; the scratch install in Release Steps is where to look.
+NOT_SHIPPED = {"changes", ".git", ".gitignore", ".claude", "CLAUDE.md", "AGENTS.md", "README.md", "install.py"}
 RETIRED_FILES = ["BOOTSTRAP.md", "ndd.md", "ndd.prev.md"]  # shipped by earlier versions; removed on upgrade
 
 CLAUDE_POINTER = "@ndd/AGENT-RULES.md"
@@ -53,23 +58,25 @@ def main():
     console.print("\n[bold green]Done.[/bold green] NDD installed into ./ndd/")
 
 
-# Copy the shipped files into ndd/ as they are. Files retired from the method
+# Copy the checkout into ndd/ as it is. Files retired from the method
 # are removed on upgrade.
 def copy_method(ndd: Path) -> None:
     ndd.mkdir(parents=True, exist_ok=True)
-    for name in SHIPPED:
-        root = SOURCE / name
-        files = sorted(p for p in root.rglob("*") if p.is_file()) if root.is_dir() else [root]
-        for src in files:
-            dest = ndd / src.relative_to(SOURCE)
-            if dest.name == "ndd.map.md":
-                back_up_map(dest, src.read_text())
-            copy_asset(src, dest)
+    for src in shipped_files():
+        dest = ndd / src.relative_to(SOURCE)
+        if dest.name == "ndd.map.md":
+            back_up_map(dest, src.read_text())
+        copy_asset(src, dest)
     for name in RETIRED_FILES:
         retired = ndd / name
         if retired.exists():
             retired.unlink()
             report("removed", retired, "no longer part of the method")
+
+
+def shipped_files() -> list[Path]:
+    roots = sorted(p for p in SOURCE.iterdir() if p.name not in NOT_SHIPPED)
+    return [f for root in roots for f in (sorted(q for q in root.rglob("*") if q.is_file()) if root.is_dir() else [root])]
 
 
 # Keep the old map as ndd.prev.map.md only when it actually changed — so a
@@ -118,8 +125,10 @@ def ensure_gitignore(path: Path) -> None:
     report("updated", path, f"added: {', '.join(to_add)}")
 
 
+# Shipped scripts must stay runnable, so the mode travels with the text.
 def copy_asset(src: Path, dest: Path) -> None:
     write_asset(dest, src.read_text())
+    shutil.copymode(src, dest)
 
 
 def write_asset(dest: Path, content: str) -> None:

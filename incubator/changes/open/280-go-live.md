@@ -57,4 +57,5 @@ Each: decide fold-into-map vs. preserve-doc vs. accept-loss.
 ### Also fold into 280 scope (already noted)
 
 - `incubator/README.md` has stale lower sections ("Boundary", "Self-contained COD project") referencing the old `agent/` model — clean during go-live, not just lift.
+- The README update should be minimal, probably pointing at the Principles node in the method map. The installer now excludes `README.md` from what ships, so it addresses a reader of the repository only. Folded from change 275's Held, 2026-09-11.
 - Git-write / GitHub-admin steps (branch, merge, repo rename, make public, install proof) are **user-performed**.

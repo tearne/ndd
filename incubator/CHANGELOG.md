@@ -4,8 +4,10 @@ Notable changes to the NDD method. The current version is the topmost heading be
 
 ## Unreleased
 
+- Testing: the project map gains a Testing branch, `testing.map.md`, whose Fingerprint Check pins the Fingerprint rule with a reference test and fixtures under `tests/`. A Sign-off helper, `util/fingerprint.py`, prints node fingerprints and lists what is due for a person; the new Fingerprint Helper node specifies it. Release Steps now run every test under Testing.
+- The installer ships the whole checkout except development residue (`changes/`, git's files, `.claude/`, the repository's own entry files, `README.md` and the installer itself), keeping scripts executable, so new files ship without a list to maintain.
 - Thought Management: a stray thought is answered, taken as a digression, held or parked, and every message during a set ends with a status line such as `map edits 3 of 7 > aside`.
-- The installer ships the sources: `map.md`, `ndd.map.md`, `CHANGELOG.md`, `AGENT-RULES.md` and `standards/` are copied as they are, with no build step. A client's `ndd/` now holds NDD's project map above the method branch.
+- The installer ships the sources: they are copied as they are, with no build step. A client's `ndd/` now holds NDD's project map above the method branch.
 - Maintenance simplified to three reviews: a Map Review offered after an archive and, in full scope, before a release; a Backlog Review at the Startup Scan; and Sign-off. Tidy runs on hand-back or before an archive and reports every fix. The named checks remain askable by name.
 - Map files: a map may span several `.map.md` files, each a branch hanging from a node in `map.md`; the parent link reads `[↑ Parent]`, each file has a Contents node holding a linked overview, and META is retired. The method ships as `ndd/ndd.map.md`, backed up on upgrade as `ndd.prev.map.md`.
 - Stakeholder sign-off: a node's scaffolding block can carry per-person approval stamps, each a timestamp and a fingerprint of the text approved; the Sign-off check lists what is due for a named person by comparing fingerprints. Maps without stamps are unaffected.

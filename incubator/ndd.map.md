@@ -51,6 +51,7 @@ id: ct5
         - [Callouts](#callouts)
       - [Approval Stamp](#approval-stamp)
         - [Fingerprint](#fingerprint)
+          - [Fingerprint Helper](#fingerprint-helper)
     - [Map Structure](#map-structure)
       - [Map Files](#map-files)
     - [Node Sizing](#node-sizing)
@@ -266,6 +267,7 @@ approvals:
 # Fingerprint
 
 [↑ Approval Stamp](#approval-stamp)
+[Fingerprint Helper](#fingerprint-helper)
 
 ```yaml
 id: h4q
@@ -277,7 +279,36 @@ Comparing fingerprints is a test of equality: a node put back to earlier text re
 
 **Detail**
 
-Take the node from its heading line to the line before the next heading. Drop the scaffolding block and the navigation-link lines whole; inline links in the prose stay as written, markdown included. Remove every whitespace character. The fingerprint is the first eight hex digits of the SHA-256 of that UTF-8 string. An agent computes it by running code, never by reasoning.
+Take the node from its heading line to the line before the next heading. Drop the scaffolding block and the navigation-link lines whole; inline links in the prose stay as written, markdown included. Remove every whitespace character. The fingerprint is the first eight hex digits of the SHA-256 of that UTF-8 string. An agent computes it with the shipped `util/fingerprint.py`, never by reasoning; [Fingerprint Check](testing.map.md#fingerprint-check) is the reference that pins the rule.
+
+
+# Fingerprint Helper
+
+[↑ Fingerprint](#fingerprint)
+
+```yaml
+id: u6h
+```
+
+`util/fingerprint.py` is the script an agent runs to compute node fingerprints: to write an [approval stamp](#approval-stamp), and at [Sign-off](#sign-off) to find what is due.
+
+- Given a map file it prints every node's fingerprint beside its name
+- Given a node name it prints that one fingerprint alone.
+- With `--due` and a person's name it reads the stamps and prints the nodes due for them, in map order.
+
+It reads only; stamps are still written by the agent.
+
+**Detail**
+
+Example usage:
+
+```
+ndd/util/fingerprint.py map.md
+ndd/util/fingerprint.py map.md "Node Name"
+ndd/util/fingerprint.py map.md --due "Alice Smith"
+```
+
+A [POS-style](standards/POS.md) script run with `uv`, one map file at a time, so a map in several files takes one run per file. A name with spaces is quoted on the command line only.
 
 
 # Map Structure

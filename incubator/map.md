@@ -11,6 +11,8 @@ id: p1j
 The repository that develops and ships Non-Dead Design. The method itself is the [NDD](ndd.map.md#ndd) branch, kept in its own file because it is what ships: a client receives that branch alone, as its method map. This trunk holds what stays behind: how the method is built into a distributable, released and installed. The reasoning behind the method is under [Principles](ndd.map.md#principles).
 
 - **Distribution** — how NDD reaches a client project: the shipped layout, the release checklist, the installer and the agent rules.
+
+- **Testing** — how this repository checks itself: the checks, their runnable forms under `tests/`, shipped so clients have access to tests which matter.
 - **NDD** — the method, in `ndd.map.md`.
 
 
@@ -29,6 +31,8 @@ id: ct6
     - [Agent Rules](#agent-rules)
       - [Rule Form](#rule-form)
       - [Rule Selection](#rule-selection)
+  - [Testing](#testing)
+    - [Fingerprint Check](testing.map.md#fingerprint-check)
   - [NDD](ndd.map.md#ndd)
 
 
@@ -62,6 +66,7 @@ The checklist for a new version of NDD, published by moving `main`. After [archi
 
 1. Bump the version: a new entry at the top of `CHANGELOG.md`.
 2. Run `./install.py` from an empty scratch directory and check the result: every link in the vendored rules and maps resolves, and `CLAUDE.md` there is a pointer. That is the pre-ship test; this repository is never installed into itself.
+3. Run every test under [Testing](#testing) and see it pass, so what ships is what its nodes say.
 
 Nothing enforces the order but the agent.
 
@@ -74,19 +79,19 @@ Nothing enforces the order but the agent.
 id: n5w
 ```
 
-A [POS-style](standards/POS.md) script, `install.py` at the root of the NDD checkout, run by a consumer from their own project to install or upgrade NDD. It:
+A [POS-style](standards/POS.md) `install.py` script at the root of this project, run by a consumer from their own project to install or upgrade NDD. It:
 
-- copies this repository's `map.md`, `ndd.map.md`, `CHANGELOG.md`, `AGENT-RULES.md` and `standards/` into `ndd/` as they are, keeping a changed `ndd.map.md` as `ndd.prev.map.md` and removing retired files;
+- copies NDD's project files into `ndd/`, scripts still executable, except for development residue: `changes/`, git's files, `.claude/`, `CLAUDE.md`, `AGENTS.md`, `README.md`, and the installer itself; a changed `ndd.map.md` is backed up as `ndd.prev.map.md` and retired files are removed;
 
-- points `CLAUDE.md` and `AGENTS.md` at `ndd/AGENT-RULES.md`; a file that is only a pointer into `ndd/` is replaced, anything else is left with a warning;
+- points `CLAUDE.md` and `AGENTS.md` at `ndd/AGENT-RULES.md`; a file that only contains pointers into `ndd/` is replaced, anything else is left with a warning;
 
-- ensures `ndd/`, the two entry files and `.claude/` are in `.gitignore`.
+- ensures `ndd/`, the two agent entry files and `.claude/` are in `.gitignore`.
 
 It owns `ndd/` outright but never overwrites other files in the consumer's project.
 
 **Detail**
 
-It refuses to run from its own checkout, since this repository reads its sources directly and is never installed into itself. `install.py --version` reads the top `CHANGELOG.md` heading.
+It refuses to run from its own checkout directory; this repository reads its sources directly and is never installed into itself.
 
 
 # Agent Rules
@@ -99,7 +104,7 @@ It refuses to run from its own checkout, since this repository reads its sources
 id: r8d
 ```
 
-`AGENT-RULES.md` is a rendering of the core rules within this map, optimised for agents; an agent follows instructions best with concrete rules based on clear triggers. This map remains authoritative. It is the one shipped file that is not a map, hand-maintained at the checkout root, where its links to `ndd.map.md` resolve exactly as they do in a client's `ndd/`. A change that edits a node an agent rule cites updates the rule in the same build, since nothing mechanical keeps the rendering in step. Each agent rule names its source node, and the agent is instructed to read it on demand, not preemptively at start.
+`AGENT-RULES.md` is a rendering of the core rules within this map, optimised for agents; an agent follows instructions best with concrete rules based on clear triggers. This map remains authoritative. It is hand-maintained at the checkout root, where its links to `ndd.map.md` resolve exactly as they do in a client's `ndd/`. A change that edits a node an agent rule cites updates the rule in the same build, since nothing mechanical keeps the rendering in step. Each agent rule names its source node, and the agent is instructed to read it on demand, not preemptively at start.
 
 **Detail**
 
@@ -159,6 +164,6 @@ If, at rendering time, the agent reviewing the rules set identifies they are sub
 id: t4k
 ```
 
-How this repository checks itself. A check is a node in this branch stating what must hold and how it is verified, with the runnable form under `tests/` beside the map rather than inside it, so the map stays a description of what exists. The branch lives in `testing.map.md`, and it ships with the maps along with `tests/`, so a client's agent runs the same checks this repository does rather than writing its own. The Fingerprint rule is the first check, chosen because every agent must produce the same hash for the same text, which a description alone cannot guarantee.
+How this repository checks itself. A test is a node in this branch stating what must hold and how it is verified, with the runnable form under `tests/` beside the map rather than inside it, so the map stays a description of what exists. The branch lives in `testing.map.md`, and it ships with the maps along with `tests/`, so a client's agent runs the same checks this repository does rather than writing its own. The Fingerprint rule is the first test, chosen because every agent must produce the same hash for the same text, which a description alone cannot guarantee.
 
 - **Fingerprint Check** — the reference implementation of the [Fingerprint](ndd.map.md#fingerprint) rule and the cases that pin it.
