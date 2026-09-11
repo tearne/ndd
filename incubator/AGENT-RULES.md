@@ -7,6 +7,7 @@ The short form of Non-Dead Design, rendered from the method map. It carries only
 - In a client project two maps are in play: the project's own, entered at `map.md` in the project root and built with the user; and NDD's, vendored under `ndd/`, whose method branch `ndd.map.md` sits beside this file and is what every rule below links to, read-only. Follow a link when you need the reasoning behind a rule, not before. A map is a tree of nodes; start at the root, the one with no `↑` link, and follow child links, into other `*.map.md` files where a branch continues. [Distribution](map.md#distribution).
 - `ndd/` is a vendored snapshot that `install.py` regenerates: change the method at its source and re-run the installer, since hand edits there vanish. In the NDD repository itself the two maps are one, and this file and the maps beside it are the sources. The version you are running is the semver at the top of `CHANGELOG.md` beside this file.
 - Re-read this file whenever your instructions are re-injected after a compaction, and at the start of every Build.
+- A draft goes to chat unless the user says *write*, which means put it in place and stop until they hand back, then run Tidy over what changed before asking anything. *Write* is never approval and never a cue to move on. A bare *write* covers one draft; only an instruction that says so, such as "write everything from here", covers the session. [Approval](ndd.map.md#approval).
 
 ## Rules
 
@@ -32,7 +33,7 @@ Treat only a clear yes as approval, and only for what was shown. Approval is an 
 
 ### 6. Map Edit Order
 
-Make every map edit in one order: draft, surface with its count, write on approval. Surface the drafted node text and its character count, then write only when the reply is approval. No map edit is silent and none is made in bulk, because the user's comprehension is built in the negotiation of each one. If the edit is urgent and the user is absent, wait; do not write it. [Engagement Rule](ndd.map.md#engagement-rule).
+Make every map edit in one order: draft, surface with its count, settle on approval. Surface the drafted node text and its character count, then treat it as settled only when the reply is approval. No map edit is silent and none is made in bulk, because the user's comprehension is built in the negotiation of each one. If the edit is urgent and the user is absent, wait. [Engagement Rule](ndd.map.md#engagement-rule).
 
 ### 7. Corrections
 

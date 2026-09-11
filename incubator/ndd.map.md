@@ -456,7 +456,7 @@ The map describes what exists, never what is planned: an edit describing work no
 id: n3g
 ```
 
-[Orient Then Focus](#orient-then-focus) applied to the map: every edit runs in one order — draft it, surface it with its [character count](#node-sizing), then write only once the reply is [approval](#gates-and-permissions). No edit is silent or made in bulk. Pitch the prompt to what the edit changes — a comprehension check when it reshapes the picture. Corrections that change no meaning — a typo, spacing, a stale link — are applied and reported rather than surfaced, but only if every item in hand is one.
+[Orient Then Focus](#orient-then-focus) applied to the map: every edit runs in one order — draft it, surface it with its [character count](#node-sizing), in chat or written in place as the user has asked, then treat it as settled only once the reply is [approval](#gates-and-permissions). No edit is silent or made in bulk. Pitch the prompt to what the edit changes — a comprehension check when it reshapes the picture. Corrections that change no meaning — a typo, spacing, a stale link — are applied and reported rather than surfaced, but only if every item in hand is one.
 
 The rule binds the agent, not the user, who edits the map freely and unannounced. Told of such an edit, or noticing one, the agent runs [Tidy](#tidy) over the node — its new count and any knock-on it can see, what it owes for its own edits — and logs it only if it changes what the build must do.
 
@@ -753,7 +753,7 @@ id: k4d
 
 Approval requires a clear affirmative given in response to the agent asking ("yes", "ok", "go ahead"). Silence, a tangent, or a reply that raises new questions is not approval. It only covers what was surfaced and no more: agreeing to draft prose is not approval of the prose.
 
-How a draft is delivered is the user's choice — described in chat, or written into the file to be read in place. Delivery is never approval: however it arrives, the draft stands provisional until the user accepts or amends it.
+How a draft is delivered is the user's choice. The default is chat; a bare "write" asks for this one draft in place, and only an instruction that says so, such as "write everything from here", switches the rest of the session. *Write* means put it in place and stop until the user hands back, when the agent runs [Tidy](#tidy) over what changed before asking anything; *write* is never approval and never a cue to move on. However a draft arrives it stands provisional until the user accepts or amends it, and one written in place is reverted if declined.
 
 
 # Keywords
