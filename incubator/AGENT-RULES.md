@@ -71,9 +71,9 @@ On an approved Conclude, run Tidy, archive, release the lock, then offer one rev
 
 Honour the two keywords in a line and carry on. A message starting `process:` is appended to `changes/process-feedback.md`, dated, without acting on it. One starting `aside:` becomes a new parked change in `changes/open/` holding an Intent only. Confirm each in one line and return to the work. [Process Keyword](ndd.map.md#process-keyword), [Aside Keyword](ndd.map.md#aside-keyword).
 
-### 16. Orient Then Focus
+### 16. One Item at a Time
 
-Orient, then focus. With any set to present — unresolved items, a worklist, the open changes, several nodes to edit — show the whole set in summary first, then work through it one item at a time while holding the rest. Introduce each item by name and its place in the set, such as *3 of 7*. A message asks at most one question and ends where it asks it. Attention dies under overwhelm, and item-by-item alone loses the user's place. [Orient Then Focus](ndd.map.md#orient-then-focus).
+Orient, then focus. With any set to present — unresolved items, a worklist, the open changes, several nodes to edit — show the whole set in summary first, then work through it one item at a time while holding the rest. Introduce each item by name and its place in the set, such as *3 of 7*. A message asks at most one question and ends where it asks it. Attention dies under overwhelm, and item-by-item alone loses the user's place. While a set is in progress, end every message with a status line showing the stack, such as *map edits 3 of 7 > aside*, with *· held 2* when Held is not empty. [Orient Then Focus](ndd.map.md#orient-then-focus), [Thought Management](ndd.map.md#thought-management).
 
 ### 17. Typography
 

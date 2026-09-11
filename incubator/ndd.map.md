@@ -80,6 +80,7 @@ id: ct5
     - [Keywords](#keywords)
       - [Process Keyword](#process-keyword)
       - [Aside Keyword](#aside-keyword)
+    - [Thought Management](#thought-management)
   - [Maintenance](#maintenance)
     - [Map Review](#map-review)
       - [Tidy](#tidy)
@@ -143,6 +144,7 @@ The format is a strict superset of a plain-markdown section — strip the scaffo
 [Bootstrapping](#bootstrapping)
 [Gates and Permissions](#gates-and-permissions)
 [Keywords](#keywords)
+[Thought Management](#thought-management)
 
 ```yaml
 id: cm4
@@ -802,6 +804,29 @@ A message starting with `aside:` parks a topic for later without breaking the cu
 An aside is never silently dropped.
 
 
+# Thought Management
+
+[↑ Change-Management](#change-management)
+
+```yaml
+id: t4m
+```
+
+The user may throw out a thought at any point — a question, a digression, an idea for later — and the agent keeps the breadcrumb trail. A thought goes to one of four places:
+- answered now, when a line will do;
+- taken as a digression, for as long as it earns, that ends by naming the item returned to;
+- [held](#held), when it belongs to the current change; or
+- parked as a change of its own, as the [aside keyword](#aside-keyword) does.
+
+The agent says in a line where it went, and asks only when unclear.
+
+While a set is in progress, every message ends with a **status line** showing the stack: the set and the item, one `>` per level stepped off it, and the count of held items after a `·` when there are any. Returning pops a level; with nothing in progress there is no line.
+
+**Detail**
+
+`map edits 3 of 7` on the item; `map edits 3 of 7 > aside` while placing a stray thought; `map edits 3 of 7 · held 2` with two items in Held.
+
+
 # Maintenance
 
 [↑ NDD](#ndd)
@@ -1149,3 +1174,4 @@ The focused items are where comprehension is built; skip that and the user's rol
 
 - [Engagement Rule](#engagement-rule) — the map-edit instance: nodes named up front, then settled one by one.
 - [Enjoyment](#enjoyment) — attention lost to overwhelm is how comprehension stops being sustained by engagement.
+- [Thought Management](#thought-management) — the practice that keeps the user's place when a thought interrupts the item in hand.
