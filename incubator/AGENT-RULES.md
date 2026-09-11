@@ -1,18 +1,18 @@
 # Agent rules
 
-The short form of Non-Dead Design, rendered from the method map. It carries only the rules that apply in almost every session, whose observance can be checked, and whose breach is costly; everything else stays in the map. The map is the source: `ndd/ndd.map.md` explains each rule, and where the two disagree the map wins. Each rule below ends with a link to its home node in the map.
+The short form of Non-Dead Design, rendered from the method map. It carries only the rules that apply in almost every session, whose observance can be checked, and whose breach is costly; everything else stays in the map. The map is the source: `ndd.map.md`, beside this file, explains each rule, and where the two disagree the map wins. Each rule below ends with a link to its home node in the map.
 
 ## Orientation
 
-- Two maps are in play. `ndd/ndd.map.md` is the **method map**: how NDD works, read-only. Each rule links to its source node in the NDD method map; follow it when you need the reasoning behind a rule, not before. `map.md` in the project root is the **project map**: the project itself, built with the user. It is a tree of nodes; start at the root — the one with no parent link — and follow child links. A branch may continue in another `*.map.md` file; its top node links back up with a `↑` link.
-- Everything under `ndd/` is a vendored snapshot that `install.py` regenerates. Change the method at its source and re-run the installer; hand edits here vanish on the next install. The version you are running is the semver at the top of `ndd/CHANGELOG.md`.
+- In a client project two maps are in play: the project's own, entered at `map.md` in the project root and built with the user; and NDD's, vendored under `ndd/`, whose method branch `ndd.map.md` sits beside this file and is what every rule below links to, read-only. Follow a link when you need the reasoning behind a rule, not before. A map is a tree of nodes; start at the root, the one with no `↑` link, and follow child links, into other `*.map.md` files where a branch continues. [Distribution](map.md#distribution).
+- `ndd/` is a vendored snapshot that `install.py` regenerates: change the method at its source and re-run the installer, since hand edits there vanish. In the NDD repository itself the two maps are one, and this file and the maps beside it are the sources. The version you are running is the semver at the top of `CHANGELOG.md` beside this file.
 - Re-read this file whenever your instructions are re-injected after a compaction, and at the start of every Build.
 
 ## Rules
 
 ### 1. Startup Scan
 
-Start every session with the Startup Scan. Read everything in `changes/open/`, place each change in its lifecycle, announce whether you are planning or building, offer the [Backlog](ndd.map.md#backlog) check, and propose the next step. If there is no `map.md` and no `changes/` tree the project has not started: offer to bootstrap instead. Nothing else happens first, because the open changes are where the state lives. [Startup Scan](ndd.map.md#startup-scan), [Bootstrapping](ndd.map.md#bootstrapping).
+Start every session with the Startup Scan. Read everything in `changes/open/`, place each change in its lifecycle, announce whether you are planning or building, offer a [Backlog Review](ndd.map.md#backlog-review), and propose the next step. If there is no `map.md` and no `changes/` tree the project has not started: offer to bootstrap instead. Nothing else happens first, because the open changes are where the state lives. [Startup Scan](ndd.map.md#startup-scan), [Bootstrapping](ndd.map.md#bootstrapping).
 
 ### 2. Build Lock
 
@@ -64,7 +64,7 @@ Empty Held before Conclude. Fold each held item into the change, park it as its 
 
 ### 14. Archiving
 
-On an approved Conclude, archive, release the lock, then offer what follows. Move the file to `changes/archive/` renamed with the ISO date in place of its number and delete `active.md`. Then run [Tidy](ndd.map.md#tidy) and offer [Shape](ndd.map.md#shape) and [Prose](ndd.map.md#prose). If the project map defines release steps, ask whether it is time to run them, and if so offer [Consistency](ndd.map.md#consistency) and [Rendering](ndd.map.md#rendering) first. [Archiving](ndd.map.md#archiving), [Maintenance](ndd.map.md#maintenance).
+On an approved Conclude, run Tidy, archive, release the lock, then offer one review. Run [Tidy](ndd.map.md#tidy) across the map and report it, move the file to `changes/archive/` renamed with the ISO date in place of its number, delete `active.md`, then offer a [Map Review](ndd.map.md#map-review) as one yes-or-no. If the project map defines release steps, ask whether it is time to run them, and if so offer a full Map Review first. [Archiving](ndd.map.md#archiving), [Maintenance](ndd.map.md#maintenance).
 
 ### 15. Keywords
 

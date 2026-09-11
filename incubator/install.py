@@ -4,15 +4,16 @@
 # dependencies = ["rich"]
 # ///
 
-# NDD installer. Copies ./dist/ out of this checkout into ./ndd/ in the
-# current project, file for file, and wires up the agent entry files. Re-run at
-# any time to upgrade in place (git pull this repo first); the prior method map
-# is kept as ndd/ndd.prev.map.md so migration can be reasoned about.
+# NDD installer. Copies the method's source files out of this checkout into
+# ./ndd/ in the current project, as they are, and wires up the agent entry
+# files. Re-run at any time to upgrade in place (git pull this repo first); the
+# prior method map is kept as ndd/ndd.prev.map.md so migration can be reasoned
+# about.
 #
-# dist/ is rendered from the sources by build.py; the installer refuses to
-# run if it is stale, so running it on the NDD checkout itself is the pre-ship
-# test. Source is this script's own directory — the NDD checkout. Clone the
-# repo wherever you like and run it from the project you want to opt in, e.g.
+# Nothing is rendered: what ships is the checkout's own map.md, ndd.map.md,
+# CHANGELOG.md, AGENT-RULES.md and standards/. The NDD repository reads those
+# files directly and is never installed into itself. Clone the repo wherever
+# you like and run this from the project you want to opt in, e.g.
 #   cd my-project && path/to/ndd/install.py
 
 import argparse
@@ -23,11 +24,10 @@ from pathlib import Path
 
 from rich.console import Console
 
-from build import DIST, stale_files
-
 console = Console()
 
 SOURCE = Path(__file__).parent
+SHIPPED = ["map.md", "ndd.map.md", "CHANGELOG.md", "AGENT-RULES.md", "standards"]
 RETIRED_FILES = ["BOOTSTRAP.md", "ndd.md", "ndd.prev.md"]  # shipped by earlier versions; removed on upgrade
 
 CLAUDE_POINTER = "@ndd/AGENT-RULES.md"
@@ -42,8 +42,7 @@ def main():
     parse_args()
     project = Path.cwd()
     ndd = project / "ndd"
-    refuse_to_overwrite_source(ndd)
-    refuse_stale_dist()
+    refuse_own_checkout(project)
     console.print(f"Installing NDD into [bold]{project}[/bold]\n")
 
     copy_method(ndd)
@@ -54,13 +53,15 @@ def main():
     console.print("\n[bold green]Done.[/bold green] NDD installed into ./ndd/")
 
 
-# Mirror dist/ into ndd/ wholesale — adding a shipped file never needs an
-# installer edit. Files retired from the method are removed on upgrade.
+# Copy the shipped files into ndd/ as they are. Files retired from the method
+# are removed on upgrade.
 def copy_method(ndd: Path) -> None:
     ndd.mkdir(parents=True, exist_ok=True)
-    for src in sorted(DIST.rglob("*")):
-        if src.is_file():
-            dest = ndd / src.relative_to(DIST)
+    for name in SHIPPED:
+        root = SOURCE / name
+        files = sorted(p for p in root.rglob("*") if p.is_file()) if root.is_dir() else [root]
+        for src in files:
+            dest = ndd / src.relative_to(SOURCE)
             if dest.name == "ndd.map.md":
                 back_up_map(dest, src.read_text())
             copy_asset(src, dest)
@@ -134,23 +135,14 @@ def write_asset(dest: Path, content: str) -> None:
     report("created", dest)
 
 
-def refuse_to_overwrite_source(ndd: Path) -> None:
-    if ndd.resolve() == SOURCE.resolve():
+# The NDD repository reads its own sources — AGENT-RULES.md and the maps at
+# its root — so installing it into itself would only make a copy that lags.
+def refuse_own_checkout(project: Path) -> None:
+    if project.resolve() == SOURCE.resolve():
         console.print(
-            "[bold red]Error:[/bold red] refusing to run — the target ./ndd/ is the method's own source directory.\n"
+            "[bold red]Error:[/bold red] refusing to run — this is the NDD checkout, which reads its sources directly.\n"
             "Run install.py from the project you want to opt in."
         )
-        sys.exit(1)
-
-
-# dist/ is checked in and rendered by build.py; shipping it stale would hand
-# consumers a map that disagrees with the source it was cut from.
-def refuse_stale_dist() -> None:
-    stale = stale_files()
-    if stale:
-        console.print("[bold red]Error:[/bold red] dist/ is stale — run ./build.py in the NDD checkout first:")
-        for path in stale:
-            console.print(f"  {path}")
         sys.exit(1)
 
 

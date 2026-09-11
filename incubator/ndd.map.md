@@ -81,12 +81,13 @@ id: ct5
       - [Process Keyword](#process-keyword)
       - [Aside Keyword](#aside-keyword)
   - [Maintenance](#maintenance)
-    - [Tidy](#tidy)
-    - [Shape](#shape)
-    - [Prose](#prose)
-    - [Consistency](#consistency)
-    - [Rendering](#rendering)
-    - [Backlog](#backlog)
+    - [Map Review](#map-review)
+      - [Tidy](#tidy)
+      - [Shape](#shape)
+      - [Prose](#prose)
+      - [Consistency](#consistency)
+      - [Rendering](#rendering)
+    - [Backlog Review](#backlog-review)
     - [Sign-off](#sign-off)
   - [Tooling](#tooling)
   - [Standards](#standards)
@@ -457,7 +458,7 @@ id: n3g
 
 [Orient Then Focus](#orient-then-focus) applied to the map: every edit runs in one order — draft it, surface it with its [character count](#node-sizing), then write only once the reply is [approval](#gates-and-permissions). No edit is silent or made in bulk. Pitch the prompt to what the edit changes — a comprehension check when it reshapes the picture. Corrections that change no meaning — a typo, spacing, a stale link — are applied and reported rather than surfaced, but only if every item in hand is one.
 
-The rule binds the agent, not the user, who edits the map freely and unannounced. Told of such an edit, or noticing one, the agent re-reads the node and reports its new count and any knock-on it can see — what it owes for its own edits — and logs it only if it changes what the build must do.
+The rule binds the agent, not the user, who edits the map freely and unannounced. Told of such an edit, or noticing one, the agent runs [Tidy](#tidy) over the node — its new count and any knock-on it can see, what it owes for its own edits — and logs it only if it changes what the build must do.
 
 
 # Cadences
@@ -683,7 +684,7 @@ id: a9v
 
 Once the user approves the [Conclude](#conclude) note, the change leaves `changes/open/` for `changes/archive/`, losing any leading number and gaining the ISO date it concluded — `140-config-file-format.md` becomes `2026-05-14-config-file-format.md`. The [build lock](#build-lock) is then released, and the project is free for the next change.
 
-A versioned project with substantive change also proposes a changelog entry with the draft note, added on the same approval. The [Maintenance](#maintenance) due after archival then follow: Tidy runs, Shape and Prose are offered. If the project map defines release steps, the agent asks whether it is time to run them, and if so offers the checks due before release first.
+A versioned project with substantive change also proposes a changelog entry with the draft note, added on the same approval. [Tidy](#tidy) runs before the move; after it the agent offers a [Map Review](#map-review) in its light scope. If the project map defines release steps, the agent asks whether it is time to run them, and if so offers a full Map Review first.
 
 
 # Startup Scan
@@ -696,7 +697,7 @@ id: x7t
 
 What the agent does first in every session: orient from `changes/open/`. A project with no `map.md` and no `changes/` tree hasn't started yet — the agent [bootstraps](#bootstrapping) it before anything else. Otherwise it reads everything in `changes/open/` and places each change by where it sits in the [lifecycle](#change-lifecycle). The `active.md` lock names the change currently building, if any.
 
-From that the agent announces whether it's planning or building, reports what's open, offers the [Backlog](#backlog) check, and proposes the next step — resuming an interrupted build, or picking up a parked change.
+From that the agent announces whether it's planning or building, reports what's open, offers a [Backlog Review](#backlog-review), and proposes the next step — resuming an interrupted build, or picking up a parked change.
 
 **Detail**
 
@@ -804,53 +805,68 @@ An aside is never silently dropped.
 # Maintenance
 
 [↑ NDD](#ndd)
-[Tidy](#tidy)
-[Shape](#shape)
-[Prose](#prose)
-[Consistency](#consistency)
-[Rendering](#rendering)
-[Backlog](#backlog)
+[Map Review](#map-review)
+[Backlog Review](#backlog-review)
 [Sign-off](#sign-off)
 
 ```yaml
 id: t7v
 ```
 
-The reviews the agent can run or offer, grouped by what they read: the tree, the text, the ideas, the code, the backlog, and the stamps. Every check is available on demand for an agreed scope; the *Trigger* column says where in the change cycle it is also run or offered. Only Tidy runs unprompted — the rest need the user's judgement, so they are offered and taken up or declined.
+The upkeep of the map and the backlog, put to the user as three reviews. Each is one yes-or-no at its moment, and each opens a list of findings walked one item at a time. [Tidy](#tidy) has already run, applied simple fixes, and reported in one line with counts.
 
-| Reads | Check | Looks for | Trigger |
-|-------|-------|-----------|---------|
-| The tree | [Tidy](#tidy) | Tree overview, ids, links and the size table — all mechanical | Runs after archival |
-| The tree | [Shape](#shape) | Nodes to split or merge, a top-level division or child order that no longer fits | Offered after archival |
-| The text | [Prose](#prose) | Nodes off the writing conventions or saying more than their idea needs | Offered after archival |
-| The ideas | [Consistency](#consistency) | Contradictions, untreated competing concepts, redundancy, homeless concepts, ambiguous nodes | Offered before release |
-| The code | [Rendering](#rendering) | Where the code and files no longer match the map, in either direction | Offered before release |
-| The backlog | [Backlog](#backlog) | Parked changes gone stale, overlapping, superseded or out of order | Offered at Startup Scan |
-| The stamps | [Sign-off](#sign-off) | Nodes due for a named stakeholder — fingerprint no longer matching their stamp, or no stamp at all | On request |
+| Review | Reads | Moment |
+|--------|-------|--------|
+| [Map Review](#map-review) | The tree and the text, and before a release the ideas and the code too | Offered after an archive and before a release |
+| [Backlog Review](#backlog-review) | The parked changes in `changes/open/` | Offered at the Startup Scan |
+| [Sign-off](#sign-off) | The approval stamps, for a named stakeholder | On request |
 
-Deferring map upkeep for a stretch — an emergency fix, a push elsewhere — is safe because of this table: nothing is marked, each trigger point re-offers, and release gates the whole-map checks.
+Deferring upkeep for a stretch — an emergency fix, a push elsewhere — is safe because nothing is marked: each moment re-offers its review, and a release brings the full scope.
+
+
+# Map Review
+
+[↑ Maintenance](#maintenance)
+[Tidy](#tidy)
+[Shape](#shape)
+[Prose](#prose)
+[Consistency](#consistency)
+[Rendering](#rendering)
+
+```yaml
+id: m3r
+```
+
+Map Review is offered by the agent as a yes-or-no at two moments, and the moment sets the scope:
+- after an [archive](#archiving) the light scope,
+- before a release the full scope.
+
+[Tidy](#tidy) has already run and reported by then, so a yes opens the **findings list**: everything the Tidy and Map Review checks found that needs a judgement, summarised first and then considered one item at a time by [Orient Then Focus](#orient-then-focus).
+
+Findings are not stored. A review recomputes from the map, so a deferred finding reappears next time and costs a word to dismiss again. The checks stay askable by name, as is a scope, for anyone who wants less or more than the moment offers.
+
+| Scope | Checks | Moment |
+|-------|--------|--------|
+| Light | [Shape](#shape), [Prose](#prose) | Offered after an archive |
+| Full | Light plus [Consistency](#consistency), [Rendering](#rendering) | Offered before a release |
 
 
 # Tidy
 
-[↑ Maintenance](#maintenance)
+[↑ Map Review](#map-review)
 
 ```yaml
 id: u8k
 ```
 
-The mechanical housekeeping, run across the whole map once a change is archived. The agent needs no prompting and reports everything in one summary; anything it touches is a [correction](#engagement-rule), never a change of meaning.
+Agent-run housekeeping, run on the nodes the user edited when they hand back, and across the whole map before an [archive](#archiving). The agent needs no prompting; it reports every fix made and every count it took, in as few lines as that needs, one line if there is nothing. It is restricted to [corrections](#engagement-rule), never changes of meaning; anything needing judgement is left for [Map Review](#map-review) to raise as a finding.
 
-- **Fixed, then reported**: the [tree overview](#map-structure) brought back in step with the navigation links; a missing scaffolding [id](#node-identity) or [navigation link](#navigation-links) added; a link re-pointed after a target renamed.
-
-- **Reported only**: a table of nodes over the [size bound](#node-sizing), since splitting-versus-keeping is the user's call, made in [Shape](#shape).
-
-- **Escalated**: anything a mechanical fix can't settle, such as a duplicated heading that needs a rename.
+It fixes and reports a [tree overview](#map-structure) out of step with the navigation links, a missing scaffolding [id](#node-identity) or [navigation link](#navigation-links), a link left behind by a rename, and an unambiguous grammatical slip. It reports only the count of nodes over the [size bound](#node-sizing), since each is a judgement for Map Review.
 
 
 # Shape
 
-[↑ Maintenance](#maintenance)
+[↑ Map Review](#map-review)
 
 ```yaml
 id: d4p
@@ -871,7 +887,7 @@ It looks for:
 
 # Prose
 
-[↑ Maintenance](#maintenance)
+[↑ Map Review](#map-review)
 
 ```yaml
 id: p2w
@@ -888,7 +904,7 @@ It looks for:
 
 # Consistency
 
-[↑ Maintenance](#maintenance)
+[↑ Map Review](#map-review)
 
 ```yaml
 id: k4c
@@ -915,7 +931,7 @@ The ambiguity test is the everyday form of [Cross-Agent Falsifiability](#cross-a
 
 # Rendering
 
-[↑ Maintenance](#maintenance)
+[↑ Map Review](#map-review)
 
 ```yaml
 id: r3n
@@ -936,7 +952,7 @@ It looks for:
 It is the single-agent form of [Cross-Agent Falsifiability](#cross-agent-falsifiability). Because it reads the code it is the costliest check, and the catch-up when map upkeep has been deferred for a while.
 
 
-# Backlog
+# Backlog Review
 
 [↑ Maintenance](#maintenance)
 
@@ -944,7 +960,7 @@ It is the single-agent form of [Cross-Agent Falsifiability](#cross-agent-falsifi
 id: b7k
 ```
 
-A check on the parked changes in `changes/open/`, offered at the [Startup Scan](#startup-scan) once the open changes have been reported, since they have just been read. Each parked change is settled with the user: kept as it is, updated, renumbered, merged, or discarded.
+Backlog Review is offered by the agent as a yes-or-no at the [Startup Scan](#startup-scan), once the open changes have been reported, since they have just been read. It covers the parked changes in `changes/open/`. Each parked change is settled with the user: kept as it is, updated, renumbered, merged, or discarded.
 
 It looks for:
 

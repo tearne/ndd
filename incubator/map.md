@@ -24,7 +24,6 @@ id: ct6
 
 - [NDD Project](#ndd-project)
   - [Distribution](#distribution)
-    - [Dist Directory](#dist-directory)
     - [Release Steps](#release-steps)
     - [Installer](#installer)
     - [Agent Rules](#agent-rules)
@@ -36,7 +35,6 @@ id: ct6
 # Distribution
 
 [↑ NDD Project](#ndd-project)
-[Dist Directory](#dist-directory)
 [Release Steps](#release-steps)
 [Installer](#installer)
 [Agent Rules](#agent-rules)
@@ -45,22 +43,11 @@ id: ct6
 id: d5v
 ```
 
-NDD is distributed as a git checkout. The consumer clones the NDD repository and runs `install.py` from their own project; it copies the contents of the checked-in [`dist/`](#dist-directory) directory into `ndd/`, file for file, and writes the agent entry files, leaving the project's own map and changes untouched. Upgrading is `git pull` in the checkout, then the same run.
+NDD is distributed as a git checkout: the user clones this repository and runs its [installer](#installer) from within their own project, which vendors the method into an `ndd/` subdirectory there. Upgrading is `git pull` in the checkout, then the same run.
 
-`main` is the single moving edge — no cut releases; the shipped changelog names the current version, and the previous map is kept alongside as the agent's migration diff. See [Dist Directory](#dist-directory) for what ships, how `build.py` renders it and why it is laid out as it is, [Release Steps](#release-steps) for what happens before it ships, [Installer](#installer) for the mechanics, and [Agent Rules](#agent-rules) for the one shipped file that is not a copy of a source.
+A client project then holds two maps: its own in the project root, and NDD's under `ndd/`, whose `map.md` is this project map and whose `ndd.map.md` is the part the agent rules link to. Nothing is rendered on the way, so a client reads exactly what this repository reads.
 
-
-# Dist Directory
-
-[↑ Distribution](#distribution)
-
-```yaml
-id: d8r
-```
-
-The checked-in `dist/` directory is what ships on client installation. It holds a branch of this repository's map, but a branch cannot ship as it stands: its top node links up to NDD Project, which a consumer does not have. `dist/` holds the shipped layout after modification, so installing is a plain file copy rather than files being quietly modified by an installer.
-
-`build.py`, at the root beside the installer, renders the map branch: `ndd.map.md` is copied with its top node's parent link dropped, so it arrives as a root, and `CHANGELOG.md` and the `standards/` guides are copied unchanged. The one file it does not touch is `dist/AGENT-RULES.md`, which is maintained there directly because its links target `ndd.map.md` and resolve only in that layout. `build.py --check` reports what is stale against what the build would write.
+`main` is the single moving edge — no cut releases; the shipped `CHANGELOG.md` names the current version.
 
 
 # Release Steps
@@ -71,14 +58,12 @@ The checked-in `dist/` directory is what ships on client installation. It holds 
 id: l2s
 ```
 
-The checklist for cutting a release of NDD. After [archiving](ndd.map.md#archiving) the agent asks whether it is time to release and the user decides. If several changes are obviously shipping together no need to ask. If releasing, the [Maintenance](ndd.map.md#maintenance) due before release are offered, then the agent confirms the user wants each of the following:
+The checklist for a new version of NDD, published by moving `main`. After [archiving](ndd.map.md#archiving) the agent asks whether it is time for one and the user decides. If several changes are obviously shipping together no need to ask. If releasing, a full [Map Review](ndd.map.md#map-review) is offered first, then the agent confirms the user wants each of the following:
 
 1. Bump the version: a new entry at the top of `CHANGELOG.md`.
-2. Run `./build.py` so `dist/` matches the sources.
-3. Run `./install.py` from this checkout. It refuses a stale `dist/`, so a clean run is the pre-ship test, and it refreshes the self-vendored `ndd/` the agent reads here.
-4. Report if any file in `dist/` which should ship is ignored.
+2. Run `./install.py` from an empty scratch directory and check the result: every link in the vendored rules and maps resolves, and `CLAUDE.md` there is a pointer. That is the pre-ship test; this repository is never installed into itself.
 
-Nothing enforces the order but the agent; the [Installer](#installer)'s refusal is the backstop if a step is skipped.
+Nothing enforces the order but the agent.
 
 
 # Installer
@@ -89,17 +74,19 @@ Nothing enforces the order but the agent; the [Installer](#installer)'s refusal 
 id: n5w
 ```
 
-A [POS-style](standards/POS.md) installer script, `install.py` at the root of the NDD repo, is run by a consumer from their own project to install or upgrade NDD. It owns `ndd/` but never overwrites other files in the consumer's project. It:
+A [POS-style](standards/POS.md) script, `install.py` at the root of the NDD checkout, run by a consumer from their own project to install or upgrade NDD. It:
 
-- copies [`dist/*`](#dist-directory) into `ndd/`, keeping a changed `ndd.map.md` as `ndd.prev.map.md` and removing retired files;
+- copies this repository's `map.md`, `ndd.map.md`, `CHANGELOG.md`, `AGENT-RULES.md` and `standards/` into `ndd/` as they are, keeping a changed `ndd.map.md` as `ndd.prev.map.md` and removing retired files;
 
 - points `CLAUDE.md` and `AGENTS.md` at `ndd/AGENT-RULES.md`; a file that is only a pointer into `ndd/` is replaced, anything else is left with a warning;
 
 - ensures `ndd/`, the two entry files and `.claude/` are in `.gitignore`.
 
+It owns `ndd/` outright but never overwrites other files in the consumer's project.
+
 **Detail**
 
-It aborts if `dist/` is stale against its sources, or if the target `ndd/` would overwrite this project's root itself; any other target is allowed, which lets this repository dogfood by self-vendoring. `install.py --version` reads the top `CHANGELOG.md` heading.
+It refuses to run from its own checkout, since this repository reads its sources directly and is never installed into itself. `install.py --version` reads the top `CHANGELOG.md` heading.
 
 
 # Agent Rules
@@ -112,11 +99,11 @@ It aborts if `dist/` is stale against its sources, or if the target `ndd/` would
 id: r8d
 ```
 
-`AGENT-RULES.md` is a rendering of the core rules within this map, optimised for agents; an agent follows instructions best with concrete rules based on clear triggers. This map remains authoritative. Each agent rule names its source node, and the agent is instructed to read it on demand, not preemptively at start.
+`AGENT-RULES.md` is a rendering of the core rules within this map, optimised for agents; an agent follows instructions best with concrete rules based on clear triggers. This map remains authoritative. It is the one shipped file that is not a map, hand-maintained at the checkout root, where its links to `ndd.map.md` resolve exactly as they do in a client's `ndd/`. A change that edits a node an agent rule cites updates the rule in the same build, since nothing mechanical keeps the rendering in step. Each agent rule names its source node, and the agent is instructed to read it on demand, not preemptively at start.
 
 **Detail**
 
-The agent re-reads the file at the start of every [Build](ndd.map.md#build) and after any context compaction. Which rules it carries is settled by [Rule Selection](#rule-selection).
+The agent re-reads the file at the start of every [Build](ndd.map.md#build) and after any context compaction. Which rules it carries is settled by [Rule Selection](#rule-selection). Its orientation paragraph has [Distribution](#distribution) as its source.
 
 
 # Rule Form
