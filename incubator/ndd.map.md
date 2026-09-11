@@ -15,7 +15,7 @@ id: a3k
 
 NDD, Non-Dead Design, aims to improve knowledge management for agentic software development. The name reflects the [three deaths](#three-deaths) it seeks to prevent: of specifications, of structural thinking, and of comprehension.
 
-The map is the one artefact that keeps all three alive: a conceptual **map** of the system, acting as the hub for specification and change management rather than a document off to one side. The method itself is expressed as a map.
+The map is the one artefact that keeps all three alive: a conceptual **map** of the system, acting as the hub for specification and change management rather than a document off to one side.
 
 - **Principles** — the founding rationale in more detail.
 - **Specification** — the conceptual map as the primary comprehension artefact.
@@ -172,11 +172,7 @@ A node's name can change; its identity can't. A small immutable token in the yam
 
 **Detail**
 
-The **scaffolding block** is fenced YAML directly under the navigation links containing the `id` and any [approval stamps](#approval-stamp). It's agent-maintained. The `id:` key is map-unique, lowercase alphanumeric, three or more characters (e.g. `k7f`) - a token rather than a readable slug to avoid edit or link temptation. A user may hand-draft a node without a block; the mechanical review adds one and reports it, so identity is never silently missing.
-
-**See also**
-
-- [Tidy](#tidy) — a missing id is added automatically during the mechanical review.
+The **scaffolding block** is fenced YAML directly under the navigation links containing the `id` and any [approval stamps](#approval-stamp). It's agent-maintained. The `id:` key is map-unique, lowercase alphanumeric, three or more characters (e.g. `k7f`) - a token rather than a readable slug to avoid edit or link temptation. A user may hand-draft a node without a block; the [mechanical review](#tidy) adds one and reports it, so identity is never silently missing.
 
 
 # Navigation Links
@@ -193,7 +189,7 @@ The tree is defined by its links, not in a separate structure. Each node names i
 
 **Detail**
 
-The parent link comes first, its text the target's name prefixed with `↑`, so the root, which has none, is told apart at a glance; every other node has exactly one. Child link text is the target node's actual name, so an editor with a markdown LSP (e.g. marksman) jumps straight there with `gd`. Because links are name-anchored, renaming a node is a mechanical re-point of the links that named it, and the ID never appears in a link. A user may omit links while drafting; the mechanical review adds them and reports it.
+The parent link comes first, its text the target's name prefixed with `↑`, so the root, which has none, is told apart at a glance; every other node has exactly one. Child link text is the target node's actual name, so an editor with a markdown LSP (e.g. marksman) jumps straight there with `gd`. Because links are name-anchored, renaming a node is a mechanical re-point of the links that named it, and the ID never appears in a link. A user may omit links while drafting; the [mechanical review](#tidy) adds them and reports it.
 
 Child order belongs to the parent; order them to reflect natural reading order.
 
@@ -202,7 +198,6 @@ Because links resolve by name, every heading must be unambiguous within its [map
 **See also**
 
 - [Trees over Graphs](#trees-over-graphs) — links encode the one-parent tree that keeps navigation walkable.
-- [Tidy](#tidy) — missing links are added automatically during the mechanical review; child order is a [Shape](#shape) check.
 
 
 # Node Sections
@@ -229,7 +224,7 @@ The main user-facing parts of a node are each optional and include, in a fixed o
 id: c5k
 ```
 
-A callout is a "don't skim this" flag on a point the prose already makes. It marks the load-bearing moments where skimming would lose the reader, such as a design trade-off, a non-obvious assumption, or a constraint that shapes the whole node. The prose still carries the meaning; the callout only raises a hand.
+A callout is a "don't skim this" flag on a point the prose already makes. It marks the load-bearing moments where skimming would lose the reader, such as a design trade-off, a non-obvious assumption, or a constraint that shapes the whole node.
 
 **Detail**
 
@@ -320,7 +315,7 @@ A [POS-style](standards/POS.md) script run with `uv`, one map file at a time, so
 id: m6x
 ```
 
-The map's shape is shown at a glance by a **tree overview** — a box-drawing sketch of the whole node tree — held in a *Contents* node, the first child of each [map file](#map-files)'s top node. Nodes not yet written are marked `(TODO)`, so the intended shape is visible before the content is. The rendering is only a convenience: the real tree is encoded in the navigation links, and the overview is kept in step with them.
+The map's shape is shown at a glance by a **tree overview** — a box-drawing sketch of the whole node tree — held in a *Contents* node, the first child of each [map file](#map-files)'s top node. Nodes not yet written are marked `(TODO)`, so the intended shape is visible before the content is. The rendering is only a convenience: the real tree is encoded in the navigation links, and the overview is kept in step with them by [Tidy](#tidy).
 
 **Detail**
 
@@ -331,7 +326,6 @@ The root defaults to the project's name, preferring a term that carries domain i
 **See also**
 
 - [Trees over Graphs](#trees-over-graphs) — why the sketched shape is a tree, not a general graph.
-- [Tidy](#tidy) — keeping this overview in step with the navigation links is part of the mechanical review.
 
 
 # Map Files
@@ -348,12 +342,11 @@ A branch is split out for size, or for a conceptual boundary worth seeing in the
 
 **Detail**
 
-Each file has a *Contents* node, first child of its top node, holding the overview of the nodes in that file as a nested list of links; a branch that continues in another file is linked into it and the list stops there. A cross-file link is `[Release Steps](map.md#release-steps)`. Headings must be unambiguous within a file; across files the file name disambiguates.
+Each file has a *Contents* node, first child of its top node, holding the overview of the nodes in that file as a nested list of links; a branch that continues in another file is linked into it and the list stops there.
 
 **See also**
 
 - [Navigation Links](#navigation-links) — the links that carry the tree, within a file and across.
-- [Tidy](#tidy) — each file's overview is kept in step with the links in that file.
 
 
 # Node Sizing
@@ -375,7 +368,6 @@ The count measures the node's own content, which is why *Detail* is included and
 **See also**
 
 - [Local Sufficiency](#local-sufficiency) — why nodes stay small: a reader must grasp one node from the node alone.
-- [Tidy](#tidy) — oversize nodes are reported in the mechanical review summary.
 
 
 # Writing Style
@@ -393,10 +385,6 @@ How map prose is written, so nodes stay readable and durable. Two sides:
 - Conceptual Writing: what the prose *says*
 
 - Formatting: how it's typeset
-
-**See also**
-
-- [Prose](#prose) — prose is checked against these conventions during the check.
 
 
 # Conceptual Writing
@@ -560,7 +548,7 @@ id: v3d
 
 During the plan stage project files outside `changes/` remain read-only, save for the [map exemption](#edit-governance). The plan builds up in **parts** — the [Intent](#intent), [Approach](#approach), [Worklist](#worklist) — each drafted then surfaced for approval before the next, culminating in the worklist that [Build](#build) executes. Which parts a change has is set by its [cadence](#cadences). Two further sections sit outside that sequence, ungated: [Context](#context), which explains why the change exists, and [Held](#held), which catches material arriving before its part.
 
-A Plan need not be fully formed to exist. A change may sit at any degree of formation — from an [Intent](#intent)-only draft just parked via [aside](#aside-keyword), up to a complete worklist awaiting approval. The [Startup Scan](#startup-scan) can summarise in informal terms such as *parked at its Intent*, *mid-approach*, or *awaiting a worklist*.
+A Plan need not be fully formed to exist. A change may sit at any degree of formation — from an [Intent](#intent)-only draft just parked via [aside](#aside-keyword), up to a complete worklist awaiting approval.
 
 
 # Intent
@@ -619,7 +607,7 @@ id: a2r
 
 How the change will be carried out, written as a list of decisions and their reasons — not a narrative and not a file-by-file rehearsal, which belongs to the [worklist](#plan). Each decision earns a line only if it carries a reason; self-evident choices need no subsection. Skipped entirely by [Wander](#cadences).
 
-Alongside it sits an **Unresolved** list: the open items the agent can't settle alone, each pointing at the part of the Approach it affects. The agent surfaces the full list in chat so the user can see everything outstanding, then walks through them — for anything non-trivial, one at a time ("4 unresolved items […]. First one: …") rather than asking the user to address them all at once. Answers fold back into the prose and the list shrinks. An empty list means the Approach is ready for approval.
+Alongside it sits an **Unresolved** list: the open items the agent can't settle alone, each pointing at the part of the Approach it affects. The agent surfaces the full list in chat so the user can see everything outstanding, then walks through them — for anything non-trivial, [one at a time](#orient-then-focus) rather than asking the user to address them all at once. Answers fold back into the prose and the list shrinks. An empty list means the Approach is ready for approval.
 
 The Approach is capped at ~2000 characters, excluding Unresolved: each time the agent surfaces it, it counts them and reports the number, and past the cap asks the user to adjudicate.
 
@@ -630,7 +618,6 @@ The agent re-reads and prunes its own draft before surfacing — anything not ca
 **See also**
 
 - [Enjoyment](#enjoyment) — artifact economy: why the Approach is pruned to decisions-and-reasons rather than left as narrative.
-- [Orient Then Focus](#orient-then-focus) — the Unresolved walkthrough is that principle applied: the whole list surfaced, then one item at a time.
 
 
 # Worklist
@@ -680,10 +667,6 @@ What keeps one change building at a time. [Build](#build) begins only on the use
 
 Releasing the lock deletes the file. A build that changed code keeps the lock even when handed back to planning; only an untouched one may release it, so unfinished work is never silently abandoned.
 
-**See also**
-
-- [Startup Scan](#startup-scan) — the lock is what tells a fresh session a build was interrupted.
-
 
 # Conclude
 
@@ -696,7 +679,7 @@ id: o4j
 
 The closing note, written only once the user confirms the build is done. It states where the change landed — not a story of how it got there.
 
-Anything still [Held](#held) is released before Conclude begins — folded into the change, spun off as its own [parked change](#plan), or discarded by the user. Nothing is wrapped up with material outstanding.
+Anything still [Held](#held) is released before Conclude begins — folded into the change, spun off as its own [parked change](#plan), or discarded by the user.
 
 It records only what the plan and the Log don't already convey: deviations, documents touched, surprises. When there's nothing to add, "Completed." is enough. It is capped at ~500 characters, excluding any changelog entry proposed with it: the agent counts them when surfacing the draft, reports the number, and past the cap asks the user to adjudicate.
 
@@ -715,7 +698,7 @@ Its mere presence is the marker that the change is finished.
 id: a9v
 ```
 
-Once the user approves the [Conclude](#conclude) note, the change leaves `changes/open/` for `changes/archive/`, losing any leading number and gaining the ISO date it concluded — `140-config-file-format.md` becomes `2026-05-14-config-file-format.md`. The [build lock](#build-lock) is then released, and the project is free for the next change.
+Once the user approves the [Conclude](#conclude) note, the change leaves `changes/open/` for `changes/archive/`, losing any leading number and gaining the ISO date it concluded — `140-config-file-format.md` becomes `2026-05-14-config-file-format.md`. The [build lock](#build-lock) is then released.
 
 A versioned project with substantive change also proposes a changelog entry with the draft note, added on the same approval. [Tidy](#tidy) runs before the move; after it the agent offers a [Map Review](#map-review) in its light scope. If the project map defines release steps, the agent asks whether it is time to run them, and if so offers a full Map Review first.
 
@@ -728,7 +711,7 @@ A versioned project with substantive change also proposes a changelog entry with
 id: x7t
 ```
 
-What the agent does first in every session: orient from `changes/open/`. A project with no `map.md` and no `changes/` tree hasn't started yet — the agent [bootstraps](#bootstrapping) it before anything else. Otherwise it reads everything in `changes/open/` and places each change by where it sits in the [lifecycle](#change-lifecycle). The `active.md` lock names the change currently building, if any.
+What the agent does first in every session: orient from `changes/open/`. A project with no `map.md` and no `changes/` tree hasn't started yet — the agent [bootstraps](#bootstrapping) it before anything else. Otherwise it reads everything in `changes/open/` and places each change by where it sits in the [lifecycle](#change-lifecycle). The `active.md` [lock](#build-lock) names the change currently building, if any.
 
 From that the agent announces whether it's planning or building, reports what's open, offers a [Backlog Review](#backlog-review), and proposes the next step — resuming an interrupted build, or picking up a parked change.
 
@@ -747,9 +730,9 @@ id: b6t
 
 How a project acquires its first map. A fresh install vendors only the method under `ndd/`, leaving the project itself empty — no `map.md`, no `changes/` tree — so the ordinary lifecycle has nothing to stand on. The agent detects this at the [Startup Scan](#startup-scan) and offers to bootstrap rather than proceeding as normal.
 
-It scaffolds the [`changes/` tree](#change-management) and seeds the project map — `map.md` in the project root, distinct from the read-only method map at `ndd/ndd.map.md` — through discussion and any pre-existing documentation. How much to seed is the user's call: a single root node named for the system, or a fuller sketch — they may prefer to start capturing ideas before dwelling on setup.
+It scaffolds the [`changes/` tree](#change-management) and seeds the project map — `map.md` in the project root, distinct from the read-only method map at `ndd/ndd.map.md` — through discussion and any pre-existing documentation. How much to seed is the user's call: a single root node named for the system, or a fuller sketch.
 
-Adopting an existing codebase adds a survey: the agent reads existing assets and proposes nodes one at a time per the [Engagement Rule](#engagement-rule). Progress is bite-sized at the user's pace and may be postponed. Reality-reflecting map edits need no active change (see [Edit Governance](#edit-governance)), though wrapping a migration in one can keep it systematic.
+Adopting an existing codebase adds a survey: the agent reads existing assets and proposes nodes one at a time per the [Engagement Rule](#engagement-rule). Reality-reflecting map edits need no active change (see [Edit Governance](#edit-governance)), though wrapping a migration in one can keep it systematic.
 
 
 # Gates and Permissions
@@ -772,8 +755,6 @@ Writing is gated by phase and by an active change. During [Plan](#plan) the agen
 **Detail**
 
 Git write operations — commit, push, branch, reset — always require explicit user instruction; the agent never does them on its own initiative.
-
-Editing `changes/` (capturing a parked change, drafting phases) is likewise exempt from the active-change requirement.
 
 
 # Approval
@@ -830,10 +811,6 @@ id: y2f
 
 A message starting with `aside:` parks a topic for later without breaking the current flow: it becomes a fresh parked change in `changes/open/`, an [Intent](#intent) and nothing more, a proposal separate from whatever is under way. The agent acknowledges placement in a line and returns to what it was doing. Material belonging to the *current* change rather than a separate one is [Held](#held) instead.
 
-**Detail**
-
-An aside is never silently dropped.
-
 
 # Thought Management
 
@@ -869,7 +846,7 @@ While a set is in progress, every message ends with a **status line** showing th
 id: t7v
 ```
 
-The upkeep of the map and the backlog, put to the user as three reviews. Each is one yes-or-no at its moment, and each opens a list of findings walked one item at a time. [Tidy](#tidy) has already run, applied simple fixes, and reported in one line with counts.
+The upkeep of the map and the backlog, put to the user as three reviews. Each is one yes-or-no at its moment, and each opens a list of findings walked one item at a time.
 
 | Review | Reads | Moment |
 |--------|-------|--------|
@@ -1055,7 +1032,7 @@ Nothing is marked when a node changes. Drift is found by comparing: a node is *d
 id: g8l
 ```
 
-The method needs no bespoke application — it rides generic markdown tooling. In an editor with a markdown language server (marksman, in Helix), the name-anchored [navigation links](#navigation-links) become jump-to-definition targets: `gd` walks the tree parent-to-child, and the symbol picker (Helix `Space+s`) lists every node by name for a direct jump anywhere. Nothing custom is required; the format is kept deliberately plain so richer surfaces stay cheap to build on top later.
+The method needs no bespoke application — it rides generic markdown tooling. In an editor with a markdown language server (marksman, in Helix), the name-anchored [navigation links](#navigation-links) become jump-to-definition targets: `gd` walks the tree parent-to-child, and the symbol picker (Helix `Space+s`) lists every node by name for a direct jump anywhere. The format is kept deliberately plain so richer surfaces stay cheap to build on top later.
 
 
 # Standards
@@ -1094,7 +1071,15 @@ Guidance for the code written by agents on user projects, distinct from the map 
 id: p4c
 ```
 
-The method's founding case. Agent-augmented development broke the old bundle where writing code and understanding it were one act — production no longer carries comprehension along. The method restores a deliberate comprehension-building activity, maintaining the map, and hands rendering to the agent. Because it works at the structural level, the map also surfaces logic bugs — wrong flows, missing cases, bad boundaries — before any code is written. Conceptual maintainability thus earns first-class standing alongside correctness, never the first thing sacrificed under deadline pressure. The principles below are the binding constraints every change answers to, and the home other nodes point at instead of restating a reason.
+The method's founding case, in three moves.
+
+- **What broke.** Agent-augmented development split writing code from understanding it: production no longer carries comprehension along.
+
+- **What the method does.** It restores a deliberate comprehension-building activity, maintaining the map, and passes rendering to the agent.
+
+- **What follows.** Working at the structural level, the map surfaces logic bugs, wrong flows, missing cases, bad boundaries, before any code is written, and conceptual maintainability earns first-class standing alongside correctness.
+
+The principles below are the binding constraints every change answers to, and the home other nodes point at instead of restating a reason.
 
 
 # Three Deaths
@@ -1112,8 +1097,6 @@ The three deaths the method's name refers to, each a way understanding is lost o
 - **Structural thinking dies** when the human no longer authors the codebase and the agent's output has nowhere to be reasoned about.
 
 - **Comprehension dies** when the developer's role stops being architecturally fun, because understanding is sustained by engagement, not discipline.
-
-The map is the countermeasure to all three, and the [Maintenance](#maintenance) are what keep it from the first.
 
 
 # Comprehension is an Activity
@@ -1148,7 +1131,7 @@ id: j2e
 
 Structural thinking must stay enjoyable — it's the part strong practitioners value, and a process that reduces the user to reviewing agent diffs destroys engagement. Engagement, not discipline, is what sustains comprehension over time: you keep understanding a system because staying in the structural thinking is rewarding, not by willpower. Enjoyment is a binding constraint, not a bonus.
 
-Its corollary is **artifact economy**: every word in a change document or map node competes for the reader's attention, so bloat and duplication turn a dialogic activity with the agent into a wading exercise. Concision isn't style here, it's protection.
+Its corollary is **artifact economy**: every word in a change document or map node competes for the reader's attention, so bloat and duplication turn a dialogic activity with the agent into a wading exercise.
 
 
 # Local Sufficiency

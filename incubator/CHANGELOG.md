@@ -4,6 +4,7 @@ Notable changes to the NDD method. The current version is the topmost heading be
 
 ## Unreleased
 
+- Prose tightened across the method map and trunk: restatements, duplicated facts, redundant *See also* entries and flourish cut, with inline links where a pointer was still needed; Principles restructured.
 - Testing gains an Install Check: `tests/install_test.py` installs into a scratch project and asserts refusal of the checkout itself, the shipped set, pointer entry files, executable scripts, resolving links, and the upgrade path. Release Steps is now bump, then run every test.
 - Testing: the project map gains a Testing branch, `testing.map.md`, whose Fingerprint Check pins the Fingerprint rule with a reference test and fixtures under `tests/`. A Sign-off helper, `util/fingerprint.py`, prints node fingerprints and lists what is due for a person; the new Fingerprint Helper node specifies it. Release Steps now run every test under Testing.
 - The installer ships every file git tracks except `CLAUDE.md` and `AGENTS.md`, keeping scripts executable, so a new file ships once it is committed and there is no list to maintain.

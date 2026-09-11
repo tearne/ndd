@@ -67,8 +67,6 @@ The checklist for a new version of NDD, published by moving `main`. After [archi
 1. Bump the version: a new entry at the top of `CHANGELOG.md`.
 2. Run every test under [Testing](testing.map.md#testing) and see it pass, so what ships is what its nodes say.
 
-Nothing enforces the order but the agent.
-
 
 # Installer
 

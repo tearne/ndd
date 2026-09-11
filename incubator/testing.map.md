@@ -9,7 +9,7 @@
 id: t4k
 ```
 
-How this repository checks itself. A test is a node in this branch stating what must hold and how it is verified, with the runnable form under `tests/` beside the map rather than inside it, so the map stays a description of what exists. The branch lives in `testing.map.md`, and it ships with the maps along with `tests/`, so a client's agent runs the same checks this repository does rather than writing its own. The Fingerprint rule is the first test, chosen because every agent must produce the same hash for the same text, which a description alone cannot guarantee.
+How this repository checks itself. A test is a node in this branch stating what must hold and how it is verified, with the runnable form under `tests/` beside the map rather than inside it, so the map stays a description of what exists. The branch lives in `testing.map.md`, and it ships with the maps along with `tests/`, so a client's agent runs the same checks this repository does rather than writing its own.
 
 - **Fingerprint Check** — the reference implementation of the [Fingerprint](ndd.map.md#fingerprint) rule and the cases that pin it.
 
