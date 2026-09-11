@@ -148,3 +148,17 @@ Everything else stays in the map. A rule that fails a test should be adapted, cu
 The rendering stays short because adherence degrades with instruction count, and across all rules at once, so each rule kept taxes the rest.
 
 If, at rendering time, the agent reviewing the rules set identifies they are sub-optimal the issues should be traced upstream to this map and discussed.
+
+
+# Testing
+
+[↑ NDD Project](#ndd-project)
+[Fingerprint Check](testing.map.md#fingerprint-check)
+
+```yaml
+id: t4k
+```
+
+How this repository checks itself. A check is a node in this branch stating what must hold and how it is verified, with the runnable form under `tests/` beside the map rather than inside it, so the map stays a description of what exists. The branch lives in `testing.map.md`, and it ships with the maps along with `tests/`, so a client's agent runs the same checks this repository does rather than writing its own. The Fingerprint rule is the first check, chosen because every agent must produce the same hash for the same text, which a description alone cannot guarantee.
+
+- **Fingerprint Check** — the reference implementation of the [Fingerprint](ndd.map.md#fingerprint) rule and the cases that pin it.
