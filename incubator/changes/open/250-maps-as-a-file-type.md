@@ -44,18 +44,19 @@ _(Approved 2026-09-10. Build started the same day. Map Files and the Distributio
 
 - [x] Map Files: new child of Map Structure holding the file convention.
 - [x] Map Structure: overview lives in the file's top node; splitting sentence becomes a pointer to Map Files.
-- [ ] Navigation Links: the cross-file link form.
-- [ ] META retired: node removed, root child link removed, orientation paragraph dropped.
-- [ ] Root renamed NDD; every link naming it re-pointed.
-- [ ] Contents retired: overview moves into the NDD node, showing the method branch.
-- [ ] Rationale re-parented under NDD.
+- [x] Navigation Links: the cross-file link form.
+- [x] Parent link marked with a leading `↑`: the rule in Navigation Links and Formatting, then every node re-typeset as a correction (added 2026-09-10; arrow chosen over a blank line).
+- [x] META retired: node removed, root child link removed, orientation paragraph dropped.
+- [x] Root renamed NDD; every link naming it re-pointed.
+- [x] Contents retired: overview moves into the NDD node, showing the method branch.
+- [x] Rationale dropped rather than re-parented (see Log).
 - [ ] Tidy: overview maintained per file (correction if meaning holds).
 - [ ] Dist Directory, Distribution, Installer, Agent Rules: `ndd.map.md`, the parent-link drop, `ndd.prev.map.md`.
 
 **Restructure this repository**
 
-- [ ] `map.md` rooted at NDD Project, with Distribution and its subtree as children, the method as a branch, and the project overview.
-- [ ] Method branch in `ndd.map.md`, top node with a parent link to NDD Project.
+- [x] `map.md` rooted at NDD Project, with Distribution and its subtree as children, the method as a branch, and the project overview.
+- [x] Method branch in `ndd.map.md`, top node with a parent link to NDD Project.
 - [ ] Agent rules: links to `ndd.map.md#…`; the two-maps orientation line.
 
 **Tooling**
@@ -68,3 +69,6 @@ _(Approved 2026-09-10. Build started the same day. Map Files and the Distributio
 
 - 2026-09-10 — Map Files written, then edited by the user: branch naming relaxed to "a name related to the node", in a file beside or beneath it; the detach-on-copy rule dropped from the method. Detaching stays as NDD's own shipping step, to be described under Dist Directory in the project map (task 9), not as a method rule. The relaxed naming removes the reason given for renaming the root to NDD (task 5); user confirmed the rename stands as a preference.
 - 2026-09-10 — Paused after task 2. Tasks 1 and 2 are written in map.md (Map Files at its final text after user edits; Map Structure edited). Resume at task 3, Navigation Links. Nothing is committed.
+- 2026-09-10 — User asked how a reader tells the root's first child link from a parent link. Agreed a blank line between the parent link and the child links, so the root's link block has one paragraph and every other node's has two. Added as a task before the split.
+- 2026-09-10 — Split done: ndd.map.md holds the method (57 nodes, NDD at the top with ↑ NDD Project), map.md holds NDD Project with the Distribution subtree (8 nodes). Rationale dropped instead of re-parented: it was a one-line pointer to Principles, which the root already names. Map Files' example cross-file link now cites the real one, map.md#release-steps. Every link in both files resolves.
+- 2026-09-11 — Arrow moved inside the parent link text, `[↑ Parent](#parent)`, so the cursor lands on the link; rule wording in Navigation Links and Formatting updated, Fingerprint's clause reverted since the line is a plain link line again. 64 nodes re-typeset.
