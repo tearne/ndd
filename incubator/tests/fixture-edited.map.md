@@ -22,6 +22,7 @@ The edited copy of a small map whose only purpose is to pin the Fingerprint rule
 id: fx2
 approvals:
   expected: {at: 2026-09-11T12:00:00+01:00, hash: bcf6b47b}
+  Alice Smith: {at: 2026-09-11T12:30:00+01:00, hash: bcf6b47b}
 ```
 
 One paragraph of prose is the common case.
@@ -39,6 +40,7 @@ changes what a reader sees.
 id: fx3
 approvals:
   expected: {at: 2026-09-11T12:00:00+01:00, hash: 3a096aaf}
+  Alice Smith: {at: 2026-09-11T12:30:00+01:00, hash: 3a096aaf}
 ```
 
 A node using every optional section. Renaming its child changes the link line below the heading but nothing this node says, so its fingerprint holds while the child's own changes.

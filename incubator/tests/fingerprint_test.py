@@ -42,6 +42,20 @@ def fingerprint(node_lines: list[str]) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()[:8]
 
 
+# The helper's due listing, per person: a node is due when its stamp for them is
+# missing or stale. "Alice Smith" checks that a name with a space is read.
+DUE = {
+    "fixture.map.md": {
+        "expected": ["Bare Heading"],
+        "Alice Smith": ["Fixture", "Child", "Bare Heading", "Changed Prose"],
+    },
+    "fixture-edited.map.md": {
+        "expected": ["Fixture", "Renamed Child", "Changed Prose"],
+        "Alice Smith": ["Fixture", "Renamed Child", "Bare Heading", "Changed Prose"],
+    },
+}
+
+
 # A node runs from a heading to the next heading of any level, fences excluded.
 def nodes(path: Path) -> dict[str, list[str]]:
     found, name, in_fence = {}, None, False
@@ -69,6 +83,12 @@ def main():
             if helper_says.get(name) != hash:
                 failures += 1
                 print(f"FAIL {file}: {name} expected {hash}, helper printed {helper_says.get(name)}")
+    for file, people in DUE.items():
+        for person, due in people.items():
+            listed = subprocess.run([HELPER, HERE / file, "--due", person], capture_output=True, text=True).stdout.split("\n")[:-1]
+            if listed != due:
+                failures += 1
+                print(f"FAIL {file}: due for {person} expected {due}, helper listed {listed}")
     print("OK" if not failures else f"{failures} failures")
     sys.exit(1 if failures else 0)
 

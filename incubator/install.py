@@ -10,9 +10,9 @@
 # prior method map is kept as ndd/ndd.prev.map.md so migration can be reasoned
 # about.
 #
-# Nothing is rendered: what ships is the checkout itself, minus the exclusions
-# in NOT_SHIPPED. The NDD repository reads its own files directly and is never
-# installed into itself. Clone the repo wherever
+# Nothing is rendered: what ships is the checkout itself, every tracked file
+# but the entry files in NOT_SHIPPED. The NDD repository reads its own files
+# directly and is never installed into itself. Clone the repo wherever
 # you like and run this from the project you want to opt in, e.g.
 #   cd my-project && path/to/ndd/install.py
 
@@ -20,6 +20,7 @@ import argparse
 import os
 import re
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -28,11 +29,10 @@ from rich.console import Console
 console = Console()
 
 SOURCE = Path(__file__).parent
-# Everything in the checkout ships except development residue: the change
-# records, git, the repository's own entry files (the client gets its own), and
-# this installer. A stray file therefore ships visibly rather than a needed one
-# going missing silently; the scratch install in Release Steps is where to look.
-NOT_SHIPPED = {"changes", ".git", ".gitignore", ".claude", "CLAUDE.md", "AGENTS.md", "README.md", "install.py"}
+# Everything git tracks ships, except the repository's own agent entry files,
+# which the client gets its own of. No list to maintain: a new file ships once
+# it is committed, and the install test prints what shipped.
+NOT_SHIPPED = {"CLAUDE.md", "AGENTS.md"}
 RETIRED_FILES = ["BOOTSTRAP.md", "ndd.md", "ndd.prev.md"]  # shipped by earlier versions; removed on upgrade
 
 CLAUDE_POINTER = "@ndd/AGENT-RULES.md"
@@ -75,8 +75,8 @@ def copy_method(ndd: Path) -> None:
 
 
 def shipped_files() -> list[Path]:
-    roots = sorted(p for p in SOURCE.iterdir() if p.name not in NOT_SHIPPED)
-    return [f for root in roots for f in (sorted(q for q in root.rglob("*") if q.is_file()) if root.is_dir() else [root])]
+    tracked = subprocess.run("git ls-files", shell=True, cwd=SOURCE, capture_output=True, text=True, check=True).stdout.split()
+    return [SOURCE / name for name in sorted(tracked) if name not in NOT_SHIPPED]
 
 
 # Keep the old map as ndd.prev.map.md only when it actually changed — so a

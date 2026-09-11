@@ -2,6 +2,7 @@
 
 [Contents](#contents)
 [Distribution](#distribution)
+[Testing](testing.map.md#testing)
 [NDD](ndd.map.md#ndd)
 
 ```yaml
@@ -31,8 +32,7 @@ id: ct6
     - [Agent Rules](#agent-rules)
       - [Rule Form](#rule-form)
       - [Rule Selection](#rule-selection)
-  - [Testing](#testing)
-    - [Fingerprint Check](testing.map.md#fingerprint-check)
+  - [Testing](testing.map.md#testing)
   - [NDD](ndd.map.md#ndd)
 
 
@@ -65,8 +65,7 @@ id: l2s
 The checklist for a new version of NDD, published by moving `main`. After [archiving](ndd.map.md#archiving) the agent asks whether it is time for one and the user decides. If several changes are obviously shipping together no need to ask. If releasing, a full [Map Review](ndd.map.md#map-review) is offered first, then the agent confirms the user wants each of the following:
 
 1. Bump the version: a new entry at the top of `CHANGELOG.md`.
-2. Run `./install.py` from an empty scratch directory and check the result: every link in the vendored rules and maps resolves, and `CLAUDE.md` there is a pointer. That is the pre-ship test; this repository is never installed into itself.
-3. Run every test under [Testing](#testing) and see it pass, so what ships is what its nodes say.
+2. Run every test under [Testing](testing.map.md#testing) and see it pass, so what ships is what its nodes say.
 
 Nothing enforces the order but the agent.
 
@@ -81,7 +80,7 @@ id: n5w
 
 A [POS-style](standards/POS.md) `install.py` script at the root of this project, run by a consumer from their own project to install or upgrade NDD. It:
 
-- copies NDD's project files into `ndd/`, scripts still executable, except for development residue: `changes/`, git's files, `.claude/`, `CLAUDE.md`, `AGENTS.md`, `README.md`, and the installer itself; a changed `ndd.map.md` is backed up as `ndd.prev.map.md` and retired files are removed;
+- copies every file git tracks in this checkout into `ndd/`, scripts still executable, except `CLAUDE.md` and `AGENTS.md`; a changed `ndd.map.md` is backed up as `ndd.prev.map.md` and retired files are removed;
 
 - points `CLAUDE.md` and `AGENTS.md` at `ndd/AGENT-RULES.md`; a file that only contains pointers into `ndd/` is replaced, anything else is left with a warning;
 
@@ -153,17 +152,3 @@ Everything else stays in the map. A rule that fails a test should be adapted, cu
 The rendering stays short because adherence degrades with instruction count, and across all rules at once, so each rule kept taxes the rest.
 
 If, at rendering time, the agent reviewing the rules set identifies they are sub-optimal the issues should be traced upstream to this map and discussed.
-
-
-# Testing
-
-[↑ NDD Project](#ndd-project)
-[Fingerprint Check](testing.map.md#fingerprint-check)
-
-```yaml
-id: t4k
-```
-
-How this repository checks itself. A test is a node in this branch stating what must hold and how it is verified, with the runnable form under `tests/` beside the map rather than inside it, so the map stays a description of what exists. The branch lives in `testing.map.md`, and it ships with the maps along with `tests/`, so a client's agent runs the same checks this repository does rather than writing its own. The Fingerprint rule is the first test, chosen because every agent must produce the same hash for the same text, which a description alone cannot guarantee.
-
-- **Fingerprint Check** — the reference implementation of the [Fingerprint](ndd.map.md#fingerprint) rule and the cases that pin it.
