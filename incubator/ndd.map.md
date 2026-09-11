@@ -58,6 +58,7 @@ id: ct5
     - [Writing Style](#writing-style)
       - [Conceptual Writing](#conceptual-writing)
       - [Formatting](#formatting)
+      - [Economy](#economy)
     - [Edit Governance](#edit-governance)
       - [Sync Rule](#sync-rule)
       - [Engagement Rule](#engagement-rule)
@@ -68,6 +69,7 @@ id: ct5
         - [Context](#context)
         - [Held](#held)
         - [Approach](#approach)
+          - [Unresolved](#unresolved)
         - [Worklist](#worklist)
       - [Build](#build)
         - [Build Lock](#build-lock)
@@ -86,7 +88,6 @@ id: ct5
     - [Map Review](#map-review)
       - [Tidy](#tidy)
       - [Shape](#shape)
-      - [Prose](#prose)
       - [Consistency](#consistency)
       - [Rendering](#rendering)
     - [Backlog Review](#backlog-review)
@@ -189,9 +190,9 @@ The tree is defined by its links, not in a separate structure. Each node names i
 
 **Detail**
 
-The parent link comes first, its text the target's name prefixed with `↑`, so the root, which has none, is told apart at a glance; every other node has exactly one. Child link text is the target node's actual name, so an editor with a markdown LSP (e.g. marksman) jumps straight there with `gd`. Because links are name-anchored, renaming a node is a mechanical re-point of the links that named it, and the ID never appears in a link. A user may omit links while drafting; the [mechanical review](#tidy) adds them and reports it.
+The parent link comes first, its text the target's name prefixed with `↑`, so the root, which has none, is told apart at a glance; every other node has exactly one. Child link text is the target node's actual name, so a markdown language server jumps straight there. Because links are name-anchored, renaming a node is a mechanical re-point of the links that named it. A user may omit links while drafting; the [mechanical review](#tidy) adds them and reports it.
 
-Child order belongs to the parent; order them to reflect natural reading order.
+Child order belongs to the parent, in natural reading order.
 
 Because links resolve by name, every heading must be unambiguous within its [map file](#map-files); a link into another file names the file before the anchor.
 
@@ -287,7 +288,7 @@ id: u6h
 
 `util/fingerprint.py` is the script an agent runs to compute node fingerprints: to write an [approval stamp](#approval-stamp), and at [Sign-off](#sign-off) to find what is due.
 
-- Given a map file it prints every node's fingerprint beside its name
+- Given a map file it prints every node's fingerprint beside its name.
 - Given a node name it prints that one fingerprint alone.
 - With `--due` and a person's name it reads the stamps and prints the nodes due for them, in map order.
 
@@ -315,17 +316,17 @@ A [POS-style](standards/POS.md) script run with `uv`, one map file at a time, so
 id: m6x
 ```
 
-The map's shape is shown at a glance by a **tree overview** — a box-drawing sketch of the whole node tree — held in a *Contents* node, the first child of each [map file](#map-files)'s top node. Nodes not yet written are marked `(TODO)`, so the intended shape is visible before the content is. The rendering is only a convenience: the real tree is encoded in the navigation links, and the overview is kept in step with them by [Tidy](#tidy).
+The map's shape is shown at a glance by a **tree overview**, a nested list of links one per node, held in a *Contents* node, the first child of each [map file](#map-files)'s top node. Nodes not yet written are marked `(TODO)`, so the intended shape is visible before the content is. The rendering is only a convenience: the real tree is encoded in the navigation links, and the overview is kept in step with them by [Tidy](#tidy).
 
 **Detail**
 
-The overview is a nested list of links, one per node, indented by depth. A map is one file until a branch is split out into its own [map file](#map-files); navigation works the same either way.
+A map is one file until a branch is split out into its own [map file](#map-files); navigation works the same either way.
 
 The root defaults to the project's name, preferring a term that carries domain information over a generic label like "Application". When that name clashes with a prominent internal node, disambiguate with whichever reads best: a scoping term for the root, a suffix, a parenthetical, or a more specific name for the internal node.
 
 **See also**
 
-- [Trees over Graphs](#trees-over-graphs) — why the sketched shape is a tree, not a general graph.
+- [Trees over Graphs](#trees-over-graphs) — why the shape is a tree, not a general graph.
 
 
 # Map Files
@@ -342,7 +343,7 @@ A branch is split out for size, or for a conceptual boundary worth seeing in the
 
 **Detail**
 
-Each file has a *Contents* node, first child of its top node, holding the overview of the nodes in that file as a nested list of links; a branch that continues in another file is linked into it and the list stops there.
+A file's *Contents* lists the nodes in that file; a branch that continues in another file is linked into it and the list stops there.
 
 **See also**
 
@@ -375,16 +376,19 @@ The count measures the node's own content, which is why *Detail* is included and
 [↑ Specification](#specification)
 [Conceptual Writing](#conceptual-writing)
 [Formatting](#formatting)
+[Economy](#economy)
 
 ```yaml
 id: p4h
 ```
 
-How map prose is written, so nodes stay readable and durable. Two sides:
+How map prose is written, so nodes stay readable and durable. Three sides:
 
 - Conceptual Writing: what the prose *says*
 
 - Formatting: how it's typeset
+
+- Economy: how much it says
 
 
 # Conceptual Writing
@@ -426,11 +430,34 @@ Typographic conventions for map prose.
 
 - Two blank lines before a node title, so node boundaries stand out when scrolling a single-file map.
 
-- The parent link's text starts with `↑`, the child links' does not, so the one parent and the root's lack of one show at a glance.
-
 - Use *italics* when a sentence refers to a named section or element (*Callouts*, *Detail*, *See also*), and reserve **bold** for introducing a term of art on first use, so references don't read as competing sub-headings.
 
 - Prefer an inline cross-reference link when a sentence already names another node in passing; reserve a *See also* entry for a standalone pointer the prose doesn't already invoke, each with its own reason it matters.
+
+
+# Economy
+
+[↑ Writing Style](#writing-style)
+
+```yaml
+id: e2c
+```
+
+A node says each thing once, and nothing the reader already has. The ways it fails, most often:
+
+- A sentence restating its neighbour.
+
+- A *See also* entry repeating the prose or its target, where an inline link would do.
+
+- Provenance, such as what came first or why it was chosen, which belongs in the change record.
+
+- An example the linked node already gives.
+
+- Flourish.
+
+**See also**
+
+- [Enjoyment](#enjoyment) — artifact economy: why every word competes for the reader's attention.
 
 
 # Edit Governance
@@ -528,7 +555,7 @@ A change is a single markdown document that advances through three phases:
 
 Each phase is drafted into the document, then surfaced for the user's explicit approval before the next begins.
 
-The document is the single carrier of state: where a change sits is read from what it contains, not from any status field. Chat carries only disclosures and summaries; the drafted text lives in the document.
+The document is the single carrier of state: where a change sits is read from what it contains, not from any status field. A part reaches the document once [approved](#approval), or sooner if the user asks for the draft in place.
 
 The Plan → Build boundary is the load-bearing gate: the change's own work waits until a plan is approved, apart from the [map exemption](#edit-governance).
 
@@ -600,24 +627,38 @@ Opening each new part, the agent releases into it whatever now belongs. Anything
 # Approach
 
 [↑ Plan](#plan)
+[Unresolved](#unresolved)
 
 ```yaml
 id: a2r
 ```
 
-How the change will be carried out, written as a list of decisions and their reasons — not a narrative and not a file-by-file rehearsal, which belongs to the [worklist](#plan). Each decision earns a line only if it carries a reason; self-evident choices need no subsection. Skipped entirely by [Wander](#cadences).
-
-Alongside it sits an **Unresolved** list: the open items the agent can't settle alone, each pointing at the part of the Approach it affects. The agent surfaces the full list in chat so the user can see everything outstanding, then walks through them — for anything non-trivial, [one at a time](#orient-then-focus) rather than asking the user to address them all at once. Answers fold back into the prose and the list shrinks. An empty list means the Approach is ready for approval.
+How the change will be carried out, written as a list of decisions and their reasons — not a narrative and not a file-by-file rehearsal, which belongs to the [worklist](#plan). Each decision earns a line only if it carries a reason; self-evident choices need no subsection. Skipped entirely by [Wander](#cadences). Open items the agent cannot settle alone sit beside it in an [Unresolved](#unresolved) list, and the Approach is ready for approval only once that list is empty.
 
 The Approach is capped at ~2000 characters, excluding Unresolved: each time the agent surfaces it, it counts them and reports the number, and past the cap asks the user to adjudicate.
 
 **Detail**
 
-The agent re-reads and prunes its own draft before surfacing — anything not carrying a decision-and-reason comes out — and counts again afterwards. Once the worklist is written the Unresolved section is deleted; its absence is the signal that the Approach is settled.
+The agent re-reads and prunes its own draft before surfacing — anything not carrying a decision-and-reason comes out — and counts again afterwards.
 
 **See also**
 
 - [Enjoyment](#enjoyment) — artifact economy: why the Approach is pruned to decisions-and-reasons rather than left as narrative.
+
+
+# Unresolved
+
+[↑ Approach](#approach)
+
+```yaml
+id: n8u
+```
+
+The open items in an [Approach](#approach) that the agent cannot settle alone, each pointing at the decision it affects. The agent surfaces the full list in chat so the user sees everything outstanding, then walks through them [one at a time](#orient-then-focus). Each answer folds back into the Approach's prose and the list shrinks; the Approach is ready for approval when it is empty.
+
+**Detail**
+
+Once the worklist is written the Unresolved section is deleted; its absence is the signal that the Approach is settled.
 
 
 # Worklist
@@ -862,7 +903,6 @@ Deferring upkeep for a stretch — an emergency fix, a push elsewhere — is saf
 [↑ Maintenance](#maintenance)
 [Tidy](#tidy)
 [Shape](#shape)
-[Prose](#prose)
 [Consistency](#consistency)
 [Rendering](#rendering)
 
@@ -874,13 +914,13 @@ Map Review is offered by the agent as a yes-or-no at two moments, and the moment
 - after an [archive](#archiving) the light scope,
 - before a release the full scope.
 
-[Tidy](#tidy) has already run and reported by then, so a yes opens the **findings list**: everything the Tidy and Map Review checks found that needs a judgement, summarised first and then considered one item at a time by [Orient Then Focus](#orient-then-focus).
+[Tidy](#tidy) has already run and reported by then, so a yes opens the **findings list**: everything the Tidy and Map Review checks found that needs a judgement, summarised first and then considered one item at a time by [Orient Then Focus](#orient-then-focus). A finding quotes what it faults and what already covers it, so the overlap is seen rather than asserted.
 
 Findings are not stored. A review recomputes from the map, so a deferred finding reappears next time and costs a word to dismiss again. The checks stay askable by name, as is a scope, for anyone who wants less or more than the moment offers.
 
 | Scope | Checks | Moment |
 |-------|--------|--------|
-| Light | [Shape](#shape), [Prose](#prose) | Offered after an archive |
+| Light | [Shape](#shape), and prose against [Writing Style](#writing-style) | Offered after an archive |
 | Full | Light plus [Consistency](#consistency), [Rendering](#rendering) | Offered before a release |
 
 
@@ -916,23 +956,6 @@ It looks for:
 - The top-level division of the map no longer matching how the user thinks of the system.
 
 - Child order that no longer reads as a natural sequence.
-
-
-# Prose
-
-[↑ Map Review](#map-review)
-
-```yaml
-id: p2w
-```
-
-A check on how nodes read, applied even where the tree is cut well.
-
-It looks for:
-
-- Prose deviating from the [writing style](#writing-style) conventions.
-
-- A node saying more than its idea needs — wordy where the [size bound](#node-sizing) is only the mechanical symptom.
 
 
 # Consistency
