@@ -7,7 +7,7 @@
 # NDD installer. Copies ./dist/ out of this checkout into ./ndd/ in the
 # current project, file for file, and wires up the agent entry files. Re-run at
 # any time to upgrade in place (git pull this repo first); the prior method map
-# is kept as ndd/ndd.prev.md so migration can be reasoned about.
+# is kept as ndd/ndd.prev.map.md so migration can be reasoned about.
 #
 # dist/ is rendered from the sources by build.py; the installer refuses to
 # run if it is stale, so running it on the NDD checkout itself is the pre-ship
@@ -28,7 +28,7 @@ from build import DIST, stale_files
 console = Console()
 
 SOURCE = Path(__file__).parent
-RETIRED_FILES = ["BOOTSTRAP.md"]  # shipped by earlier versions; removed on upgrade
+RETIRED_FILES = ["BOOTSTRAP.md", "ndd.md", "ndd.prev.md"]  # shipped by earlier versions; removed on upgrade
 
 CLAUDE_POINTER = "@ndd/AGENT-RULES.md"
 AGENTS_INSTRUCTION = (
@@ -61,7 +61,7 @@ def copy_method(ndd: Path) -> None:
     for src in sorted(DIST.rglob("*")):
         if src.is_file():
             dest = ndd / src.relative_to(DIST)
-            if dest.name == "ndd.md":
+            if dest.name == "ndd.map.md":
                 back_up_map(dest, src.read_text())
             copy_asset(src, dest)
     for name in RETIRED_FILES:
@@ -71,11 +71,11 @@ def copy_method(ndd: Path) -> None:
             report("removed", retired, "no longer part of the method")
 
 
-# Keep the old map as ndd.prev.md only when it actually changed — so a
+# Keep the old map as ndd.prev.map.md only when it actually changed — so a
 # redundant re-run preserves the last real backup.
 def back_up_map(dest: Path, content: str) -> None:
     if dest.exists() and dest.read_text() != content:
-        backup = dest.parent / "ndd.prev.md"
+        backup = dest.parent / "ndd.prev.map.md"
         backup.write_text(dest.read_text())
         report("backed up", backup, "previous map")
 

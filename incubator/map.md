@@ -4,25 +4,33 @@
 id: p1j
 ```
 
+[Contents](#contents)
 [Distribution](#distribution)
 [NDD](ndd.map.md#ndd)
 
-The repository that develops and ships Non-Dead Design. The method itself is the [NDD](ndd.map.md#ndd) branch, kept in its own file because it is what ships: a client receives that branch alone, as its method map. This trunk holds what stays behind: how the method is built into a distributable, released and installed.
+The repository that develops and ships Non-Dead Design. The method itself is the [NDD](ndd.map.md#ndd) branch, kept in its own file because it is what ships: a client receives that branch alone, as its method map. This trunk holds what stays behind: how the method is built into a distributable, released and installed. The reasoning behind the method is under [Principles](ndd.map.md#principles).
 
 - **Distribution** — how NDD reaches a client project: the shipped layout, the release checklist, the installer and the agent rules.
 - **NDD** — the method, in `ndd.map.md`.
 
+
+# Contents
+
+```yaml
+id: ct6
 ```
-NDD Project
-├ Distribution
-│ ├ Dist Directory
-│ ├ Release Steps
-│ ├ Installer
-│ └ Agent Rules
-│   ├ Rule Form
-│   └ Rule Selection
-└ NDD → ndd.map.md
-```
+
+[↑ NDD Project](#ndd-project)
+
+- [NDD Project](#ndd-project)
+  - [Distribution](#distribution)
+    - [Dist Directory](#dist-directory)
+    - [Release Steps](#release-steps)
+    - [Installer](#installer)
+    - [Agent Rules](#agent-rules)
+      - [Rule Form](#rule-form)
+      - [Rule Selection](#rule-selection)
+  - [NDD](ndd.map.md#ndd)
 
 
 # Distribution
@@ -50,9 +58,9 @@ id: d8r
 
 [↑ Distribution](#distribution)
 
-The checked-in directory that ships, as is, on client installation. The source layout cannot ship directly: this repository's map is `map.md`, as the method requires of any project, but in a consumer's project that name belongs to their own map, so the method map must arrive as `ndd/ndd.md`. `dist/` holds the shipped layout ready-made, so installing is a plain copy and no script hides a rename.
+The checked-in `dist/` directory is what ships on client installation. It holds a branch of this repository's map, but a branch cannot ship as it stands: its top node links up to NDD Project, which a consumer does not have. `dist/` holds the shipped layout after modification, so installing is a plain file copy rather than files being quietly modified by an installer.
 
-`build.py`, at the root beside the installer, renders it: `map.md` becomes `dist/ndd.md`, and `CHANGELOG.md` and the `standards/` guides are copied unchanged. The one file it does not touch is `dist/AGENT-RULES.md`, which is maintained there directly because its links target `ndd.md` and resolve only in that layout. `build.py --check` reports what is stale without writing.
+`build.py`, at the root beside the installer, renders the map branch: `ndd.map.md` is copied with its top node's parent link dropped, so it arrives as a root, and `CHANGELOG.md` and the `standards/` guides are copied unchanged. The one file it does not touch is `dist/AGENT-RULES.md`, which is maintained there directly because its links target `ndd.map.md` and resolve only in that layout. `build.py --check` reports what is stale against what the build would write.
 
 
 # Release Steps
@@ -81,9 +89,9 @@ id: n5w
 
 [↑ Distribution](#distribution)
 
-The [POS-style](standards/POS.md) installer script, `install.py` at the root of the NDD repo, is run by a consumer from their own project to install or upgrade NDD. It owns `ndd/` outright but never overwrites other files in the consumer's project. It:
+A [POS-style](standards/POS.md) installer script, `install.py` at the root of the NDD repo, is run by a consumer from their own project to install or upgrade NDD. It owns `ndd/` but never overwrites other files in the consumer's project. It:
 
-- copies [`dist/`](#dist-directory) into `ndd/`, file for file, keeping a changed `ndd.md` as `ndd.prev.md` and removing files the method has retired;
+- copies [`dist/*`](#dist-directory) into `ndd/`, keeping a changed `ndd.map.md` as `ndd.prev.map.md` and removing retired files;
 
 - points `CLAUDE.md` and `AGENTS.md` at `ndd/AGENT-RULES.md`; a file that is only a pointer into `ndd/` is replaced, anything else is left with a warning;
 
@@ -91,7 +99,7 @@ The [POS-style](standards/POS.md) installer script, `install.py` at the root of 
 
 **Detail**
 
-It refuses to run if `dist/` is stale against its sources, or if the target `ndd/` would overwrite this project's root itself; any other target is allowed, which lets this repository dogfood by self-vendoring. `install.py --version` reads the top `CHANGELOG.md` heading.
+It aborts if `dist/` is stale against its sources, or if the target `ndd/` would overwrite this project's root itself; any other target is allowed, which lets this repository dogfood by self-vendoring. `install.py --version` reads the top `CHANGELOG.md` heading.
 
 
 # Agent Rules

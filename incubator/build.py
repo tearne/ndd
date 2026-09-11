@@ -6,15 +6,18 @@
 
 # NDD build step. Renders the shippable method into ./dist/, which is exactly
 # what install.py copies into a consumer's ./ndd/. Sources stay where they are
-# edited — map.md, CHANGELOG.md and standards/ at the root — and are copied in
-# here, the map under its shipped name ndd.md. dist/AGENT-RULES.md is not
-# generated: it is hand-maintained in place, since its links target ndd.md.
+# edited — ndd.map.md, CHANGELOG.md and standards/ at the root — and are copied
+# in here. The method map is a branch of this repository's map, so it ships
+# detached: its top node's parent link is dropped and it arrives as a root.
+# dist/AGENT-RULES.md is not generated: it is hand-maintained in place, since
+# its links target ndd.map.md.
 #
 # Run after any edit to a source file, before committing. `--check` reports
 # what is stale without writing, exiting non-zero if anything is; install.py
 # uses the same check to refuse to ship a stale dist.
 
 import argparse
+import re
 import sys
 from pathlib import Path
 
@@ -26,28 +29,35 @@ SOURCE = Path(__file__).parent
 DIST = SOURCE / "dist"
 
 
-# Every (source, dist) pair the build maintains. The map is the one rename.
-def rendered_pairs() -> list[tuple[Path, Path]]:
+# Every (source, dist) pair the build maintains, with the content that should
+# land in dist. The method map is the one file that is not a plain copy.
+def rendered_pairs() -> list[tuple[Path, Path, str]]:
     pairs = [
-        (SOURCE / "map.md", DIST / "ndd.md"),
-        (SOURCE / "CHANGELOG.md", DIST / "CHANGELOG.md"),
+        (SOURCE / "ndd.map.md", DIST / "ndd.map.md", detached((SOURCE / "ndd.map.md").read_text())),
+        (SOURCE / "CHANGELOG.md", DIST / "CHANGELOG.md", (SOURCE / "CHANGELOG.md").read_text()),
     ]
     for guide in sorted((SOURCE / "standards").iterdir()):
         if guide.is_file():
-            pairs.append((guide, DIST / "standards" / guide.name))
+            pairs.append((guide, DIST / "standards" / guide.name, guide.read_text()))
     return pairs
 
 
-# Deploy files whose content differs from their source, or are missing.
+# A branch shipped alone becomes a root: drop the top node's parent link, the
+# first line of the form "[↑ Parent](file#anchor)". Anything else is left as is.
+def detached(map_text: str) -> str:
+    return re.sub(r"(?m)^\[↑ [^\]]+\]\([^)]+\)\n", "", map_text, count=1)
+
+
+# Deploy files whose content differs from what the build would write, or are missing.
 def stale_files() -> list[Path]:
-    return [dest for src, dest in rendered_pairs()
-            if not dest.exists() or dest.read_text() != src.read_text()]
+    return [dest for _, dest, content in rendered_pairs()
+            if not dest.exists() or dest.read_text() != content]
 
 
 def build() -> None:
     console.print(f"Rendering NDD into [bold]{DIST}[/bold]\n")
-    for src, dest in rendered_pairs():
-        write_asset(dest, src.read_text())
+    for _, dest, content in rendered_pairs():
+        write_asset(dest, content)
     console.print("\n[bold green]Done.[/bold green]")
 
 

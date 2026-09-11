@@ -50,20 +50,20 @@ _(Approved 2026-09-10. Build started the same day. Map Files and the Distributio
 - [x] Root renamed NDD; every link naming it re-pointed.
 - [x] Contents retired: overview moves into the NDD node, showing the method branch.
 - [x] Rationale dropped rather than re-parented (see Log).
-- [ ] Tidy: overview maintained per file (correction if meaning holds).
-- [ ] Dist Directory, Distribution, Installer, Agent Rules: `ndd.map.md`, the parent-link drop, `ndd.prev.map.md`.
+- [x] Tidy: overview maintained per file (correction if meaning holds).
+- [x] Dist Directory, Distribution, Installer, Agent Rules: `ndd.map.md`, the parent-link drop, `ndd.prev.map.md`. (Distribution and Agent Rules needed nothing; Bootstrapping's file name corrected too.)
 
 **Restructure this repository**
 
 - [x] `map.md` rooted at NDD Project, with Distribution and its subtree as children, the method as a branch, and the project overview.
 - [x] Method branch in `ndd.map.md`, top node with a parent link to NDD Project.
-- [ ] Agent rules: links to `ndd.map.md#…`; the two-maps orientation line.
+- [x] Agent rules: links to `ndd.map.md#…`; the two-maps orientation line.
 
 **Tooling**
 
-- [ ] `build.py`: copy `ndd.map.md` to `dist/` dropping the top node's parent link; `dist/ndd.md` removed.
-- [ ] `install.py`: back up as `ndd.prev.map.md`; `ndd.md` and `ndd.prev.md` retired on upgrade.
-- [ ] Build, then install from this checkout; confirm `ndd/ndd.map.md` arrives as a root, the old files are removed, and every agent-rules link resolves.
+- [x] `build.py`: copy `ndd.map.md` to `dist/` dropping the top node's parent link; `dist/ndd.md` removed.
+- [x] `install.py`: back up as `ndd.prev.map.md`; `ndd.md` and `ndd.prev.md` retired on upgrade.
+- [x] Build, then install from this checkout; confirm `ndd/ndd.map.md` arrives as a root, the old files are removed, and every agent-rules link resolves.
 
 ## Log
 
@@ -72,3 +72,12 @@ _(Approved 2026-09-10. Build started the same day. Map Files and the Distributio
 - 2026-09-10 — User asked how a reader tells the root's first child link from a parent link. Agreed a blank line between the parent link and the child links, so the root's link block has one paragraph and every other node's has two. Added as a task before the split.
 - 2026-09-10 — Split done: ndd.map.md holds the method (57 nodes, NDD at the top with ↑ NDD Project), map.md holds NDD Project with the Distribution subtree (8 nodes). Rationale dropped instead of re-parented: it was a one-line pointer to Principles, which the root already names. Map Files' example cross-file link now cites the real one, map.md#release-steps. Every link in both files resolves.
 - 2026-09-11 — Arrow moved inside the parent link text, `[↑ Parent](#parent)`, so the cursor lands on the link; rule wording in Navigation Links and Formatting updated, Fingerprint's clause reverted since the line is a plain link line again. 64 nodes re-typeset.
+- 2026-09-11 — Overview moved out of the top nodes into a Contents node per file (first child of the top node), as a nested list of links regenerated from the navigation links; the box-drawing form is gone. Map Structure and Map Files reworded to match. User asked for a Principles link in NDD Project's prose.
+- 2026-09-11 — Contents as a nested list of links is on trial; the user is unsure and may revert to the box-drawing sketch. NDD Project gained a Principles link.
+- 2026-09-11 — Tidy needed no change: its wording holds per file. build.py now ships ndd.map.md detached (parent link dropped) and compares dist against rendered content; install.py backs up to ndd.prev.map.md and retires ndd.md and ndd.prev.md; dist/AGENT-RULES.md links target ndd.map.md and its orientation mentions branch files. Built and installed from this checkout: ndd/ndd.map.md arrives as a root, the two old files were removed, all 30 agent-rules links resolve. dist/CHANGELOG.md also refreshed, having been stale since change 80.
+
+## Conclude
+
+_(Approved 2026-09-11.)_
+
+The map is now one tree in two files: `map.md` rooted at NDD Project holding the pipeline, `ndd.map.md` holding the method as a branch. Three conventions came in during the build and were not in the plan: the parent link marked `[↑ Parent]`, a Contents node per file, and the overview as a nested list of links, which is on trial. META and Rationale are gone rather than re-homed. The build detaches the branch for shipping; the installer retires the old file names. Formatting and Map Structure sit over the size bound.

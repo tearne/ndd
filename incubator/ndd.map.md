@@ -5,6 +5,7 @@ id: a3k
 ```
 
 [↑ NDD Project](map.md#ndd-project)
+[Contents](#contents)
 [Principles](#principles)
 [Specification](#specification)
 [Change-Management](#change-management)
@@ -23,65 +24,72 @@ The map is the one artefact that keeps all three alive: a conceptual **map** of 
 - **Tooling** — the generic markdown tooling the format is designed to exploit.
 - **Standards** — suggested coding standards NDD ships for the code agents write on a project.
 
+
+# Contents
+
+```yaml
+id: ct5
 ```
-NDD
-├ Principles
-│ ├ Three Deaths
-│ ├ Comprehension is an Activity
-│ ├ Intent Memory
-│ ├ Enjoyment
-│ ├ Local Sufficiency
-│ │ └ Trees over Graphs
-│ ├ Cross-Agent Falsifiability
-│ └ Orient Then Focus
-├ Specification
-│ ├ Node
-│ │ ├ Node Identity
-│ │ ├ Navigation Links
-│ │ ├ Node Sections
-│ │ │ └ Callouts
-│ │ └ Approval Stamp
-│ │   └ Fingerprint
-│ ├ Map Structure
-│ │ └ Map Files
-│ ├ Node Sizing
-│ ├ Writing Style
-│ │ ├ Conceptual Writing
-│ │ └ Formatting
-│ └ Edit Governance
-│   ├ Sync Rule
-│   └ Engagement Rule
-├ Change-Management
-│ ├ Change Lifecycle
-│ │ ├ Plan
-│ │ │ ├ Intent
-│ │ │ ├ Context
-│ │ │ ├ Held
-│ │ │ ├ Approach
-│ │ │ └ Worklist
-│ │ ├ Build
-│ │ │ └ Build Lock
-│ │ └ Conclude
-│ │   └ Archiving
-│ ├ Cadences
-│ ├ Startup Scan
-│ ├ Bootstrapping
-│ ├ Gates and Permissions
-│ │ └ Approval
-│ └ Keywords
-│   ├ Process Keyword
-│   └ Aside Keyword
-├ Maintenance
-│ ├ Tidy
-│ ├ Shape
-│ ├ Prose
-│ ├ Consistency
-│ ├ Rendering
-│ ├ Backlog
-│ └ Sign-off
-├ Tooling
-└ Standards
-```
+
+[↑ NDD](#ndd)
+
+- [NDD](#ndd)
+  - [Principles](#principles)
+    - [Three Deaths](#three-deaths)
+    - [Comprehension is an Activity](#comprehension-is-an-activity)
+    - [Intent Memory](#intent-memory)
+    - [Enjoyment](#enjoyment)
+    - [Local Sufficiency](#local-sufficiency)
+      - [Trees over Graphs](#trees-over-graphs)
+    - [Cross-Agent Falsifiability](#cross-agent-falsifiability)
+    - [Orient Then Focus](#orient-then-focus)
+  - [Specification](#specification)
+    - [Node](#node)
+      - [Node Identity](#node-identity)
+      - [Navigation Links](#navigation-links)
+      - [Node Sections](#node-sections)
+        - [Callouts](#callouts)
+      - [Approval Stamp](#approval-stamp)
+        - [Fingerprint](#fingerprint)
+    - [Map Structure](#map-structure)
+      - [Map Files](#map-files)
+    - [Node Sizing](#node-sizing)
+    - [Writing Style](#writing-style)
+      - [Conceptual Writing](#conceptual-writing)
+      - [Formatting](#formatting)
+    - [Edit Governance](#edit-governance)
+      - [Sync Rule](#sync-rule)
+      - [Engagement Rule](#engagement-rule)
+  - [Change-Management](#change-management)
+    - [Change Lifecycle](#change-lifecycle)
+      - [Plan](#plan)
+        - [Intent](#intent)
+        - [Context](#context)
+        - [Held](#held)
+        - [Approach](#approach)
+        - [Worklist](#worklist)
+      - [Build](#build)
+        - [Build Lock](#build-lock)
+      - [Conclude](#conclude)
+        - [Archiving](#archiving)
+    - [Cadences](#cadences)
+    - [Startup Scan](#startup-scan)
+    - [Bootstrapping](#bootstrapping)
+    - [Gates and Permissions](#gates-and-permissions)
+      - [Approval](#approval)
+    - [Keywords](#keywords)
+      - [Process Keyword](#process-keyword)
+      - [Aside Keyword](#aside-keyword)
+  - [Maintenance](#maintenance)
+    - [Tidy](#tidy)
+    - [Shape](#shape)
+    - [Prose](#prose)
+    - [Consistency](#consistency)
+    - [Rendering](#rendering)
+    - [Backlog](#backlog)
+    - [Sign-off](#sign-off)
+  - [Tooling](#tooling)
+  - [Standards](#standards)
 
 
 # Specification
@@ -278,11 +286,11 @@ id: m6x
 [↑ Specification](#specification)
 [Map Files](#map-files)
 
-The map's shape is shown at a glance by a **tree overview** — a box-drawing sketch of the whole node tree — held in the top node of each [map file](#map-files). Nodes not yet written are marked `(TODO)`, so the intended shape is visible before the content is. The rendering is only a convenience: the real tree is encoded in the navigation links, and the overview is kept in step with them.
+The map's shape is shown at a glance by a **tree overview** — a box-drawing sketch of the whole node tree — held in a *Contents* node, the first child of each [map file](#map-files)'s top node. Nodes not yet written are marked `(TODO)`, so the intended shape is visible before the content is. The rendering is only a convenience: the real tree is encoded in the navigation links, and the overview is kept in step with them.
 
 **Detail**
 
-The overview is a fenced code block using box-drawing characters. A map is one file until a branch is split out into its own [map file](#map-files); navigation works the same either way.
+The overview is a nested list of links, one per node, indented by depth. A map is one file until a branch is split out into its own [map file](#map-files); navigation works the same either way.
 
 The root defaults to the project's name, preferring a term that carries domain information over a generic label like "Application". When that name clashes with a prominent internal node, disambiguate with whichever reads best: a scoping term for the root, a suffix, a parenthetical, or a more specific name for the internal node.
 
@@ -306,7 +314,7 @@ A branch is split out for size, or for a conceptual boundary worth seeing in the
 
 **Detail**
 
-Each file's top node carries the overview of the nodes in that file, stopping where a branch continues in another file and naming it. A cross-file link is `[Release Steps](map.md#release-steps)`. Headings must be unambiguous within a file; across files the file name disambiguates.
+Each file has a *Contents* node, first child of its top node, holding the overview of the nodes in that file as a nested list of links; a branch that continues in another file is linked into it and the list stops there. A cross-file link is `[Release Steps](map.md#release-steps)`. Headings must be unambiguous within a file; across files the file name disambiguates.
 
 **See also**
 
@@ -705,7 +713,7 @@ id: b6t
 
 How a project acquires its first map. A fresh install vendors only the method under `ndd/`, leaving the project itself empty — no `map.md`, no `changes/` tree — so the ordinary lifecycle has nothing to stand on. The agent detects this at the [Startup Scan](#startup-scan) and offers to bootstrap rather than proceeding as normal.
 
-It scaffolds the [`changes/` tree](#change-management) and seeds the project map — `map.md` in the project root, distinct from the read-only method map at `ndd/ndd.md` — through discussion and any pre-existing documentation. How much to seed is the user's call: a single root node named for the system, or a fuller sketch — they may prefer to start capturing ideas before dwelling on setup.
+It scaffolds the [`changes/` tree](#change-management) and seeds the project map — `map.md` in the project root, distinct from the read-only method map at `ndd/ndd.map.md` — through discussion and any pre-existing documentation. How much to seed is the user's call: a single root node named for the system, or a fuller sketch — they may prefer to start capturing ideas before dwelling on setup.
 
 Adopting an existing codebase adds a survey: the agent reads existing assets and proposes nodes one at a time per the [Engagement Rule](#engagement-rule). Progress is bite-sized at the user's pace and may be postponed. Reality-reflecting map edits need no active change (see [Edit Governance](#edit-governance)), though wrapping a migration in one can keep it systematic.
 
