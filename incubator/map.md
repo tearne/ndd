@@ -1,12 +1,12 @@
 # NDD Project
 
-```yaml
-id: p1j
-```
-
 [Contents](#contents)
 [Distribution](#distribution)
 [NDD](ndd.map.md#ndd)
+
+```yaml
+id: p1j
+```
 
 The repository that develops and ships Non-Dead Design. The method itself is the [NDD](ndd.map.md#ndd) branch, kept in its own file because it is what ships: a client receives that branch alone, as its method map. This trunk holds what stays behind: how the method is built into a distributable, released and installed. The reasoning behind the method is under [Principles](ndd.map.md#principles).
 
@@ -16,11 +16,11 @@ The repository that develops and ships Non-Dead Design. The method itself is the
 
 # Contents
 
+[↑ NDD Project](#ndd-project)
+
 ```yaml
 id: ct6
 ```
-
-[↑ NDD Project](#ndd-project)
 
 - [NDD Project](#ndd-project)
   - [Distribution](#distribution)
@@ -35,15 +35,15 @@ id: ct6
 
 # Distribution
 
-```yaml
-id: d5v
-```
-
 [↑ NDD Project](#ndd-project)
 [Dist Directory](#dist-directory)
 [Release Steps](#release-steps)
 [Installer](#installer)
 [Agent Rules](#agent-rules)
+
+```yaml
+id: d5v
+```
 
 NDD is distributed as a git checkout. The consumer clones the NDD repository and runs `install.py` from their own project; it copies the contents of the checked-in [`dist/`](#dist-directory) directory into `ndd/`, file for file, and writes the agent entry files, leaving the project's own map and changes untouched. Upgrading is `git pull` in the checkout, then the same run.
 
@@ -52,11 +52,11 @@ NDD is distributed as a git checkout. The consumer clones the NDD repository and
 
 # Dist Directory
 
+[↑ Distribution](#distribution)
+
 ```yaml
 id: d8r
 ```
-
-[↑ Distribution](#distribution)
 
 The checked-in `dist/` directory is what ships on client installation. It holds a branch of this repository's map, but a branch cannot ship as it stands: its top node links up to NDD Project, which a consumer does not have. `dist/` holds the shipped layout after modification, so installing is a plain file copy rather than files being quietly modified by an installer.
 
@@ -65,11 +65,11 @@ The checked-in `dist/` directory is what ships on client installation. It holds 
 
 # Release Steps
 
+[↑ Distribution](#distribution)
+
 ```yaml
 id: l2s
 ```
-
-[↑ Distribution](#distribution)
 
 The checklist for cutting a release of NDD. After [archiving](ndd.map.md#archiving) the agent asks whether it is time to release and the user decides. If several changes are obviously shipping together no need to ask. If releasing, the [Maintenance](ndd.map.md#maintenance) due before release are offered, then the agent confirms the user wants each of the following:
 
@@ -83,11 +83,11 @@ Nothing enforces the order but the agent; the [Installer](#installer)'s refusal 
 
 # Installer
 
+[↑ Distribution](#distribution)
+
 ```yaml
 id: n5w
 ```
-
-[↑ Distribution](#distribution)
 
 A [POS-style](standards/POS.md) installer script, `install.py` at the root of the NDD repo, is run by a consumer from their own project to install or upgrade NDD. It owns `ndd/` but never overwrites other files in the consumer's project. It:
 
@@ -104,13 +104,13 @@ It aborts if `dist/` is stale against its sources, or if the target `ndd/` would
 
 # Agent Rules
 
-```yaml
-id: r8d
-```
-
 [↑ Distribution](#distribution)
 [Rule Form](#rule-form)
 [Rule Selection](#rule-selection)
+
+```yaml
+id: r8d
+```
 
 `AGENT-RULES.md` is a rendering of the core rules within this map, optimised for agents; an agent follows instructions best with concrete rules based on clear triggers. This map remains authoritative. Each agent rule names its source node, and the agent is instructed to read it on demand, not preemptively at start.
 
@@ -121,11 +121,11 @@ The agent re-reads the file at the start of every [Build](ndd.map.md#build) and 
 
 # Rule Form
 
+[↑ Agent Rules](#agent-rules)
+
 ```yaml
 id: f7m
 ```
-
-[↑ Agent Rules](#agent-rules)
 
 Each rule in the rendering is phrased to maximise compliance.
 
@@ -142,11 +142,11 @@ Each rule in the rendering is phrased to maximise compliance.
 
 # Rule Selection
 
+[↑ Agent Rules](#agent-rules)
+
 ```yaml
 id: q7s
 ```
-
-[↑ Agent Rules](#agent-rules)
 
 A rule earns its place in the rendering by three tests:
 
