@@ -1,0 +1,49 @@
+# Go-live reorg
+
+**Cadence:** Formal
+
+## Intent
+
+Make the repository itself NDD, the successor to COD, by moving the method from `incubator/` to the root and retiring COD's framework while keeping its history. Add the two map edits agreed when the old framework was checked against the map. Then the user makes the repo public and proves a fresh-clone install.
+
+### Context
+
+- The GitHub repo is already renamed `ndd`. Visibility change, branch, merge and push are user-performed.
+- Every old COD file was checked against the map in an earlier session and found covered, except the two map edits named above: Cadences does not say where the chosen cadence is recorded (a `**Cadence:** <name>` line beneath the change's title, before the Intent); Approach does not say the agent first reads the relevant map nodes, and the code where reality must be verified, to ground its decisions and find coverage gaps.
+- `incubator/README.md` is stale: it still describes COD, `opt-in.py` and a spin-out to come. The installer excludes it from what ships, so it addresses a reader of the repository only and should be minimal, pointing at the Principles node.
+
+## Approach
+
+_(Approved 2026-09-13.)_
+
+**One lift, then deletions.** `git mv` moves everything under `incubator/` to the root: the maps, `AGENT-RULES.md`, `CLAUDE.md`, `AGENTS.md`, `install.py`, `standards/`, `tests/`, `util/`, `changes/open/` and `.gitignore`. The root `.gitignore` keeps its two lines and gains the incubator's. Then the old framework goes: `agent/`, `opt-in.py`, `PRINCIPLES.md`, `CLAUDE.md.bk`, the root `README.md`. The installer and the tests find their files relative to themselves and ship whatever git tracks, so they need no edit.
+
+**History merges.** COD's archived changes move into the lifted `changes/archive/`; both use date-prefixed names, so nothing is renamed. The root `changes/process-feedback.md` is the one that survives, since the incubator has none. The root `CHANGELOG.md` is the surviving changelog: NDD's *Unreleased* and 1.0.0 entries collapse into one short entry at the top, above a heading marking the COD entries as its predecessor's. The intro line changes to NDD's.
+
+**README.** Rewritten short: what NDD is, a pointer to the Principles node, and how to install.
+
+**Two map edits.** Cadences gains a sentence saying the chosen cadence is recorded as a `**Cadence:** <name>` line beneath the change's title, before the Intent. Approach gains a sentence saying the agent first reads the relevant map nodes, and the code where reality must be checked, to ground its decisions and find gaps. Each is negotiated in the usual way. The Installer node is re-read after the move to confirm it still describes reality.
+
+**Release.** Release Steps run at the end: the 2.0.0 entry, continuing COD as one lineage with a break, then every test. The user then merges to `main`, makes the repo public and installs from a fresh clone.
+
+
+## Worklist
+
+_(Approved 2026-09-13.)_
+
+1. [x] `git mv` the incubator's contents to the root, merging `.gitignore`. Check `git status` shows renames.
+2. [x] Delete `agent/`, `opt-in.py`, `PRINCIPLES.md`, `CLAUDE.md.bk` and the old root `README.md`.
+3. [x] Merge COD's `changes/archive/` into the lifted archive. Merge the two `process-feedback.md` files.
+4. [x] Rewrite `CHANGELOG.md`: NDD's intro line, one 2.0.0 entry, then a predecessor heading over COD's entries.
+5. [x] Write the new short `README.md`.
+6. [x] Map edit, Cadences: the Cadence line.
+7. [x] Map edit, Approach: the research sentence.
+8. [x] Re-read the Installer node against the moved layout and correct it if needed.
+9. [x] Run every test under Testing.
+10. [ ] Hand over: user merges to `main`, makes the repo public, installs from a fresh clone and reports.
+
+Tasks 4 and 9 together are the Release Steps.
+
+## Log
+
+- 2026-09-13: tasks 1–9 done in one session. The install test's shipped list is complete once read whole; an early tail-only read looked like missing files. The incubator's `.gitignore` line for `changes/agent/` was dropped in the merge, that directory being long gone. Awaiting the user's hand-over steps in task 10.

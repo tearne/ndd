@@ -1,6 +1,14 @@
 # Changelog
 
-Releases are listed in reverse-chronological order. Each entry names the version (the directory name under `changes/agent/`) and describes what changed and any manual migration steps.
+Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
+
+## 2.0.0 — 2026-09-13
+
+First release of NDD, the successor to COD: the method now lives in the map, ships as a vendored `ndd/` directory via `install.py`, and carries agent rules rendered from the map, stakeholder sign-off, suggested standards and install tests.
+
+## Predecessor: COD
+
+The entries below are the history of COD, Comprehension-Oriented Design, from which NDD grew. Their versions are the dates of the framework snapshots that shipped under `changes/agent/`.
 
 ## 2026-06-10
 

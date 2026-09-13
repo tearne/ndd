@@ -517,7 +517,7 @@ The rule binds the agent, not the user, who edits the map freely and unannounced
 id: e3n
 ```
 
-Each change runs at one of three cadences. They differ only in the shape of the [Plan](#plan) — [Build](#build) and [Conclude](#conclude) are the same whichever is chosen. The agent proposes one after Intent is approved — default **Formal** — and the user confirms.
+Each change runs at one of three cadences. They differ only in the shape of the [Plan](#plan) — [Build](#build) and [Conclude](#conclude) are the same whichever is chosen. The agent proposes one after Intent is approved — default **Formal** — and the user confirms. The chosen cadence is recorded as a `**Cadence:** <name>` line beneath the change's title, before the Intent.
 
 | Cadence | Plan structure |
 |---------|----------------|
@@ -525,11 +525,11 @@ Each change runs at one of three cadences. They differ only in the shape of the 
 | **Explore** | Intent → Approach → topics + a *done-when* |
 | **Wander** | Intent only |
 
-- **Formal** is the default, for work that benefits from explicit decisions and step-by-step tracking.
+- **Formal** uses explicit decisions and step-by-step tracking.
 
-- **Explore** suits work where depth and coverage matter more than a fixed step list — including a change that edits map nodes, whose per-node negotiation is closer to working a topic than to ticking off tasks.
+- **Explore** suits work where depth and coverage matter more than a fixed step list.
 
-- **Wander** is for work too small or too fluid to plan; the agent flags topic drift and can offer to flush. Having no Approach, its [Conclude](#conclude) leans on the Build [Log](#build) for what happened, and may rename the change to match where the work ended up.
+- **Wander** is for work too small or too fluid to plan. Having no Approach, its [Conclude](#conclude) leans on the Build [Log](#build) for what happened, and may rename the change to match where the work ended up.
 
 **Detail**
 
@@ -633,17 +633,9 @@ Opening each new part, the agent releases into it whatever now belongs. Anything
 id: a2r
 ```
 
-How the change will be carried out, written as a list of decisions and their reasons — not a narrative and not a file-by-file rehearsal, which belongs to the [worklist](#plan). Each decision earns a line only if it carries a reason; self-evident choices need no subsection. Skipped entirely by [Wander](#cadences). Open items the agent cannot settle alone sit beside it in an [Unresolved](#unresolved) list, and the Approach is ready for approval only once that list is empty.
+The agent first reads the map nodes the change touches, and the code where reality must be checked, to ground its decisions and find gaps in the map's coverage. The Approach is how the change will be carried out, written as a list of decisions and their reasons — not a narrative and not a file-by-file rehearsal, which belongs to the [worklist](#plan). Each decision earns a line only if it carries a reason; self-evident choices need no subsection. Skipped entirely by [Wander](#cadences). Open items the agent cannot settle alone sit beside it in an [Unresolved](#unresolved) list, and the Approach is ready for approval only once that list is empty.
 
 The Approach is capped at ~2000 characters, excluding Unresolved: each time the agent surfaces it, it counts them and reports the number, and past the cap asks the user to adjudicate.
-
-**Detail**
-
-The agent re-reads and prunes its own draft before surfacing — anything not carrying a decision-and-reason comes out — and counts again afterwards.
-
-**See also**
-
-- [Enjoyment](#enjoyment) — artifact economy: why the Approach is pruned to decisions-and-reasons rather than left as narrative.
 
 
 # Unresolved
