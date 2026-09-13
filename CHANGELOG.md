@@ -2,6 +2,10 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 2.1.1 — 2026-09-13
+
+- Navigation links break one per line when rendered, via a trailing backslash on all but the last.
+
 ## 2.1.0 — 2026-09-13
 
 - Approval stamps carry a date, not a timestamp.

@@ -1,8 +1,8 @@
 # NDD Project
 
-[Contents](#contents)
-[Distribution](#distribution)
-[Testing](testing.map.md#testing)
+[Contents](#contents) \
+[Distribution](#distribution) \
+[Testing](testing.map.md#testing) \
 [NDD](ndd.map.md#ndd)
 
 ```yaml
@@ -39,9 +39,9 @@ id: ct6
 
 # Distribution
 
-[↑ NDD Project](#ndd-project)
-[Release Steps](#release-steps)
-[Installer](#installer)
+[↑ NDD Project](#ndd-project) \
+[Release Steps](#release-steps) \
+[Installer](#installer) \
 [Agent Rules](#agent-rules)
 
 ```yaml
@@ -94,8 +94,8 @@ It refuses to run from its own checkout directory; this repository reads its sou
 
 # Agent Rules
 
-[↑ Distribution](#distribution)
-[Rule Form](#rule-form)
+[↑ Distribution](#distribution) \
+[Rule Form](#rule-form) \
 [Rule Selection](#rule-selection)
 
 ```yaml

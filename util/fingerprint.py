@@ -24,7 +24,7 @@ console = Console()
 
 HEADING = re.compile(r"^#{1,6} (.+?)\s*$")
 FENCE = re.compile(r"^```")
-LINK_ONLY_LINE = re.compile(r"^\[[^\]]+\]\([^)]+\)\s*$")
+LINK_ONLY_LINE = re.compile(r"^\[[^\]]+\]\([^)]+\)\s*\\?\s*$")
 # A key may hold spaces; one with a colon or leading punctuation is quoted, per
 # the Approval Stamp node.
 STAMP = re.compile(r"^\s+(?:\"([^\"]+)\"|'([^']+)'|([^\s\"'][^:]*?))\s*:\s*\{.*?\bhash:\s*([0-9a-f]{8})\b")

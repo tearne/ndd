@@ -1,8 +1,8 @@
 # Fixture
 
-[Plain Prose](#plain-prose)
-[Full Sections](#full-sections)
-[Bare Heading](#bare-heading)
+[Plain Prose](#plain-prose) \
+[Full Sections](#full-sections) \
+[Bare Heading](#bare-heading) \
 [Changed Prose](#changed-prose)
 
 ```yaml
@@ -33,7 +33,7 @@ changes what a reader sees.
 
 # Full Sections
 
-[↑ Fixture](#fixture)
+[↑ Fixture](#fixture) \
 [Renamed Child](#renamed-child)
 
 ```yaml

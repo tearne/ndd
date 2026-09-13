@@ -1,8 +1,8 @@
 # Fixture
 
-[Plain Prose](#plain-prose)
-[Full Sections](#full-sections)
-[Bare Heading](#bare-heading)
+[Plain Prose](#plain-prose) \
+[Full Sections](#full-sections) \
+[Bare Heading](#bare-heading) \
 [Changed Prose](#changed-prose)
 
 ```yaml
@@ -30,7 +30,7 @@ One paragraph of prose is the common case. Its fingerprint must survive being re
 
 # Full Sections
 
-[↑ Fixture](#fixture)
+[↑ Fixture](#fixture) \
 [Child](#child)
 
 ```yaml

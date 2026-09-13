@@ -1,8 +1,8 @@
 # Testing
 
-[↑ NDD Project](map.md#ndd-project)
-[Contents](#contents)
-[Fingerprint Check](#fingerprint-check)
+[↑ NDD Project](map.md#ndd-project) \
+[Contents](#contents) \
+[Fingerprint Check](#fingerprint-check) \
 [Install Check](#install-check)
 
 ```yaml

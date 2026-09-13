@@ -1,12 +1,12 @@
 # NDD
 
-[↑ NDD Project](map.md#ndd-project)
-[Contents](#contents)
-[Principles](#principles)
-[Specification](#specification)
-[Change-Management](#change-management)
-[Maintenance](#maintenance)
-[Tooling](#tooling)
+[↑ NDD Project](map.md#ndd-project) \
+[Contents](#contents) \
+[Principles](#principles) \
+[Specification](#specification) \
+[Change-Management](#change-management) \
+[Maintenance](#maintenance) \
+[Tooling](#tooling) \
 [Standards](#standards)
 
 ```yaml
@@ -99,13 +99,13 @@ id: ct5
 
 # Principles
 
-[↑ NDD](#ndd)
-[Three Deaths](#three-deaths)
-[Comprehension is an Activity](#comprehension-is-an-activity)
-[Intent Memory](#intent-memory)
-[Enjoyment](#enjoyment)
-[Local Sufficiency](#local-sufficiency)
-[Cross-Agent Falsifiability](#cross-agent-falsifiability)
+[↑ NDD](#ndd) \
+[Three Deaths](#three-deaths) \
+[Comprehension is an Activity](#comprehension-is-an-activity) \
+[Intent Memory](#intent-memory) \
+[Enjoyment](#enjoyment) \
+[Local Sufficiency](#local-sufficiency) \
+[Cross-Agent Falsifiability](#cross-agent-falsifiability) \
 [Orient Then Focus](#orient-then-focus)
 
 ```yaml
@@ -177,7 +177,7 @@ Its corollary is **artifact economy**: every word in a change document or map no
 
 # Local Sufficiency
 
-[↑ Principles](#principles)
+[↑ Principles](#principles) \
 [Trees over Graphs](#trees-over-graphs)
 
 ```yaml
@@ -234,11 +234,11 @@ The focused items are where comprehension is built; skip that and the user's rol
 
 # Specification
 
-[↑ NDD](#ndd)
-[Node](#node)
-[Map Structure](#map-structure)
-[Node Sizing](#node-sizing)
-[Writing Style](#writing-style)
+[↑ NDD](#ndd) \
+[Node](#node) \
+[Map Structure](#map-structure) \
+[Node Sizing](#node-sizing) \
+[Writing Style](#writing-style) \
 [Edit Governance](#edit-governance)
 
 ```yaml
@@ -254,10 +254,10 @@ The conceptual map is the primary artefact. It holds the system's shape as a tre
 
 # Node
 
-[↑ Specification](#specification)
-[Node Identity](#node-identity)
-[Navigation Links](#navigation-links)
-[Node Sections](#node-sections)
+[↑ Specification](#specification) \
+[Node Identity](#node-identity) \
+[Navigation Links](#navigation-links) \
+[Node Sections](#node-sections) \
 [Approval Stamp](#approval-stamp)
 
 ```yaml
@@ -296,15 +296,17 @@ The **scaffolding block** is fenced YAML directly under the navigation links con
 
 ```yaml
 id: b3q
+approvals:
+  tearne: {at: 2026-09-13, hash: dc036cd6}
 ```
 
-The tree is defined by its links, not in a separate structure. Each node names its one parent and each of its children. Siblings aren't listed directly.
+The tree is defined by its links. Each node names its parent and each child. Siblings aren't listed directly.
 
 > [!IMPORTANT] Links resolve by node name, never by ID, so ordinary markdown tooling navigates them and a node's identity token never appears as a link target.
 
 **Detail**
 
-The parent link comes first, its text the target's name prefixed with `↑`, so the root, which has none, is told apart at a glance; every other node has exactly one. Child link text is the target node's actual name, so a markdown language server jumps straight there. Because links are name-anchored, renaming a node is a mechanical re-point of the links that named it. A user may omit links while drafting; the [mechanical review](#tidy) adds them and reports it.
+The parent link comes first, its text the target's name prefixed with `↑`; only the map's root has none. Child link text is the target node's actual name, so a markdown language server jumps straight there. Each line but the last ends with ` \`, so the block renders one link per line. Because links are name-anchored, renaming a node is a mechanical re-point of the links that named it. A user may omit links while drafting; the [mechanical review](#tidy) adds them and reports it.
 
 Child order belongs to the parent, in natural reading order.
 
@@ -317,7 +319,7 @@ Because links resolve by name, every heading must be unambiguous within its [map
 
 # Node Sections
 
-[↑ Node](#node)
+[↑ Node](#node) \
 [Callouts](#callouts)
 
 ```yaml
@@ -348,7 +350,7 @@ Rendered as a `> [!IMPORTANT]` blockquote, never as a highlighter for every nota
 
 # Approval Stamp
 
-[↑ Node](#node)
+[↑ Node](#node) \
 [Fingerprint](#fingerprint)
 
 ```yaml
@@ -378,7 +380,7 @@ approvals:
 
 # Fingerprint
 
-[↑ Approval Stamp](#approval-stamp)
+[↑ Approval Stamp](#approval-stamp) \
 [Fingerprint Helper](#fingerprint-helper)
 
 ```yaml
@@ -425,7 +427,7 @@ A [POS-style](standards/POS.md) script run with `uv`, one map file at a time, so
 
 # Map Structure
 
-[↑ Specification](#specification)
+[↑ Specification](#specification) \
 [Map Files](#map-files)
 
 ```yaml
@@ -487,9 +489,9 @@ Each time the agent edits a node it counts and reports the characters, including
 
 # Writing Style
 
-[↑ Specification](#specification)
-[Conceptual Writing](#conceptual-writing)
-[Formatting](#formatting)
+[↑ Specification](#specification) \
+[Conceptual Writing](#conceptual-writing) \
+[Formatting](#formatting) \
 [Economy](#economy)
 
 ```yaml
@@ -536,6 +538,8 @@ A handful of habits shape how a node reads, and one trap to avoid:
 
 ```yaml
 id: f2n
+approvals:
+  tearne: {at: 2026-09-13, hash: 2f20a597}
 ```
 
 Typographic conventions for map prose.
@@ -578,8 +582,8 @@ A node says each thing once, and nothing the reader already has. The ways it fai
 
 # Edit Governance
 
-[↑ Specification](#specification)
-[Sync Rule](#sync-rule)
+[↑ Specification](#specification) \
+[Sync Rule](#sync-rule) \
 [Engagement Rule](#engagement-rule)
 
 ```yaml
@@ -635,13 +639,13 @@ The rule binds the agent, not the user, who edits the map freely and unannounced
 
 # Change-Management
 
-[↑ NDD](#ndd)
-[Change Lifecycle](#change-lifecycle)
-[Cadences](#cadences)
-[Startup Scan](#startup-scan)
-[Bootstrapping](#bootstrapping)
-[Gates and Permissions](#gates-and-permissions)
-[Keywords](#keywords)
+[↑ NDD](#ndd) \
+[Change Lifecycle](#change-lifecycle) \
+[Cadences](#cadences) \
+[Startup Scan](#startup-scan) \
+[Bootstrapping](#bootstrapping) \
+[Gates and Permissions](#gates-and-permissions) \
+[Keywords](#keywords) \
 [Thought Management](#thought-management)
 
 ```yaml
@@ -657,9 +661,9 @@ A change's file name is its title in two to five hyphenated words, optionally be
 
 # Change Lifecycle
 
-[↑ Change-Management](#change-management)
-[Plan](#plan)
-[Build](#build)
+[↑ Change-Management](#change-management) \
+[Plan](#plan) \
+[Build](#build) \
 [Conclude](#conclude)
 
 ```yaml
@@ -681,11 +685,11 @@ The Plan → Build boundary is the load-bearing gate: the change's own work wait
 
 # Plan
 
-[↑ Change Lifecycle](#change-lifecycle)
-[Intent](#intent)
-[Context](#context)
-[Held](#held)
-[Approach](#approach)
+[↑ Change Lifecycle](#change-lifecycle) \
+[Intent](#intent) \
+[Context](#context) \
+[Held](#held) \
+[Approach](#approach) \
 [Worklist](#worklist)
 
 ```yaml
@@ -747,7 +751,7 @@ Opening each new part, the agent releases into it whatever now belongs. Anything
 
 # Approach
 
-[↑ Plan](#plan)
+[↑ Plan](#plan) \
 [Unresolved](#unresolved)
 
 ```yaml
@@ -791,7 +795,7 @@ Before surfacing the worklist the agent prunes it against fixed rules: one task 
 
 # Build
 
-[↑ Change Lifecycle](#change-lifecycle)
+[↑ Change Lifecycle](#change-lifecycle) \
 [Build Lock](#build-lock)
 
 ```yaml
@@ -824,7 +828,7 @@ Releasing the lock deletes the file. A build that changed code keeps the lock ev
 
 # Conclude
 
-[↑ Change Lifecycle](#change-lifecycle)
+[↑ Change Lifecycle](#change-lifecycle) \
 [Archiving](#archiving)
 
 ```yaml
@@ -918,7 +922,7 @@ Adopting an existing codebase adds a survey: the agent reads existing assets and
 
 # Gates and Permissions
 
-[↑ Change-Management](#change-management)
+[↑ Change-Management](#change-management) \
 [Approval](#approval)
 
 ```yaml
@@ -953,8 +957,8 @@ How a draft is delivered is the user's choice. The default is chat; a bare "writ
 
 # Keywords
 
-[↑ Change-Management](#change-management)
-[Process Keyword](#process-keyword)
+[↑ Change-Management](#change-management) \
+[Process Keyword](#process-keyword) \
 [Aside Keyword](#aside-keyword)
 
 ```yaml
@@ -1018,9 +1022,9 @@ While a set is in progress, every message ends with a **status line** showing th
 
 # Maintenance
 
-[↑ NDD](#ndd)
-[Map Review](#map-review)
-[Backlog Review](#backlog-review)
+[↑ NDD](#ndd) \
+[Map Review](#map-review) \
+[Backlog Review](#backlog-review) \
 [Sign-off](#sign-off)
 
 ```yaml
@@ -1040,10 +1044,10 @@ Deferring upkeep for a stretch — an emergency fix, a push elsewhere — is saf
 
 # Map Review
 
-[↑ Maintenance](#maintenance)
-[Tidy](#tidy)
-[Shape](#shape)
-[Consistency](#consistency)
+[↑ Maintenance](#maintenance) \
+[Tidy](#tidy) \
+[Shape](#shape) \
+[Consistency](#consistency) \
 [Rendering](#rendering)
 
 ```yaml
@@ -1175,7 +1179,7 @@ It looks for:
 
 # Sign-off
 
-[↑ Maintenance](#maintenance)
+[↑ Maintenance](#maintenance) \
 [Approver](#approver)
 
 ```yaml

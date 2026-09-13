@@ -34,8 +34,8 @@ EXPECTED = {
 def fingerprint(node_lines: list[str]) -> str:
     heading, body = node_lines[0], node_lines[1:]
     i = 0
-    while i < len(body) and (body[i].strip() == "" or re.fullmatch(r"\[[^\]]+\]\([^)]+\)\s*", body[i])):
-        i += 1  # a navigation link is a line that is solely one link
+    while i < len(body) and (body[i].strip() == "" or re.fullmatch(r"\[[^\]]+\]\([^)]+\)\s*\\?\s*", body[i])):
+        i += 1  # a navigation link is a line that is solely one link, with an optional trailing backslash
     if i < len(body) and body[i].startswith("```yaml"):
         i = next(j for j in range(i + 1, len(body)) if body[j].startswith("```")) + 1
     text = re.sub(r"\s+", "", heading + "".join(body[i:]))
