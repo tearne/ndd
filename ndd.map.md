@@ -470,15 +470,13 @@ A file's *Contents* lists the nodes in that file; a branch that continues in ano
 
 ```yaml
 id: z9p
+approvals:
+  tearne: {at: 2026-09-13T19:35:11+00:00, hash: cfaf5824}
 ```
 
-Keep nodes small and focussed on one concept. The rough upper bound for size is around 800 characters, but the real test is felt: if a node starts wanting sub-sections, it's outgrown one concept and should split into children.
+Keep nodes small and focussed on one concept. The rough upper bound for size is around 800 characters, but the real test is felt during review.
 
-Each time the agent edits a node it counts the characters and reports the number. The count covers the node's body and its *Detail* section, taking an inline link as the length of its visible text. The [navigation links](#navigation-links), *See also*, tables and diagrams are excluded. Over the bound the agent flags the node rather than silently trimming, so splitting-versus-keeping stays the user's call.
-
-**Detail**
-
-The count measures the node's own content, which is why *Detail* is included and *See also* is not: one explains the concept, the other points away from it.
+Each time the agent edits a node it counts and reports the characters, including the *Detail* section and taking an inline link as the length of its visible text. The [navigation links](#navigation-links), *See also*, tables and diagrams are excluded. If over the bound the agent flags the node rather than silently trimming pre-existing text. On a map that carries stamps, a review does not flag a node that is not [due](#sign-off) for the session's [approver](#approver): the call was previously made and signed off.
 
 **See also**
 
@@ -1070,11 +1068,13 @@ Findings are not stored. A review recomputes from the map, so a deferred finding
 
 ```yaml
 id: u8k
+approvals:
+  tearne: {at: 2026-09-13T19:47:17+00:00, hash: d1cf8a9d}
 ```
 
-Agent-run housekeeping, run on the nodes the user edited when they hand back, and across the whole map before an [archive](#archiving). The agent needs no prompting; it reports every fix made and every count it took, in as few lines as that needs, one line if there is nothing. It is restricted to [corrections](#engagement-rule), never changes of meaning; anything needing judgement is left for [Map Review](#map-review) to raise as a finding.
+Agent-run housekeeping, run on the nodes the user edited when they hand back, and across the whole map before an [archive](#archiving). The agent needs no prompting and reports briefly every fix made and every count it took. It is restricted to [corrections](#engagement-rule), never changes of meaning; anything needing judgement is either left for a subsequent [Map Review](#map-review) or handed back to the user immediately.
 
-It fixes and reports a [tree overview](#map-structure) out of step with the navigation links, a missing scaffolding [id](#node-identity) or [navigation link](#navigation-links), a link left behind by a rename, and an unambiguous grammatical slip. It reports only the count of nodes over the [size bound](#node-sizing), since each is a judgement for Map Review.
+It fixes and reports a [tree overview](#map-structure) out of step with the navigation links, a missing scaffolding [id](#node-identity) or [navigation link](#navigation-links), a link left behind by a rename, and an unambiguous grammatical slip. It reports only the count of nodes over the [size bound](#node-sizing), not counting those cleared for the session's [approver](#approver); with no handle to hand it counts them all and says so.
 
 
 # Shape
@@ -1083,13 +1083,15 @@ It fixes and reports a [tree overview](#map-structure) out of step with the navi
 
 ```yaml
 id: d4p
+approvals:
+  tearne: {at: 2026-09-13T20:12:57+00:00, hash: 08d1997e}
 ```
 
 A check on how the map is cut: whether the tree's divisions still match how the user thinks of the system.
 
 It looks for:
 
-- A node carrying more ideas than its heading promises, which should be split into children. Tidy's size table feeds this, and the user may decide an oversize node earns its length.
+- A node carrying more ideas than its heading implies; a node the approver has [stamped](#sign-off) as it stands is not raised.
 
 - Sibling nodes that say too little apart and should merge.
 
