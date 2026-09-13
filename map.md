@@ -14,6 +14,7 @@ The repository that develops and ships Non-Dead Design. The method itself is the
 - **Distribution** — how NDD reaches a client project: the shipped layout, the release checklist, the installer and the agent rules.
 
 - **Testing** — how this repository checks itself: the checks, their runnable forms under `tests/`, shipped so clients have access to tests which matter.
+
 - **NDD** — the method, in `ndd.map.md`.
 
 

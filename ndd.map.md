@@ -92,8 +92,144 @@ id: ct5
       - [Rendering](#rendering)
     - [Backlog Review](#backlog-review)
     - [Sign-off](#sign-off)
+      - [Approver](#approver)
   - [Tooling](#tooling)
   - [Standards](#standards)
+
+
+# Principles
+
+[↑ NDD](#ndd)
+[Three Deaths](#three-deaths)
+[Comprehension is an Activity](#comprehension-is-an-activity)
+[Intent Memory](#intent-memory)
+[Enjoyment](#enjoyment)
+[Local Sufficiency](#local-sufficiency)
+[Cross-Agent Falsifiability](#cross-agent-falsifiability)
+[Orient Then Focus](#orient-then-focus)
+
+```yaml
+id: p4c
+```
+
+The method's founding case, in three moves.
+
+- **What broke.** Agent-augmented development split writing code from understanding it: production no longer carries comprehension along.
+
+- **What the method does.** It restores a deliberate comprehension-building activity, maintaining the map, and passes rendering to the agent.
+
+- **What follows.** Working at the structural level, the map surfaces logic bugs, wrong flows, missing cases, bad boundaries, before any code is written, and conceptual maintainability earns first-class standing alongside correctness.
+
+The principles below are the binding constraints every change answers to, and the home other nodes point at instead of restating a reason.
+
+
+# Three Deaths
+
+[↑ Principles](#principles)
+
+```yaml
+id: d3t
+```
+
+The three deaths the method's name refers to, each a way understanding is lost once agents write the code.
+
+- **Specifications die** as documents when they sit off the critical path — unread, unmaintained, drifting into fiction.
+
+- **Structural thinking dies** when the human no longer authors the codebase and the agent's output has nowhere to be reasoned about.
+
+- **Comprehension dies** when the developer's role stops being architecturally fun, because understanding is sustained by engagement, not discipline.
+
+
+# Comprehension is an Activity
+
+[↑ Principles](#principles)
+
+```yaml
+id: c8a
+```
+
+No artifact substitutes for the activity of structural thinking itself. Reading a spec doesn't build the model; maintaining the map does — the deliberate construction that keeps the user's structural grasp growing as fast as agents produce code.
+
+
+# Intent Memory
+
+[↑ Principles](#principles)
+
+```yaml
+id: q3v
+```
+
+Code records what a system does, never why it is shaped that way. The reasoning behind a boundary or a trade-off lives in the author's head and leaves when they do. The map is where intent is remembered — prose that carries the why, so a decision survives past the moment and the person that made it.
+
+
+# Enjoyment
+
+[↑ Principles](#principles)
+
+```yaml
+id: j2e
+```
+
+Structural thinking must stay enjoyable — it's the part strong practitioners value, and a process that reduces the user to reviewing agent diffs destroys engagement. Engagement, not discipline, is what sustains comprehension over time: you keep understanding a system because staying in the structural thinking is rewarding, not by willpower. Enjoyment is a binding constraint, not a bonus.
+
+Its corollary is **artifact economy**: every word in a change document or map node competes for the reader's attention, so bloat and duplication turn a dialogic activity with the agent into a wading exercise.
+
+
+# Local Sufficiency
+
+[↑ Principles](#principles)
+[Trees over Graphs](#trees-over-graphs)
+
+```yaml
+id: s3l
+```
+
+Reasoning about one part must not require holding the rest in mind — the mind registering that working memory suffices is what makes a system feel manageable. Cross-cutting concerns are the enemy: when one fact has consequences everywhere, no local model is ever enough. The cure is to promote each into a first-class named object, referenced locally rather than left implicit.
+
+
+# Trees over Graphs
+
+[↑ Local Sufficiency](#local-sufficiency)
+
+```yaml
+id: g6t
+```
+
+A tree delivers local sufficiency for free: every node has one parent, one home, one context. Real domains have cross-cutting relations, but those are references between nodes, not extra parent edges — and complex internal behaviour (cycles, fan-out, retries) lives *inside* a node, not between them. The "peak tree", where a system's shape feels like a clean logical tree, is a real cognitive state; agents produce graph-shaped code from day one and skip past it, so the map preserves it deliberately.
+
+
+# Cross-Agent Falsifiability
+
+[↑ Principles](#principles)
+
+```yaml
+id: f9x
+```
+
+If the map is the source of truth, independent agents can render it — and differences between renderings test its quality. A good map renders consistently where it matters; a bad one doesn't, exposing abstraction leaks and model-vs-reality drift without the user reading code.
+
+Full cross-rendering is expensive, kept for high-stakes moments. Its everyday forms are two [Maintenance](#maintenance) checks. The **ambiguity test** asks whether a fresh agent could build a node without guessing, and [Consistency](#consistency) applies it from the map side. [Rendering](#rendering) tests the one rendering that exists against the map from the code side.
+
+
+# Orient Then Focus
+
+[↑ Principles](#principles)
+
+```yaml
+id: r5i
+```
+
+**Attention dies under overwhelm.** So whenever the agent has a set of items to present — a worklist, open changes, map nodes to edit — it surfaces them in summary (e.g. bullet points), so the user is oriented, then works through it one item at a time, holding the stack itself.
+
+The set alone is more than anyone can hold, but item-by-item alone would leave the user unsure where they are. Together they give orientation and prevent the agent from advancing faster than the user can follow. Each item is introduced by name and by its place in the set, such as *3 of 7*. A message asks at most one question, ending where it asks it.
+
+The focused items are where comprehension is built; skip that and the user's role degrades to approving map diffs instead of code diffs — a better level of abstraction, but still passive review.
+
+**See also**
+
+- [Engagement Rule](#engagement-rule) — the map-edit instance: nodes named up front, then settled one by one.
+- [Enjoyment](#enjoyment) — attention lost to overwhelm is how comprehension stops being sustained by engagement.
+- [Thought Management](#thought-management) — the practice that keeps the user's place when a thought interrupts the item in hand.
 
 
 # Specification
@@ -137,39 +273,17 @@ The format is a strict superset of a plain-markdown section — strip the scaffo
 - [Trees over Graphs](#trees-over-graphs) — nodes form the tree; a concept's complexity is kept inside its node rather than spread across links.
 
 
-# Change-Management
-
-[↑ NDD](#ndd)
-[Change Lifecycle](#change-lifecycle)
-[Cadences](#cadences)
-[Startup Scan](#startup-scan)
-[Bootstrapping](#bootstrapping)
-[Gates and Permissions](#gates-and-permissions)
-[Keywords](#keywords)
-[Thought Management](#thought-management)
-
-```yaml
-id: cm4
-```
-
-How the spec evolves: a change is a single markdown file, drafted in `changes/open/`, that moves through a lifecycle under user-owned gates — then it's archived to `changes/archive/` under a date prefix. Beside it, `changes/open/active.md` holds the build lock.
-
-**Detail**
-
-A change's file name is its title in two to five hyphenated words, optionally behind a leading number that helps sequence the queue. Neither is an identity: rename an open change freely as it evolves, repointing `active.md` if it names it.
-
-
 # Node Identity
 
 [↑ Node](#node)
 
 ```yaml
 id: w9c
+approvals:
+  tearne: {at: 2026-09-13T15:58:59+00:00, hash: 5a71882d}
 ```
 
-A node's name can change; its identity can't. A small immutable token in the yaml scaffolding block survives node renames and moves.
-
-> [!IMPORTANT] Navigation uses node names, not the ID, so ordinary markdown tooling works and the ID is free to be meaningless.
+A node's name can change; its identity can't. A small immutable token in the yaml scaffolding block survives node renames and moves. [Navigation](#navigation-links) never uses it, so it is free to be meaningless.
 
 **Detail**
 
@@ -397,6 +511,8 @@ How map prose is written, so nodes stay readable and durable. Three sides:
 
 ```yaml
 id: h3v
+approvals:
+  tearne: {at: 2026-09-13T15:52:03+00:00, hash: e9c897d0}
 ```
 
 A handful of habits shape how a node reads, and one trap to avoid:
@@ -405,7 +521,7 @@ A handful of habits shape how a node reads, and one trap to avoid:
 
 - **Lead with the mental picture** before any implementation detail.
 
-- **Name the boxes before explaining them** — say "there are three mechanisms: A, B, C" and then give each its own node or bullet point.
+- **Name the boxes before explaining them** — say "there are three mechanisms" and then give each its own node or bullet point.
 
 - **Flow sentences unbroken** — prefer keeping a sentence whole over interrupting it. A parenthetical em-dash pair reads fine when the aside is one short clause, but once the middle grows long and multi-part the reader loses the opening before the sentence resumes: split it into separate sentences instead.
 
@@ -502,38 +618,41 @@ The map describes what exists, never what is planned: an edit describing work no
 
 ```yaml
 id: n3g
+approvals:
+  tearne: {at: 2026-09-13T16:34:40+00:00, hash: 30781315}
 ```
 
-[Orient Then Focus](#orient-then-focus) applied to the map: every edit runs in one order — draft it, surface it with its [character count](#node-sizing), in chat or written in place as the user has asked, then treat it as settled only once the reply is [approval](#gates-and-permissions). No edit is silent or made in bulk. Pitch the prompt to what the edit changes — a comprehension check when it reshapes the picture. Corrections that change no meaning — a typo, spacing, a stale link — are applied and reported rather than surfaced, but only if every item in hand is one.
+[Orient Then Focus](#orient-then-focus) applied to the map. Nodes are
+1. drafted,
+2. surfaced with [character count](#node-sizing),
+3. written in chat or in place as the user has asked, and
+4. treated as settled only once the reply is [approval](#gates-and-permissions).
+
+On a map that carries stamps, approval also counts as [sign-off](#sign-off). No edit is silent or made in bulk. Pitch the prompt to what the edit changes — a comprehension check when it reshapes the picture. Corrections that change no meaning — a typo, spacing, a stale link — are applied and reported rather than surfaced, but only if every item in hand is one.
 
 The rule binds the agent, not the user, who edits the map freely and unannounced. Told of such an edit, or noticing one, the agent runs [Tidy](#tidy) over the node — its new count and any knock-on it can see, what it owes for its own edits — and logs it only if it changes what the build must do.
 
 
-# Cadences
+# Change-Management
 
-[↑ Change-Management](#change-management)
+[↑ NDD](#ndd)
+[Change Lifecycle](#change-lifecycle)
+[Cadences](#cadences)
+[Startup Scan](#startup-scan)
+[Bootstrapping](#bootstrapping)
+[Gates and Permissions](#gates-and-permissions)
+[Keywords](#keywords)
+[Thought Management](#thought-management)
 
 ```yaml
-id: e3n
+id: cm4
 ```
 
-Each change runs at one of three cadences. They differ only in the shape of the [Plan](#plan) — [Build](#build) and [Conclude](#conclude) are the same whichever is chosen. The agent proposes one after Intent is approved — default **Formal** — and the user confirms. The chosen cadence is recorded as a `**Cadence:** <name>` line beneath the change's title, before the Intent.
-
-| Cadence | Plan structure |
-|---------|----------------|
-| **Formal** | Intent → Approach → a task checklist |
-| **Explore** | Intent → Approach → topics + a *done-when* |
-| **Wander** | Intent only |
-
-- **Formal** uses explicit decisions and step-by-step tracking.
-
-- **Explore** suits work where depth and coverage matter more than a fixed step list.
-
-- **Wander** is for work too small or too fluid to plan. Having no Approach, its [Conclude](#conclude) leans on the Build [Log](#build) for what happened, and may rename the change to match where the work ended up.
+How the spec evolves: a change is a single markdown file, drafted in `changes/open/`, that moves through a lifecycle under user-owned gates — then it's archived to `changes/archive/` under a date prefix. Beside it, `changes/open/active.md` holds the build lock.
 
 **Detail**
 
-A **task checklist** is discrete tasks, each an atomic outcome ticked off as it lands. **Topics** are areas to work rather than steps to complete, closed by a single *done-when* condition instead of tick-boxes.
+A change's file name is its title in two to five hyphenated words, optionally behind a leading number that helps sequence the queue. Neither is an identity: rename an open change freely as it evolves, repointing `active.md` if it names it.
 
 
 # Change Lifecycle
@@ -571,9 +690,11 @@ The Plan → Build boundary is the load-bearing gate: the change's own work wait
 
 ```yaml
 id: v3d
+approvals:
+  tearne: {at: 2026-09-13T15:56:59+00:00, hash: 80bfff80}
 ```
 
-During the plan stage project files outside `changes/` remain read-only, save for the [map exemption](#edit-governance). The plan builds up in **parts** — the [Intent](#intent), [Approach](#approach), [Worklist](#worklist) — each drafted then surfaced for approval before the next, culminating in the worklist that [Build](#build) executes. Which parts a change has is set by its [cadence](#cadences). Two further sections sit outside that sequence, ungated: [Context](#context), which explains why the change exists, and [Held](#held), which catches material arriving before its part.
+The plan builds up in **parts** — the [Intent](#intent), [Approach](#approach), [Worklist](#worklist) — each drafted then surfaced for approval before the next, culminating in the worklist that [Build](#build) executes. Which parts a change has is set by its [cadence](#cadences), and what may be written meanwhile by [Gates and Permissions](#gates-and-permissions). Two further sections sit outside that sequence, ungated: [Context](#context), which explains why the change exists, and [Held](#held), which catches material arriving before its part.
 
 A Plan need not be fully formed to exist. A change may sit at any degree of formation — from an [Intent](#intent)-only draft just parked via [aside](#aside-keyword), up to a complete worklist awaiting approval.
 
@@ -633,7 +754,7 @@ Opening each new part, the agent releases into it whatever now belongs. Anything
 id: a2r
 ```
 
-The agent first reads the map nodes the change touches, and the code where reality must be checked, to ground its decisions and find gaps in the map's coverage. The Approach is how the change will be carried out, written as a list of decisions and their reasons — not a narrative and not a file-by-file rehearsal, which belongs to the [worklist](#plan). Each decision earns a line only if it carries a reason; self-evident choices need no subsection. Skipped entirely by [Wander](#cadences). Open items the agent cannot settle alone sit beside it in an [Unresolved](#unresolved) list, and the Approach is ready for approval only once that list is empty.
+The agent first reads the map nodes the change touches, and the code where reality must be checked, to ground its decisions and find gaps in the map's coverage. The Approach is how the change will be carried out, written as a list of decisions and their reasons — not a narrative and not a file-by-file rehearsal, which belongs to the [worklist](#worklist). Each decision earns a line only if it carries a reason; self-evident choices need no subsection. Skipped entirely by [Wander](#cadences). Open items the agent cannot settle alone sit beside it in an [Unresolved](#unresolved) list, and the Approach is ready for approval only once that list is empty.
 
 The Approach is capped at ~2000 characters, excluding Unresolved: each time the agent surfaces it, it counts them and reports the number, and past the cap asks the user to adjudicate.
 
@@ -736,6 +857,33 @@ Once the user approves the [Conclude](#conclude) note, the change leaves `change
 A versioned project with substantive change also proposes a changelog entry with the draft note, added on the same approval. [Tidy](#tidy) runs before the move; after it the agent offers a [Map Review](#map-review) in its light scope. If the project map defines release steps, the agent asks whether it is time to run them, and if so offers a full Map Review first.
 
 
+# Cadences
+
+[↑ Change-Management](#change-management)
+
+```yaml
+id: e3n
+```
+
+Each change runs at one of three cadences. They differ only in the shape of the [Plan](#plan) — [Build](#build) and [Conclude](#conclude) are the same whichever is chosen. The agent proposes one after Intent is approved — default **Formal** — and the user confirms. The chosen cadence is recorded as a `**Cadence:** <name>` line beneath the change's title, before the Intent.
+
+| Cadence | Plan structure |
+|---------|----------------|
+| **Formal** | Intent → Approach → a task checklist |
+| **Explore** | Intent → Approach → topics + a *done-when* |
+| **Wander** | Intent only |
+
+- **Formal** uses explicit decisions and step-by-step tracking.
+
+- **Explore** suits work where depth and coverage matter more than a fixed step list.
+
+- **Wander** is for work too small or too fluid to plan. Having no Approach, its [Conclude](#conclude) leans on the Build [Log](#build) for what happened, and may rename the change to match where the work ended up.
+
+**Detail**
+
+A **task checklist** is discrete tasks, each an atomic outcome ticked off as it lands. **Topics** are areas to work rather than steps to complete, closed by a single *done-when* condition instead of tick-boxes.
+
+
 # Startup Scan
 
 [↑ Change-Management](#change-management)
@@ -750,7 +898,7 @@ From that the agent announces whether it's planning or building, reports what's 
 
 **Detail**
 
-An interrupted build is recognised by `active.md` pointing at a change whose work is unfinished; the agent reads that change's [Log](#build) to recover context rather than restarting. A plan reopened mid-build says so in its [Log](#build) — with no [Conclusion](#conclude) yet, the change is back in planning.
+An interrupted build is recognised by `active.md` pointing at a change whose work is unfinished; the agent reads that change's [Log](#build) to recover context rather than restarting. A plan reopened mid-build says so in its [Log](#build) — with no [Conclude](#conclude) note yet, the change is back in planning.
 
 
 # Bootstrapping
@@ -1024,19 +1172,37 @@ It looks for:
 # Sign-off
 
 [↑ Maintenance](#maintenance)
+[Approver](#approver)
 
 ```yaml
 id: f2s
+approvals:
+  tearne: {at: 2026-09-13T16:27:33+00:00, hash: 444cadb2}
 ```
 
 A stakeholder approves the map a few nodes at a time. Each node can carry an [approval stamp](#approval-stamp) per person, recording when they approved it and a [fingerprint](#fingerprint) of the text they saw. On approval the agent writes a fresh stamp — scaffolding, so written and reported rather than negotiated.
 
-Nothing is marked when a node changes. Drift is found by comparing: a node is *due* for a person when its fingerprint no longer matches their stamp, or it has none for them. A map with no stamps shows nothing, and the agent never adds one unprompted.
+Nothing is marked when a node changes. Drift is found by comparing: a node is *due* for a person when its fingerprint no longer matches their stamp, or it has none for them. A map with no stamps shows nothing, and gains its first only when the user asks for one; from then on every approval of a node edit stamps it for the [approver](#approver).
 
 **See also**
 
 - [Orient Then Focus](#orient-then-focus) — due nodes are summarised, then walked one at a time.
 - [Node Sizing](#node-sizing) — re-approval is a re-read of one short node, which is what keeps it humane.
+
+
+# Approver
+
+[↑ Sign-off](#sign-off)
+
+```yaml
+id: v7a
+approvals:
+  tearne: {at: 2026-09-13T16:38:28+00:00, hash: 0009cfb1}
+```
+
+The approver is the person a [sign-off](#sign-off) stamp is written for, named by a handle. The agent resolves the handle the first time a stamp is needed, not at the [Startup Scan](#startup-scan), and says which handle it is using the first time it does. Git's `user.name` is the source, confirmed against the handles already stamped in the map; if git has none, or the map's handles do not include it, the agent asks rather than guessing.
+
+The user can override the handle, for one approval or for the rest of the session, as when pairing with another person. Before stamping, the agent says which handle it will use. A one-off override lasts one stamp and the handle then returns to the session default; a session override holds until changed.
 
 
 # Tooling
@@ -1069,138 +1235,3 @@ Guidance for the code written by agents on user projects, distinct from the map 
 | `POS.md` | Python as a readable alternative to shell scripts for admin/small tasks | Writing a system-administration or small utility script |
 | `VERSIONING.md` | Semver conventions | Prompted: project setup, changes accumulating, or a breaking change |
 | `CHANGELOG.md` | Changelog format (dated or semver) | Drafting a changelog entry |
-
-
-# Principles
-
-[↑ NDD](#ndd)
-[Three Deaths](#three-deaths)
-[Comprehension is an Activity](#comprehension-is-an-activity)
-[Intent Memory](#intent-memory)
-[Enjoyment](#enjoyment)
-[Local Sufficiency](#local-sufficiency)
-[Cross-Agent Falsifiability](#cross-agent-falsifiability)
-[Orient Then Focus](#orient-then-focus)
-
-```yaml
-id: p4c
-```
-
-The method's founding case, in three moves.
-
-- **What broke.** Agent-augmented development split writing code from understanding it: production no longer carries comprehension along.
-
-- **What the method does.** It restores a deliberate comprehension-building activity, maintaining the map, and passes rendering to the agent.
-
-- **What follows.** Working at the structural level, the map surfaces logic bugs, wrong flows, missing cases, bad boundaries, before any code is written, and conceptual maintainability earns first-class standing alongside correctness.
-
-The principles below are the binding constraints every change answers to, and the home other nodes point at instead of restating a reason.
-
-
-# Three Deaths
-
-[↑ Principles](#principles)
-
-```yaml
-id: d3t
-```
-
-The three deaths the method's name refers to, each a way understanding is lost once agents write the code.
-
-- **Specifications die** as documents when they sit off the critical path — unread, unmaintained, drifting into fiction.
-
-- **Structural thinking dies** when the human no longer authors the codebase and the agent's output has nowhere to be reasoned about.
-
-- **Comprehension dies** when the developer's role stops being architecturally fun, because understanding is sustained by engagement, not discipline.
-
-
-# Comprehension is an Activity
-
-[↑ Principles](#principles)
-
-```yaml
-id: c8a
-```
-
-No artifact substitutes for the activity of structural thinking itself. Reading a spec doesn't build the model; maintaining the map does — the deliberate construction that keeps the user's structural grasp growing as fast as agents produce code.
-
-
-# Intent Memory
-
-[↑ Principles](#principles)
-
-```yaml
-id: q3v
-```
-
-Code records what a system does, never why it is shaped that way. The reasoning behind a boundary or a trade-off lives in the author's head and leaves when they do. The map is where intent is remembered — prose that carries the why, so a decision survives past the moment and the person that made it.
-
-
-# Enjoyment
-
-[↑ Principles](#principles)
-
-```yaml
-id: j2e
-```
-
-Structural thinking must stay enjoyable — it's the part strong practitioners value, and a process that reduces the user to reviewing agent diffs destroys engagement. Engagement, not discipline, is what sustains comprehension over time: you keep understanding a system because staying in the structural thinking is rewarding, not by willpower. Enjoyment is a binding constraint, not a bonus.
-
-Its corollary is **artifact economy**: every word in a change document or map node competes for the reader's attention, so bloat and duplication turn a dialogic activity with the agent into a wading exercise.
-
-
-# Local Sufficiency
-
-[↑ Principles](#principles)
-[Trees over Graphs](#trees-over-graphs)
-
-```yaml
-id: s3l
-```
-
-Reasoning about one part must not require holding the rest in mind — the mind registering that working memory suffices is what makes a system feel manageable. Cross-cutting concerns are the enemy: when one fact has consequences everywhere, no local model is ever enough. The cure is to promote each into a first-class named object, referenced locally rather than left implicit.
-
-
-# Trees over Graphs
-
-[↑ Local Sufficiency](#local-sufficiency)
-
-```yaml
-id: g6t
-```
-
-A tree delivers local sufficiency for free: every node has one parent, one home, one context. Real domains have cross-cutting relations, but those are references between nodes, not extra parent edges — and complex internal behaviour (cycles, fan-out, retries) lives *inside* a node, not between them. The "peak tree", where a system's shape feels like a clean logical tree, is a real cognitive state; agents produce graph-shaped code from day one and skip past it, so the map preserves it deliberately.
-
-
-# Cross-Agent Falsifiability
-
-[↑ Principles](#principles)
-
-```yaml
-id: f9x
-```
-
-If the map is the source of truth, independent agents can render it — and differences between renderings test its quality. A good map renders consistently where it matters; a bad one doesn't, exposing abstraction leaks and model-vs-reality drift without the user reading code.
-
-Full cross-rendering is expensive, kept for high-stakes moments. Its everyday forms are two [Maintenance](#maintenance) checks. The **ambiguity test** asks whether a fresh agent could build a node without guessing, and [Consistency](#consistency) applies it from the map side. [Rendering](#rendering) tests the one rendering that exists against the map from the code side.
-
-
-# Orient Then Focus
-
-[↑ Principles](#principles)
-
-```yaml
-id: r5i
-```
-
-**Attention dies under overwhelm.** So whenever the agent has a set of items to present — a worklist, open changes, map nodes to edit — it surfaces them in summary (e.g. bullet points), so the user is oriented, then works through it one item at a time, holding the stack itself.
-
-The set alone is more than anyone can hold, but item-by-item alone would leave the user unsure where they are. Together they give orientation and prevent the agent from advancing faster than the user can follow. Each item is introduced by name and by its place in the set, such as *3 of 7*. A message asks at most one question, ending where it asks it.
-
-The focused items are where comprehension is built; skip that and the user's role degrades to approving map diffs instead of code diffs — a better level of abstraction, but still passive review.
-
-**See also**
-
-- [Engagement Rule](#engagement-rule) — the map-edit instance: nodes named up front, then settled one by one.
-- [Enjoyment](#enjoyment) — attention lost to overwhelm is how comprehension stops being sustained by engagement.
-- [Thought Management](#thought-management) — the practice that keeps the user's place when a thought interrupts the item in hand.

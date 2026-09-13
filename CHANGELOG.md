@@ -4,6 +4,7 @@ Notable changes to NDD, newest first. The current version is the topmost heading
 
 ## Unreleased
 
+- *Approver* node: the agent resolves the user's handle from git and the map's stamps, asking when unsure, and once a map carries a stamp every approval of a node edit stamps it. Rule 6 carries the step.
 - *Intent* node: the Intent is now defined as what the change must achieve, with every "why" sent to Context, and the agent re-reads and trims it once the Approach is approved.
 
 ## 2.0.0 — 2026-09-13
