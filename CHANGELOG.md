@@ -2,6 +2,10 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## Unreleased
+
+- *Intent* node: the Intent is now defined as what the change must achieve, with every "why" sent to Context, and the agent re-reads and trims it once the Approach is approved.
+
 ## 2.0.0 — 2026-09-13
 
 First release of NDD, the successor to COD: the method now lives in the map, ships as a vendored `ndd/` directory via `install.py`, and carries agent rules rendered from the map, stakeholder sign-off, suggested standards and install tests.

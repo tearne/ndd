@@ -586,9 +586,9 @@ A Plan need not be fully formed to exist. A change may sit at any degree of form
 id: i8b
 ```
 
-The opening part: why the change is needed expressed in domain language, not how it will be delivered unless relevant to the requirement. Kept brief and requiring user approval before anything else proceeds. For a [Wander](#cadences) change the Intent is the whole plan.
+The opening part: what the change must achieve, in domain language, stated so the user can approve it. Not how it will be delivered unless relevant to the requirement, and not why it is needed: every *why* — history, provenance, the reasoning that led here — belongs in [Context](#context). Kept brief and requiring user approval before anything else proceeds. For a [Wander](#cadences) change the Intent is the whole plan.
 
-Its prose is capped at ~500 characters, counted and reported each time the agent surfaces it, with anything over put to the user to adjudicate rather than surfaced as final. History and provenance belong in [Context](#context), which the cap does not reach — the opening must scan in seconds.
+Its prose is capped at ~500 characters, counted and reported each time the agent surfaces it, with anything over put to the user to adjudicate rather than surfaced as final; Context is outside the cap, so the opening scans in seconds. Once the [Approach](#approach) is approved the agent re-reads the Intent and cuts whatever the Approach now carries, surfacing the trimmed Intent with its count.
 
 
 # Context
