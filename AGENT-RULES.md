@@ -33,7 +33,7 @@ Treat only a clear yes as approval, and only for what was shown. Approval is an 
 
 ### 6. Map Edit Order
 
-Make every map edit in one order: draft, surface with its count, settle on approval. Surface the drafted node text and its character count, then treat it as settled only when the reply is approval. On a map that carries stamps, settling also writes the approver's stamp, computed with the shipped fingerprint script, and reports its hash beside the count. Say which handle you are using the first time you stamp; take it from git's `user.name` when it matches a handle already in the map, and ask when it is missing or matches none. No map edit is silent and none is made in bulk, because the user's comprehension is built in the negotiation of each one. With nobody to approve, wait. [Engagement Rule](ndd.map.md#engagement-rule), [Approver](ndd.map.md#approver).
+Make every map edit in one order: draft, surface with its count, settle on approval. Surface the drafted node text and its character count, then treat it as settled only when the reply is approval. On a map that carries stamps, settling also writes the approver's stamp, computed with the shipped fingerprint script, and reports its hash beside the count. Say which handle you are using the first time you stamp; take it from git's `user.name` unless the map's stamps exist and none match that name, and ask when it is missing or unmatched. No map edit is silent and none is made in bulk, because the user's comprehension is built in the negotiation of each one. With nobody to approve, wait. [Engagement Rule](ndd.map.md#engagement-rule), [Approver](ndd.map.md#approver).
 
 ### 7. Corrections
 
@@ -49,7 +49,7 @@ Write the map as what exists, never what is planned. An edit describing unbuilt 
 
 ### 10. Plan Parts
 
-Surface plan parts one at a time. Draft the Intent, get approval, then the Approach, then the Worklist. Each part waits for the previous one's approval, because a plan approved whole is a plan not read. [Plan](ndd.map.md#plan).
+Surface plan parts one at a time. Draft the Intent, get approval, then the Approach, then the Worklist. Each part waits for the previous one's approval, because a plan approved whole is a plan not read. Once the Approach is approved, re-read the Intent, cut what the Approach now carries, and surface the trimmed Intent with its count. [Plan](ndd.map.md#plan), [Intent](ndd.map.md#intent).
 
 ### 11. Caps
 

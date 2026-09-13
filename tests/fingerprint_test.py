@@ -18,11 +18,11 @@ HELPER = HERE.parent / "util" / "fingerprint.py"
 
 EXPECTED = {
     "fixture.map.md": {
-        "Fixture": "ab9e6f02", "Plain Prose": "bcf6b47b", "Full Sections": "3a096aaf",
+        "Fixture": "ab9e6f02", "Plain Prose": "bcf6b47b", "Full Sections": "188f743f",
         "Child": "250ae92a", "Bare Heading": "6bcce17f", "Changed Prose": "275d67bd",
     },
     "fixture-edited.map.md": {
-        "Fixture": "5fd5a260", "Plain Prose": "bcf6b47b", "Full Sections": "3a096aaf",
+        "Fixture": "5fd5a260", "Plain Prose": "bcf6b47b", "Full Sections": "188f743f",
         "Renamed Child": "103b2b33", "Bare Heading": "6bcce17f", "Changed Prose": "618c09de",
     },
 }

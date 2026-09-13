@@ -2,11 +2,12 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
-## Unreleased
+## 2.1.0 — 2026-09-13
 
-- Size flag: at review, a node the session's approver has stamped as it stands is no longer flagged as oversize. Tidy may hand a judgement back at once rather than wait for Map Review.
-- *Approver* node: the agent resolves the user's handle from git and the map's stamps, asking when unsure, and once a map carries a stamp every approval of a node edit stamps it. Rule 6 carries the step.
-- *Intent* node: the Intent is now defined as what the change must achieve, with every "why" sent to Context, and the agent re-reads and trims it once the Approach is approved.
+- Approval stamps carry a date, not a timestamp.
+- Oversize nodes stamped by the session's approver are not re-flagged at review.
+- *Approver* node: the handle comes from git; once a map has a stamp, every approved edit stamps.
+- *Intent* is what the change must achieve, "why" goes to Context, and it is trimmed once the Approach is approved.
 
 ## 2.0.0 — 2026-09-13
 

@@ -280,7 +280,7 @@ The format is a strict superset of a plain-markdown section — strip the scaffo
 ```yaml
 id: w9c
 approvals:
-  tearne: {at: 2026-09-13T15:58:59+00:00, hash: 5a71882d}
+  tearne: {at: 2026-09-13, hash: 5a71882d}
 ```
 
 A node's name can change; its identity can't. A small immutable token in the yaml scaffolding block survives node renames and moves. [Navigation](#navigation-links) never uses it, so it is free to be meaningless.
@@ -353,19 +353,21 @@ Rendered as a `> [!IMPORTANT]` blockquote, never as a highlighter for every nota
 
 ```yaml
 id: p8m
+approvals:
+  tearne: {at: 2026-09-13, hash: 69e508f0}
 ```
 
 An approval stamp records that one person approved one node. Stamps live in the node's scaffolding block under an `approvals:` mapping keyed by a name or handle, so each person holds exactly one and a re-approval overwrites it. Because they are in the node rather than a separate ledger, they follow it through renames and moves. A node without the mapping is simply unapproved, and most maps never gain one.
 
 **Detail**
 
-Each value holds `at`, an ISO 8601 timestamp with offset, and `hash`, the [fingerprint](#fingerprint) of the text approved. Drift uses only the hash; the timestamp is kept so a later aid can find the version a person saw. Quote the key if it contains a colon or starts with punctuation.
+Each value holds `at`, an ISO 8601 date, and `hash`, the [fingerprint](#fingerprint) of the text approved. Drift uses only the hash; the date says when, and the hash finds the version a person saw. Quote the key if it contains a colon or starts with punctuation.
 
 ```yaml
 id: w9c
 approvals:
-  alice: {at: 2026-09-10T14:05:00+01:00, hash: 3f9a1c2e}
-  bob: {at: 2026-08-02T09:30:00+01:00, hash: 8d02b7e4}
+  alice: {at: 2026-09-10, hash: 3f9a1c2e}
+  bob: {at: 2026-08-02, hash: 8d02b7e4}
 ```
 
 **See also**
@@ -471,7 +473,7 @@ A file's *Contents* lists the nodes in that file; a branch that continues in ano
 ```yaml
 id: z9p
 approvals:
-  tearne: {at: 2026-09-13T19:35:11+00:00, hash: cfaf5824}
+  tearne: {at: 2026-09-13, hash: cfaf5824}
 ```
 
 Keep nodes small and focussed on one concept. The rough upper bound for size is around 800 characters, but the real test is felt during review.
@@ -510,7 +512,7 @@ How map prose is written, so nodes stay readable and durable. Three sides:
 ```yaml
 id: h3v
 approvals:
-  tearne: {at: 2026-09-13T15:52:03+00:00, hash: e9c897d0}
+  tearne: {at: 2026-09-13, hash: e9c897d0}
 ```
 
 A handful of habits shape how a node reads, and one trap to avoid:
@@ -617,7 +619,7 @@ The map describes what exists, never what is planned: an edit describing work no
 ```yaml
 id: n3g
 approvals:
-  tearne: {at: 2026-09-13T16:34:40+00:00, hash: 30781315}
+  tearne: {at: 2026-09-13, hash: 30781315}
 ```
 
 [Orient Then Focus](#orient-then-focus) applied to the map. Nodes are
@@ -689,7 +691,7 @@ The Plan → Build boundary is the load-bearing gate: the change's own work wait
 ```yaml
 id: v3d
 approvals:
-  tearne: {at: 2026-09-13T15:56:59+00:00, hash: 80bfff80}
+  tearne: {at: 2026-09-13, hash: 80bfff80}
 ```
 
 The plan builds up in **parts** — the [Intent](#intent), [Approach](#approach), [Worklist](#worklist) — each drafted then surfaced for approval before the next, culminating in the worklist that [Build](#build) executes. Which parts a change has is set by its [cadence](#cadences), and what may be written meanwhile by [Gates and Permissions](#gates-and-permissions). Two further sections sit outside that sequence, ungated: [Context](#context), which explains why the change exists, and [Held](#held), which catches material arriving before its part.
@@ -1069,7 +1071,7 @@ Findings are not stored. A review recomputes from the map, so a deferred finding
 ```yaml
 id: u8k
 approvals:
-  tearne: {at: 2026-09-13T19:47:17+00:00, hash: d1cf8a9d}
+  tearne: {at: 2026-09-13, hash: d1cf8a9d}
 ```
 
 Agent-run housekeeping, run on the nodes the user edited when they hand back, and across the whole map before an [archive](#archiving). The agent needs no prompting and reports briefly every fix made and every count it took. It is restricted to [corrections](#engagement-rule), never changes of meaning; anything needing judgement is either left for a subsequent [Map Review](#map-review) or handed back to the user immediately.
@@ -1084,7 +1086,7 @@ It fixes and reports a [tree overview](#map-structure) out of step with the navi
 ```yaml
 id: d4p
 approvals:
-  tearne: {at: 2026-09-13T20:12:57+00:00, hash: 08d1997e}
+  tearne: {at: 2026-09-13, hash: 08d1997e}
 ```
 
 A check on how the map is cut: whether the tree's divisions still match how the user thinks of the system.
@@ -1179,10 +1181,10 @@ It looks for:
 ```yaml
 id: f2s
 approvals:
-  tearne: {at: 2026-09-13T16:27:33+00:00, hash: 444cadb2}
+  tearne: {at: 2026-09-13, hash: 407154f5}
 ```
 
-A stakeholder approves the map a few nodes at a time. Each node can carry an [approval stamp](#approval-stamp) per person, recording when they approved it and a [fingerprint](#fingerprint) of the text they saw. On approval the agent writes a fresh stamp — scaffolding, so written and reported rather than negotiated.
+A stakeholder approves the map a few nodes at a time. Each node can carry an [approval stamp](#approval-stamp) per person, recording when they approved it and a [fingerprint](#fingerprint) of the text they saw. A stamp is scaffolding, written and reported rather than negotiated.
 
 Nothing is marked when a node changes. Drift is found by comparing: a node is *due* for a person when its fingerprint no longer matches their stamp, or it has none for them. A map with no stamps shows nothing, and gains its first only when the user asks for one; from then on every approval of a node edit stamps it for the [approver](#approver).
 
@@ -1199,10 +1201,10 @@ Nothing is marked when a node changes. Drift is found by comparing: a node is *d
 ```yaml
 id: v7a
 approvals:
-  tearne: {at: 2026-09-13T16:38:28+00:00, hash: 0009cfb1}
+  tearne: {at: 2026-09-13, hash: 4fb46bea}
 ```
 
-The approver is the person a [sign-off](#sign-off) stamp is written for, named by a handle. The agent resolves the handle the first time a stamp is needed, not at the [Startup Scan](#startup-scan), and says which handle it is using the first time it does. Git's `user.name` is the source, confirmed against the handles already stamped in the map; if git has none, or the map's handles do not include it, the agent asks rather than guessing.
+The approver is the person a [sign-off](#sign-off) stamp is written for, named by a handle. The agent resolves the handle the first time a stamp is needed, not at the [Startup Scan](#startup-scan), and says which handle it is using the first time it does. Git's `user.name` is the handle unless the map already carries stamps and none match that name; then, or when git has no name, the agent asks rather than guessing.
 
 The user can override the handle, for one approval or for the rest of the session, as when pairing with another person. Before stamping, the agent says which handle it will use. A one-off override lasts one stamp and the handle then returns to the session default; a session override holds until changed.
 
