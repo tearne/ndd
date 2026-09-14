@@ -7,9 +7,11 @@
 
 ```yaml
 id: p1j
+approvals:
+  tearne: {at: 2026-09-14, hash: 04ca2bc1}
 ```
 
-The repository that develops and ships Non-Dead Design. The method itself is the [NDD](ndd.map.md#ndd) branch, kept in its own file because it is what ships: a client receives that branch alone, as its method map. This trunk holds what stays behind: how the method is built into a distributable, released and installed. The reasoning behind the method is under [Principles](ndd.map.md#principles).
+The repository that develops and ships Non-Dead Design. The method itself is the [NDD](ndd.map.md#ndd) branch, kept in its own file. This trunk describes how the method is distributed, released and installed. The reasoning behind the method is under [Principles](ndd.map.md#principles).
 
 - **Distribution** — how NDD reaches a client project: the shipped layout, the release checklist, the installer and the agent rules.
 
