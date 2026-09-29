@@ -53,7 +53,7 @@ Surface plan parts one at a time. Draft the Intent, get approval, then the Appro
 
 ### 11. Caps
 
-Count against the caps each time you surface a part. Intent about 500 characters, Approach about 2000 excluding Unresolved, Conclude about 500 excluding a changelog entry. Report the number. Past the cap, ask the user to adjudicate rather than trimming silently or presenting it as final. [Intent](ndd.map.md#intent), [Approach](ndd.map.md#approach), [Conclude](ndd.map.md#conclude).
+Count against the caps each time you surface a part. Intent about 500 characters, Approach about 2000, Conclude about 500 excluding a changelog entry — each excluding any Unresolved at that part. Report the number. Past the cap, ask the user to adjudicate rather than trimming silently or presenting it as final. [Intent](ndd.map.md#intent), [Approach](ndd.map.md#approach), [Conclude](ndd.map.md#conclude).
 
 ### 12. Follow the Plan
 

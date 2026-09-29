@@ -2,6 +2,10 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## Pending
+
+- *Unresolved* may appear at any plan part (Intent, Approach or Conclude), not only Approach; it blocks approval of the part it sits with, and items may be cross-cutting. Held is unchanged as the pre-part spillway; anything still in Held at Conclude becomes an Unresolved item.
+
 ## 2.1.2 — 2026-09-14
 
 - Correct the project root’s description of the repository and distribution.

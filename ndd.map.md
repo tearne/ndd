@@ -68,8 +68,8 @@ id: ct5
         - [Intent](#intent)
         - [Context](#context)
         - [Held](#held)
+        - [Unresolved](#unresolved)
         - [Approach](#approach)
-          - [Unresolved](#unresolved)
         - [Worklist](#worklist)
       - [Build](#build)
         - [Build Lock](#build-lock)
@@ -689,6 +689,7 @@ The Plan → Build boundary is the load-bearing gate: the change's own work wait
 [Intent](#intent) \
 [Context](#context) \
 [Held](#held) \
+[Unresolved](#unresolved) \
 [Approach](#approach) \
 [Worklist](#worklist)
 
@@ -737,11 +738,13 @@ Keep it to the least that lets a later reader rediscover the full detail for the
 
 ```yaml
 id: h5d
+approvals:
+  tearne: {at: 2026-09-29, hash: f3a7303c}
 ```
 
 A section at the foot of the change document holding on-topic material that arrived before its part — a scope note during the [Intent](#intent), a task while the [Approach](#approach) is still settling. Writing it down when it arrives costs nothing and survives a lost session; it is exempt from the parts' caps, since nothing is meant to stay there.
 
-Opening each new part, the agent releases into it whatever now belongs. Anything still held once its part has passed is an unresolved issue in its own right, surfaced before [Conclude](#conclude) and blocking completion.
+Opening each new part, the agent releases into it whatever now belongs. Anything still in Held at [Conclude](#conclude) becomes an item in [Unresolved](#unresolved), blocking completion until placed or dropped.
 
 **See also**
 
@@ -749,10 +752,26 @@ Opening each new part, the agent releases into it whatever now belongs. Anything
 - [Context](#context) — the durable counterpart: material that explains the change rather than waiting to be placed.
 
 
+# Unresolved
+
+[↑ Plan](#plan)
+
+```yaml
+id: n8u
+approvals:
+  tearne: {at: 2026-09-29, hash: 51f94c56}
+```
+
+The open items in a plan part that the agent cannot settle alone. The agent surfaces the full list in chat so the user sees everything outstanding, then walks through them [one at a time](#orient-then-focus). Each answer folds back into the part's prose and the list shrinks; the part is ready for approval only once the list is empty. It may appear wherever a part is being settled, and items may be cross-cutting: resolving one can send the plan back to an earlier part.
+
+**Detail**
+
+The list is deleted when its part is settled; its absence is the signal that the part is ready.
+
+
 # Approach
 
-[↑ Plan](#plan) \
-[Unresolved](#unresolved)
+[↑ Plan](#plan)
 
 ```yaml
 id: a2r
@@ -761,21 +780,6 @@ id: a2r
 The agent first reads the map nodes the change touches, and the code where reality must be checked, to ground its decisions and find gaps in the map's coverage. The Approach is how the change will be carried out, written as a list of decisions and their reasons — not a narrative and not a file-by-file rehearsal, which belongs to the [worklist](#worklist). Each decision earns a line only if it carries a reason; self-evident choices need no subsection. Skipped entirely by [Wander](#cadences). Open items the agent cannot settle alone sit beside it in an [Unresolved](#unresolved) list, and the Approach is ready for approval only once that list is empty.
 
 The Approach is capped at ~2000 characters, excluding Unresolved: each time the agent surfaces it, it counts them and reports the number, and past the cap asks the user to adjudicate.
-
-
-# Unresolved
-
-[↑ Approach](#approach)
-
-```yaml
-id: n8u
-```
-
-The open items in an [Approach](#approach) that the agent cannot settle alone, each pointing at the decision it affects. The agent surfaces the full list in chat so the user sees everything outstanding, then walks through them [one at a time](#orient-then-focus). Each answer folds back into the Approach's prose and the list shrinks; the Approach is ready for approval when it is empty.
-
-**Detail**
-
-Once the worklist is written the Unresolved section is deleted; its absence is the signal that the Approach is settled.
 
 
 # Worklist
