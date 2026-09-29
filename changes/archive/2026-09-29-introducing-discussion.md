@@ -1,12 +1,46 @@
 # Introducing Discussion
 
-## Status and purpose
+**Cadence:** Formal
 
-This is an active Discussion, not an approved implementation plan. `ndd.map.md` and `AGENT-RULES.md` remain unedited; Build is not authorized. Discussion approval is not implementation approval.
+## Intent
 
-It introduces the Discussion artefact — a durable home for unfinished thinking that precedes an Intent — plus the surrounding mechanics for aside routing, conclusion, archival and integration with Startup Scan and Backlog Review.
+Introduce Discussion as a new NDD artefact — a durable home for unfinished thinking that precedes an Intent — plus the mechanics to operate it alongside changes.
 
-Split on 2026-09-29 from earlier `340-change-formality.md`. Approach rename and Formal specification moved to `030-approaches-discussion.md`; Unresolved at any stage moved to change `010-unresolved-at-any-stage.md`.
+## Context
+
+Split on 2026-09-29 from earlier `340-change-formality.md`. Approach rename and Formal specification moved to `030-approaches-discussion.md`; Unresolved at any stage built as change 010 (archived 2026-09-29). Direction was developed through prior discussion after retiring the forest proposal (see `changes/archive/2026-09-29-forest.md`). Sections below record the target state that fed the Approach.
+
+## Approach
+
+- **Add a Discussion subtree under Change-Management**, peer to Change Lifecycle. Discussion is a distinct work artefact with its own lifecycle — no plan parts, no Build lock — so giving it its own subtree keeps its rules from bleeding into change rules.
+
+- **Three new nodes: Discussion, Discussion Records, Discussion Conclude.** Discussion for the concept and when to open one; Records for content rules (no imposed structure, prune freely, dead-end and resurfacing retention, Resume anchor on pause); Conclude for the either-party trigger, ~500-char capped prose, promote-or-drop of noted candidates, filename rename and archival.
+
+- **Edit Aside Keyword** to describe content-routing: an aside becomes an append to an existing Discussion, a new parked change, or a new Discussion; overlap with an existing change is named but not attached. Placement confirmed in one line.
+
+- **Edit Startup Scan** to read Discussions alongside changes, distinguish them by `-discussion.md` filename suffix, and announce "discussing" as a session mode co-existent with planning or building.
+
+- **Edit Backlog Review** to walk Discussions and changes together, surfacing on a Discussion its current agreements, open questions and any inline candidates.
+
+- **AGENT-RULES.md**: expand Rule 1 (Startup Scan) with the "discussing" mode; rewrite Rule 15 (Aside) for content routing.
+
+- **No changes to Plan, Intent, Context, Held, Approach, Worklist, Build or Conclude on the change side** — Discussion runs alongside changes without altering their internal machinery.
+
+## Worklist
+
+- Add `Discussion` node under `Change-Management`.
+- Add `Discussion Records` node under `Discussion`.
+- Add `Discussion Conclude` node under `Discussion`.
+- Update `Aside Keyword` node for content-based routing.
+- Update `Startup Scan` node for Discussions and the discussing mode.
+- Update `Backlog Review` node to walk Discussions and changes.
+- Update the map's TOC and `Change-Management` nav to include the Discussion subtree.
+- Update AGENT-RULES.md Rule 1 for the discussing mode.
+- Update AGENT-RULES.md Rule 15 for aside content-routing.
+
+## Conclude
+
+Completed. Mid-build casing sweep normalised `discussion` to lowercase in prose (capitalised only as node names) across touched nodes. Three asides emerged and were parked: 040 (write ≠ approval discipline), 050 (present node edits as diffs), 060 (surface one thing at a time).
 
 ## Discussion records
 

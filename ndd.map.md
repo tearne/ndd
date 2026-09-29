@@ -75,6 +75,9 @@ id: ct5
         - [Build Lock](#build-lock)
       - [Conclude](#conclude)
         - [Archiving](#archiving)
+    - [Discussion](#discussion)
+      - [Discussion Records](#discussion-records)
+      - [Discussion Conclude](#discussion-conclude)
     - [Cadences](#cadences)
     - [Startup Scan](#startup-scan)
     - [Bootstrapping](#bootstrapping)
@@ -623,24 +626,25 @@ The map describes what exists, never what is planned: an edit describing work no
 ```yaml
 id: n3g
 approvals:
-  tearne: {at: 2026-09-13, hash: 30781315}
+  tearne: {at: 2026-09-29, hash: c62bea61}
 ```
 
 [Orient Then Focus](#orient-then-focus) applied to the map. Nodes are
 1. drafted,
-2. surfaced with [character count](#node-sizing),
+2. surfaced with [character count](#node-sizing), plus a diff for an edit,
 3. written in chat or in place as the user has asked, and
 4. treated as settled only once the reply is [approval](#gates-and-permissions).
 
-On a map that carries stamps, approval also counts as [sign-off](#sign-off). No edit is silent or made in bulk. Pitch the prompt to what the edit changes — a comprehension check when it reshapes the picture. Corrections that change no meaning — a typo, spacing, a stale link — are applied and reported rather than surfaced, but only if every item in hand is one.
+On a map that carries stamps, approval also counts as [sign-off](#sign-off). No edit is silent or made in bulk. Corrections that change no meaning — a typo, spacing, a stale link — are applied and reported rather than surfaced, but only if every item in hand is one.
 
-The rule binds the agent, not the user, who edits the map freely and unannounced. Told of such an edit, or noticing one, the agent runs [Tidy](#tidy) over the node — its new count and any knock-on it can see, what it owes for its own edits — and logs it only if it changes what the build must do.
+The rule binds the agent, not the user, who edits the map freely and unannounced. After being told or noticing an edit, the agent runs [Tidy](#tidy) over the node — its new count and any knock-on it can see, what it owes for its own edits — and logs it only if it changes what the build must do.
 
 
 # Change-Management
 
 [↑ NDD](#ndd) \
 [Change Lifecycle](#change-lifecycle) \
+[Discussion](#discussion) \
 [Cadences](#cadences) \
 [Startup Scan](#startup-scan) \
 [Bootstrapping](#bootstrapping) \
@@ -837,13 +841,15 @@ Releasing the lock deletes the file. A build that changed code keeps the lock ev
 
 ```yaml
 id: o4j
+approvals:
+  tearne: {at: 2026-09-29, hash: e8ce6710}
 ```
 
-The closing note, written only once the user confirms the build is done. It states where the change landed — not a story of how it got there.
+The closing note, written only once the user confirms the build is done. It records the delta from the plan — deviations, surprises, documents touched — not a summary of what the plan already said.
 
 Anything still [Held](#held) is released before Conclude begins — folded into the change, spun off as its own [parked change](#plan), or discarded by the user.
 
-It records only what the plan and the Log don't already convey: deviations, documents touched, surprises. When there's nothing to add, "Completed." is enough. It is capped at ~500 characters, excluding any changelog entry proposed with it: the agent counts them when surfacing the draft, reports the number, and past the cap asks the user to adjudicate.
+When there's nothing to add, "Completed." is enough. Capped at ~500 characters, counted and reported when surfacing the draft; past the cap the agent asks the user to adjudicate. The note is surfaced on its own; any changelog entry follows separately after approval, then [Archiving](#archiving) proceeds.
 
 Its mere presence is the marker that the change is finished.
 
@@ -863,6 +869,53 @@ id: a9v
 Once the user approves the [Conclude](#conclude) note, the change leaves `changes/open/` for `changes/archive/`, losing any leading number and gaining the ISO date it concluded — `140-config-file-format.md` becomes `2026-05-14-config-file-format.md`. The [build lock](#build-lock) is then released.
 
 A versioned project with substantive change also proposes a changelog entry with the draft note, added on the same approval. [Tidy](#tidy) runs before the move; after it the agent offers a [Map Review](#map-review) in its light scope. If the project map defines release steps, the agent asks whether it is time to run them, and if so offers a full Map Review first.
+
+
+# Discussion
+
+[↑ Change-Management](#change-management) \
+[Discussion Records](#discussion-records) \
+[Discussion Conclude](#discussion-conclude)
+
+```yaml
+id: q7p
+approvals:
+  tearne: {at: 2026-09-29, hash: 533c26a0}
+```
+
+A durable home for unfinished thinking that precedes an [Intent](#intent). A discussion begins with a provisional title and a thought; threads can change without losing ideas or return points, and partial thinking can inform related concepts without becoming commitments. It runs alongside changes but has no plan parts, no [build lock](#build-lock), and produces zero or more [parked changes](#plan) when a candidate inside it is [promoted at Conclude](#discussion-conclude). The user owns the concepts; the agent maintains the [record](#discussion-records).
+
+
+# Discussion Records
+
+[↑ Discussion](#discussion)
+
+```yaml
+id: r7b
+approvals:
+  tearne: {at: 2026-09-29, hash: bb92b550}
+```
+
+The record itself. Kept concise, in whatever prose shape fits the topic — agreements with their essential reasoning, open questions, options and links to related work. The agent prunes and rewrites freely to reflect current thinking; git history holds the deep archive. Past reasoning is retained only where its loss would risk revisiting a dead-end or where an idea is worth flagging for later resurfacing.
+
+On pause the agent leaves a **Resume** anchor with return points and a pointer to current thinking; the anchor is trimmed on resumption. The agent flags meaningful connections and discusses uncertain or consequential relationships before settling them.
+
+
+# Discussion Conclude
+
+[↑ Discussion](#discussion)
+
+```yaml
+id: d9k
+approvals:
+  tearne: {at: 2026-09-29, hash: 292cf7d6}
+```
+
+The closing note for a discussion. Either party may propose it — the agent when nearing-conclusion looks reached, the user when they say so. The agent drafts a short prose (capped ~500 characters, counted and reported when surfaced) stating what the discussion produced (understanding, decisions, promoted candidates with links to their new [parked changes](#plan)), what was dropped, and any ideas worth flagging for later resurfacing. The user approves before archiving.
+
+At this moment the agent walks anything in the record that could become its own change; the user promotes each to a parked change (Intent only) or drops it. A discussion is not concluded with any left hanging.
+
+A discussion's filename is a readable slug ending `-discussion.md`; on approval it is prefixed with the ISO date and moved to `changes/archive/` (`<slug>-discussion.md` → `YYYY-MM-DD-<slug>-discussion.md`). Links are updated on rename.
 
 
 # Cadences
@@ -898,11 +951,13 @@ A **task checklist** is discrete tasks, each an atomic outcome ticked off as it 
 
 ```yaml
 id: x7t
+approvals:
+  tearne: {at: 2026-09-29, hash: a8a5f1ed}
 ```
 
-What the agent does first in every session: orient from `changes/open/`. A project with no `map.md` and no `changes/` tree hasn't started yet — the agent [bootstraps](#bootstrapping) it before anything else. Otherwise it reads everything in `changes/open/` and places each change by where it sits in the [lifecycle](#change-lifecycle). The `active.md` [lock](#build-lock) names the change currently building, if any.
+What the agent does first in every session: orient from `changes/open/`. A project with no `map.md` and no `changes/` tree hasn't started yet — the agent [bootstraps](#bootstrapping) it. Otherwise it reads every change and [discussion](#discussion) and places each — a change by lifecycle position, a discussion by topic and whether nearing-[Conclude](#discussion-conclude).
 
-From that the agent announces whether it's planning or building, reports what's open, offers a [Backlog Review](#backlog-review), and proposes the next step — resuming an interrupted build, or picking up a parked change.
+From that the agent announces the session's mode — planning, building, discussing, or a combination — reports what's open, offers a [Backlog Review](#backlog-review), and proposes the next step.
 
 **Detail**
 
@@ -996,9 +1051,11 @@ The entry is dated and captures the observation plus any surrounding context (ph
 
 ```yaml
 id: y2f
+approvals:
+  tearne: {at: 2026-09-29, hash: 57352dbc}
 ```
 
-A message starting with `aside:` parks a topic for later without breaking the current flow: it becomes a fresh parked change in `changes/open/`, an [Intent](#intent) and nothing more, a proposal separate from whatever is under way. The agent acknowledges placement in a line and returns to what it was doing. Material belonging to the *current* change rather than a separate one is [Held](#held) instead.
+A message starting with `aside:` parks a topic for later without breaking the current flow. The agent scans open [discussions](#discussion) and changes for overlap and routes by content: appends to an existing discussion when the aside continues that thread; else opens a new parked change with an [Intent](#intent) only if the aside is Intent-shaped; else opens a new [discussion](#discussion) record. Placement is confirmed in one line. Overlap noticed with an existing change is named in the confirmation without attaching, so the change's owner can fold it in on resumption. Material belonging to the *current* change is [Held](#held) instead.
 
 
 # Thought Management
@@ -1166,19 +1223,18 @@ It is the single-agent form of [Cross-Agent Falsifiability](#cross-agent-falsifi
 
 ```yaml
 id: b7k
+approvals:
+  tearne: {at: 2026-09-29, hash: c21465c5}
 ```
 
-Backlog Review is offered by the agent as a yes-or-no at the [Startup Scan](#startup-scan), once the open changes have been reported, since they have just been read. It covers the parked changes in `changes/open/`. Each parked change is settled with the user: kept as it is, updated, renumbered, merged, or discarded.
+Backlog Review is offered by the agent as a yes-or-no at the [Startup Scan](#startup-scan), once the open items have been reported. It covers parked changes and [discussions](#discussion) in `changes/open/`, walked one at a time. A parked change is settled — kept, updated, renumbered, merged, or discarded. A discussion has its agreements, open questions, and anything that could become a change surfaced; the user chooses what to take forward.
 
 It looks for:
 
-- A change citing a node or change that no longer exists.
-
-- A change the project has moved past — built by other means, or no longer wanted.
-
-- Two changes that overlap and should merge.
-
-- Numbers that no longer say what should come next — the leading numbers are the backlog's order, so the remedy is renumbering.
+- A change or discussion citing a node or change that no longer exists.
+- A change the project has moved past.
+- Two changes that overlap and should merge, or a change that overlaps an open discussion.
+- Numbers that no longer say what should come next — the remedy is renumbering.
 
 
 # Sign-off

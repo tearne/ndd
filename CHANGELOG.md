@@ -5,6 +5,8 @@ Notable changes to NDD, newest first. The current version is the topmost heading
 ## Pending
 
 - *Unresolved* may appear at any plan part (Intent, Approach or Conclude), not only Approach; it blocks approval of the part it sits with, and items may be cross-cutting. Held is unchanged as the pre-part spillway; anything still in Held at Conclude becomes an Unresolved item.
+- *Discussion* introduced — a durable home for unfinished thinking that precedes an Intent, plus content-routed aside behaviour.
+- Interaction discipline for map-edit engagements: diff-shaped surfaces (new Rule 7); Conclude records the delta not a restatement (new Rule 15); *write* never counts as approval; agent re-reads a node after user edit or review; end-of-Build artefacts surface one at a time.
 
 ## 2.1.2 — 2026-09-14
 

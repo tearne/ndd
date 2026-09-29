@@ -7,13 +7,13 @@ The short form of Non-Dead Design, rendered from the method map. It carries only
 - In a client project two maps are in play: the project's own, entered at `map.md` in the project root and built with the user; and NDD's, vendored under `ndd/`, whose method branch `ndd.map.md` sits beside this file and is what every rule below links to, read-only. Follow a link when you need the reasoning behind a rule, not before. A map is a tree of nodes; start at the root, the one with no `↑` link, and follow child links, into other `*.map.md` files where a branch continues. [Distribution](map.md#distribution).
 - `ndd/` is a vendored snapshot that `install.py` regenerates: change the method at its source and re-run the installer, since hand edits there vanish. In the NDD repository itself the two maps are one, and this file and the maps beside it are the sources. The version you are running is the semver at the top of `CHANGELOG.md` beside this file.
 - Re-read this file whenever your instructions are re-injected after a compaction, and at the start of every Build.
-- A draft goes to chat unless the user says *write*, which means put it in place and stop until they hand back, then run Tidy over what changed before asking anything. *Write* is never approval and never a cue to move on. A bare *write* covers one draft; only an instruction that says so, such as "write everything from here", covers the session. [Approval](ndd.map.md#approval).
+- A draft goes to chat unless the user says *write*, which means put it in place and stop until they hand back, then run Tidy over what changed before asking anything. *Write* is never approval and never a cue to move on, even when it arrives in reply to an "Approve?" ask — the stamp follows a separate yes. A bare *write* covers one draft; only an instruction that says so, such as "write everything from here", covers the session. [Approval](ndd.map.md#approval).
 
 ## Rules
 
 ### 1. Startup Scan
 
-Start every session with the Startup Scan. Read everything in `changes/open/`, place each change in its lifecycle, announce whether you are planning or building, offer a [Backlog Review](ndd.map.md#backlog-review), and propose the next step. If there is no `map.md` and no `changes/` tree the project has not started: offer to bootstrap instead. Nothing else happens first, because the open changes are where the state lives. [Startup Scan](ndd.map.md#startup-scan), [Bootstrapping](ndd.map.md#bootstrapping).
+Start every session with the Startup Scan. Read every change and discussion in `changes/open/`, place each in its lifecycle, announce whether you are planning, building or discussing (in any combination), offer a [Backlog Review](ndd.map.md#backlog-review), and propose the next step. If there is no `map.md` and no `changes/` tree the project has not started: offer to bootstrap instead. Nothing else happens first, because the open items are where the state lives. [Startup Scan](ndd.map.md#startup-scan), [Discussion](ndd.map.md#discussion), [Bootstrapping](ndd.map.md#bootstrapping).
 
 ### 2. Build Lock
 
@@ -35,50 +35,58 @@ Treat only a clear yes as approval, and only for what was shown. Approval is an 
 
 Make every map edit in one order: draft, surface with its count, settle on approval. Surface the drafted node text and its character count, then treat it as settled only when the reply is approval. On a map that carries stamps, settling also writes the approver's stamp, computed with the shipped fingerprint script, and reports its hash beside the count. Say which handle you are using the first time you stamp; take it from git's `user.name` unless the map's stamps exist and none match that name, and ask when it is missing or unmatched. No map edit is silent and none is made in bulk, because the user's comprehension is built in the negotiation of each one. With nobody to approve, wait. [Engagement Rule](ndd.map.md#engagement-rule), [Approver](ndd.map.md#approver).
 
-### 7. Corrections
+### 7. Diff-Shaped Surfaces
+
+Surface a map-node edit as a diff in chat, showing what changed alongside the new state — use a ```diff-fenced block. A wholly new node is surfaced whole; a whole-node rewrite may be too. [Engagement Rule](ndd.map.md#engagement-rule).
+
+### 8. Corrections
 
 Apply corrections without surfacing only when every item in hand is one. A typo, spacing, or a stale link that changes no meaning is applied and reported. If any item in the batch changes meaning, the whole batch goes through rule 6, because a batch inherits its fastest path. [Engagement Rule](ndd.map.md#engagement-rule).
 
-### 8. Node Count
+### 9. Node Count
 
 Count and report characters on every node you edit. Count the body plus *Detail*, inline links as their visible text, excluding navigation links, *See also*, tables and diagrams. Report the number in your message. Over about 800, flag it and leave the split to the user. The reported number is how the user sees the rule was followed. [Node Sizing](ndd.map.md#node-sizing).
 
-### 9. Map Describes Reality
+### 10. Map Describes Reality
 
 Write the map as what exists, never what is planned. An edit describing unbuilt work waits until the work is built. If the user asks for a forward-looking map edit, say why it waits and offer to hold the text in the change instead. [Sync Rule](ndd.map.md#sync-rule).
 
-### 10. Plan Parts
+### 11. Plan Parts
 
 Surface plan parts one at a time. Draft the Intent, get approval, then the Approach, then the Worklist. Each part waits for the previous one's approval, because a plan approved whole is a plan not read. Once the Approach is approved, re-read the Intent, cut what the Approach now carries, and surface the trimmed Intent with its count. [Plan](ndd.map.md#plan), [Intent](ndd.map.md#intent).
 
-### 11. Caps
+### 12. Caps
 
 Count against the caps each time you surface a part. Intent about 500 characters, Approach about 2000, Conclude about 500 excluding a changelog entry — each excluding any Unresolved at that part. Report the number. Past the cap, ask the user to adjudicate rather than trimming silently or presenting it as final. [Intent](ndd.map.md#intent), [Approach](ndd.map.md#approach), [Conclude](ndd.map.md#conclude).
 
-### 12. Follow the Plan
+### 13. Follow the Plan
 
 In Build, follow the plan and log the unexpected. Execute the approved plan rather than revising it mid-flight. Append to the change's Log any surprise, deviation, blocker or partial progress, so a resuming session can pick up; routine progress needs no entry. If the plan proves wrong, stop and offer to return the change to planning. [Build](ndd.map.md#build).
 
-### 13. Held
+### 14. Held
 
 Empty Held before Conclude. Fold each held item into the change, park it as its own change, or have the user discard it. Nothing is concluded with material outstanding, because Held is where things are lost. [Held](ndd.map.md#held).
 
-### 14. Archiving
+### 15. Conclude Content
+
+Conclude records the delta from the plan — deviations, surprises, documents touched — not a summary of what the plan already said. When there's nothing to add, "Completed." is enough. [Conclude](ndd.map.md#conclude).
+
+### 16. Archiving
 
 On an approved Conclude, run Tidy, archive, release the lock, then offer one review. Run [Tidy](ndd.map.md#tidy) across the map and report it, move the file to `changes/archive/` renamed with the ISO date in place of its number, delete `active.md`, then offer a [Map Review](ndd.map.md#map-review) as one yes-or-no. If the project map defines release steps, ask whether it is time to run them, and if so offer a full Map Review first. [Archiving](ndd.map.md#archiving), [Maintenance](ndd.map.md#maintenance).
 
-### 15. Keywords
+### 17. Keywords
 
-Honour the two keywords in a line and carry on. A message starting `process:` is appended to `changes/process-feedback.md`, dated, without acting on it. One starting `aside:` becomes a new parked change in `changes/open/` holding an Intent only. Confirm each in one line and return to the work. [Process Keyword](ndd.map.md#process-keyword), [Aside Keyword](ndd.map.md#aside-keyword).
+Honour the two keywords in a line and carry on. A message starting `process:` is appended to `changes/process-feedback.md`, dated, without acting on it. One starting `aside:` is routed by content: appended to an existing discussion if it continues that thread, opened as a new parked change with an Intent only if it is Intent-shaped, or opened as a new discussion otherwise; an overlap with an existing change is named in the confirmation without attaching. Confirm each in one line and return to the work. [Process Keyword](ndd.map.md#process-keyword), [Aside Keyword](ndd.map.md#aside-keyword).
 
-### 16. One Item at a Time
+### 18. One Item at a Time
 
 Orient, then focus. With any set to present — unresolved items, a worklist, the open changes, several nodes to edit — show the whole set in summary first, then work through it one item at a time while holding the rest. Introduce each item by name and its place in the set, such as *3 of 7*. A message asks at most one question and ends where it asks it. Attention dies under overwhelm, and item-by-item alone loses the user's place. While a set is in progress, end every message with a status line showing the stack, such as *map edits 3 of 7 > aside*, with *· held 2* when Held is not empty. [Orient Then Focus](ndd.map.md#orient-then-focus), [Thought Management](ndd.map.md#thought-management).
 
-### 17. Typography
+### 19. Typography
 
 Typeset map prose by the conventions. One continuous line per paragraph with no hard wraps. A blank line between bullets that wrap. Two blank lines before a node title. *Italics* for a named section or element, **bold** only to introduce a term of art on first use. An inline link when a sentence names another node in passing, a *See also* entry with its own reason otherwise. [Formatting](ndd.map.md#formatting).
 
-### 18. User Map Edits
+### 20. User Map Edits
 
-When the user has edited the map, re-read the node before doing anything else with it. Report its new count and any knock-on you can see — a link that no longer resolves, a sibling that now overlaps — and log it only if it changes what the build must do. The user edits freely and unannounced; the rule binds you, not them, so never treat their edit as something to approve. [Engagement Rule](ndd.map.md#engagement-rule).
+When the user has edited or reviewed the map, re-read the current node from disk before continuing work on it. Report its new count and any knock-on you can see — a link that no longer resolves, a sibling that now overlaps — and log it only if it changes what the build must do. The user edits freely and unannounced; the rule binds you, not them, so never treat their edit as something to approve. [Engagement Rule](ndd.map.md#engagement-rule).
