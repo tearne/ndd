@@ -37,14 +37,16 @@ Keep the approved target separate from the current project map until verified. W
 
 If specification stalls, identify the uncertainty and propose conceptual exploration, a Vibe spike or smaller scope. A spike supplies learning, not automatic acceptance as the final implementation.
 
+Target-specification approval is format-dependent. A map-shape target (nodes, sub-map, whole-map copy) is approved per-node under the Engagement Rule — stamps written on the target transfer at verification. A prose, table or diagram target is surfaced whole, or in named sections when a cap is meaningful. A mixed spec has each part follow its own rule.
+
+Verification into the live map happens at Conclude, in two checkpoints. Pre-Build the target is reconciled to current reality and any drift surfaced for revision. At Conclude verification, for each node the target touches the agent compares the current live-map against what was there at pre-Build reconciliation: matching nodes are copied in mechanically with their stamps; drifted nodes are re-surfaced under the Engagement Rule with the target text as draft. This preserves the "no map edit is silent" rule without double-approving unchanged content.
+
+Supporting assets live in a same-name companion folder next to the change file during Build. At Conclude, before archive, the agent walks each asset with a recommendation (retain or drop, with a short reason); the user approves or overrides. The folder, with only retained assets, is moved alongside the renamed change file at archival.
+
 ## Execution
 
 Retain existing execution and completion rules where they suffice. Return to discussion when the agreement no longer fits, preserving completed work. Account for outstanding threads and require user acceptance before concluding, including Trivial work.
 
-## Remaining decisions
+## Conclude
 
-- Detailed target-specification approval, verification into the current map and supporting-asset cleanup.
-
-## Resume here
-
-This is an active Discussion. The Approach names and preparation sections are settled; Formal specification's target-approval, map-verification and asset-cleanup mechanics are the open thread. Companion work: `020-introducing-discussion.md` (Discussion artefact), `010-unresolved-at-any-stage.md` (Unresolved rule adjustment).
+Settled the Approach rename (Trivial / Vibe / Exploratory / Formal with preparation sections) and Formal specification mechanics (format-dependent target approval, two-checkpoint verification, curated asset retain-or-drop). Promoted as parked change [050-approach-and-formal-specification](050-approach-and-formal-specification.md). Nothing dropped; nothing flagged for resurfacing.
