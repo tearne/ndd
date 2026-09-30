@@ -3,7 +3,7 @@
 [↑ NDD Project](map.md#ndd-project) \
 [Contents](#contents) \
 [Principles](#principles) \
-[Specification](#specification) \
+[Map](#map) \
 [Change-Management](#change-management) \
 [Maintenance](#maintenance) \
 [Tooling](#tooling) \
@@ -11,6 +11,8 @@
 
 ```yaml
 id: a3k
+approvals:
+  tearne: {at: 2026-09-30, hash: 9709e166}
 ```
 
 NDD, Non-Dead Design, aims to improve knowledge management for agentic software development. The name reflects the [three deaths](#three-deaths) it seeks to prevent: of specifications, of structural thinking, and of comprehension.
@@ -18,7 +20,7 @@ NDD, Non-Dead Design, aims to improve knowledge management for agentic software 
 The map is the one artefact that keeps all three alive: a conceptual **map** of the system, acting as the hub for specification and change management rather than a document off to one side.
 
 - **Principles** — the founding rationale in more detail.
-- **Specification** — the conceptual map as the primary comprehension artefact.
+- **Map** — the developer's conceptual model of the system, held as its primary specification.
 - **Change-Management** — how the spec evolves, through a change lifecycle and user-owned gates.
 - **Maintenance** — the reviews that keep the map, the code and the backlog in step.
 - **Tooling** — the generic markdown tooling the format is designed to exploit.
@@ -43,7 +45,7 @@ id: ct5
       - [Trees over Graphs](#trees-over-graphs)
     - [Cross-Agent Falsifiability](#cross-agent-falsifiability)
     - [Orient Then Focus](#orient-then-focus)
-  - [Specification](#specification)
+  - [Map](#map)
     - [Node](#node)
       - [Node Identity](#node-identity)
       - [Navigation Links](#navigation-links)
@@ -69,16 +71,23 @@ id: ct5
         - [Context](#context)
         - [Held](#held)
         - [Unresolved](#unresolved)
-        - [Approach](#approach)
-        - [Worklist](#worklist)
       - [Build](#build)
         - [Build Lock](#build-lock)
       - [Conclude](#conclude)
         - [Archiving](#archiving)
+    - [Change Style](#change-style)
+      - [Trivial](#trivial)
+      - [Vibe](#vibe)
+        - [Bounds](#bounds)
+      - [Exploratory](#exploratory)
+        - [Focus](#focus)
+      - [Formal](#formal)
+        - [Change Specification](#change-specification)
+        - [Implementation Plan](#implementation-plan)
+        - [Formal Build](#formal-build)
     - [Discussion](#discussion)
       - [Discussion Records](#discussion-records)
       - [Discussion Conclude](#discussion-conclude)
-    - [Cadences](#cadences)
     - [Startup Scan](#startup-scan)
     - [Bootstrapping](#bootstrapping)
     - [Gates and Permissions](#gates-and-permissions)
@@ -235,7 +244,7 @@ The focused items are where comprehension is built; skip that and the user's rol
 - [Thought Management](#thought-management) — the practice that keeps the user's place when a thought interrupts the item in hand.
 
 
-# Specification
+# Map
 
 [↑ NDD](#ndd) \
 [Node](#node) \
@@ -246,9 +255,11 @@ The focused items are where comprehension is built; skip that and the user's rol
 
 ```yaml
 id: sp1
+approvals:
+  tearne: {at: 2026-09-30, hash: 9e6b6a98}
 ```
 
-The conceptual map is the primary artefact. It holds the system's shape as a tree of concepts, structured the way the user thinks rather than how code is organised. Agents render it into code. Everything else in the method — how it changes, how it's viewed — serves this map.
+The map is the developer's conceptual model of the system, and its primary specification. It holds the system's shape as a tree of concepts, structured the way the user thinks rather than how code is organised. Agents render it into code. Everything else in the method — how it changes, how it's viewed — serves this map.
 
 **See also**
 
@@ -257,7 +268,7 @@ The conceptual map is the primary artefact. It holds the system's shape as a tre
 
 # Node
 
-[↑ Specification](#specification) \
+[↑ Map](#map) \
 [Node Identity](#node-identity) \
 [Navigation Links](#navigation-links) \
 [Node Sections](#node-sections) \
@@ -430,7 +441,7 @@ A [POS-style](standards/POS.md) script run with `uv`, one map file at a time, so
 
 # Map Structure
 
-[↑ Specification](#specification) \
+[↑ Map](#map) \
 [Map Files](#map-files)
 
 ```yaml
@@ -473,7 +484,7 @@ A file's *Contents* lists the nodes in that file; a branch that continues in ano
 
 # Node Sizing
 
-[↑ Specification](#specification)
+[↑ Map](#map)
 
 ```yaml
 id: z9p
@@ -492,7 +503,7 @@ Each time the agent edits a node it counts and reports the characters, including
 
 # Writing Style
 
-[↑ Specification](#specification) \
+[↑ Map](#map) \
 [Conceptual Writing](#conceptual-writing) \
 [Formatting](#formatting) \
 [Economy](#economy)
@@ -585,7 +596,7 @@ A node says each thing once, and nothing the reader already has. The ways it fai
 
 # Edit Governance
 
-[↑ Specification](#specification) \
+[↑ Map](#map) \
 [Sync Rule](#sync-rule) \
 [Engagement Rule](#engagement-rule)
 
@@ -644,8 +655,8 @@ The rule binds the agent, not the user, who edits the map freely and unannounced
 
 [↑ NDD](#ndd) \
 [Change Lifecycle](#change-lifecycle) \
+[Change Style](#change-style) \
 [Discussion](#discussion) \
-[Cadences](#cadences) \
 [Startup Scan](#startup-scan) \
 [Bootstrapping](#bootstrapping) \
 [Gates and Permissions](#gates-and-permissions) \
@@ -676,8 +687,8 @@ id: l5g
 
 A change is a single markdown document that advances through three phases:
 
-1. **[Plan](#plan)** — the write-only phase that produces the change document; the [cadence](#cadences) sets its internal shape.
-2. **[Build](#build)** — doing the work against whatever the Plan produced, the same whichever cadence made it.
+1. **[Plan](#plan)** — the write-only phase that produces the change document; the [Change Style](#change-style) sets its internal shape.
+2. **[Build](#build)** — doing the work against whatever the Plan produced, the same whichever style made it.
 3. **[Conclude](#conclude)** — a retrospective once the work is accepted.
 
 Each phase is drafted into the document, then surfaced for the user's explicit approval before the next begins.
@@ -693,19 +704,24 @@ The Plan → Build boundary is the load-bearing gate: the change's own work wait
 [Intent](#intent) \
 [Context](#context) \
 [Held](#held) \
-[Unresolved](#unresolved) \
-[Approach](#approach) \
-[Worklist](#worklist)
+[Unresolved](#unresolved)
 
 ```yaml
 id: v3d
 approvals:
-  tearne: {at: 2026-09-13, hash: 80bfff80}
+  tearne: {at: 2026-09-30, hash: b2d28fbf}
 ```
 
-The plan builds up in **parts** — the [Intent](#intent), [Approach](#approach), [Worklist](#worklist) — each drafted then surfaced for approval before the next, culminating in the worklist that [Build](#build) executes. Which parts a change has is set by its [cadence](#cadences), and what may be written meanwhile by [Gates and Permissions](#gates-and-permissions). Two further sections sit outside that sequence, ungated: [Context](#context), which explains why the change exists, and [Held](#held), which catches material arriving before its part.
+The plan builds up in **parts**, each drafted then surfaced for approval before the next. Every plan starts with the [Intent](#intent); what follows is set by the [Change Style](#change-style):
 
-A Plan need not be fully formed to exist. A change may sit at any degree of formation — from an [Intent](#intent)-only draft just parked via [aside](#aside-keyword), up to a complete worklist awaiting approval.
+- **Trivial**: nothing more — Intent is the whole plan.
+- **Vibe**: [Bounds](#bounds).
+- **Exploratory**: [Focus](#focus).
+- **Formal**: [Change Specification](#change-specification) and optional [Implementation Plan](#implementation-plan).
+
+What may be written meanwhile is set by [Gates and Permissions](#gates-and-permissions). Two further sections sit outside the parts sequence, ungated: [Context](#context), which explains why the change exists, and [Held](#held), which catches material arriving before its part.
+
+A Plan need not be fully formed to exist. A change may sit at any degree of formation — from an [Intent](#intent)-only draft just parked via [aside](#aside-keyword), up to a completed preparation section awaiting approval.
 
 
 # Intent
@@ -714,11 +730,13 @@ A Plan need not be fully formed to exist. A change may sit at any degree of form
 
 ```yaml
 id: i8b
+approvals:
+  tearne: {at: 2026-09-30, hash: 7e7fdf89}
 ```
 
-The opening part: what the change must achieve, in domain language, stated so the user can approve it. Not how it will be delivered unless relevant to the requirement, and not why it is needed: every *why* — history, provenance, the reasoning that led here — belongs in [Context](#context). Kept brief and requiring user approval before anything else proceeds. For a [Wander](#cadences) change the Intent is the whole plan.
+The opening part: what the change must achieve, in domain language, stated so the user can approve it. Not how it will be delivered unless relevant to the requirement, and not why it is needed: every *why* — history, provenance, the reasoning that led here — belongs in [Context](#context). Kept brief and requiring user approval before anything else proceeds. For a [Trivial](#trivial) change the Intent is the whole plan.
 
-Its prose is capped at ~500 characters, counted and reported each time the agent surfaces it, with anything over put to the user to adjudicate rather than surfaced as final; Context is outside the cap, so the opening scans in seconds. Once the [Approach](#approach) is approved the agent re-reads the Intent and cuts whatever the Approach now carries, surfacing the trimmed Intent with its count.
+Its prose is capped at ~500 characters; Context is outside the cap, so the opening scans in seconds. Once the change's preparation section — [Bounds](#bounds), [Focus](#focus), or [Change Specification](#change-specification) — is approved, the agent re-reads the Intent and cuts whatever it now carries, surfacing the trimmed Intent with its count. Trivial changes have no preparation section and no trim step.
 
 
 # Context
@@ -743,10 +761,10 @@ Keep it to the least that lets a later reader rediscover the full detail for the
 ```yaml
 id: h5d
 approvals:
-  tearne: {at: 2026-09-29, hash: f3a7303c}
+  tearne: {at: 2026-09-30, hash: 39c319a5}
 ```
 
-A section at the foot of the change document holding on-topic material that arrived before its part — a scope note during the [Intent](#intent), a task while the [Approach](#approach) is still settling. Writing it down when it arrives costs nothing and survives a lost session; it is exempt from the parts' caps, since nothing is meant to stay there.
+A section at the foot of the change document holding on-topic material that arrived before its part — a scope note during the [Intent](#intent), a task while a preparation section is still settling. Writing it down when it arrives costs nothing and survives a lost session; it is exempt from the parts' caps, since nothing is meant to stay there.
 
 Opening each new part, the agent releases into it whatever now belongs. Anything still in Held at [Conclude](#conclude) becomes an item in [Unresolved](#unresolved), blocking completion until placed or dropped.
 
@@ -771,34 +789,6 @@ The open items in a plan part that the agent cannot settle alone. The agent surf
 **Detail**
 
 The list is deleted when its part is settled; its absence is the signal that the part is ready.
-
-
-# Approach
-
-[↑ Plan](#plan)
-
-```yaml
-id: a2r
-```
-
-The agent first reads the map nodes the change touches, and the code where reality must be checked, to ground its decisions and find gaps in the map's coverage. The Approach is how the change will be carried out, written as a list of decisions and their reasons — not a narrative and not a file-by-file rehearsal, which belongs to the [worklist](#worklist). Each decision earns a line only if it carries a reason; self-evident choices need no subsection. Skipped entirely by [Wander](#cadences). Open items the agent cannot settle alone sit beside it in an [Unresolved](#unresolved) list, and the Approach is ready for approval only once that list is empty.
-
-The Approach is capped at ~2000 characters, excluding Unresolved: each time the agent surfaces it, it counts them and reports the number, and past the cap asks the user to adjudicate.
-
-
-# Worklist
-
-[↑ Plan](#plan)
-
-```yaml
-id: w4k
-```
-
-The closing part of a [Plan](#plan): the list of actions [Build](#build) executes. It lists only the actions to take, not the reasons for them — those belong in the [Approach](#approach). A task that touches a mapped concept names the node rather than the file that implements it, keeping the plan anchored to the map. An [Explore](#cadences) change carries topics and a *done-when* in its place; a [Wander](#cadences) change has neither.
-
-**Detail**
-
-Before surfacing the worklist the agent prunes it against fixed rules: one task per atomic outcome, no restated "why", no obvious sub-steps, no ceremony tasks (a bare "review" or "double-check") unless they mark a real gate, and no file paths the task name already implies.
 
 
 # Build
@@ -918,31 +908,175 @@ At this moment the agent walks anything in the record that could become its own 
 A discussion's filename is a readable slug ending `-discussion.md`; on approval it is prefixed with the ISO date and moved to `changes/archive/` (`<slug>-discussion.md` → `YYYY-MM-DD-<slug>-discussion.md`). Links are updated on rename.
 
 
-# Cadences
+# Change Style
 
 [↑ Change-Management](#change-management)
 
 ```yaml
 id: e3n
+approvals:
+  tearne: {at: 2026-09-30, hash: a694e161}
 ```
 
-Each change runs at one of three cadences. They differ only in the shape of the [Plan](#plan) — [Build](#build) and [Conclude](#conclude) are the same whichever is chosen. The agent proposes one after Intent is approved — default **Formal** — and the user confirms. The chosen cadence is recorded as a `**Cadence:** <name>` line beneath the change's title, before the Intent.
+Each change is worked in one of four styles, each giving the [Plan](#plan) its own shape after [Intent](#intent). [Build](#build) and [Conclude](#conclude) are the same whichever is chosen. The agent proposes a style once Intent is approved — default **Formal** — and the user confirms. The chosen style is recorded as a `**Change Style:** <name>` line beneath the change's title, before the Intent. The four styles are [Trivial](#trivial), [Vibe](#vibe), [Exploratory](#exploratory) and [Formal](#formal); each names the preparation section it agrees before Build.
 
-| Cadence | Plan structure |
-|---------|----------------|
-| **Formal** | Intent → Approach → a task checklist |
-| **Explore** | Intent → Approach → topics + a *done-when* |
-| **Wander** | Intent only |
+| Style | Preparation before Build |
+|-------|--------------------------|
+| **Trivial** | none — Intent is the whole plan |
+| **Vibe** | [Bounds](#bounds) |
+| **Exploratory** | [Focus](#focus) |
+| **Formal** | [Change Specification](#change-specification) and optional [Implementation Plan](#implementation-plan) |
 
-- **Formal** uses explicit decisions and step-by-step tracking.
+The four are not a ladder: the agent proposes the style whose shape fits, not the lightest that might do. Style may be revisited if the change turns out to want a different shape, in which case the agent returns to planning.
 
-- **Explore** suits work where depth and coverage matter more than a fixed step list.
 
-- **Wander** is for work too small or too fluid to plan. Having no Approach, its [Conclude](#conclude) leans on the Build [Log](#build) for what happened, and may rename the change to match where the work ended up.
+# Trivial
 
-**Detail**
+[↑ Change Style](#change-style)
 
-A **task checklist** is discrete tasks, each an atomic outcome ticked off as it lands. **Topics** are areas to work rather than steps to complete, closed by a single *done-when* condition instead of tick-boxes.
+```yaml
+id: t0v
+approvals:
+  tearne: {at: 2026-09-30, hash: 4aebc61c}
+```
+
+Uses [Intent](#intent) only — the whole plan. The lightest of the four styles. Chosen when a change has virtually no substantive ambiguity — the domain outcome is clear, and the agent finds no decision along the way that would reasonably need surfacing for approval. During [Build](#build) the agent verifies proportionately to what is being changed and reports results; anything consequential that emerges is surfaced rather than absorbed silently.
+
+Trivial is not a shortcut around thinking — a change that starts here and turns out to hide substantive ambiguity returns to planning under a different style.
+
+
+# Vibe
+
+[↑ Change Style](#change-style)
+
+```yaml
+id: v2m
+approvals:
+  tearne: {at: 2026-09-30, hash: c8e6015d}
+```
+
+Uses [Intent](#intent) and a light [Bounds](#bounds) section. Chosen when the user opts to let the agent decide the shape of the work as it goes; the safeguard is the agent's judgement about when to escalate, not an upfront specification. For example, stakes may be low enough that tighter specification isn't worth the effort. Bounds is kept brief on purpose — a short shared understanding of anything context-specific worth naming, and nothing more. Wordy Bounds would drain the very attention Vibe was chosen to save.
+
+During [Build](#build) the agent works within the agreed envelope and escalates on its own judgement when something turns up that Bounds could not have anticipated. If a tighter shape turns out to be needed, the change returns to planning under Exploratory or Formal.
+
+
+# Bounds
+
+[↑ Vibe](#vibe)
+
+```yaml
+id: b3n
+approvals:
+  tearne: {at: 2026-09-30, hash: cce230ea}
+```
+
+The preparation section for a [Vibe](#vibe) change: a brief shared understanding, agreed after [Intent](#intent), of anything context-specific worth naming before [Build](#build) begins. The agent proposes Bounds. The safeguard is the agent's judgement to escalate when the stakes rise, not an attempt to enumerate every case.
+
+Bounds are context-dependent — a hard constraint, a performance sensitive piece of adjacent code, a checkpoint the user wants surfaced, or a specific decision to reserve.
+
+Bounds has a soft anchor of ~200 characters. Overrun is not a cap breach — it is a signal that the wrong style was chosen.
+
+
+# Exploratory
+
+[↑ Change Style](#change-style)
+
+```yaml
+id: e5x
+approvals:
+  tearne: {at: 2026-09-30, hash: 9638b306}
+```
+
+Uses Intent and [Focus](#focus) sections. Chosen when trying to predict the path upfront costs more than taking it step by step, with each step informing the next. Focus names the conceptual question being pursued and a useful point at which to take stock; there is no worklist or done-when, because knowing when to close is part of the work.
+
+Exploratory is real-time collaboration on a moving target: user and agent think through the question together, adjusting as understanding shifts. If executing code is part of learning, that is authorized separately — the exploration itself stays in dialogue. When the question resolves and delivery follows, the change concludes and delivery is planned as its own change.
+
+
+# Focus
+
+[↑ Exploratory](#exploratory)
+
+```yaml
+id: f2q
+approvals:
+  tearne: {at: 2026-09-30, hash: 45a7caa6}
+```
+
+The preparation section for an [Exploratory](#exploratory) change: the conceptual question being pursued, and a useful point at which to take stock. The agent proposes it; the user amends and confirms.
+
+Focus is a lightweight artefact — a sentence or two on each part, not a plan. The question is what the pair is actually trying to understand; the stocktake point is when to pause and assess whether the exploration is landing (a specific milestone, a duration, or a natural checkpoint in the material).
+
+If the stocktake reveals the question has shifted, Focus can be re-agreed rather than the change concluded. Focus has a soft anchor of ~300 characters. Overrun is not a cap breach — it is a signal that the shape wants Formal rather than Exploratory.
+
+
+# Formal
+
+[↑ Change Style](#change-style)
+
+```yaml
+id: f8p
+approvals:
+  tearne: {at: 2026-09-30, hash: 5af3bc71}
+```
+
+Uses Intent, [Change Specification](#change-specification) and optionally [Implementation Plan](#implementation-plan) sections. Chosen when it is worth agreeing what "done" looks like before [Build](#build) begins. The Change Specification captures the target — what must hold when the change lands — and Build is executed against it. When delivery choices warrant explicit agreement in their own right, an Implementation Plan follows the Change Specification; otherwise none is needed.
+
+Formal is the default when the agent is unsure which style fits, and is particularly valuable for high-value work where drafting the map structure upfront pays back many times over.
+
+
+# Change Specification
+
+[↑ Formal](#formal)
+
+```yaml
+id: s7q
+approvals:
+  tearne: {at: 2026-09-30, hash: c4adbaa0}
+```
+
+The preparation section for a [Formal](#formal) change: the target — what must hold when the change lands.
+
+Format is chosen to fit the target: proposed map nodes, a sub-map, a whole-map copy, prose, a table, a flow diagram, or a mixture. Whatever the format, once built the map must describe the completed result. Development happens in the change file, with a companion folder for supporting material if warranted.
+
+Approval is format-dependent. Map-shape targets are approved per-node under the [Engagement Rule](#engagement-rule), with stamps written on the target that transfer to the map at verification. Prose, table or diagram targets are surfaced whole, or in named sections when a cap is meaningful.
+
+If the Change Specification stalls, the agent proposes conceptual exploration, a [Vibe](#vibe) spike or a smaller scope.
+
+
+# Implementation Plan
+
+[↑ Formal](#formal)
+
+```yaml
+id: ip5
+approvals:
+  tearne: {at: 2026-09-30, hash: d4b85e85}
+```
+
+An optional preparation section for a [Formal](#formal) change, added when consequential delivery choices remain after the [Change Specification](#change-specification) is agreed. Captures decisions about how to deliver — sequencing, staging, dependencies, rollback — rather than a step-by-step checklist. Omitted when the delivery path is obvious.
+
+The agent proposes an Implementation Plan when the specification alone does not settle delivery. If added, Build follows it; deviations go to the [Log](#build), and material rework returns the change to planning.
+
+
+# Formal Build
+
+[↑ Formal](#formal)
+
+```yaml
+id: fb9
+approvals:
+  tearne: {at: 2026-09-30, hash: d072f7b8}
+```
+
+The Formal-specific discipline layered onto [Build](#build), [Conclude](#conclude) and [Archiving](#archiving); the general disciplines still apply.
+
+Before proposing Build, the agent reconciles the [Change Specification](#change-specification) against current reality; revisions required by intervening work return the change to spec development.
+
+If the Change Specification is found wanting during Build, implementation pauses while the spec is re-agreed under its normal approval rules; the [Build Lock](#build-lock) is kept. When the spec is re-agreed, Build resumes against the revised target.
+
+At Conclude, verification walks the Change Specification against the built result; drift on any per-node approved element triggers re-engagement of that node.
+
+At Archiving, useful evidence and rationale are retained; disposable experiments are removed via a curated retain-or-drop asset walk.
 
 
 # Startup Scan

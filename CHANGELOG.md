@@ -2,11 +2,13 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
-## Pending
+## 2.2.0 — 2026-09-30
 
-- *Unresolved* may appear at any plan part (Intent, Approach or Conclude), not only Approach; it blocks approval of the part it sits with, and items may be cross-cutting. Held is unchanged as the pre-part spillway; anything still in Held at Conclude becomes an Unresolved item.
 - *Discussion* introduced — a durable home for unfinished thinking that precedes an Intent, plus content-routed aside behaviour.
-- Interaction discipline for map-edit engagements: diff-shaped surfaces (new Rule 7); Conclude records the delta not a restatement (new Rule 15); *write* never counts as approval; agent re-reads a node after user edit or review; end-of-Build artefacts surface one at a time.
+- Cadences replaced by *Change Style* — Trivial, Vibe, Exploratory, Formal — with per-style preparation sections (Bounds, Focus, Change Specification + optional Implementation Plan). Formal gains a *Formal Build* node covering reconciliation, mid-Build rework, drift check and asset walk.
+- Top-level *Specification* node renamed to *Map*.
+- Interaction discipline for map edits: diff-shaped surfaces, delta-only Conclude, *write* is not approval, node re-reads after user edits, end-of-Build artefacts surface one at a time.
+- *Unresolved* may appear at any plan part; items still in Held at Conclude roll into it.
 
 ## 2.1.2 — 2026-09-14
 
