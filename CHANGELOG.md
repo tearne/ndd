@@ -2,6 +2,10 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 2.2.1 — 2026-10-02
+
+- *Discussion Records* makes explicit that Discussion edits are outside the Engagement Rule: they are not drafted-surfaced-settled or counted.
+
 ## 2.2.0 — 2026-09-30
 
 - *Discussion* introduced — a durable home for unfinished thinking that precedes an Intent, plus content-routed aside behaviour.

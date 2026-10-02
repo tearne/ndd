@@ -883,10 +883,10 @@ A durable home for unfinished thinking that precedes an [Intent](#intent). A dis
 ```yaml
 id: r7b
 approvals:
-  tearne: {at: 2026-09-29, hash: bb92b550}
+  tearne: {at: 2026-10-02, hash: cfc11369}
 ```
 
-The record itself. Kept concise, in whatever prose shape fits the topic — agreements with their essential reasoning, open questions, options and links to related work. The agent prunes and rewrites freely to reflect current thinking; git history holds the deep archive. Past reasoning is retained only where its loss would risk revisiting a dead-end or where an idea is worth flagging for later resurfacing.
+The record itself. Kept concise, in whatever prose shape fits the topic — agreements with their essential reasoning, open questions, options and links to related work. The agent prunes and rewrites the record freely to reflect current thinking, outside the [Engagement Rule](#engagement-rule): Discussion edits are not drafted-surfaced-settled or counted. Git history holds the deep archive, and past reasoning is retained only where its loss would risk revisiting a dead-end or where an idea is worth flagging for later resurfacing.
 
 On pause the agent leaves a **Resume** anchor with return points and a pointer to current thinking; the anchor is trimmed on resumption. The agent flags meaningful connections and discusses uncertain or consequential relationships before settling them.
 
