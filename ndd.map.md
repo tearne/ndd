@@ -294,10 +294,10 @@ The format is a strict superset of a plain-markdown section — strip the scaffo
 ```yaml
 id: w9c
 approvals:
-  tearne: {at: 2026-09-13, hash: 5a71882d}
+  tearne: {at: 2026-10-07, hash: 1ca3b28f}
 ```
 
-A node's name can change; its identity can't. A small immutable token in the yaml scaffolding block survives node renames and moves. [Navigation](#navigation-links) never uses it, so it is free to be meaningless.
+A node's name can change; its identity can't. A small immutable token in the yaml scaffolding block survives node renames and moves. [Navigation](#navigation-links) never uses it, nor does agent output — references name the heading, so the id can be meaningless.
 
 **Detail**
 
@@ -677,6 +677,7 @@ A change's file name is its title in two to five hyphenated words, optionally be
 # Change Lifecycle
 
 [↑ Change-Management](#change-management) \
+[Lifecycle Flow Reads](#lifecycle-flow-reads) \
 [Plan](#plan) \
 [Build](#build) \
 [Conclude](#conclude)
@@ -696,6 +697,19 @@ Each phase is drafted into the document, then surfaced for the user's explicit a
 The document is the single carrier of state: where a change sits is read from what it contains, not from any status field. A part reaches the document once [approved](#approval), or sooner if the user asks for the draft in place.
 
 The Plan → Build boundary is the load-bearing gate: the change's own work waits until a plan is approved, apart from the [map exemption](#edit-governance).
+
+
+# Lifecycle Flow Reads
+
+[↑ Change Lifecycle](#change-lifecycle)
+
+```yaml
+id: l9t
+approvals:
+  tearne: {at: 2026-10-07, hash: 30539b07}
+```
+
+At each lifecycle hinge the agent reads the governing map node before moving: the [Discussion](#discussion) node when a discussion is to become a change, the next plan part's node before drafting it, the [Conclude](#conclude) node when Build hands back, and the [Archiving](#archiving) node when a Conclude is approved. These **flow reads** keep the method's shape live in the agent's attention; they are distinct from the **reasoning reads** done only when a rule's rationale is in doubt.
 
 
 # Plan
@@ -1069,14 +1083,14 @@ The agent proposes an Implementation Plan when the specification alone does not 
 ```yaml
 id: fb9
 approvals:
-  tearne: {at: 2026-10-07, hash: 0b0dfd56}
+  tearne: {at: 2026-10-07, hash: 8ace547b}
 ```
 
 Layered onto general [Build](#build); the Formal additions follow.
 
 Before proposing Build, the agent reconciles the [Change Specification](#change-specification) against current reality; revisions required by intervening work return the change to spec development, as do issues uncovered during the build. Build-time re-agreement keeps the [Build Lock](#build-lock), resuming against the revised target when agreed.
 
-Build lands non-map assets in place; as its closing act, approved node texts and stamps on the Change Specification target promote into the live map, so divergence surfaces before Conclude.
+Build lands non-map assets in place; as its closing act, approved nodes on the Change Specification target promote into the live map. Where the live map has drifted from the baseline, promotion goes per node so drift surfaces before Conclude.
 
 
 # Formal Conclude

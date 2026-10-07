@@ -2,7 +2,7 @@
 
 ## Intent
 
-Improve the rendering of the method map into AGENT-RULES.md and the agent's handling of rules in user interaction, and add map-level guidance on how rendering should be done. Rendering should keep AGENT-RULES in step with the map at user-facing moments without duplicating what belongs on the map side.
+Improve the rendering of the method map into AGENT-RULES.md and the agent's handling of rules in user interaction.
 
 ## Context
 
@@ -51,3 +51,17 @@ Render edits to walk:
 7. Any rule-citation audit — ensure existing rules cite their sources by node name, consistent with the new convention.
 
 Walk order: 1 → 7 in sequence; each surfaced and approved before the next.
+
+
+## Conclude
+
+Deltas:
+
+- *Rule Division* drafted and dropped; redundant with *Rule Selection*.
+- *Agent Rules* body/Detail restructure under cap pressure.
+- *Rule Form* bullet 2 lifted with "Each rule is trigger-centred:" lead.
+- *Lifecycle Flow Reads* reordered to first child of *Change Lifecycle*.
+- *Formal Build* re-opened mid-walk for per-node promotion conditional.
+- Walk shrunk 7→5; "per-node approval surfacing" dropped on scrutiny.
+- Implementation Plan added for AGENT-RULES render review.
+- 7 render edits: preamble, 2 new rules, 2 reworded, 1 citation audit.

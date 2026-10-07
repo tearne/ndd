@@ -21,3 +21,8 @@ Under 050 the Plan node stops having a fixed sequence of children (Intent → Ap
 - Does the restructured Plan node read as one coherent shape parameterised by Change Style, or as four near-independent flows sharing only Intent and Build? The map's coherence, not the render's, is where this is decided.
 - Do the new preparation nodes (Bounds, Focus, Specification, Implementation Plan) want their own sizing conventions on the Node Sizing node, or does one convention cover them?
 - Does Follow-the-Plan (as a map concept, not a rule) still read the same way when the plan's shape is style-dependent? In particular, what does "return the change to planning" mean when the planning shape itself was chosen?
+
+
+## Conclude
+
+Six parked questions walked post-070/080/110. All six dropped on scrutiny: the map now carries clear answers (Vibe's trust-agent-judgement framing, parameterised Plan shape, distributed Node Sizing caps per preparation section, style-appropriate Follow-the-Plan via Formal Build's lock-kept rework). The concerns were raised in good faith during 050's Build; by this review they had already been absorbed. No candidates promoted.

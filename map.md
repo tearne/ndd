@@ -102,11 +102,15 @@ It refuses to run from its own checkout directory; this repository reads its sou
 
 ```yaml
 id: r8d
+approvals:
+  tearne: {at: 2026-10-07, hash: 654e177f}
 ```
 
-`AGENT-RULES.md` is a rendering of the core rules within this map, optimised for agents; an agent follows instructions best with concrete rules based on clear triggers. This map remains authoritative. It is hand-maintained at the checkout root, where its links to `ndd.map.md` resolve exactly as they do in a client's `ndd/`. A change that edits a node an agent rule cites updates the rule in the same build, since nothing mechanical keeps the rendering in step. Each agent rule names its source node, and the agent is instructed to read it on demand, not preemptively at start.
+`AGENT-RULES.md` is a rendering of the core rules within this map, optimised for agents; an agent follows instructions best with concrete rules based on clear triggers. This map remains authoritative, and the rendering is a route into it: a reference in agent output names the source node, not the rule heading. Each agent rule names its source node, read on demand rather than preemptively at start.
 
 **Detail**
+
+It is hand-maintained at the checkout root, where its links to `ndd.map.md` resolve exactly as they do in a client's `ndd/`. A change that edits a node an agent rule cites updates the rule in the same build; drift noticed otherwise is corrected on sight.
 
 The agent re-reads the file at the start of every [Build](ndd.map.md#build) and after any context compaction. Which rules it carries is settled by [Rule Selection](#rule-selection). Its orientation paragraph has [Distribution](#distribution) as its source.
 
@@ -117,13 +121,15 @@ The agent re-reads the file at the start of every [Build](ndd.map.md#build) and 
 
 ```yaml
 id: f7m
+approvals:
+  tearne: {at: 2026-10-07, hash: e4b32c06}
 ```
 
 Each rule in the rendering is phrased to maximise compliance.
 
 - Each rule sits under a short, numbered level-3 heading, so markdown tooling can navigate and rules can be named.
 
-- Its first sentence states the act as a trigger the agent can recognise, or says that it applies to everything the agent writes. The rest gives the reason — agents generalise from explanation rather than bare instruction.
+- Each rule is trigger-centred: its first sentence states the act as a trigger the agent can recognise, or says that it applies to everything the agent writes. The rest gives the reason — agents generalise from explanation rather than bare instruction.
 
 - A rule that forbids something names the required alternative instead — "leave git writes to the user", not "never commit" — because a bare prohibition raises the salience of the thing it forbids.
 

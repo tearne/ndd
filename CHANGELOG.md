@@ -5,8 +5,11 @@ Notable changes to NDD, newest first. The current version is the topmost heading
 ## 2.3.0 — 2026-10-07
 
 - NDD-level assumption introduced: specifications are expressible as maps. *Change Specification* narrows to map content only; non-map format alternatives dropped.
-- *Formal Build* promotes approved node texts and stamps into the live map as its closing act, so Build-time divergence surfaces before Conclude.
+- *Formal Build* promotes approved nodes into the live map as its closing act — per-node when the live map has drifted from the baseline, otherwise bulk — so drift surfaces before Conclude.
 - Agent proposes a whole-map copy as the Change Specification target when multiple nodes will be touched, pausing for baseline check-in so edits are visible as editor diffs.
+- Agent reads the governing map node at each lifecycle hinge (*Lifecycle Flow Reads*, AGENT-RULES Rule 2).
+- Agent output names nodes by their heading, not yaml id (*Node Identity*, AGENT-RULES Rule 9).
+- AGENT-RULES is a route into the map rather than a destination; drift noticed outside the current build is corrected on sight (*Agent Rules*, *Rule Form*).
 
 ## 2.2.1 — 2026-10-02
 
