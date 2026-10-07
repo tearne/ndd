@@ -34,3 +34,16 @@ Nodes in scope (walk order):
 6. *NDD* (root) — update the Contents one-liner for *Map* to track the Map node's new wording. **Settled, stamped.**
 
 Change 100 (`100-prompt-for-whole-map-copy-at-formal-start`) folds into node 5 and archives alongside 070 at Conclude.
+
+
+## Conclude
+
+Deltas from the plan:
+
+- *Formal Conclude* factored out of *Formal Build* mid-walk; walk extended 4 → 6 nodes.
+- Child nav links added to *Formal*.
+- Change 100 folded into *Change Specification*; archives alongside 070.
+- `AGENT-RULES.md` Rule 12 split (Change Specification map-only; Implementation Plan still format-dependent).
+- Change 080's Intent extended with Rule 16 and Rule 13 under-rendering surfaced here.
+
+Companion copy is disposable in full per the new *Formal Conclude* clause.

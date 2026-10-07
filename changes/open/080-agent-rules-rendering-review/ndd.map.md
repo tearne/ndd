@@ -1054,12 +1054,12 @@ If the Change Specification stalls, the agent proposes conceptual exploration, a
 ```yaml
 id: ip5
 approvals:
-  tearne: {at: 2026-09-30, hash: d4b85e85}
+  tearne: {at: 2026-10-07, hash: 46e61232}
 ```
 
 An optional preparation section for a [Formal](#formal) change, added when consequential delivery choices remain after the [Change Specification](#change-specification) is agreed. Captures decisions about how to deliver — sequencing, staging, dependencies, rollback — rather than a step-by-step checklist. Omitted when the delivery path is obvious.
 
-The agent proposes an Implementation Plan when the specification alone does not settle delivery. If added, Build follows it; deviations go to the [Log](#build), and material rework returns the change to planning.
+The agent proposes an Implementation Plan when the specification alone does not settle delivery. If added, Build follows it; deviations go to the [Log](#build), and material rework re-agrees the plan with the [Build Lock](#build-lock) kept, resuming against the revised plan — a full return to planning is reserved for abandoning Formal.
 
 
 # Formal Build

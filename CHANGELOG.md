@@ -2,6 +2,12 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 2.3.0 — 2026-10-07
+
+- NDD-level assumption introduced: specifications are expressible as maps. *Change Specification* narrows to map content only; non-map format alternatives dropped.
+- *Formal Build* promotes approved node texts and stamps into the live map as its closing act, so Build-time divergence surfaces before Conclude.
+- Agent proposes a whole-map copy as the Change Specification target when multiple nodes will be touched, pausing for baseline check-in so edits are visible as editor diffs.
+
 ## 2.2.1 — 2026-10-02
 
 - *Discussion Records* makes explicit that Discussion edits are outside the Engagement Rule: they are not drafted-surfaced-settled or counted.

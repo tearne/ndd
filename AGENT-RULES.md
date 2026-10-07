@@ -73,7 +73,8 @@ Count each part against its cap when you surface it, report the number, and past
 - Intent: ~500 characters.
 - Bounds: ~200 characters (soft — overrun signals the wrong style).
 - Focus: ~300 characters (soft — overrun signals Formal is the fit).
-- Change Specification and Implementation Plan: format-dependent — a map-shape part follows the [Node Sizing](ndd.map.md#node-sizing) conventions per node; a prose or table part carries its own convention where a cap is meaningful.
+- Change Specification: map-shape — each node follows the [Node Sizing](ndd.map.md#node-sizing) conventions.
+- Implementation Plan: format-dependent — a map-shape part follows the [Node Sizing](ndd.map.md#node-sizing) conventions per node; a prose or table part carries its own convention where a cap is meaningful.
 - Conclude: ~500 characters, excluding a changelog entry.
 
 Unresolved sits beside a part and is excluded from that part's count.

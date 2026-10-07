@@ -12,7 +12,7 @@
 ```yaml
 id: a3k
 approvals:
-  tearne: {at: 2026-09-30, hash: 9709e166}
+  tearne: {at: 2026-10-07, hash: 34571557}
 ```
 
 NDD, Non-Dead Design, aims to improve knowledge management for agentic software development. The name reflects the [three deaths](#three-deaths) it seeks to prevent: of specifications, of structural thinking, and of comprehension.
@@ -20,7 +20,7 @@ NDD, Non-Dead Design, aims to improve knowledge management for agentic software 
 The map is the one artefact that keeps all three alive: a conceptual **map** of the system, acting as the hub for specification and change management rather than a document off to one side.
 
 - **Principles** — the founding rationale in more detail.
-- **Map** — the developer's conceptual model of the system, held as its primary specification.
+- **Map** — the developer's conceptual model of the system, and the primary specification.
 - **Change-Management** — how the spec evolves, through a change lifecycle and user-owned gates.
 - **Maintenance** — the reviews that keep the map, the code and the backlog in step.
 - **Tooling** — the generic markdown tooling the format is designed to exploit.
@@ -256,10 +256,10 @@ The focused items are where comprehension is built; skip that and the user's rol
 ```yaml
 id: sp1
 approvals:
-  tearne: {at: 2026-09-30, hash: 9e6b6a98}
+  tearne: {at: 2026-10-07, hash: 531a6b23}
 ```
 
-The map is the developer's conceptual model of the system, and its primary specification. It holds the system's shape as a tree of concepts, structured the way the user thinks rather than how code is organised. Agents render it into code. Everything else in the method — how it changes, how it's viewed — serves this map.
+The map is the developer's conceptual model of the system. NDD assumes that any specification can be effectively expressed as a map, holding the system's design as a tree of concepts, structured the way the user thinks rather than how code is organised. Agents render it into code. Everything else in the method — how it changes, how it's viewed — serves this map.
 
 **See also**
 
@@ -1011,7 +1011,11 @@ If the stocktake reveals the question has shifted, Focus can be re-agreed rather
 
 # Formal
 
-[↑ Change Style](#change-style)
+[↑ Change Style](#change-style) \
+[Change Specification](#change-specification) \
+[Implementation Plan](#implementation-plan) \
+[Formal Build](#formal-build) \
+[Formal Conclude](#formal-conclude)
 
 ```yaml
 id: f8p
@@ -1031,14 +1035,14 @@ Formal is the default when the agent is unsure which style fits, and is particul
 ```yaml
 id: s7q
 approvals:
-  tearne: {at: 2026-09-30, hash: c4adbaa0}
+  tearne: {at: 2026-10-07, hash: 6baee183}
 ```
 
 The preparation section for a [Formal](#formal) change: the target — what must hold when the change lands.
 
-Format is chosen to fit the target: proposed map nodes, a sub-map, a whole-map copy, prose, a table, a flow diagram, or a mixture. Whatever the format, once built the map must describe the completed result. Development happens in the change file, with a companion folder for supporting material if warranted.
+The target is expressed as proposed map nodes. When the specification will touch multiple nodes, the agent proposes a sub-map or whole-map file copy as the target so edits are visible in editor diffs against a committed baseline, pausing to give opportunity to check in. Whatever the shape, once built the live map must describe the completed result. Development happens in the change file, with a companion folder for supporting material if warranted.
 
-Approval is format-dependent. Map-shape targets are approved per-node under the [Engagement Rule](#engagement-rule), with stamps written on the target that transfer to the map at verification. Prose, table or diagram targets are surfaced whole, or in named sections when a cap is meaningful.
+Nodes are approved per-node under the [Engagement Rule](#engagement-rule), with stamps written on the target that transfer to the live map at Build's closing act.
 
 If the Change Specification stalls, the agent proposes conceptual exploration, a [Vibe](#vibe) spike or a smaller scope.
 
@@ -1050,12 +1054,12 @@ If the Change Specification stalls, the agent proposes conceptual exploration, a
 ```yaml
 id: ip5
 approvals:
-  tearne: {at: 2026-09-30, hash: d4b85e85}
+  tearne: {at: 2026-10-07, hash: 46e61232}
 ```
 
 An optional preparation section for a [Formal](#formal) change, added when consequential delivery choices remain after the [Change Specification](#change-specification) is agreed. Captures decisions about how to deliver — sequencing, staging, dependencies, rollback — rather than a step-by-step checklist. Omitted when the delivery path is obvious.
 
-The agent proposes an Implementation Plan when the specification alone does not settle delivery. If added, Build follows it; deviations go to the [Log](#build), and material rework returns the change to planning.
+The agent proposes an Implementation Plan when the specification alone does not settle delivery. If added, Build follows it; deviations go to the [Log](#build), and material rework re-agrees the plan with the [Build Lock](#build-lock) kept, resuming against the revised plan — a full return to planning is reserved for abandoning Formal.
 
 
 # Formal Build
@@ -1065,18 +1069,31 @@ The agent proposes an Implementation Plan when the specification alone does not 
 ```yaml
 id: fb9
 approvals:
-  tearne: {at: 2026-09-30, hash: d072f7b8}
+  tearne: {at: 2026-10-07, hash: 0b0dfd56}
 ```
 
-The Formal-specific discipline layered onto [Build](#build), [Conclude](#conclude) and [Archiving](#archiving); the general disciplines still apply.
+Layered onto general [Build](#build); the Formal additions follow.
 
-Before proposing Build, the agent reconciles the [Change Specification](#change-specification) against current reality; revisions required by intervening work return the change to spec development.
+Before proposing Build, the agent reconciles the [Change Specification](#change-specification) against current reality; revisions required by intervening work return the change to spec development, as do issues uncovered during the build. Build-time re-agreement keeps the [Build Lock](#build-lock), resuming against the revised target when agreed.
 
-If the Change Specification is found wanting during Build, implementation pauses while the spec is re-agreed under its normal approval rules; the [Build Lock](#build-lock) is kept. When the spec is re-agreed, Build resumes against the revised target.
+Build lands non-map assets in place; as its closing act, approved node texts and stamps on the Change Specification target promote into the live map, so divergence surfaces before Conclude.
 
-At Conclude, verification walks the Change Specification against the built result; drift on any per-node approved element triggers re-engagement of that node.
 
-At Archiving, useful evidence and rationale are retained; disposable experiments are removed via a curated retain-or-drop asset walk.
+# Formal Conclude
+
+[↑ Formal](#formal)
+
+```yaml
+id: q4m
+approvals:
+  tearne: {at: 2026-10-07, hash: 4744bcf2}
+```
+
+Layered onto general [Conclude](#conclude) and [Archiving](#archiving); the Formal additions follow.
+
+At Conclude, verification walks the [Change Specification](#change-specification) against the built result; drift on any per-node approved element triggers re-engagement of that node.
+
+At Archiving, useful evidence and rationale are retained; disposable experiments are removed via a curated retain-or-drop asset walk. Whole-map copies are disposable in full — promoted content lives in the live map, and the copy was only a development aid, not a document to maintain.
 
 
 # Startup Scan
