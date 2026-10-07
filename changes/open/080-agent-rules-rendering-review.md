@@ -21,6 +21,17 @@ Design decisions deferred to the preparation section: what AGENT-RULES carries v
 
 ## Change Specification
 
-Target is a whole-map copy at [`080-agent-rules-rendering-review/ndd.map.md`](080-agent-rules-rendering-review/ndd.map.md), starting as a verbatim copy of `ndd.map.md`. Proposed node edits are made directly in that copy and walked per-node under the Engagement Rule. Approval stamps land in the copy's per-node yaml blocks and transfer to the live map at the closing act of Build.
+Targets are whole-map copies of both NDD maps:
 
-Walk order not yet set — proposing after check-in of the baseline.
+- [`080-agent-rules-rendering-review/ndd.map.md`](080-agent-rules-rendering-review/ndd.map.md) — baseline of `ndd.map.md`.
+- [`080-agent-rules-rendering-review/map.md`](080-agent-rules-rendering-review/map.md) — baseline of `map.md`.
+
+Proposed node edits are made directly in the copies and walked per-node under the Engagement Rule. Approval stamps land in each copy's per-node yaml blocks and transfer to the live maps at the closing act of Build.
+
+Walk order:
+
+1. [`map.md`] *Agent Rules* — extend to cover drift-at-non-touched-surfaces parking and the render-vs-map division.
+2. [`map.md`] *Rule Form* — add rule-citation-by-heading-name convention.
+3. [`ndd.map.md`] *Node Identity* — user-facing agent output uses the heading name; id stays agent-side.
+4. [`ndd.map.md`] New node *Lifecycle Flow Reads* under *Change Lifecycle* — flow reads at lifecycle hinges, distinct from reasoning reads.
+5. [`ndd.map.md`] *Engagement Rule* or *Approval* (home resolved during walk) — surface per-node approval discipline where the agent will find it.
