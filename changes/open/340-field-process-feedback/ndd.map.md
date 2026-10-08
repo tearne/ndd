@@ -1049,12 +1049,12 @@ Formal is the default when the agent is unsure which style fits, and is particul
 ```yaml
 id: s7q
 approvals:
-  tearne: {at: 2026-10-07, hash: 6baee183}
+  tearne: {at: 2026-10-08, hash: 71e15c1f}
 ```
 
 The preparation section for a [Formal](#formal) change: the target — what must hold when the change lands.
 
-The target is expressed as proposed map nodes. When the specification will touch multiple nodes, the agent proposes a sub-map or whole-map file copy as the target so edits are visible in editor diffs against a committed baseline, pausing to give opportunity to check in. Whatever the shape, once built the live map must describe the completed result. Development happens in the change file, with a companion folder for supporting material if warranted.
+The target is expressed as proposed map nodes. When the specification will touch multiple nodes, the agent proposes a sub-map or whole-map file copy as the target so edits are visible in editor diffs against a committed baseline, pausing to give opportunity to check in. Whatever the shape, once built the live map must describe the completed result. Development happens in the change file, with a companion folder in `changes/open/` for supporting material if warranted, named to match the change. A copy used as the target is noted in the change file in one line giving its path.
 
 Nodes are approved per-node under the [Engagement Rule](#engagement-rule), with stamps written on the target that transfer to the live map at Build's closing act.
 
@@ -1100,14 +1100,14 @@ Build lands non-map assets in place; as its closing act, approved nodes on the C
 ```yaml
 id: q4m
 approvals:
-  tearne: {at: 2026-10-07, hash: 4744bcf2}
+  tearne: {at: 2026-10-08, hash: e43e41ce}
 ```
 
 Layered onto general [Conclude](#conclude) and [Archiving](#archiving); the Formal additions follow.
 
 At Conclude, verification walks the [Change Specification](#change-specification) against the built result; drift on any per-node approved element triggers re-engagement of that node.
 
-At Archiving, useful evidence and rationale are retained; disposable experiments are removed via a curated retain-or-drop asset walk. Whole-map copies are disposable in full — promoted content lives in the live map, and the copy was only a development aid, not a document to maintain.
+At Archiving, useful evidence and rationale are retained; disposable experiments are removed via a curated retain-or-drop asset walk. Whole-map copies are disposable in full — promoted content lives in the live map, and the copy was only a development aid, not a document to maintain. The companion folder moves with the change file to `changes/archive/`, renamed to match; if nothing is retained, it is removed.
 
 
 # Startup Scan
@@ -1172,11 +1172,13 @@ Git write operations — commit, push, branch, reset — always require explicit
 
 ```yaml
 id: k4d
+approvals:
+  tearne: {at: 2026-10-08, hash: 98be6d76}
 ```
 
-Approval requires a clear affirmative given in response to the agent asking ("yes", "ok", "go ahead"). Silence, a tangent, or a reply that raises new questions is not approval. It only covers what was surfaced and no more: agreeing to draft prose is not approval of the prose.
+Approval requires a clear affirmative in response to the agent asking ("yes", "ok", "go ahead"). Silence, a tangent, or a reply that raises new questions is not approval. It only covers what was surfaced and no more: agreeing to draft prose is not approval of the prose.
 
-How a draft is delivered is the user's choice. The default is chat; a bare "write" asks for this one draft in place, and only an instruction that says so, such as "write everything from here", switches the rest of the session. *Write* means put it in place and stop until the user hands back, when the agent runs [Tidy](#tidy) over what changed before asking anything; *write* is never approval and never a cue to move on. However a draft arrives it stands provisional until the user accepts or amends it, and one written in place is reverted if declined.
+A draft is strictly the content whose text was surfaced; any action mentioned alongside it, such as writing a log entry or a new file, needs its own draft. Drafts are written to chat by default, or in place if the user says *write*, after which the agent stops until the user hands back, when the agent runs [Tidy](#tidy) over what changed before asking anything. A bare *write* covers one draft; only an instruction that says so, such as "write everything from here", covers the session. *Write* is never approval and never a cue to move on; a draft stands provisional until accepted or amended, and one written in place is reverted if declined.
 
 
 # Keywords
