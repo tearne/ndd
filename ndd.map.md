@@ -66,6 +66,7 @@ id: ct5
       - [Engagement Rule](#engagement-rule)
   - [Change-Management](#change-management)
     - [Change Lifecycle](#change-lifecycle)
+      - [Lifecycle Flow Reads](#lifecycle-flow-reads)
       - [Plan](#plan)
         - [Intent](#intent)
         - [Context](#context)
@@ -85,6 +86,7 @@ id: ct5
         - [Change Specification](#change-specification)
         - [Implementation Plan](#implementation-plan)
         - [Formal Build](#formal-build)
+        - [Formal Conclude](#formal-conclude)
     - [Discussion](#discussion)
       - [Discussion Records](#discussion-records)
       - [Discussion Conclude](#discussion-conclude)
@@ -868,11 +870,13 @@ Its mere presence is the marker that the change is finished.
 
 ```yaml
 id: a9v
+approvals:
+  tearne: {at: 2026-10-14, hash: ebaa1634}
 ```
 
-Once the user approves the [Conclude](#conclude) note, the change leaves `changes/open/` for `changes/archive/`, losing any leading number and gaining the ISO date it concluded — `140-config-file-format.md` becomes `2026-05-14-config-file-format.md`. The [build lock](#build-lock) is then released.
+Once the user approves the [Conclude](#conclude) note, the change leaves `changes/open/` for `changes/archive/`, losing any leading number and gaining the ISO date it concluded — `140-config-file-format.md` becomes `2026-05-14-config-file-format.md`. A companion folder, if the change has one, moves to the same folder and is renamed to match, or is removed if nothing is retained; a [Formal](#formal) change first runs the retain-or-drop walk in [Formal Conclude](#formal-conclude). The [build lock](#build-lock) is then released.
 
-A versioned project with substantive change also proposes a changelog entry with the draft note, added on the same approval. [Tidy](#tidy) runs before the move; after it the agent offers a [Map Review](#map-review) in its light scope. If the project map defines release steps, the agent asks whether it is time to run them, and if so offers a full Map Review first.
+Before the move, a versioned project with substantive change proposes a changelog entry, approved on its own. [Tidy](#tidy) runs before the move; after it the agent offers a [Map Review](#map-review) in its light scope. If the project map defines release steps, the agent asks whether it is time to run them, and if so offers a full Map Review first.
 
 
 # Discussion
@@ -1049,12 +1053,12 @@ Formal is the default when the agent is unsure which style fits, and is particul
 ```yaml
 id: s7q
 approvals:
-  tearne: {at: 2026-10-07, hash: 6baee183}
+  tearne: {at: 2026-10-08, hash: 71e15c1f}
 ```
 
 The preparation section for a [Formal](#formal) change: the target — what must hold when the change lands.
 
-The target is expressed as proposed map nodes. When the specification will touch multiple nodes, the agent proposes a sub-map or whole-map file copy as the target so edits are visible in editor diffs against a committed baseline, pausing to give opportunity to check in. Whatever the shape, once built the live map must describe the completed result. Development happens in the change file, with a companion folder for supporting material if warranted.
+The target is expressed as proposed map nodes. When the specification will touch multiple nodes, the agent proposes a sub-map or whole-map file copy as the target so edits are visible in editor diffs against a committed baseline, pausing to give opportunity to check in. Whatever the shape, once built the live map must describe the completed result. Development happens in the change file, with a companion folder in `changes/open/` for supporting material if warranted, named to match the change. A copy used as the target is noted in the change file in one line giving its path.
 
 Nodes are approved per-node under the [Engagement Rule](#engagement-rule), with stamps written on the target that transfer to the live map at Build's closing act.
 
@@ -1100,7 +1104,7 @@ Build lands non-map assets in place; as its closing act, approved nodes on the C
 ```yaml
 id: q4m
 approvals:
-  tearne: {at: 2026-10-07, hash: 4744bcf2}
+  tearne: {at: 2026-10-14, hash: 4744bcf2}
 ```
 
 Layered onto general [Conclude](#conclude) and [Archiving](#archiving); the Formal additions follow.
@@ -1172,11 +1176,13 @@ Git write operations — commit, push, branch, reset — always require explicit
 
 ```yaml
 id: k4d
+approvals:
+  tearne: {at: 2026-10-08, hash: 98be6d76}
 ```
 
-Approval requires a clear affirmative given in response to the agent asking ("yes", "ok", "go ahead"). Silence, a tangent, or a reply that raises new questions is not approval. It only covers what was surfaced and no more: agreeing to draft prose is not approval of the prose.
+Approval requires a clear affirmative in response to the agent asking ("yes", "ok", "go ahead"). Silence, a tangent, or a reply that raises new questions is not approval. It only covers what was surfaced and no more: agreeing to draft prose is not approval of the prose.
 
-How a draft is delivered is the user's choice. The default is chat; a bare "write" asks for this one draft in place, and only an instruction that says so, such as "write everything from here", switches the rest of the session. *Write* means put it in place and stop until the user hands back, when the agent runs [Tidy](#tidy) over what changed before asking anything; *write* is never approval and never a cue to move on. However a draft arrives it stands provisional until the user accepts or amends it, and one written in place is reverted if declined.
+A draft is strictly the content whose text was surfaced; any action mentioned alongside it, such as writing a log entry or a new file, needs its own draft. Drafts are written to chat by default, or in place if the user says *write*, after which the agent stops until the user hands back, when the agent runs [Tidy](#tidy) over what changed before asking anything. A bare *write* covers one draft; only an instruction that says so, such as "write everything from here", covers the session. *Write* is never approval and never a cue to move on; a draft stands provisional until accepted or amended, and one written in place is reverted if declined.
 
 
 # Keywords
