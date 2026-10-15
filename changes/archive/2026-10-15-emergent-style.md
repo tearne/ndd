@@ -4,7 +4,7 @@
 
 ## Intent
 
-Let a change deliver by working iteratively, each step informing the next, so that what gets built is found in the doing rather than specified first. Rename Exploratory to Emergent and reframe it so: the work happens within the change under the usual per-edit governance, with no separate delivery change required, and answering a question is one kind of such work among others. Reframe Focus to match: the work pursued and a point at which to take stock.
+Let a change deliver by working iteratively, each step informing the next, so that what gets built is found in the doing rather than specified first, and answering a question remains one kind of such work. Exploratory becomes Emergent to fit.
 
 Raised as field process feedback (2026-10-14).
 
@@ -22,6 +22,10 @@ If Exploratory delivers within itself, it may also want a companion folder for s
 
 Target: whole-map copy at `010-emergent-style/ndd.map.md`.
 
-## Held
+## Log
 
-- Pure questions must stay first-class: the Emergent node must say that understanding, a decision or a handoff is a complete outcome, and the Focus node must name a question as one example of the work pursued.
+- Minor bump agreed, but no version written: `CHANGELOG.md` holds entries under `## Pending` until a release, the gap change 020 covers, so the per-hand-back patch bump was skipped too.
+
+## Conclude
+
+Replanned after the first Intent: renumbered from 350, renamed from exploratory-delivery, Exploratory renamed Emergent. Focus dropped the stocktake as a set part. Companion Folder became its own node, as Change Lifecycle would pass the bound, and Change Specification now keeps the target copy in it. Vibe's escalation sentence was reworded. Rules 13 and 19 updated. No version written, pending 020. Verification: live map matches the target.

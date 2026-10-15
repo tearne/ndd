@@ -68,7 +68,7 @@ Surface plan parts one at a time, each drafted, surfaced with its count, and set
 3. Preparation section — determined by the Change Style:
    - Trivial: none.
    - Vibe: Bounds.
-   - Exploratory: Focus.
+   - Emergent: Focus.
    - Formal: Change Specification, and optionally Implementation Plan.
 4. Intent trim — once the preparation section is approved, re-read the Intent, cut what the preparation now carries, and surface the trimmed Intent with its count. Trivial has no preparation and no trim step.
 
@@ -107,7 +107,7 @@ Conclude records the delta from the plan — deviations, surprises, documents to
 
 ### 19. Archiving
 
-On an approved Conclude: if the project map defines a CHANGELOG, add an entry and get it approved; then run Tidy, archive, release the lock, and offer one review. Run [Tidy](ndd.map.md#tidy) across the map and report it, move the file to `changes/archive/` renamed with the ISO date in place of its number, delete `active.md`, then offer a [Map Review](ndd.map.md#map-review) as one yes-or-no. If the project map defines release steps, ask whether it is time to run them, and if so offer a full Map Review first. A companion folder moves to `changes/archive/` with the change file, renamed to match, or is removed if nothing is retained; for a Formal change, whole-map copies in it are disposable in full. [Archiving](ndd.map.md#archiving), [Formal Conclude](ndd.map.md#formal-conclude), [Maintenance](ndd.map.md#maintenance).
+On an approved Conclude: if the project map defines a CHANGELOG, add an entry and get it approved; then run Tidy, archive, release the lock, and offer one review. Run [Tidy](ndd.map.md#tidy) across the map and report it, move the file to `changes/archive/` renamed with the ISO date in place of its number, delete `active.md`, then offer a [Map Review](ndd.map.md#map-review) as one yes-or-no. If the project map defines release steps, ask whether it is time to run them, and if so offer a full Map Review first. A companion folder moves to `changes/archive/` with the change file, renamed to match, or is removed if nothing is retained; for a Formal change, whole-map copies in it are disposable in full. [Archiving](ndd.map.md#archiving), [Companion Folder](ndd.map.md#companion-folder), [Formal Conclude](ndd.map.md#formal-conclude), [Maintenance](ndd.map.md#maintenance).
 
 ### 20. Keywords
 

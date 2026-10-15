@@ -76,11 +76,12 @@ id: ct5
         - [Build Lock](#build-lock)
       - [Conclude](#conclude)
         - [Archiving](#archiving)
+      - [Companion Folder](#companion-folder)
     - [Change Style](#change-style)
       - [Trivial](#trivial)
       - [Vibe](#vibe)
         - [Bounds](#bounds)
-      - [Exploratory](#exploratory)
+      - [Emergent](#emergent)
         - [Focus](#focus)
       - [Formal](#formal)
         - [Change Specification](#change-specification)
@@ -682,7 +683,8 @@ A change's file name is its title in two to five hyphenated words, optionally be
 [Lifecycle Flow Reads](#lifecycle-flow-reads) \
 [Plan](#plan) \
 [Build](#build) \
-[Conclude](#conclude)
+[Conclude](#conclude) \
+[Companion Folder](#companion-folder)
 
 ```yaml
 id: l5g
@@ -725,14 +727,14 @@ At each lifecycle hinge the agent reads the governing map node before moving: th
 ```yaml
 id: v3d
 approvals:
-  tearne: {at: 2026-09-30, hash: b2d28fbf}
+  tearne: {at: 2026-10-15, hash: 5c521f60}
 ```
 
 The plan builds up in **parts**, each drafted then surfaced for approval before the next. Every plan starts with the [Intent](#intent); what follows is set by the [Change Style](#change-style):
 
 - **Trivial**: nothing more — Intent is the whole plan.
 - **Vibe**: [Bounds](#bounds).
-- **Exploratory**: [Focus](#focus).
+- **Emergent**: [Focus](#focus).
 - **Formal**: [Change Specification](#change-specification) and optional [Implementation Plan](#implementation-plan).
 
 What may be written meanwhile is set by [Gates and Permissions](#gates-and-permissions). Two further sections sit outside the parts sequence, ungated: [Context](#context), which explains why the change exists, and [Held](#held), which catches material arriving before its part.
@@ -871,12 +873,25 @@ Its mere presence is the marker that the change is finished.
 ```yaml
 id: a9v
 approvals:
-  tearne: {at: 2026-10-14, hash: ebaa1634}
+  tearne: {at: 2026-10-15, hash: deb30ef3}
 ```
 
-Once the user approves the [Conclude](#conclude) note, the change leaves `changes/open/` for `changes/archive/`, losing any leading number and gaining the ISO date it concluded — `140-config-file-format.md` becomes `2026-05-14-config-file-format.md`. A companion folder, if the change has one, moves to the same folder and is renamed to match, or is removed if nothing is retained; a [Formal](#formal) change first runs the retain-or-drop walk in [Formal Conclude](#formal-conclude). The [build lock](#build-lock) is then released.
+Once the user approves the [Conclude](#conclude) note, the change leaves `changes/open/` for `changes/archive/`, losing any leading number and gaining the ISO date it concluded — `140-config-file-format.md` becomes `2026-05-14-config-file-format.md`. A [companion folder](#companion-folder), if the change has one, moves to the same folder and is renamed to match, or is removed if nothing is retained; a [Formal](#formal) change first runs the retain-or-drop walk in [Formal Conclude](#formal-conclude). The [build lock](#build-lock) is then released.
 
 Before the move, a versioned project with substantive change proposes a changelog entry, approved on its own. [Tidy](#tidy) runs before the move; after it the agent offers a [Map Review](#map-review) in its light scope. If the project map defines release steps, the agent asks whether it is time to run them, and if so offers a full Map Review first.
+
+
+# Companion Folder
+
+[↑ Change Lifecycle](#change-lifecycle)
+
+```yaml
+id: c2f
+approvals:
+  tearne: {at: 2026-10-15, hash: b8acd666}
+```
+
+A folder beside a change document in `changes/open/`, named to match it, holding supporting material that would crowd the document, such as evidence, experiments, or the map copy on which a [Formal](#formal) change drafts its specification. A change of any style may have one, created only when warranted. It travels with the change at [Archiving](#archiving), keeping only what is retained.
 
 
 # Discussion
@@ -928,21 +943,25 @@ A discussion's filename is a readable slug ending `-discussion.md`; on approval 
 
 # Change Style
 
-[↑ Change-Management](#change-management)
+[↑ Change-Management](#change-management) \
+[Trivial](#trivial) \
+[Vibe](#vibe) \
+[Emergent](#emergent) \
+[Formal](#formal)
 
 ```yaml
 id: e3n
 approvals:
-  tearne: {at: 2026-09-30, hash: a694e161}
+  tearne: {at: 2026-10-15, hash: 93436112}
 ```
 
-Each change is worked in one of four styles, each giving the [Plan](#plan) its own shape after [Intent](#intent). [Build](#build) and [Conclude](#conclude) are the same whichever is chosen. The agent proposes a style once Intent is approved — default **Formal** — and the user confirms. The chosen style is recorded as a `**Change Style:** <name>` line beneath the change's title, before the Intent. The four styles are [Trivial](#trivial), [Vibe](#vibe), [Exploratory](#exploratory) and [Formal](#formal); each names the preparation section it agrees before Build.
+Each change is worked in one of four styles, each giving the [Plan](#plan) its own shape after [Intent](#intent). [Build](#build) and [Conclude](#conclude) are the same whichever is chosen. The agent proposes a style once Intent is approved — default **Formal** — and the user confirms. The chosen style is recorded as a `**Change Style:** <name>` line beneath the change's title, before the Intent. The four styles are [Trivial](#trivial), [Vibe](#vibe), [Emergent](#emergent) and [Formal](#formal); each names the preparation section it agrees before Build.
 
 | Style | Preparation before Build |
 |-------|--------------------------|
 | **Trivial** | none — Intent is the whole plan |
 | **Vibe** | [Bounds](#bounds) |
-| **Exploratory** | [Focus](#focus) |
+| **Emergent** | [Focus](#focus) |
 | **Formal** | [Change Specification](#change-specification) and optional [Implementation Plan](#implementation-plan) |
 
 The four are not a ladder: the agent proposes the style whose shape fits, not the lightest that might do. Style may be revisited if the change turns out to want a different shape, in which case the agent returns to planning.
@@ -965,17 +984,18 @@ Trivial is not a shortcut around thinking — a change that starts here and turn
 
 # Vibe
 
-[↑ Change Style](#change-style)
+[↑ Change Style](#change-style) \
+[Bounds](#bounds)
 
 ```yaml
 id: v2m
 approvals:
-  tearne: {at: 2026-09-30, hash: c8e6015d}
+  tearne: {at: 2026-10-15, hash: 7b4e5ac2}
 ```
 
 Uses [Intent](#intent) and a light [Bounds](#bounds) section. Chosen when the user opts to let the agent decide the shape of the work as it goes; the safeguard is the agent's judgement about when to escalate, not an upfront specification. For example, stakes may be low enough that tighter specification isn't worth the effort. Bounds is kept brief on purpose — a short shared understanding of anything context-specific worth naming, and nothing more. Wordy Bounds would drain the very attention Vibe was chosen to save.
 
-During [Build](#build) the agent works within the agreed envelope and escalates on its own judgement when something turns up that Bounds could not have anticipated. If a tighter shape turns out to be needed, the change returns to planning under Exploratory or Formal.
+During [Build](#build) the agent works within the agreed envelope and escalates on its own judgement when something turns up that Bounds could not have anticipated. If the work turns out to need the user's steering or an agreed target, the change returns to planning under Emergent or Formal.
 
 
 # Bounds
@@ -995,36 +1015,37 @@ Bounds are context-dependent — a hard constraint, a performance sensitive piec
 Bounds has a soft anchor of ~200 characters. Overrun is not a cap breach — it is a signal that the wrong style was chosen.
 
 
-# Exploratory
+# Emergent
 
-[↑ Change Style](#change-style)
+[↑ Change Style](#change-style) \
+[Focus](#focus)
 
 ```yaml
 id: e5x
 approvals:
-  tearne: {at: 2026-09-30, hash: 9638b306}
+  tearne: {at: 2026-10-15, hash: 089de978}
 ```
 
-Uses Intent and [Focus](#focus) sections. Chosen when trying to predict the path upfront costs more than taking it step by step, with each step informing the next. Focus names the conceptual question being pursued and a useful point at which to take stock; there is no worklist or done-when, because knowing when to close is part of the work.
+Uses [Intent](#intent) and [Focus](#focus) sections. Chosen when what the change should produce is best found by doing the work step by step, each step informing the next, rather than specified first. Focus names the work pursued; there is no worklist or done-when, because knowing when to close is part of the work.
 
-Exploratory is real-time collaboration on a moving target: user and agent think through the question together, adjusting as understanding shifts. If executing code is part of learning, that is authorized separately — the exploration itself stays in dialogue. When the question resolves and delivery follows, the change concludes and delivery is planned as its own change.
+Emergent is real-time collaboration on a moving target: user and agent shape the work together, adjusting as understanding shifts. [Build](#build) delivers within the change as the work emerges, each map edit under the [Engagement Rule](#engagement-rule). An artefact, understanding, a decision, or a handoff to a further change is each a complete outcome.
 
 
 # Focus
 
-[↑ Exploratory](#exploratory)
+[↑ Emergent](#emergent)
 
 ```yaml
 id: f2q
 approvals:
-  tearne: {at: 2026-09-30, hash: 45a7caa6}
+  tearne: {at: 2026-10-15, hash: a5192876}
 ```
 
-The preparation section for an [Exploratory](#exploratory) change: the conceptual question being pursued, and a useful point at which to take stock. The agent proposes it; the user amends and confirms.
+The preparation section for an [Emergent](#emergent) change: the work being pursued. The agent proposes it; the user amends and confirms.
 
-Focus is a lightweight artefact — a sentence or two on each part, not a plan. The question is what the pair is actually trying to understand; the stocktake point is when to pause and assess whether the exploration is landing (a specific milestone, a duration, or a natural checkpoint in the material).
+Focus is a lightweight artefact — a sentence or two, not a plan. The work may be something to build or a question the pair is trying to understand. Judging whether it is done is part of the work, made as it goes rather than at a set point; Focus names a checkpoint only when one is genuinely useful, such as a milestone or a time limit.
 
-If the stocktake reveals the question has shifted, Focus can be re-agreed rather than the change concluded. Focus has a soft anchor of ~300 characters. Overrun is not a cap breach — it is a signal that the shape wants Formal rather than Exploratory.
+If the work shifts, Focus can be re-agreed rather than the change concluded. Focus has a soft anchor of ~300 characters. Overrun is not a cap breach — it is a signal that the shape wants Formal rather than Emergent.
 
 
 # Formal
@@ -1053,12 +1074,12 @@ Formal is the default when the agent is unsure which style fits, and is particul
 ```yaml
 id: s7q
 approvals:
-  tearne: {at: 2026-10-08, hash: 71e15c1f}
+  tearne: {at: 2026-10-15, hash: af7748b9}
 ```
 
 The preparation section for a [Formal](#formal) change: the target — what must hold when the change lands.
 
-The target is expressed as proposed map nodes. When the specification will touch multiple nodes, the agent proposes a sub-map or whole-map file copy as the target so edits are visible in editor diffs against a committed baseline, pausing to give opportunity to check in. Whatever the shape, once built the live map must describe the completed result. Development happens in the change file, with a companion folder in `changes/open/` for supporting material if warranted, named to match the change. A copy used as the target is noted in the change file in one line giving its path.
+The target is expressed as proposed map nodes. When the specification will touch multiple nodes, the agent proposes a sub-map or whole-map file copy, kept in the change's [companion folder](#companion-folder), as the target so edits are visible in editor diffs against a committed baseline, pausing to give opportunity to check in. Whatever the shape, once built the live map must describe the completed result. Development happens in the change file, and a copy used as the target is noted there in one line giving its path.
 
 Nodes are approved per-node under the [Engagement Rule](#engagement-rule), with stamps written on the target that transfer to the live map at Build's closing act.
 
