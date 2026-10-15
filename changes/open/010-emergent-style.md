@@ -1,10 +1,10 @@
-# Exploratory delivery
+# Emergent style
 
 **Change Style:** Formal
 
 ## Intent
 
-Let an Exploratory change end in delivery. Today Exploratory concludes when its question resolves, and delivery is planned as its own change; field use found work whose deliverable is itself best found step by step. Reframe Exploratory as iterative work, each step informing the next, delivering within itself under the usual per-edit governance, with a separate delivery change an option rather than a requirement. Reframe Focus to match: the work pursued and a stocktake point, a question being one case among others.
+Let a change deliver by working iteratively, each step informing the next, so that what gets built is found in the doing rather than specified first. Rename Exploratory to Emergent and reframe it so: the work happens within the change under the usual per-edit governance, with no separate delivery change required, and answering a question is one kind of such work among others. Reframe Focus to match: the work pursued and a point at which to take stock.
 
 Raised as field process feedback (2026-10-14).
 
@@ -20,4 +20,8 @@ If Exploratory delivers within itself, it may also want a companion folder for s
 
 ## Change Specification
 
-Target: whole-map copy at `010-exploratory-delivery/ndd.map.md`.
+Target: whole-map copy at `010-emergent-style/ndd.map.md`.
+
+## Held
+
+- Pure questions must stay first-class: the Emergent node must say that understanding, a decision or a handoff is a complete outcome, and the Focus node must name a question as one example of the work pursued.
