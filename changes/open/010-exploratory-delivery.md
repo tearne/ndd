@@ -1,5 +1,7 @@
 # Exploratory delivery
 
+**Change Style:** Formal
+
 ## Intent
 
 Let an Exploratory change end in delivery. Today Exploratory concludes when its question resolves, and delivery is planned as its own change; field use found work whose deliverable is itself best found step by step. Reframe Exploratory as iterative work, each step informing the next, delivering within itself under the usual per-edit governance, with a separate delivery change an option rather than a requirement. Reframe Focus to match: the work pursued and a stocktake point, a question being one case among others.
@@ -15,3 +17,7 @@ The Change Style rework (archived 2026-09-30) recast them. Wander became Trivial
 So this change restores dropped capability rather than adding new capability, and should consider whether Exploratory also takes up Wander's discover-as-you-go case.
 
 If Exploratory delivers within itself, it may also want a companion folder for supporting material; today only Formal names one. The archive move is already general (Archiving, 2026-10-14), so only the folder's creation would need extending.
+
+## Change Specification
+
+Target: whole-map copy at `010-exploratory-delivery/ndd.map.md`.
