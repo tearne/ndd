@@ -33,7 +33,7 @@ SOURCE = Path(__file__).parent
 # which the client gets its own of. No list to maintain: a new file ships once
 # it is committed, and the install test prints what shipped.
 NOT_SHIPPED = {"CLAUDE.md", "AGENTS.md"}
-RETIRED_FILES = ["BOOTSTRAP.md", "ndd.md", "ndd.prev.md"]  # shipped by earlier versions; removed on upgrade
+RETIRED_FILES = ["BOOTSTRAP.md", "ndd.md", "ndd.prev.md", "standards/VERSIONING.md"]  # shipped by earlier versions; removed on upgrade
 
 CLAUDE_POINTER = "@ndd/AGENT-RULES.md"
 AGENTS_INSTRUCTION = (

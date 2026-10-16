@@ -13,7 +13,7 @@ The short form of Non-Dead Design, rendered from the method map. It carries only
 
 ### 1. Startup Scan
 
-Start every session with the Startup Scan. Read every change and discussion in `changes/open/`, place each in its lifecycle, announce whether you are planning, building or discussing (in any combination), offer a [Backlog Review](ndd.map.md#backlog-review), and propose the next step. If there is no `map.md` and no `changes/` tree the project has not started: offer to bootstrap instead. Nothing else happens first, because the open items are where the state lives. [Startup Scan](ndd.map.md#startup-scan), [Discussion](ndd.map.md#discussion), [Bootstrapping](ndd.map.md#bootstrapping).
+Start every session with the Startup Scan. Read every change and discussion in `changes/open/`, place each in its lifecycle, announce whether you are planning, building or discussing (in any combination), report any dev headings in the changelog as awaiting release, offer a [Backlog Review](ndd.map.md#backlog-review), and propose the next step. If there is no `map.md` and no `changes/` tree the project has not started: offer to bootstrap instead. Nothing else happens first, because the open items are where the state lives. [Startup Scan](ndd.map.md#startup-scan), [Discussion](ndd.map.md#discussion), [Versioning](ndd.map.md#versioning), [Bootstrapping](ndd.map.md#bootstrapping).
 
 ### 2. Lifecycle Flow Reads
 
@@ -107,7 +107,7 @@ Conclude records the delta from the plan — deviations, surprises, documents to
 
 ### 19. Archiving
 
-On an approved Conclude: if the project map defines a CHANGELOG, add an entry and get it approved; then run Tidy, archive, release the lock, and offer one review. Run [Tidy](ndd.map.md#tidy) across the map and report it, move the file to `changes/archive/` renamed with the ISO date in place of its number, delete `active.md`, then offer a [Map Review](ndd.map.md#map-review) as one yes-or-no. If the project map defines release steps, ask whether it is time to run them, and if so offer a full Map Review first. A companion folder moves to `changes/archive/` with the change file, renamed to match, or is removed if nothing is retained; for a Formal change, whole-map copies in it are disposable in full. [Archiving](ndd.map.md#archiving), [Companion Folder](ndd.map.md#companion-folder), [Formal Conclude](ndd.map.md#formal-conclude), [Maintenance](ndd.map.md#maintenance).
+On an approved Conclude: if the project map defines a CHANGELOG, add an entry under the change's final dev version and get it approved; then run Tidy, archive, release the lock, and offer a Map Review. Run [Tidy](ndd.map.md#tidy) across the map and report it, move the file to `changes/archive/` renamed with the ISO date in place of its number, delete `active.md`, then offer the [Map Review](ndd.map.md#map-review) in its light scope as one yes-or-no. If the project map defines release steps, report the dev headings awaiting release, ask whether it is time to run them, and if so offer it in its full scope first. A companion folder moves to `changes/archive/` with the change file, renamed to match, or is removed if nothing is retained; for a Formal change, whole-map copies in it are disposable in full. [Archiving](ndd.map.md#archiving), [Versioning](ndd.map.md#versioning), [Companion Folder](ndd.map.md#companion-folder), [Formal Conclude](ndd.map.md#formal-conclude), [Maintenance](ndd.map.md#maintenance).
 
 ### 20. Keywords
 

@@ -1,39 +1,31 @@
 # Changelog
 
-A changelog records notable changes to the project, newest at the top. It complements git history by surfacing what's worth knowing at a glance.
+A changelog records notable changes to the project, newest at the top. It complements git history by surfacing what's worth knowing at a glance. A project that keeps one is versioned, in [semver](https://semver.org/); if it already has an established changelog layout, keep the layout and use semver headings.
 
-If the project already has an established changelog format, use that. Otherwise, choose one of the formats below.
+## Headings
 
-## Dated format — `## YYYY-MM-DD[.N]`
-
-Fits projects without formal versioned releases: continuous, append-only development where the date is a sufficient identifier.
-
-- Each entry is an `H2` heading with a date: `## YYYY-MM-DD`.
-- A `.N` suffix is added when a date already has an entry: `## 2026-04-24.1`, `.2`, etc.
-- Entries are added to the top of the file.
-
-Example:
-
-```
-## 2026-04-24
-
-- `PROCESS.md`: Feedback and Conclusion become post-approval summaries.
-```
-
-## Semver format — `## X.Y.Z`
-
-Fits projects that cut semantic-versioned releases (see `VERSIONING.md`). Each heading corresponds to a released version.
+Each heading is a released version or a change awaiting release.
 
 - Each entry is an `H2` heading with a version: `## 1.2.0`.
+- A change awaiting release is entered under its final dev version: `## 1.2.1-dev.3`, or `## 1.2.1-dev` where the changelog is the only version record.
+- At release, the dev headings fold into one heading under the latest number without suffix, with the date: `## 1.3.0 — 2026-04-24`.
 - Entries are added to the top of the file.
-- For the major/minor/patch decision, follow `VERSIONING.md`.
+- For the bump kind and dev versions, follow [Versioning](../ndd.map.md#versioning).
 
 Example:
 
 ```
-## 1.2.0
+## 1.3.0-dev.2
 
 - Added `--dry-run` mode to the build script.
+
+## 1.2.1-dev.1
+
+- Fixed the exit code on a missing config file.
+
+## 1.2.0 — 2026-04-10
+
+- Added the `export` subcommand.
 ```
 
 ## Writing an entry

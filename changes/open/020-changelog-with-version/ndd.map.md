@@ -88,6 +88,7 @@ id: ct5
         - [Implementation Plan](#implementation-plan)
         - [Formal Build](#formal-build)
         - [Formal Conclude](#formal-conclude)
+    - [Versioning](#versioning)
     - [Discussion](#discussion)
       - [Discussion Records](#discussion-records)
       - [Discussion Conclude](#discussion-conclude)
@@ -659,6 +660,7 @@ The rule binds the agent, not the user, who edits the map freely and unannounced
 [↑ NDD](#ndd) \
 [Change Lifecycle](#change-lifecycle) \
 [Change Style](#change-style) \
+[Versioning](#versioning) \
 [Discussion](#discussion) \
 [Startup Scan](#startup-scan) \
 [Bootstrapping](#bootstrapping) \
@@ -816,6 +818,8 @@ The list is deleted when its part is settled; its absence is the signal that the
 
 ```yaml
 id: u6k
+approvals:
+  tearne: {at: 2026-10-16, hash: d9fce967}
 ```
 
 When executing the plan against the real project files the agent follows the plan rather than changing the plan mid-flight, marking progress and posting concise updates. It interrupts only when something warrants it — a planned pause, surprise, ambiguity, an error in the plan, or a task that [edits the map](#engagement-rule).
@@ -824,7 +828,7 @@ Only one change builds at a time, held by the [build lock](#build-lock). Through
 
 **Detail**
 
-A versioned project agrees a bump kind on build start, and bumps patch every hand-back for testing.
+A [versioned](#versioning) project agrees a bump kind on build start and sets a dev version at each hand-back for testing.
 
 The change can be returned to planning for rewriting any time the user chooses.
 
@@ -873,12 +877,18 @@ Its mere presence is the marker that the change is finished.
 ```yaml
 id: a9v
 approvals:
-  tearne: {at: 2026-10-15, hash: deb30ef3}
+  tearne: {at: 2026-10-16, hash: d5bd9d94}
 ```
 
-Once the user approves the [Conclude](#conclude) note, the change leaves `changes/open/` for `changes/archive/`, losing any leading number and gaining the ISO date it concluded — `140-config-file-format.md` becomes `2026-05-14-config-file-format.md`. A [companion folder](#companion-folder), if the change has one, moves to the same folder and is renamed to match, or is removed if nothing is retained; a [Formal](#formal) change first runs the retain-or-drop walk in [Formal Conclude](#formal-conclude). The [build lock](#build-lock) is then released.
+Once the [Conclude](#conclude) note is approved, two steps come before the move:
 
-Before the move, a versioned project with substantive change proposes a changelog entry, approved on its own. [Tidy](#tidy) runs before the move; after it the agent offers a [Map Review](#map-review) in its light scope. If the project map defines release steps, the agent asks whether it is time to run them, and if so offers a full Map Review first.
+- A [versioned](#versioning) project with substantive change proposes a changelog entry under the change's final dev version, approved on its own.
+
+- [Tidy](#tidy) runs across the map.
+
+The change then leaves `changes/open/` for `changes/archive/`, losing any leading number and gaining the ISO date it concluded — `140-config-file-format.md` becomes `2026-05-14-config-file-format.md`. Any [companion folder](#companion-folder) moves to the same folder and is renamed to match, or removed if nothing is retained after a retain-or-drop walk.
+
+After the move the [build lock](#build-lock) is released and the agent offers a [Map Review](#map-review) in its light scope. If the project map defines release steps, the agent reports what awaits release and asks whether it is time to run them, and if so offers a full Map Review first.
 
 
 # Companion Folder
@@ -888,10 +898,10 @@ Before the move, a versioned project with substantive change proposes a changelo
 ```yaml
 id: c2f
 approvals:
-  tearne: {at: 2026-10-15, hash: b8acd666}
+  tearne: {at: 2026-10-16, hash: 15f9e887}
 ```
 
-A folder beside a change document in `changes/open/`, named to match it, holding supporting material that would crowd the document, such as evidence, experiments, or the map copy on which a [Formal](#formal) change drafts its specification. A change of any style may have one, created only when warranted. It travels with the change at [Archiving](#archiving), keeping only what is retained.
+A folder beside a change document in `changes/open/`, named to match it, holding supporting material that would crowd the document, such as evidence, experiments, or the map copy on which a [Formal](#formal) change drafts its specification. A change of any style may have one, created only when warranted. It travels with the change at [Archiving](#archiving), where a retain-or-drop walk keeps useful evidence and rationale, dropping disposable experiments.
 
 
 # Discussion
@@ -1125,14 +1135,39 @@ Build lands non-map assets in place; as its closing act, approved nodes on the C
 ```yaml
 id: q4m
 approvals:
-  tearne: {at: 2026-10-14, hash: 4744bcf2}
+  tearne: {at: 2026-10-16, hash: 56ea56b8}
 ```
 
 Layered onto general [Conclude](#conclude) and [Archiving](#archiving); the Formal additions follow.
 
 At Conclude, verification walks the [Change Specification](#change-specification) against the built result; drift on any per-node approved element triggers re-engagement of that node.
 
-At Archiving, useful evidence and rationale are retained; disposable experiments are removed via a curated retain-or-drop asset walk. Whole-map copies are disposable in full — promoted content lives in the live map, and the copy was only a development aid, not a document to maintain.
+At Archiving, the retain-or-drop walk drops whole-map copies in full — promoted content lives in the live map, and the copy was only a development aid, not a document to maintain.
+
+
+# Versioning
+
+[↑ Change-Management](#change-management)
+
+```yaml
+id: vr6
+approvals:
+  tearne: {at: 2026-10-16, hash: b3d64bb6}
+```
+
+Each change in a versioned project carries its own version, and a release gathers several. The number moves at four moments:
+
+- At [Build](#build) start the change claims its version, bumped by the kind agreed then.
+
+- Each hand-back for testing sets the project's version to that plus `-dev.N`, restarting per change, so the tester knows which build they hold.
+
+- At [Archiving](#archiving) the change's changelog entry goes under its final dev version, such as `## 2.3.1-dev.3`; nothing else in the build touches the changelog. [Startup Scan](#startup-scan) reports these headings as awaiting release.
+
+- Release folds them into one dated heading under the latest number, without suffix, since the interim versions were never a releasable state.
+
+**Detail**
+
+A project whose only version record is its changelog skips the counter, writing `-dev` alone.
 
 
 # Startup Scan
@@ -1142,16 +1177,18 @@ At Archiving, useful evidence and rationale are retained; disposable experiments
 ```yaml
 id: x7t
 approvals:
-  tearne: {at: 2026-09-29, hash: a8a5f1ed}
+  tearne: {at: 2026-10-16, hash: 969569f8}
 ```
 
-What the agent does first in every session: orient from `changes/open/`. A project with no `map.md` and no `changes/` tree hasn't started yet — the agent [bootstraps](#bootstrapping) it. Otherwise it reads every change and [discussion](#discussion) and places each — a change by lifecycle position, a discussion by topic and whether nearing-[Conclude](#discussion-conclude).
+What the agent does first in every session: orient from `changes/open/`. A project with no `map.md` and no `changes/` tree hasn't started yet — the agent [bootstraps](#bootstrapping) it. Otherwise it reads every open change and [discussion](#discussion) and places each — a change by lifecycle position, a discussion by topic and whether nearing-[Conclude](#discussion-conclude).
 
 From that the agent announces the session's mode — planning, building, discussing, or a combination — reports what's open, offers a [Backlog Review](#backlog-review), and proposes the next step.
 
 **Detail**
 
-An interrupted build is recognised by `active.md` pointing at a change whose work is unfinished; the agent reads that change's [Log](#build) to recover context rather than restarting. A plan reopened mid-build says so in its [Log](#build) — with no [Conclude](#conclude) note yet, the change is back in planning.
+- In a [versioned](#versioning) project the report includes the dev headings awaiting release.
+
+- An interrupted build is recognised by `active.md` pointing at a change whose work is unfinished; the agent reads that change's [Log](#build) to recover context rather than restarting. A Log recording a return to planning means the change is planning, though it may still hold the lock.
 
 
 # Bootstrapping

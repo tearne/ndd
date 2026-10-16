@@ -2,13 +2,16 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
-## Pending
+## 2.4.0-dev
+
+- *Exploratory* is renamed *Emergent* and delivers within the change; answering a question is one kind of such work, and no separate delivery change is required. *Focus* names the work pursued, with a checkpoint only when one is useful. Open change files reading `**Change Style:** Exploratory` need updating.
+
+## 2.3.1-dev
 
 - A draft is only the text surfaced; an action named alongside it needs its own draft (*Approval*, AGENT-RULES Orientation).
 - A Formal change's companion folder lives in `changes/open/` beside its change file; a whole-map copy used as the target is noted in one line giving its path (*Change Specification*).
 - Any change's companion folder moves to `changes/archive/` with it, renamed to match, or is removed if nothing is retained (*Archiving*, AGENT-RULES Rule 19).
 - *Archiving* now agrees with *Conclude*: the changelog entry is approved on its own, before the move.
-- *Exploratory* is renamed *Emergent* and delivers within the change; answering a question is one kind of such work, and no separate delivery change is required. *Focus* names the work pursued, with a checkpoint only when one is useful. Open change files reading `**Change Style:** Exploratory` need updating.
 
 ## 2.3.0 — 2026-10-07
 

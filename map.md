@@ -63,12 +63,14 @@ A client project then holds two maps: its own in the project root, and NDD's und
 
 ```yaml
 id: l2s
+approvals:
+  tearne: {at: 2026-10-16, hash: adc6d0a5}
 ```
 
 The checklist for a new version of NDD, published by moving `main`. After [archiving](ndd.map.md#archiving) the agent asks whether it is time for one and the user decides. If several changes are obviously shipping together no need to ask. If releasing, a full [Map Review](ndd.map.md#map-review) is offered first, then the agent confirms the user wants each of the following:
 
-1. Bump the version: a new entry at the top of `CHANGELOG.md`.
-2. Run every test under [Testing](testing.map.md#testing) and see it pass, so what ships is what its nodes say.
+1. Run every test under [Testing](testing.map.md#testing) and see it pass.
+2. Fold the dev headings in `CHANGELOG.md` into one dated heading, as [Versioning](ndd.map.md#versioning) describes.
 
 
 # Installer

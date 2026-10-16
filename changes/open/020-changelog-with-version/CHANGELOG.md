@@ -1,0 +1,179 @@
+# Changelog
+
+Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
+
+## 2.4.0-dev
+
+- *Exploratory* is renamed *Emergent* and delivers within the change; answering a question is one kind of such work, and no separate delivery change is required. *Focus* names the work pursued, with a checkpoint only when one is useful. Open change files reading `**Change Style:** Exploratory` need updating.
+
+## 2.3.1-dev
+
+- A draft is only the text surfaced; an action named alongside it needs its own draft (*Approval*, AGENT-RULES Orientation).
+- A Formal change's companion folder lives in `changes/open/` beside its change file; a whole-map copy used as the target is noted in one line giving its path (*Change Specification*).
+- Any change's companion folder moves to `changes/archive/` with it, renamed to match, or is removed if nothing is retained (*Archiving*, AGENT-RULES Rule 19).
+- *Archiving* now agrees with *Conclude*: the changelog entry is approved on its own, before the move.
+
+## 2.3.0 — 2026-10-07
+
+- NDD-level assumption introduced: specifications are expressible as maps. *Change Specification* narrows to map content only; non-map format alternatives dropped.
+- *Formal Build* promotes approved nodes into the live map as its closing act — per-node when the live map has drifted from the baseline, otherwise bulk — so drift surfaces before Conclude.
+- Agent proposes a whole-map copy as the Change Specification target when multiple nodes will be touched, pausing for baseline check-in so edits are visible as editor diffs.
+- Agent reads the governing map node at each lifecycle hinge (*Lifecycle Flow Reads*, AGENT-RULES Rule 2).
+- Agent output names nodes by their heading, not yaml id (*Node Identity*, AGENT-RULES Rule 9).
+- AGENT-RULES is a route into the map rather than a destination; drift noticed outside the current build is corrected on sight (*Agent Rules*, *Rule Form*).
+
+## 2.2.1 — 2026-10-02
+
+- *Discussion Records* makes explicit that Discussion edits are outside the Engagement Rule: they are not drafted-surfaced-settled or counted.
+
+## 2.2.0 — 2026-09-30
+
+- *Discussion* introduced — a durable home for unfinished thinking that precedes an Intent, plus content-routed aside behaviour.
+- Cadences replaced by *Change Style* — Trivial, Vibe, Exploratory, Formal — with per-style preparation sections (Bounds, Focus, Change Specification + optional Implementation Plan). Formal gains a *Formal Build* node covering reconciliation, mid-Build rework, drift check and asset walk.
+- Top-level *Specification* node renamed to *Map*.
+- Interaction discipline for map edits: diff-shaped surfaces, delta-only Conclude, *write* is not approval, node re-reads after user edits, end-of-Build artefacts surface one at a time.
+- *Unresolved* may appear at any plan part; items still in Held at Conclude roll into it.
+
+## 2.1.2 — 2026-09-14
+
+- Correct the project root’s description of the repository and distribution.
+
+## 2.1.1 — 2026-09-13
+
+- Navigation links break one per line when rendered, via a trailing backslash on all but the last.
+
+## 2.1.0 — 2026-09-13
+
+- Approval stamps carry a date, not a timestamp.
+- Oversize nodes stamped by the session's approver are not re-flagged at review.
+- *Approver* node: the handle comes from git; once a map has a stamp, every approved edit stamps.
+- *Intent* is what the change must achieve, "why" goes to Context, and it is trimmed once the Approach is approved.
+
+## 2.0.0 — 2026-09-13
+
+First release of NDD, the successor to COD: the method now lives in the map, ships as a vendored `ndd/` directory via `install.py`, and carries agent rules rendered from the map, stakeholder sign-off, suggested standards and install tests.
+
+## Predecessor: COD
+
+The entries below are the history of COD, Comprehension-Oriented Design, from which NDD grew. Their versions are the dates of the framework snapshots that shipped under `changes/agent/`.
+
+## 2026-06-10
+
+- `opt-in.py`: installs can now target a subdirectory rather than always the git repository root. Run from a subdir, the script reports the repo root and the current directory and asks to confirm a subdir install (default no); declining aborts. The chosen install root gets its own self-contained `changes/` tree, `CLAUDE.md`, and `.gitignore`, so several agents can work independently in separate subdirs of one repo. Running from the repo root is unchanged and unprompted. Script `--version` bumps to 1.3.0.
+
+## 2026-05-09.1
+
+- `PROCESS.md`: versioning is now a Build-mode concern, not a Plan-stage one. On entering Build the agent proposes a bump kind, gets user approval, and writes the version — same flow in any mode (Formal/Explore/Wander). Every subsequent test hand-back bumps patch so the user can tell at a glance whether they are seeing the latest build. Adjacent fix: Entering build's "On Plan approval" trigger generalised to cover Wander (Intent approval).
+
+## 2026-05-09
+
+- `PROCESS.md`: section length triggers consolidated into a single rule and table under Plan mode. Intent and Conclusion gain 500-char triggers; Approach keeps its 1000; Conclusion in Wander gets 1000 (it carries the Approach work retrospectively). Tables and diagrams remain exempt. Same mechanism throughout — over threshold, the agent flags borderline content for the user to adjudicate.
+
+## 2026-05-05
+
+- `PROCESS.md`: self-prune step now applies to the Plan stage as well as the Approach — agent re-reads the Plan and applies the prune rules before surfacing.
+
+## 2026-05-04.1
+
+- `PROCESS.md`: change documents now declare a **Mode** under the title. **Formal** is the existing full sequence. **Explore** swaps the Plan checklist for topics + done-when. **Wander** runs Intent → Build → retrospective Conclusion with no Approach or Plan, gets topic-shift flush prompts, and is deleted (not archived) on discard. Mode is chosen after Intent (default Formal) and can be changed mid-flight by rewriting the document. Adjacent fix: blocker handling keeps `active.md` when code has been changed.
+
+## 2026-05-04
+
+- `PROCESS.md`: Approach gains a mandatory self-prune step before surfacing — every line must carry a decision-and-reason — and a 1000-character condense trigger that asks the user to adjudicate borderline content if exceeded (tables and diagrams exempt). Plan gains a short list of prune rules (one atomic outcome per task, no "why", no obvious sub-steps, no ceremony tasks, no redundant file paths). Several existing paragraphs across Plan mode and Build mode trimmed in the same pass.
+
+## 2026-05-01
+
+- `opt-in.py`: `FRAMEWORK_FILES` now includes `KEYWORDS.md` — `@`-imported by `agent/README.md` but previously not copied to consumer projects, so its `@`-import failed silently. `PRINCIPLES.md` moved out of `agent/` to the project root: it's reference material for evaluators of the framework, not part of the agent context, and doesn't ship to consumers. Top-level `README.md` gains a `Dev repo vs consumer projects` section flagging the layout asymmetry, loaded into agent context via a new `@README.md` line in this repo's `CLAUDE.md`. Existing consumer projects on a recent version need a re-run of `opt-in.py` to pick up the newly-copied `KEYWORDS.md`.
+
+## 2026-04-28.2
+
+- Keywords section moved out of `PROCESS.md` into a new `agent/KEYWORDS.md`. `PROCESS.md` keeps a short pointer under its own `Session keywords` heading; `agent/README.md` adds `@KEYWORDS.md` to the framework `@` pointer list. `PROCESS.md` now focuses purely on the change lifecycle.
+
+## 2026-04-28.1
+
+- `PROCESS.md`: Plan stage now offers two building blocks — Tasks (the existing checklist) and Topics + done-when (for exploration) — that combine as the work demands. Executing rule relaxes to "follow the Plan", ticking where tasks are present and working topics toward the done-when condition. The Plan's shape itself signals the cadence; no separate "kind" label introduced. Also dropped a stale map line that contradicted the per-node-map-edits rule.
+
+## 2026-04-28
+
+- `PROCESS.md`: replaced the "smallest increment" versioning rule. Plan now records the kind of bump (major/minor/patch or date-based equivalent) and Build resolves it against the current latest at start — keeps the bump correct when plans sit idle. Refinements during test bump patch; the final tested version is what ships, in a single changelog entry. Conclusion confirms or revises the bump kind if scope shifted.
+
+## 2026-04-26.2
+
+- `MAP-GUIDANCE.md` and `PROCESS.md`: removed pre-staging of map edits in an Approach. Map-only work happens as plan-mode per-node negotiation, exempt from the change lifecycle. For code changes, Build typically doesn't touch the map; map catch-up follows the build as a per-node negotiation, with rare tightly-bound exceptions still allowed. The Completing section now prompts the planner to flag whether the map needs catching up at hand-back time.
+
+## 2026-04-26.1
+
+- `README.md`: removed the per-startup `changes/agent/` version scan (step 2) — it had no anchor for which version was previously active. Replaced with a new `## On version update` section: when the user reports an update, the agent diffs `CLAUDE.md`'s `@` pointer against git history and reads the new version's `CHANGELOG.md` for migration concerns. Reactive instead of every-session.
+
+## 2026-04-26
+
+- `MAP-GUIDANCE.md`: new `### Root node naming` subsection establishes a convention — default to the project's name, with unambiguity as the governing rule and four resolution styles for name clashes with internal concepts.
+
+## 2026-04-25
+
+- `PROCESS.md` no longer hard-codes `agent/CHANGELOG.md`; refers to "the project's own changelog" and points at new `ADDITIONAL/CHANGELOG.md` (dated-`.N` or semver format options).
+- `opt-in.py`: source CHANGELOG now read from repo root (was `agent/CHANGELOG.md`); install destination moves inside each version dir (`changes/agent/<version>/CHANGELOG.md`); legacy orphan at `changes/agent/CHANGELOG.md` is auto-removed on next install.
+
+## 2026-04-24
+
+- `PROCESS.md`: Feedback and Conclusion become post-approval summaries, drawn from a new build-time **Log** of the unexpected. The Changelog entry step folds into Completing. `README.md` startup states refreshed to match.
+
+## 2026-04-22.5
+
+- `PRINCIPLES.md`: **Joy** principle renamed to **Enjoyment** (Goal #2, principle section header and body, artifact-economy corollary). No change in substance — the rename softens the emotional register for better developer palatability.
+
+## 2026-04-22.4
+
+- `PROCESS.md`: trimmed five pieces of explanatory/disambiguation prose — user-review-rendered-file framing, "a well-constructed plan should not need close watching", the process-keyword-as-raw-material tail, and the two feedback-vs-aside disambiguation paragraphs.
+
+## 2026-04-22.3
+
+- `PROCESS.md`: new Build-mode paragraph requires bumping the smallest version increment whenever a build is handed to the user for review or test, so the user can visually confirm they're on the latest.
+
+## 2026-04-22.2
+
+- `PROCESS.md` **Approach** list gains a bullet: when a decision is fully carried by a proposed map node update, don't restate it in prose.
+
+## 2026-04-22.1
+
+- `MAP-GUIDANCE.md`: the only-child rule relaxed into an "only-child preference". Singleton children can remain as nodes if they represent a distinct concept or their detail would bloat the parent; the "if a sibling were added, would this still be a node?" test helps decide. The "Maintaining the map" signal updated to match.
+
+## 2026-04-22
+
+- `PROCESS.md` **Approach** guidance tightened: Approach is now framed as a list of decisions and their reasons, not a narrative. Added a short "what it is / isn't" list to discourage recap, file-by-file rehearsal, and subsections that don't carry a decision.
+
+## 2026-04-19.1
+
+- `opt-in.py` moved from `agent/opt-in.py` to the repo root. The script's internal `AGENT_DIR` was adjusted so it still finds the framework files under `agent/`. No downstream-visible effect.
+
+## 2026-04-19
+
+- Renamed `changes/process.md` to `changes/process-feedback.md`; file header updated to match.
+- `opt-in.py` now reads the version name from the latest `## YYYY-MM-DD[.N]` heading in `agent/CHANGELOG.md` rather than computing from today's date. Every non-trivial completed change bumps the version by adding a new section at the top.
+- `PROCESS.md` **Completing** section: added a Changelog entry step prompting the user on each change.
+- `opt-in.py` no longer seeds a blank `changes/process-feedback.md` — the agent creates the file on first use of the `process:` keyword.
+
+Downstream migration: after `opt-in.py` runs, any existing `changes/process.md` is left in place. Migrate entries manually with `git mv` to `changes/process-feedback.md` and delete the old file.
+
+## 2026-04-18
+
+Initial versioned release.
+
+The framework introduces directory-based versioning under `changes/agent/<YYYY-MM-DD[.N]>/`. Previously, `opt-in.py` copied framework files to a single un-versioned `agent/` directory at the project root; now each install lands in a dated subdirectory and the project's `CLAUDE.md` is rewritten to point at it. Old versions are left in place so the user and agent retain direct access to prior installed state.
+
+### Framework contents at this version
+
+- **README.md** — startup behaviour, rules, permissions, map reference.
+- **PROCESS.md** — plan/build lifecycle, Intent → Approach → Plan → Build → Archive; `process:` and `aside:` keywords.
+- **STYLE.md** — coding and prose style principles.
+- **MAP-GUIDANCE.md** — tree-of-nodes map format, Sync + Engagement rules, per-node pre-staging of map edits in an Approach.
+- **ADDITIONAL/** — optional guides loaded on reference.
+
+### Manual migration (from the un-versioned `agent/` layout)
+
+After running `opt-in.py`:
+
+- The new framework files are at `changes/agent/<YYYY-MM-DD[.N]>/`.
+- `CLAUDE.md` now points at `@changes/agent/<YYYY-MM-DD[.N]>/README.md`.
+- `.gitignore` has been updated to exclude `CLAUDE.md` and `changes/agent/`.
+- The old `agent/` directory is left in place. Delete it manually (`rm -rf agent`) once you're satisfied the new layout works, and remove any stale `agent/` line from `.gitignore`.
