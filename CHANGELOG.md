@@ -2,6 +2,13 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 2.5.0-dev
+
+- New *Versioning* node: a project with a changelog is versioned, in semver. A change claims its version at build start with a `-dev` suffix, numbered `-dev.N` per hand-back; Archiving enters it under its final dev version, and release folds the dev headings into one dated heading. Startup Scan and Archiving report what awaits release (AGENT-RULES rules 1 and 19).
+- `standards/VERSIONING.md` is retired, its content carried by semver and *Versioning*; `standards/CHANGELOG.md` drops the dated format.
+
+A project keeping a dated changelog switches to semver headings.
+
 ## 2.4.0-dev
 
 - *Exploratory* is renamed *Emergent* and delivers within the change; answering a question is one kind of such work, and no separate delivery change is required. *Focus* names the work pursued, with a checkpoint only when one is useful. Open change files reading `**Change Style:** Exploratory` need updating.
