@@ -1084,16 +1084,14 @@ Formal is the default when the agent is unsure which style fits, and is particul
 ```yaml
 id: s7q
 approvals:
-  tearne: {at: 2026-10-15, hash: af7748b9}
+  tearne: {at: 2026-10-17, hash: 73f49c5e}
 ```
 
-The preparation section for a [Formal](#formal) change: the target — what must hold when the change lands.
+The preparation section for a [Formal](#formal) change: specifying what must hold when the change lands.
 
-The target is expressed as proposed map nodes. When the specification will touch multiple nodes, the agent proposes a sub-map or whole-map file copy, kept in the change's [companion folder](#companion-folder), as the target so edits are visible in editor diffs against a committed baseline, pausing to give opportunity to check in. Whatever the shape, once built the live map must describe the completed result. Development happens in the change file, and a copy used as the target is noted there in one line giving its path.
+The specification consists of map nodes, plus target versions of any agreed non-map assets, inline or in the [companion folder](#companion-folder) with a one-line relative path specified. When the specification will touch multiple nodes, the agent proposes a sub-map or whole-map file copy, kept in the companion folder, pausing to give opportunity to check in so diffs are effective during planning. Once built the live map must describe the completed result.
 
-Nodes are approved per-node under the [Engagement Rule](#engagement-rule), with stamps written on the target that transfer to the live map at Build's closing act.
-
-If the Change Specification stalls, the agent proposes conceptual exploration, a [Vibe](#vibe) spike or a smaller scope.
+Node approval follows the normal [Engagement Rule](#engagement-rule), with approval stamps that transfer to the live map during Build. Each non-map target is surfaced as a diff and approved likewise, and questioned if it takes over the map's job of describing the system.
 
 
 # Implementation Plan
@@ -1118,14 +1116,14 @@ The agent proposes an Implementation Plan when the specification alone does not 
 ```yaml
 id: fb9
 approvals:
-  tearne: {at: 2026-10-07, hash: 8ace547b}
+  tearne: {at: 2026-10-17, hash: 2a078af1}
 ```
 
 Layered onto general [Build](#build); the Formal additions follow.
 
 Before proposing Build, the agent reconciles the [Change Specification](#change-specification) against current reality; revisions required by intervening work return the change to spec development, as do issues uncovered during the build. Build-time re-agreement keeps the [Build Lock](#build-lock), resuming against the revised target when agreed.
 
-Build lands non-map assets in place; as its closing act, approved nodes on the Change Specification target promote into the live map. Where the live map has drifted from the baseline, promotion goes per node so drift surfaces before Conclude.
+Build lands non-map assets in place, matching any approved non-map targets. Last of all, approved nodes on the Change Specification target promote into the live map. Where the live map has drifted from the baseline, promotion goes per node so drift surfaces before Conclude.
 
 
 # Formal Conclude

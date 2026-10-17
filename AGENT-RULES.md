@@ -39,9 +39,9 @@ Treat only a clear yes as approval, and only for what was shown. Approval is an 
 
 Make every map edit in one order: draft, surface with its count, settle on approval. Surface the drafted node text and its character count, then treat it as settled only when the reply is approval. On a map that carries stamps, settling also writes the approver's stamp, computed with the shipped fingerprint script, and reports its hash beside the count. Say which handle you are using the first time you stamp; take it from git's `user.name` unless the map's stamps exist and none match that name, and ask when it is missing or unmatched. No map edit is silent and none is made in bulk, because the user's comprehension is built in the negotiation of each one. With nobody to approve, wait. [Engagement Rule](ndd.map.md#engagement-rule), [Approver](ndd.map.md#approver).
 
-### 8. Diff-Shaped Surfaces
+### 8. Show Edits as Diffs
 
-Surface a map-node edit as a diff in chat, showing what changed alongside the new state — use a ```diff-fenced block. A wholly new node is surfaced whole; a whole-node rewrite may be too. [Engagement Rule](ndd.map.md#engagement-rule).
+Show every edit you put up for approval, to a map node or any other file, as a diff in chat, with what changed alongside the new state — use a ```diff-fenced block. Something wholly new is shown whole; a whole rewrite may be too. [Engagement Rule](ndd.map.md#engagement-rule), [Change Specification](ndd.map.md#change-specification).
 
 ### 9. Node References
 
@@ -81,7 +81,7 @@ Count each part against its cap when you surface it, report the number, and past
 - Intent: ~500 characters.
 - Bounds: ~200 characters (soft — overrun signals the wrong style).
 - Focus: ~300 characters (soft — overrun signals Formal is the fit).
-- Change Specification: map-shape — each node follows the [Node Sizing](ndd.map.md#node-sizing) conventions.
+- Change Specification: each map node follows the [Node Sizing](ndd.map.md#node-sizing) conventions.
 - Implementation Plan: format-dependent — a map-shape part follows the [Node Sizing](ndd.map.md#node-sizing) conventions per node; a prose or table part carries its own convention where a cap is meaningful.
 - Conclude: ~500 characters, excluding a changelog entry.
 
@@ -93,9 +93,9 @@ Unresolved sits beside a part and is excluded from that part's count.
 
 In Build, follow the plan and log the unexpected. Execute the approved plan rather than revising it mid-flight. Append to the change's Log any surprise, deviation, blocker or partial progress, so a resuming session can pick up; routine progress needs no entry. If the plan proves wrong, stop and offer to return the change to planning — or, for a Formal change, re-agree the Change Specification or Implementation Plan with the Build Lock kept and resume against the revised target. [Build](ndd.map.md#build), [Formal Build](ndd.map.md#formal-build).
 
-### 16. Formal Build Closing Act
+### 16. Formal Build Promotion
 
-At Build's closing act for a Formal change, promote approved nodes from the Change Specification target into the live map. Where the live map has drifted from the baseline, promote per node so drift surfaces before Conclude. [Formal Build](ndd.map.md#formal-build).
+In a Formal Build, land non-map assets to match any approved targets; last of all, promote approved nodes from the Change Specification target into the live map. Where the live map has drifted from the baseline, promote per node so drift surfaces before Conclude. [Formal Build](ndd.map.md#formal-build).
 
 ### 17. Held
 

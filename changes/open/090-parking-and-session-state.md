@@ -1,5 +1,7 @@
 # Parking and session state
 
+**Change Style:** Formal
+
 ## Intent
 
 Let work be paused on request, by the `pause:` keyword or in plain words, and resumed without misreading its state. Pausing writes `changes/resume.md` naming what was in progress, where it sits and what is unapproved; the Startup Scan reports it with its date, and the first write after resuming deletes it. Detail stays in the discussion's Resume anchor or the build's Log. A draft written in place sits between `<!-- draft -->` and `<!-- /draft -->` until approved. Build logs each settled plan item.

@@ -2,6 +2,10 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 2.6.0-dev
+
+- A Formal *Change Specification* may hold target versions of non-map assets as well as map nodes; *Formal Build* lands them to match.
+
 ## 2.5.0-dev
 
 - New *Versioning* node: a project with a changelog is versioned, in semver. A change claims its version at build start with a `-dev` suffix, numbered `-dev.N` per hand-back; Archiving enters it under its final dev version, and release folds the dev headings into one dated heading. Startup Scan and Archiving report what awaits release (AGENT-RULES rules 1 and 19).
