@@ -9,3 +9,11 @@ Let work be paused on request, by the `pause:` keyword or in plain words, and re
 ## Context
 
 Promoted from discussion [parking and session loss](../archive/2026-10-17-parking-and-session-loss-discussion.md) (2026-10-17), which records the reasoning and the 020 incident behind it. The Startup Scan is already weighty, so its additions stay minimal. Deletion waits for the first write so that a start-and-quit restart keeps the note.
+
+## Change Specification
+
+Targets: whole-map copy [`090-parking-and-session-state/ndd.map.md`](090-parking-and-session-state/ndd.map.md) and [`090-parking-and-session-state/AGENT-RULES.md`](090-parking-and-session-state/AGENT-RULES.md).
+
+## Held
+
+- `changes/resume.md` is committed, not gitignored (user, 2026-10-17).
