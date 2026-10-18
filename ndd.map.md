@@ -96,9 +96,11 @@ id: ct5
     - [Bootstrapping](#bootstrapping)
     - [Gates and Permissions](#gates-and-permissions)
       - [Approval](#approval)
+        - [Drafts](#drafts)
     - [Keywords](#keywords)
       - [Process Keyword](#process-keyword)
       - [Aside Keyword](#aside-keyword)
+      - [Pause Keyword](#pause-keyword)
     - [Thought Management](#thought-management)
   - [Maintenance](#maintenance)
     - [Map Review](#map-review)
@@ -670,9 +672,11 @@ The rule binds the agent, not the user, who edits the map freely and unannounced
 
 ```yaml
 id: cm4
+approvals:
+  tearne: {at: 2026-10-18, hash: 8af22f17}
 ```
 
-How the spec evolves: a change is a single markdown file, drafted in `changes/open/`, that moves through a lifecycle under user-owned gates — then it's archived to `changes/archive/` under a date prefix. Beside it, `changes/open/active.md` holds the build lock.
+How the spec evolves: a change is a single markdown file, drafted in `changes/open/`, that moves through a lifecycle under user-owned gates — then it's archived to `changes/archive/` under a date prefix. Beside it, `changes/open/active.md` holds the build lock. A [pause](#pause-keyword) leaves its note in `changes/resume.md`.
 
 **Detail**
 
@@ -819,12 +823,12 @@ The list is deleted when its part is settled; its absence is the signal that the
 ```yaml
 id: u6k
 approvals:
-  tearne: {at: 2026-10-16, hash: d9fce967}
+  tearne: {at: 2026-10-18, hash: bcd845d4}
 ```
 
 When executing the plan against the real project files the agent follows the plan rather than changing the plan mid-flight, marking progress and posting concise updates. It interrupts only when something warrants it — a planned pause, surprise, ambiguity, an error in the plan, or a task that [edits the map](#engagement-rule).
 
-Only one change builds at a time, held by the [build lock](#build-lock). Throughout, the agent keeps a running **Log** at the foot of the document — a terse record of the unexpected (surprises, deviations, blockers, partial progress), so a resuming session has the necessary context. Routine execution going to plan needs no entry.
+Only one change builds at a time, held by the [build lock](#build-lock). Throughout, the agent keeps a running **Log** at the foot of the document, so a resuming session can see how far the build got. It writes a terse line for each plan item as it settles, without asking, and records the unexpected: surprises, deviations, blockers, partial progress.
 
 **Detail**
 
@@ -926,12 +930,12 @@ A durable home for unfinished thinking that precedes an [Intent](#intent). A dis
 ```yaml
 id: r7b
 approvals:
-  tearne: {at: 2026-10-02, hash: cfc11369}
+  tearne: {at: 2026-10-18, hash: 65003849}
 ```
 
 The record itself. Kept concise, in whatever prose shape fits the topic — agreements with their essential reasoning, open questions, options and links to related work. The agent prunes and rewrites the record freely to reflect current thinking, outside the [Engagement Rule](#engagement-rule): Discussion edits are not drafted-surfaced-settled or counted. Git history holds the deep archive, and past reasoning is retained only where its loss would risk revisiting a dead-end or where an idea is worth flagging for later resurfacing.
 
-On pause the agent leaves a **Resume** anchor with return points and a pointer to current thinking; the anchor is trimmed on resumption. The agent flags meaningful connections and discusses uncertain or consequential relationships before settling them.
+On a [pause](#pause-keyword) the agent leaves a **Resume** anchor with return points and a pointer to current thinking; the anchor is trimmed on resumption. The agent flags meaningful connections and discusses uncertain or consequential relationships before settling them.
 
 
 # Discussion Conclude
@@ -1171,7 +1175,7 @@ A versioned project keeps a changelog and uses semver. Each change carries its o
 ```yaml
 id: x7t
 approvals:
-  tearne: {at: 2026-10-16, hash: 969569f8}
+  tearne: {at: 2026-10-18, hash: f6f60d19}
 ```
 
 What the agent does first in every session: orient from `changes/open/`. A project with no `map.md` and no `changes/` tree hasn't started yet — the agent [bootstraps](#bootstrapping) it. Otherwise it reads every open change and [discussion](#discussion) and places each — a change by lifecycle position, a discussion by topic and whether nearing-[Conclude](#discussion-conclude).
@@ -1181,6 +1185,8 @@ From that the agent announces the session's mode — planning, building, discuss
 **Detail**
 
 - In a [versioned](#versioning) project the report includes the dev headings awaiting release.
+
+- The report also names any [pause](#pause-keyword) note, with its date, and any [draft markers](#drafts) as unapproved.
 
 - An interrupted build is recognised by `active.md` pointing at a change whose work is unfinished; the agent reads that change's [Log](#build) to recover context rather than restarting. A Log recording a return to planning means the change is planning, though it may still hold the lock.
 
@@ -1224,33 +1230,57 @@ Git write operations — commit, push, branch, reset — always require explicit
 
 # Approval
 
-[↑ Gates and Permissions](#gates-and-permissions)
+[↑ Gates and Permissions](#gates-and-permissions) \
+[Drafts](#drafts)
 
 ```yaml
 id: k4d
 approvals:
-  tearne: {at: 2026-10-08, hash: 98be6d76}
+  tearne: {at: 2026-10-18, hash: d44461c7}
 ```
 
-Approval requires a clear affirmative in response to the agent asking ("yes", "ok", "go ahead"). Silence, a tangent, or a reply that raises new questions is not approval. It only covers what was surfaced and no more: agreeing to draft prose is not approval of the prose.
+Approval requires a clear affirmative in response to the agent asking. Silence, a tangent, or a reply that raises new questions is not approval. It only covers what was surfaced and no more: agreeing to draft prose is not approval of the prose, and what counts as surfaced is set by [Drafts](#drafts).
 
-A draft is strictly the content whose text was surfaced; any action mentioned alongside it, such as writing a log entry or a new file, needs its own draft. Drafts are written to chat by default, or in place if the user says *write*, after which the agent stops until the user hands back, when the agent runs [Tidy](#tidy) over what changed before asking anything. A bare *write* covers one draft; only an instruction that says so, such as "write everything from here", covers the session. *Write* is never approval and never a cue to move on; a draft stands provisional until accepted or amended, and one written in place is reverted if declined.
+
+# Drafts
+
+[↑ Approval](#approval)
+
+```yaml
+id: d4r
+approvals:
+  tearne: {at: 2026-10-18, hash: db6046aa}
+```
+
+A draft is strictly the content whose text was surfaced; any action mentioned alongside it, such as writing a log entry or a new file, needs its own draft. Drafts are written to chat by default, or in place if the user says *write*, after which the agent stops until the user hands back, when the agent runs [Tidy](#tidy) over what changed before asking anything. A bare *write* covers one draft; only an instruction that says so, such as "write everything from here", covers the session. *Write* is never approval and never a cue to move on; a draft stands provisional until accepted or amended.
+
+**Detail**
+
+A draft written in place sits between `<!-- draft -->` and `<!-- /draft -->`, visible in the raw file and hidden when rendered, so a lost session cannot leave it reading as settled. Approval deletes the markers; declining deletes the region.
+
+A marker quoted in code, as here, is a mention, not a marker.
 
 
 # Keywords
 
 [↑ Change-Management](#change-management) \
 [Process Keyword](#process-keyword) \
-[Aside Keyword](#aside-keyword)
+[Aside Keyword](#aside-keyword) \
+[Pause Keyword](#pause-keyword)
 
 ```yaml
 id: k9y
+approvals:
+  tearne: {at: 2026-10-18, hash: feeef867}
 ```
 
-Two message prefixes that let the user trigger a small side-action without derailing the current work. The agent handles the aside, confirms in a line, and returns to what it was doing. There are two:
+Words that let the user trigger a defined action. A keyword is recognised by clear intent, not by position or punctuation:
 
 - [process](#process-keyword) captures an observation about the method itself;
-- [aside](#aside-keyword) parks a **separate** proposal as its own draft change ([Intent](#intent) only).
+- [aside](#aside-keyword) sets a separate thought aside for later, as a parked change or in a [discussion](#discussion);
+- [pause](#pause-keyword) stops the work and leaves a note for resuming.
+
+The first two are side-actions: the agent handles them, confirms in a line, and returns to what it was doing.
 
 
 # Process Keyword
@@ -1259,9 +1289,11 @@ Two message prefixes that let the user trigger a small side-action without derai
 
 ```yaml
 id: r4c
+approvals:
+  tearne: {at: 2026-10-18, hash: c875d9f6}
 ```
 
-A message starting with `process:` records an observation about the method or the agent's conduct — friction, a suggestion, something to revisit — without acting on it. The agent appends it to `changes/process-feedback.md`, confirms in a line, and carries on with whatever was under way.
+A message flagged `process` records an observation about the method or the agent's conduct — friction, a suggestion, something to revisit — without acting on it. The agent appends it to `changes/process-feedback.md`, confirms in a line, and carries on with whatever was under way.
 
 **Detail**
 
@@ -1275,10 +1307,29 @@ The entry is dated and captures the observation plus any surrounding context (ph
 ```yaml
 id: y2f
 approvals:
-  tearne: {at: 2026-09-29, hash: 57352dbc}
+  tearne: {at: 2026-10-18, hash: acc3fb15}
 ```
 
-A message starting with `aside:` parks a topic for later without breaking the current flow. The agent scans open [discussions](#discussion) and changes for overlap and routes by content: appends to an existing discussion when the aside continues that thread; else opens a new parked change with an [Intent](#intent) only if the aside is Intent-shaped; else opens a new [discussion](#discussion) record. Placement is confirmed in one line. Overlap noticed with an existing change is named in the confirmation without attaching, so the change's owner can fold it in on resumption. Material belonging to the *current* change is [Held](#held) instead.
+A message flagged `aside` parks a topic for later without breaking the current flow. The agent scans open [discussions](#discussion) and changes for overlap and routes by content: appends to an existing discussion when the aside continues that thread; else opens a new parked change with an [Intent](#intent) only if the aside is Intent-shaped; else opens a new [discussion](#discussion) record. Placement is confirmed in one line. Overlap noticed with an existing change is named in the confirmation without attaching, so the change's owner can fold it in on resumption. Material belonging to the *current* change is [Held](#held) instead.
+
+
+# Pause Keyword
+
+[↑ Keywords](#keywords)
+
+```yaml
+id: p6r
+approvals:
+  tearne: {at: 2026-10-18, hash: 31fe5594}
+```
+
+When the user asks to `pause` the agent writes `changes/resume.md`, dated, naming what was in progress, where it sits and anything unapproved, then stops. The note is only a pointer. A discussion keeps its detail in its [*Resume* anchor](#discussion-records), and a build in its [Log](#build). A change paused mid-planning has neither, so the note itself names the part being drafted.
+
+The [Startup Scan](#startup-scan) reports the note with its date. Resuming the paused work deletes it. If other work comes first, the agent asks whether to leave the note for later or delete it, offering to move any of it into a change or discussion first. A pause while a note already exists would layer one over another, so the agent says so and asks how to proceed. The note is committed like any file.
+
+**Detail**
+
+*Pause*, not *park*, which names an Intent-only change.
 
 
 # Thought Management
@@ -1359,12 +1410,12 @@ Findings are not stored. A review recomputes from the map, so a deferred finding
 ```yaml
 id: u8k
 approvals:
-  tearne: {at: 2026-09-13, hash: d1cf8a9d}
+  tearne: {at: 2026-10-18, hash: 686fded7}
 ```
 
 Agent-run housekeeping, run on the nodes the user edited when they hand back, and across the whole map before an [archive](#archiving). The agent needs no prompting and reports briefly every fix made and every count it took. It is restricted to [corrections](#engagement-rule), never changes of meaning; anything needing judgement is either left for a subsequent [Map Review](#map-review) or handed back to the user immediately.
 
-It fixes and reports a [tree overview](#map-structure) out of step with the navigation links, a missing scaffolding [id](#node-identity) or [navigation link](#navigation-links), a link left behind by a rename, and an unambiguous grammatical slip. It reports only the count of nodes over the [size bound](#node-sizing), not counting those cleared for the session's [approver](#approver); with no handle to hand it counts them all and says so.
+It fixes and reports a [tree overview](#map-structure) out of step with the navigation links, a missing scaffolding [id](#node-identity) or [navigation link](#navigation-links), a link left behind by a rename, and an unambiguous grammatical slip. It reports only the count of nodes over the [size bound](#node-sizing), not counting those cleared for the session's [approver](#approver); with no handle to hand it counts them all and says so. It reports, without removing, any [draft markers](#drafts) other than those around a draft awaiting the user.
 
 
 # Shape
