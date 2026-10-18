@@ -12,4 +12,4 @@ Startup Scan added during change 090 (2026-10-18).
 
 ## Change Specification
 
-Targets: whole-map copy [`070-map-simplification/ndd.map.md`](070-map-simplification/ndd.map.md) and [`070-map-simplification/AGENT-RULES.md`](070-map-simplification/AGENT-RULES.md).
+Targets: whole-map copy [`070-map-simplification/ndd.map.md`](070-map-simplification/ndd.map.md) and [`070-map-simplification/AGENT-RULES.md`](070-map-simplification/AGENT-RULES.md), and project-map copy [`070-map-simplification/map.md`](070-map-simplification/map.md). Review findings in [`070-map-simplification/findings.md`](070-map-simplification/findings.md).
