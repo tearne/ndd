@@ -3,12 +3,13 @@
 [Contents](#contents) \
 [Distribution](#distribution) \
 [Testing](testing.map.md#testing) \
+[Method Map Form](#method-map-form) \
 [NDD](ndd.map.md#ndd)
 
 ```yaml
 id: p1j
 approvals:
-  tearne: {at: 2026-09-14, hash: 04ca2bc1}
+  tearne: {at: 2026-10-18, hash: f85f06f5}
 ```
 
 The repository that develops and ships Non-Dead Design. The method itself is the [NDD](ndd.map.md#ndd) branch, kept in its own file. This trunk describes how the method is distributed, released and installed. The reasoning behind the method is under [Principles](ndd.map.md#principles).
@@ -16,6 +17,8 @@ The repository that develops and ships Non-Dead Design. The method itself is the
 - **Distribution** — how NDD reaches a client project: the shipped layout, the release checklist, the installer and the agent rules.
 
 - **Testing** — how this repository checks itself: the checks, their runnable forms under `tests/`, shipped so clients have access to tests which matter.
+
+- **Method Map Form** — the convention this project's method map follows.
 
 - **NDD** — the method, in `ndd.map.md`.
 
@@ -36,6 +39,7 @@ id: ct6
       - [Rule Form](#rule-form)
       - [Rule Selection](#rule-selection)
   - [Testing](testing.map.md#testing)
+  - [Method Map Form](#method-map-form)
   - [NDD](ndd.map.md#ndd)
 
 
@@ -161,3 +165,16 @@ Everything else stays in the map. A rule that fails a test should be adapted, cu
 The rendering stays short because adherence degrades with instruction count, and across all rules at once, so each rule kept taxes the rest.
 
 If, at rendering time, the agent reviewing the rules set identifies they are sub-optimal the issues should be traced upstream to this map and discussed.
+
+
+# Method Map Form
+
+[↑ NDD Project](#ndd-project)
+
+```yaml
+id: f3c
+approvals:
+  tearne: {at: 2026-10-18, hash: 755bb053}
+```
+
+NDD's own method map is concept-first: each fact is owned by the concept it concerns, and a node for a moment in the workflow, such as [Archiving](ndd.map.md#archiving) or the [Startup Scan](ndd.map.md#startup-scan), lists its steps as links to their owners. This is the [Economy](ndd.map.md#economy) convention chosen for this project, not one NDD imposes. The [agent rules](#agent-rules) take the other axis, gathering by moment what the map holds by concept, so an agent finds everything for a trigger in one rule.

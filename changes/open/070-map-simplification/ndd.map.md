@@ -581,6 +581,8 @@ Typographic conventions for map prose.
 
 ```yaml
 id: e2c
+approvals:
+  tearne: {at: 2026-10-18, hash: 1108905e}
 ```
 
 A node says each thing once, and nothing the reader already has. The ways it fails, most often:
@@ -594,6 +596,8 @@ A node says each thing once, and nothing the reader already has. The ways it fai
 - An example the linked node already gives.
 
 - Flourish.
+
+Across nodes the same holds: a fact touching several nodes has one owner, and the rest link to it. Which node owns it is the map's own choice; one workable convention is that a concept owns its facts, and a procedure lists its steps as links.
 
 **See also**
 
@@ -881,18 +885,16 @@ Its mere presence is the marker that the change is finished.
 ```yaml
 id: a9v
 approvals:
-  tearne: {at: 2026-10-16, hash: d5bd9d94}
+  tearne: {at: 2026-10-18, hash: 13599289}
 ```
 
-Once the [Conclude](#conclude) note is approved, two steps come before the move:
+Archiving closes a change once its [Conclude](#conclude) note is approved. Its steps, in order:
 
-- A [versioned](#versioning) project with substantive change proposes a changelog entry under the change's final dev version, approved on its own.
-
-- [Tidy](#tidy) runs across the map.
-
-The change then leaves `changes/open/` for `changes/archive/`, losing any leading number and gaining the ISO date it concluded — `140-config-file-format.md` becomes `2026-05-14-config-file-format.md`. Any [companion folder](#companion-folder) moves to the same folder and is renamed to match, or removed if nothing is retained after a retain-or-drop walk.
-
-After the move the [build lock](#build-lock) is released and the agent offers a [Map Review](#map-review) in its light scope. If the project map defines release steps, the agent reports what awaits release and asks whether it is time to run them, and if so offers a full Map Review first.
+1. Add the change's entry to the changelog, if the project is [versioned](#versioning).
+2. Run [Tidy](#tidy) across the map.
+3. Move the change from `changes/open/` to `changes/archive/`, dropping any leading number and adding the ISO date it concluded, so `140-config-file-format.md` becomes `2026-05-14-config-file-format.md`. Its [companion folder](#companion-folder) goes with it.
+4. Release the [build lock](#build-lock).
+5. Ask what next: a [Map Review](#map-review), the project's release steps if its map defines any, or something else.
 
 
 # Companion Folder

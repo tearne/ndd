@@ -2,33 +2,20 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
-## 2.7.0-dev
+## 2.7.0 — 2026-10-19
 
 - New *Pause Keyword*: on request the agent writes `changes/resume.md` naming what was in progress, where it sits and what is unapproved. The Startup Scan reports it, and resuming the paused work deletes it (AGENT-RULES rules 1 and 20).
 - New *Drafts* node, split from *Approval*: a draft written in place sits between `<!-- draft -->` and `<!-- /draft -->` until approved. The Startup Scan and Tidy report stray markers.
 - Build's Log records a line for each settled plan item (AGENT-RULES rule 15).
-
-## 2.6.0-dev
-
 - A Formal *Change Specification* may hold target versions of non-map assets as well as map nodes; *Formal Build* lands them to match.
-
-## 2.5.0-dev
-
 - New *Versioning* node: a project with a changelog is versioned, in semver. A change claims its version at build start with a `-dev` suffix, numbered `-dev.N` per hand-back; Archiving enters it under its final dev version, and release folds the dev headings into one dated heading. Startup Scan and Archiving report what awaits release (AGENT-RULES rules 1 and 19).
 - `standards/VERSIONING.md` is retired, its content carried by semver and *Versioning*; `standards/CHANGELOG.md` drops the dated format.
-
-A project keeping a dated changelog switches to semver headings.
-
-## 2.4.0-dev
-
 - *Exploratory* is renamed *Emergent* and delivers within the change; answering a question is one kind of such work, and no separate delivery change is required. *Focus* names the work pursued, with a checkpoint only when one is useful. Open change files reading `**Change Style:** Exploratory` need updating.
-
-## 2.3.1-dev
-
 - A draft is only the text surfaced; an action named alongside it needs its own draft (*Approval*, AGENT-RULES Orientation).
 - A Formal change's companion folder lives in `changes/open/` beside its change file; a whole-map copy used as the target is noted in one line giving its path (*Change Specification*).
 - Any change's companion folder moves to `changes/archive/` with it, renamed to match, or is removed if nothing is retained (*Archiving*, AGENT-RULES Rule 19).
-- *Archiving* now agrees with *Conclude*: the changelog entry is approved on its own, before the move.
+
+A project keeping a dated changelog switches to semver headings.
 
 ## 2.3.0 — 2026-10-07
 
