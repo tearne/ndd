@@ -720,10 +720,10 @@ The Plan → Build boundary is the load-bearing gate: the change's own work wait
 ```yaml
 id: l9t
 approvals:
-  tearne: {at: 2026-10-07, hash: 30539b07}
+  tearne: {at: 2026-10-22, hash: fe163e61}
 ```
 
-At each lifecycle hinge the agent reads the governing map node before moving: the [Discussion](#discussion) node when a discussion is to become a change, the next plan part's node before drafting it, the [Conclude](#conclude) node when Build hands back, and the [Archiving](#archiving) node when a Conclude is approved. These **flow reads** keep the method's shape live in the agent's attention; they are distinct from the **reasoning reads** done only when a rule's rationale is in doubt.
+At each move between lifecycle stages the agent first reads the governing map node: the [Discussion](#discussion) node when a discussion is to become a change, the next plan part's node before drafting it, the [Conclude](#conclude) node when the user confirms the build is done, and the [Archiving](#archiving) node when a Conclude is approved. These **flow reads** keep the method's shape live in the agent's attention; they are distinct from the **reasoning reads** done only when a rule's rationale is in doubt.
 
 
 # Plan
@@ -737,15 +737,10 @@ At each lifecycle hinge the agent reads the governing map node before moving: th
 ```yaml
 id: v3d
 approvals:
-  tearne: {at: 2026-10-15, hash: 5c521f60}
+  tearne: {at: 2026-10-22, hash: 69bd5195}
 ```
 
-The plan builds up in **parts**, each drafted then surfaced for approval before the next. Every plan starts with the [Intent](#intent); what follows is set by the [Change Style](#change-style):
-
-- **Trivial**: nothing more — Intent is the whole plan.
-- **Vibe**: [Bounds](#bounds).
-- **Emergent**: [Focus](#focus).
-- **Formal**: [Change Specification](#change-specification) and optional [Implementation Plan](#implementation-plan).
+The plan builds up in **parts**, each drafted then surfaced for approval before the next. Every plan starts with the [Intent](#intent); the parts that follow are set by its [Change Style](#change-style).
 
 What may be written meanwhile is set by [Gates and Permissions](#gates-and-permissions). Two further sections sit outside the parts sequence, ungated: [Context](#context), which explains why the change exists, and [Held](#held), which catches material arriving before its part.
 
@@ -847,11 +842,15 @@ The change can be returned to planning for rewriting any time the user chooses.
 
 ```yaml
 id: b7n
+approvals:
+  tearne: {at: 2026-10-22, hash: 1905d41f}
 ```
 
 What keeps one change building at a time. [Build](#build) begins only on the user's approval of the plan; on that approval the agent takes the lock by writing the change file name into `changes/open/active.md`, reporting success — or, if the file already exists, stopping without touching it, since another change is already mid-build.
 
 Releasing the lock deletes the file. A build that changed code keeps the lock even when handed back to planning; only an untouched one may release it, so unfinished work is never silently abandoned.
+
+At the [Startup Scan](#startup-scan), a lock on a change whose work is unfinished marks an interrupted build: the agent reads the change's [Log](#build) to recover context rather than restarting. A Log recording a return to planning means the change is planning, though it still holds the lock.
 
 
 # Conclude
@@ -862,14 +861,14 @@ Releasing the lock deletes the file. A build that changed code keeps the lock ev
 ```yaml
 id: o4j
 approvals:
-  tearne: {at: 2026-09-29, hash: e8ce6710}
+  tearne: {at: 2026-10-20, hash: 077cc348}
 ```
 
 The closing note, written only once the user confirms the build is done. It records the delta from the plan — deviations, surprises, documents touched — not a summary of what the plan already said.
 
 Anything still [Held](#held) is released before Conclude begins — folded into the change, spun off as its own [parked change](#plan), or discarded by the user.
 
-When there's nothing to add, "Completed." is enough. Capped at ~500 characters, counted and reported when surfacing the draft; past the cap the agent asks the user to adjudicate. The note is surfaced on its own; any changelog entry follows separately after approval, then [Archiving](#archiving) proceeds.
+When there's nothing to add, "Completed." is enough. Capped at ~500 characters, counted and reported when surfacing the draft; past the cap the agent asks the user to adjudicate.
 
 Its mere presence is the marker that the change is finished.
 
@@ -885,7 +884,7 @@ Its mere presence is the marker that the change is finished.
 ```yaml
 id: a9v
 approvals:
-  tearne: {at: 2026-10-18, hash: 13599289}
+  tearne: {at: 2026-10-22, hash: 44491f2f}
 ```
 
 Archiving closes a change once its [Conclude](#conclude) note is approved. Its steps, in order:
@@ -894,7 +893,8 @@ Archiving closes a change once its [Conclude](#conclude) note is approved. Its s
 2. Run [Tidy](#tidy) across the map.
 3. Move the change from `changes/open/` to `changes/archive/`, dropping any leading number and adding the ISO date it concluded, so `140-config-file-format.md` becomes `2026-05-14-config-file-format.md`. Its [companion folder](#companion-folder) goes with it.
 4. Release the [build lock](#build-lock).
-5. Ask what next: a [Map Review](#map-review), the project's release steps if its map defines any, or something else.
+5. Review any pause entries in `changes/resume.md`, as [Pause Keyword](#pause-keyword) directs.
+6. Ask what next: a [Map Review](#map-review), the project's release steps if its map defines any, or something else.
 
 
 # Companion Folder
@@ -904,10 +904,10 @@ Archiving closes a change once its [Conclude](#conclude) note is approved. Its s
 ```yaml
 id: c2f
 approvals:
-  tearne: {at: 2026-10-16, hash: 15f9e887}
+  tearne: {at: 2026-10-20, hash: ce7cf3ba}
 ```
 
-A folder beside a change document in `changes/open/`, named to match it, holding supporting material that would crowd the document, such as evidence, experiments, or the map copy on which a [Formal](#formal) change drafts its specification. A change of any style may have one, created only when warranted. It travels with the change at [Archiving](#archiving), where a retain-or-drop walk keeps useful evidence and rationale, dropping disposable experiments.
+A folder beside a change document in `changes/open/`, named to match it, holding supporting material that would crowd the document, such as evidence, experiments, or the map copy on which a [Formal](#formal) change drafts its specification. A change of any style may have one, created only when warranted. At [Archiving](#archiving) a retain-or-drop walk keeps useful evidence and rationale and drops disposable experiments; the folder then moves with the change, renamed to match, or is removed if nothing is retained.
 
 
 # Discussion
@@ -968,10 +968,10 @@ A discussion's filename is a readable slug ending `-discussion.md`; on approval 
 ```yaml
 id: e3n
 approvals:
-  tearne: {at: 2026-10-15, hash: 93436112}
+  tearne: {at: 2026-10-22, hash: 8eb92b8d}
 ```
 
-Each change is worked in one of four styles, each giving the [Plan](#plan) its own shape after [Intent](#intent). [Build](#build) and [Conclude](#conclude) are the same whichever is chosen. The agent proposes a style once Intent is approved — default **Formal** — and the user confirms. The chosen style is recorded as a `**Change Style:** <name>` line beneath the change's title, before the Intent. The four styles are [Trivial](#trivial), [Vibe](#vibe), [Emergent](#emergent) and [Formal](#formal); each names the preparation section it agrees before Build.
+Each change is worked in one of four styles, each giving the [Plan](#plan) its own shape after [Intent](#intent). [Build](#build) and [Conclude](#conclude) are the same whichever is chosen. The agent proposes a style once Intent is approved — default **Formal** — and the user confirms. The chosen style is recorded as a `**Change Style:** <name>` line beneath the change's title, before the Intent.
 
 | Style | Preparation before Build |
 |-------|--------------------------|
@@ -1156,18 +1156,18 @@ At Archiving, the retain-or-drop walk drops whole-map copies in full — promote
 ```yaml
 id: vr6
 approvals:
-  tearne: {at: 2026-10-16, hash: b89f3dcc}
+  tearne: {at: 2026-10-20, hash: e298df05}
 ```
 
 A versioned project keeps a changelog and uses semver. Each change carries its own version, and a release gathers several. The number moves at four moments:
 
-- At [Build](#build) start the change claims its version, bumped by the kind agreed then and suffixed `-dev` until release.
+- At [Build](#build) start the change claims a new version, bumped by the kind agreed then and suffixed `-dev` until release.
 
-- Each hand-back for testing numbers the suffix, `-dev.N`, restarting per change, so the tester knows which build they hold; a project whose only version record is its changelog writes `-dev` alone.
+- Each hand-back for testing numbers the suffix, `-dev.N`, restarting per change, so the tester knows which build they are looking at.
 
-- At [Archiving](#archiving) the change's changelog entry goes under its final dev version, such as `## 2.3.1-dev.3`; nothing else in the build touches the changelog. [Startup Scan](#startup-scan) reports these headings as awaiting release.
+- At [Archiving](#archiving) the changelog entry uses the final dev version, such as `## 2.3.1-dev.3`, surfaced and approved on its own; nothing earlier in the build touches the changelog.
 
-- Release folds them into one dated heading under the latest number, without suffix, since the interim versions were never a releasable state.
+- Release folds the dev headings into one dated heading under the latest number, without suffix, since the interim versions were never a releasable state.
 
 
 # Startup Scan
@@ -1177,20 +1177,26 @@ A versioned project keeps a changelog and uses semver. Each change carries its o
 ```yaml
 id: x7t
 approvals:
-  tearne: {at: 2026-10-18, hash: f6f60d19}
+  tearne: {at: 2026-10-22, hash: f34db38b}
 ```
 
-What the agent does first in every session: orient from `changes/open/`. A project with no `map.md` and no `changes/` tree hasn't started yet — the agent [bootstraps](#bootstrapping) it. Otherwise it reads every open change and [discussion](#discussion) and places each — a change by lifecycle position, a discussion by topic and whether nearing-[Conclude](#discussion-conclude).
-
-From that the agent announces the session's mode — planning, building, discussing, or a combination — reports what's open, offers a [Backlog Review](#backlog-review), and proposes the next step.
+First in every session, the agent reads the project's change status. It then announces the session's mode — planning, building, discussing, or a combination — reports what it found, and proposes the next step.
 
 **Detail**
 
-- In a [versioned](#versioning) project the report includes the dev headings awaiting release.
+The report covers:
 
-- The report also names any [pause](#pause-keyword) note, with its date, and any [draft markers](#drafts) as unapproved.
+- Each open change, placed by lifecycle position, and each [discussion](#discussion), by topic and whether it is nearing [Conclude](#discussion-conclude). A change named in `active.md` is placed as [Build Lock](#build-lock) directs.
 
-- An interrupted build is recognised by `active.md` pointing at a change whose work is unfinished; the agent reads that change's [Log](#build) to recover context rather than restarting. A Log recording a return to planning means the change is planning, though it may still hold the lock.
+- In a [versioned](#versioning) project, the dev headings awaiting release.
+
+- Each [pause](#pause-keyword) entry, with its date.
+
+- Any [draft markers](#drafts), as unapproved.
+
+- If no work is already in progress, an offer of a [Backlog Review](#backlog-review).
+
+A project with no `map.md` and no `changes/` tree hasn't started; the agent [bootstraps](#bootstrapping) it instead.
 
 
 # Bootstrapping
@@ -1322,12 +1328,12 @@ A message flagged `aside` parks a topic for later without breaking the current f
 ```yaml
 id: p6r
 approvals:
-  tearne: {at: 2026-10-18, hash: 31fe5594}
+  tearne: {at: 2026-10-22, hash: 53e12ec8}
 ```
 
-When the user asks to `pause` the agent writes `changes/resume.md`, dated, naming what was in progress, where it sits and anything unapproved, then stops. The note is only a pointer. A discussion keeps its detail in its [*Resume* anchor](#discussion-records), and a build in its [Log](#build). A change paused mid-planning has neither, so the note itself names the part being drafted.
+When the user asks to `pause` the agent adds a dated entry to `changes/resume.md`, naming what was in progress, where it sits and anything unapproved, then stops. An entry is only a pointer. A discussion keeps its detail in its [*Resume* anchor](#discussion-records), and a build in its [Log](#build). A change paused mid-planning has neither, so the entry itself names the part being drafted.
 
-The [Startup Scan](#startup-scan) reports the note with its date. Resuming the paused work deletes it. If other work comes first, the agent asks whether to leave the note for later or delete it, offering to move any of it into a change or discussion first. A pause while a note already exists would layer one over another, so the agent says so and asks how to proceed. The note is committed like any file.
+Resuming an entry's work, by whatever route, deletes the entry, and the file goes if empty. Otherwise an entry stays until the user asks for its deletion, never inside a yes to something else. At [Archiving](#archiving) the agent walks the entries one at a time, offering to delete one that names the archived change, and to keep, delete or move into a change or discussion any other. The file is committed like any file.
 
 **Detail**
 
@@ -1500,10 +1506,10 @@ It is the single-agent form of [Cross-Agent Falsifiability](#cross-agent-falsifi
 ```yaml
 id: b7k
 approvals:
-  tearne: {at: 2026-09-29, hash: c21465c5}
+  tearne: {at: 2026-10-22, hash: c20b8ddc}
 ```
 
-Backlog Review is offered by the agent as a yes-or-no at the [Startup Scan](#startup-scan), once the open items have been reported. It covers parked changes and [discussions](#discussion) in `changes/open/`, walked one at a time. A parked change is settled — kept, updated, renumbered, merged, or discarded. A discussion has its agreements, open questions, and anything that could become a change surfaced; the user chooses what to take forward.
+Backlog Review is offered by the agent as a yes-or-no at the [Startup Scan](#startup-scan). It covers parked changes and [discussions](#discussion) in `changes/open/`, walked one at a time. A parked change is settled — kept, updated, renumbered, merged, or discarded. A discussion has its agreements, open questions, and anything that could become a change surfaced; the user chooses what to take forward.
 
 It looks for:
 
