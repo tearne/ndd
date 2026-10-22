@@ -21,8 +21,8 @@ The Change Specification is drafted finding by finding from the full Map Review 
 1. Archiving cluster: one owner per step, Archiving a list of links. *Done 2026-10-20.*
 2. Startup Scan report items: one owner per item. *Done 2026-10-22.* Along the way, pause notes became dated entries reviewed at Archiving; Startup Scan was split into picture and *Detail*, its interrupted-build text moving to Build Lock; Rule Form split into Rule Layout and Rule Phrasing; rule headings name their source node, unnumbered; rules with an occasional trigger point to their node (nine converted), the rest stay inline.
 3. Preparation by style: style nodes and the Change Style table own it. *Done 2026-10-22.*
-4. Wrong style returns to planning. *In progress.*
-5. Stamped nodes exempt from size flags.
+4. Wrong style returns to planning: Change Style owns it. *Done 2026-10-22.*
+5. Stamped nodes exempt from size flags. *In progress.*
 6. Tidy after a hand-back.
 7. Approval writes a stamp.
 8. Cap counting and adjudication.

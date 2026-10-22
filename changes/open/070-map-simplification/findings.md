@@ -7,7 +7,7 @@ Full-scope Map Review run on the 070 target copy, 2026-10-18. Working list for t
 1. Archiving cluster: the Map Review offer (Archiving, Maintenance, Map Review twice, Release Steps), the release prompt (Archiving, Release Steps), the changelog entry (Conclude, Archiving, Versioning) and the companion-folder move (Archiving, Companion Folder, Formal Conclude) are each stated in several nodes. Overlaps 100. Direction agreed to try: Archiving becomes a short ordered list linking each step to its one owner. *(done 2026-10-20: Archiving, Conclude, Versioning, Companion Folder, Release Steps; Map Review offer remainder moved to 11; rule 19 re-rendered after the map edits)*
 2. Startup Scan: each feature that adds a report item also says so in its own node (Versioning, Pause Keyword, Drafts, Backlog Review, Build Lock). *(done 2026-10-22: Pause Keyword, Backlog Review, Archiving, Startup Scan, Build Lock)*
 3. Preparation by style: Plan, Change Style (prose and table), and the style nodes. *(done 2026-10-22: Plan, Change Style; style nodes and table kept as owners)*
-4. Wrong style returns to planning: Change Style, Trivial, Vibe, Emergent.
+4. Wrong style returns to planning: Change Style, Trivial, Vibe, Emergent. *(done 2026-10-22: cut from Trivial and Vibe; Change Style owns it; Emergent never said it)*
 5. Stamped nodes exempt from size flags: Node Sizing, Tidy, Shape.
 6. Tidy after a hand-back: Engagement Rule, Drafts, Tidy.
 7. Approval writes a stamp: Engagement Rule and Sign-off; Engagement Rule's step 3 repeats Drafts.

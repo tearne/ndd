@@ -990,12 +990,10 @@ The four are not a ladder: the agent proposes the style whose shape fits, not th
 ```yaml
 id: t0v
 approvals:
-  tearne: {at: 2026-09-30, hash: 4aebc61c}
+  tearne: {at: 2026-10-22, hash: d1e60a67}
 ```
 
 Uses [Intent](#intent) only — the whole plan. The lightest of the four styles. Chosen when a change has virtually no substantive ambiguity — the domain outcome is clear, and the agent finds no decision along the way that would reasonably need surfacing for approval. During [Build](#build) the agent verifies proportionately to what is being changed and reports results; anything consequential that emerges is surfaced rather than absorbed silently.
-
-Trivial is not a shortcut around thinking — a change that starts here and turns out to hide substantive ambiguity returns to planning under a different style.
 
 
 # Vibe
@@ -1006,12 +1004,12 @@ Trivial is not a shortcut around thinking — a change that starts here and turn
 ```yaml
 id: v2m
 approvals:
-  tearne: {at: 2026-10-15, hash: 7b4e5ac2}
+  tearne: {at: 2026-10-22, hash: 4d35bbc8}
 ```
 
 Uses [Intent](#intent) and a light [Bounds](#bounds) section. Chosen when the user opts to let the agent decide the shape of the work as it goes; the safeguard is the agent's judgement about when to escalate, not an upfront specification. For example, stakes may be low enough that tighter specification isn't worth the effort. Bounds is kept brief on purpose — a short shared understanding of anything context-specific worth naming, and nothing more. Wordy Bounds would drain the very attention Vibe was chosen to save.
 
-During [Build](#build) the agent works within the agreed envelope and escalates on its own judgement when something turns up that Bounds could not have anticipated. If the work turns out to need the user's steering or an agreed target, the change returns to planning under Emergent or Formal.
+During [Build](#build) the agent works within the agreed envelope and escalates on its own judgement when something turns up that Bounds could not have anticipated.
 
 
 # Bounds
