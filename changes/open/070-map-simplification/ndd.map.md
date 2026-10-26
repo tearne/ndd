@@ -70,10 +70,10 @@ id: ct5
       - [Plan](#plan)
         - [Intent](#intent)
         - [Context](#context)
-        - [Held](#held)
         - [Unresolved](#unresolved)
       - [Build](#build)
         - [Build Lock](#build-lock)
+        - [Log](#log)
       - [Conclude](#conclude)
         - [Archiving](#archiving)
       - [Companion Folder](#companion-folder)
@@ -585,7 +585,7 @@ Typographic conventions for map prose.
 ```yaml
 id: e2c
 approvals:
-  tearne: {at: 2026-10-18, hash: 1108905e}
+  tearne: {at: 2026-10-26, hash: 98082826}
 ```
 
 A node says each thing once, and nothing the reader already has. The ways it fails, most often:
@@ -600,7 +600,7 @@ A node says each thing once, and nothing the reader already has. The ways it fai
 
 - Flourish.
 
-Across nodes the same holds: a fact touching several nodes has one owner, and the rest link to it. Which node owns it is the map's own choice; one workable convention is that a concept owns its facts, and a procedure lists its steps as links.
+Across nodes the same holds: a fact touching several nodes has one owner, and the rest link to it. Which node owns it is the map's own choice; one workable convention is that a concept owns its facts, and a procedure lists its steps as links. Where a link holds a step's detail, the wording says so, as in "as [Pause Keyword](#pause-keyword) directs", so the reader knows to follow it.
 
 **See also**
 
@@ -737,18 +737,17 @@ At each move between lifecycle stages the agent first reads the governing map no
 [↑ Change Lifecycle](#change-lifecycle) \
 [Intent](#intent) \
 [Context](#context) \
-[Held](#held) \
 [Unresolved](#unresolved)
 
 ```yaml
 id: v3d
 approvals:
-  tearne: {at: 2026-10-22, hash: 69bd5195}
+  tearne: {at: 2026-10-26, hash: 15d534c5}
 ```
 
 The plan builds up in **parts**, each drafted then surfaced for approval before the next. Every plan starts with the [Intent](#intent); the parts that follow are set by its [Change Style](#change-style).
 
-What may be written meanwhile is set by [Gates and Permissions](#gates-and-permissions). Two further sections sit outside the parts sequence, ungated: [Context](#context), which explains why the change exists, and [Held](#held), which catches material arriving before its part.
+What may be written meanwhile is set by [Gates and Permissions](#gates-and-permissions). Two further sections sit outside the parts sequence, ungated: [Context](#context), which explains why the change exists, and [Unresolved](#unresolved), which holds what the plan has yet to settle.
 
 A Plan need not be fully formed to exist. A change may sit at any degree of formation — from an [Intent](#intent)-only draft just parked via [aside](#aside-keyword), up to a completed preparation section awaiting approval.
 
@@ -775,34 +774,14 @@ Its prose has a [cap](#caps), so the opening scans in seconds. Once the change's
 ```yaml
 id: c7d
 approvals:
-  tearne: {at: 2026-10-22, hash: e4909c30}
+  tearne: {at: 2026-10-26, hash: 7c90e111}
 ```
 
 An optional section of the change document, sitting under the [Intent](#intent): the history, provenance and prior attempts a reader needs to make sense of why the change exists. Keeping it here is what lets the Intent stay one quick paragraph.
 
-Context is written to last and travels to the archive with the change, unlike [Held](#held), which holds material waiting to be placed.
+Context is written to last and travels to the archive with the change, unlike [Unresolved](#unresolved), which is emptied before Build.
 
 Keep it to the least that lets a later reader rediscover the full detail for themselves: enough flavour and pointers to pick the trail back up, never a retelling.
-
-
-# Held
-
-[↑ Plan](#plan)
-
-```yaml
-id: h5d
-approvals:
-  tearne: {at: 2026-10-26, hash: 025928ad}
-```
-
-A section at the foot of the change document holding on-topic material that arrived before its part — a scope note during the [Intent](#intent), a task while a preparation section is still settling. Writing it down when it arrives costs nothing and survives a lost session.
-
-Opening each new part, the agent moves into it whatever now belongs, and Held is empty before the plan goes up for approval: each item folded into a part, parked as its own change, or discarded if the user chooses, so uncertainty shapes the change rather than waiting beside it. Anything held during [Build](#build) becomes an item in [Unresolved](#unresolved) at [Conclude](#conclude), resolved the same way.
-
-**See also**
-
-- [Aside Keyword](#aside-keyword) — the other half of the split: a *separate* proposal is parked, not held.
-- [Context](#context) — the durable counterpart: material that explains the change rather than waiting to be placed.
 
 
 # Unresolved
@@ -812,30 +791,33 @@ Opening each new part, the agent moves into it whatever now belongs, and Held is
 ```yaml
 id: n8u
 approvals:
-  tearne: {at: 2026-09-29, hash: 51f94c56}
+  tearne: {at: 2026-10-26, hash: d6de2a7c}
 ```
 
-The open items in a plan part that the agent cannot settle alone. The agent surfaces the full list in chat so the user sees everything outstanding, then walks through them [one at a time](#orient-then-focus). Each answer folds back into the part's prose and the list shrinks; the part is ready for approval only once the list is empty. It may appear wherever a part is being settled, and items may be cross-cutting: resolving one can send the plan back to an earlier part.
+A section at the foot of the change document listing what the plan has yet to settle: open items the agent cannot settle alone, and on-topic material that arrived before its part, such as a scope note during the [Intent](#intent). Writing an item down on arrival costs nothing and survives a lost session.
+
+Opening each part, the agent moves into it whatever now belongs; the part is ready for approval only once none of its items remain. Items are settled [one at a time](#orient-then-focus): folded into a part, parked as a change of their own, or discarded if the user chooses. Resolving one can send the plan back to an earlier part. The section is empty before the plan goes up for approval, so uncertainty shapes the change rather than waiting beside it.
 
 **Detail**
 
-The list is deleted when its part is settled; its absence is the signal that the part is ready.
+An empty section is deleted; its absence is the signal that the plan is ready.
 
 
 # Build
 
 [↑ Change Lifecycle](#change-lifecycle) \
-[Build Lock](#build-lock)
+[Build Lock](#build-lock) \
+[Log](#log)
 
 ```yaml
 id: u6k
 approvals:
-  tearne: {at: 2026-10-18, hash: bcd845d4}
+  tearne: {at: 2026-10-26, hash: ee9b3f1a}
 ```
 
-When executing the plan against the real project files the agent follows the plan rather than changing the plan mid-flight, marking progress and posting concise updates. It interrupts only when something warrants it — a planned pause, surprise, ambiguity, an error in the plan, or a task that [edits the map](#engagement-rule).
+The agent executes the plan against the real project files rather than changing it mid-flight, posting concise updates. It interrupts only when something warrants it — a planned pause, surprise, ambiguity, an error in the plan, or a task that [edits the map](#engagement-rule).
 
-Only one change builds at a time, held by the [build lock](#build-lock). Throughout, the agent keeps a running **Log** at the foot of the document, so a resuming session can see how far the build got. It writes a terse line for each plan item as it settles, without asking, and records the unexpected: surprises, deviations, blockers, partial progress.
+Only one change builds at a time, held by the [build lock](#build-lock), and its progress is kept in the [Log](#log).
 
 **Detail**
 
@@ -851,14 +833,29 @@ The change can be returned to planning for rewriting any time the user chooses.
 ```yaml
 id: b7n
 approvals:
-  tearne: {at: 2026-10-22, hash: 1905d41f}
+  tearne: {at: 2026-10-26, hash: 804ffd4f}
 ```
 
 What keeps one change building at a time. [Build](#build) begins only on the user's approval of the plan; on that approval the agent takes the lock by writing the change file name into `changes/open/active.md`, reporting success — or, if the file already exists, stopping without touching it, since another change is already mid-build.
 
 Releasing the lock deletes the file. A build that changed code keeps the lock even when handed back to planning; only an untouched one may release it, so unfinished work is never silently abandoned.
 
-At the [Startup Scan](#startup-scan), a lock on a change whose work is unfinished marks an interrupted build: the agent reads the change's [Log](#build) to recover context rather than restarting. A Log recording a return to planning means the change is planning, though it still holds the lock.
+At the [Startup Scan](#startup-scan), a lock on a change whose work is unfinished marks an interrupted build: the agent reads the change's [Log](#log) to recover context rather than restarting. A Log recording a return to planning means the change is planning, though it still holds the lock.
+
+
+# Log
+
+[↑ Build](#build)
+
+```yaml
+id: g2l
+approvals:
+  tearne: {at: 2026-10-26, hash: 63a3f7e4}
+```
+
+A running record at the foot of the change document, kept during [Build](#build) so a resuming session can see how far the build got. The agent writes a terse line for each plan item as it settles, without asking, and records the unexpected: surprises, deviations, blockers, partial progress.
+
+Any items put to one side during Build are logged as open and must be resolved before [Concluding](#conclude): each folded into the build, parked as a change of its own, or discarded if the user chooses. Nothing open is carried past Build.
 
 
 # Conclude
@@ -869,12 +866,12 @@ At the [Startup Scan](#startup-scan), a lock on a change whose work is unfinishe
 ```yaml
 id: o4j
 approvals:
-  tearne: {at: 2026-10-22, hash: 9401129c}
+  tearne: {at: 2026-10-26, hash: 6419b68c}
 ```
 
 The closing note, written only once the user confirms the build is done. It records the delta from the plan — deviations, surprises, documents touched — not a summary of what the plan already said.
 
-[Held](#held) is emptied before Conclude begins, as it directs.
+Open items in the [Log](#log) are resolved before Conclude begins, as it directs.
 
 When there's nothing to add, "Completed." is enough. Conclude has a [cap](#caps).
 
@@ -912,10 +909,10 @@ Archiving closes a change once its [Conclude](#conclude) note is approved. Its s
 ```yaml
 id: c2f
 approvals:
-  tearne: {at: 2026-10-20, hash: ce7cf3ba}
+  tearne: {at: 2026-10-26, hash: c2a58f17}
 ```
 
-A folder beside a change document in `changes/open/`, named to match it, holding supporting material that would crowd the document, such as evidence, experiments, or the map copy on which a [Formal](#formal) change drafts its specification. A change of any style may have one, created only when warranted. At [Archiving](#archiving) a retain-or-drop walk keeps useful evidence and rationale and drops disposable experiments; the folder then moves with the change, renamed to match, or is removed if nothing is retained.
+A folder beside a change document in `changes/open/`, named to match it, holding supporting material that would crowd the document, such as evidence, experiments, or the map copy on which a [Formal](#formal) change drafts its specification. A change of any style may have one, created only when warranted. At [Archiving](#archiving) a retain-or-drop review keeps useful evidence and rationale and drops disposable experiments; the folder then moves with the change, renamed to match, or is removed if nothing is retained.
 
 
 # Caps
@@ -925,10 +922,10 @@ A folder beside a change document in `changes/open/`, named to match it, holding
 ```yaml
 id: c5p
 approvals:
-  tearne: {at: 2026-10-22, hash: f9080e84}
+  tearne: {at: 2026-10-26, hash: 1d26b720}
 ```
 
-Some parts of a change or discussion carry a cap, listed below, to keep them quick to read. Every cap is soft. The agent counts a capped text as [Node Sizing](#node-sizing) does, each time it surfaces it, and reports the number; past the cap it asks the user to adjudicate rather than trimming silently or presenting the text as final. For [Bounds](#bounds) or [Focus](#focus), an overrun also suggests another [Change Style](#change-style) fits better. [Unresolved](#unresolved) sits beside a part, outside its count.
+Some parts of a change or discussion carry a cap, listed below, to keep them quick to read. Every cap is soft. The agent counts a capped text as [Node Sizing](#node-sizing) does, each time it surfaces it, and reports the number; past the cap it asks the user to adjudicate rather than trimming silently or presenting the text as final. For [Bounds](#bounds) or [Focus](#focus), an overrun also suggests another [Change Style](#change-style) fits better.
 
 | Text | Cap |
 |------|-----|
@@ -978,14 +975,14 @@ On a [pause](#pause-keyword) the agent leaves a **Resume** anchor with return po
 ```yaml
 id: d9k
 approvals:
-  tearne: {at: 2026-10-22, hash: 516361b7}
+  tearne: {at: 2026-10-26, hash: 127cbc1d}
 ```
 
-The closing note for a discussion. Either party may propose it — the agent when nearing-conclusion looks reached, the user when they say so. The agent drafts a short prose, within its [cap](#caps), stating what the discussion produced (understanding, decisions, promoted candidates with links to their new [parked changes](#plan)), what was dropped, and any ideas worth flagging for later resurfacing. The user approves before archiving.
+The closing note for a discussion, proposed by either party: the agent when the discussion looks near its end, the user when they say so. Within its [cap](#caps), it states what the discussion produced — understanding, decisions, promoted candidates linked to their new [parked changes](#plan) — what was dropped, and any ideas worth resurfacing later. The user approves before archiving.
 
-At this moment the agent walks anything in the record that could become its own change; the user promotes each to a parked change (Intent only) or drops it. A discussion is not concluded with any left hanging.
+First the agent reviews anything in the record that could become its own change; the user promotes each to a parked change (Intent only) or drops it, and none is left hanging.
 
-A discussion's filename is a readable slug ending `-discussion.md`; on approval it is prefixed with the ISO date and moved to `changes/archive/` (`<slug>-discussion.md` → `YYYY-MM-DD-<slug>-discussion.md`). Links are updated on rename.
+On approval the file, a readable slug ending `-discussion.md`, is prefixed with the ISO date and moved to `changes/archive/`, its links updated.
 
 
 # Change Style
@@ -1136,12 +1133,12 @@ Node approval follows the normal [Engagement Rule](#engagement-rule), with appro
 ```yaml
 id: ip5
 approvals:
-  tearne: {at: 2026-10-07, hash: 46e61232}
+  tearne: {at: 2026-10-26, hash: 8d4aea6a}
 ```
 
 An optional preparation section for a [Formal](#formal) change, added when consequential delivery choices remain after the [Change Specification](#change-specification) is agreed. Captures decisions about how to deliver — sequencing, staging, dependencies, rollback — rather than a step-by-step checklist. Omitted when the delivery path is obvious.
 
-The agent proposes an Implementation Plan when the specification alone does not settle delivery. If added, Build follows it; deviations go to the [Log](#build), and material rework re-agrees the plan with the [Build Lock](#build-lock) kept, resuming against the revised plan — a full return to planning is reserved for abandoning Formal.
+The agent proposes an Implementation Plan when the specification alone does not settle delivery. If added, Build follows it; deviations go to the [Log](#log), and material rework re-agrees the plan with the [Build Lock](#build-lock) kept, resuming against the revised plan — a full return to planning is reserved for abandoning Formal.
 
 
 # Formal Build
@@ -1168,14 +1165,14 @@ Build lands non-map assets in place, matching any approved non-map targets. Last
 ```yaml
 id: q4m
 approvals:
-  tearne: {at: 2026-10-16, hash: 56ea56b8}
+  tearne: {at: 2026-10-26, hash: a87154e6}
 ```
 
 Layered onto general [Conclude](#conclude) and [Archiving](#archiving); the Formal additions follow.
 
-At Conclude, verification walks the [Change Specification](#change-specification) against the built result; drift on any per-node approved element triggers re-engagement of that node.
+At Conclude, verification checks the [Change Specification](#change-specification) against the built result; drift on any per-node approved element triggers re-engagement of that node.
 
-At Archiving, the retain-or-drop walk drops whole-map copies in full — promoted content lives in the live map, and the copy was only a development aid, not a document to maintain.
+At Archiving, the retain-or-drop review drops whole-map copies in full — promoted content lives in the live map, and the copy was only a development aid, not a document to maintain.
 
 
 # Versioning
@@ -1346,10 +1343,10 @@ The entry is dated and captures the observation plus any surrounding context (ph
 ```yaml
 id: y2f
 approvals:
-  tearne: {at: 2026-10-18, hash: acc3fb15}
+  tearne: {at: 2026-10-26, hash: 9b127ccb}
 ```
 
-A message flagged `aside` parks a topic for later without breaking the current flow. The agent scans open [discussions](#discussion) and changes for overlap and routes by content: appends to an existing discussion when the aside continues that thread; else opens a new parked change with an [Intent](#intent) only if the aside is Intent-shaped; else opens a new [discussion](#discussion) record. Placement is confirmed in one line. Overlap noticed with an existing change is named in the confirmation without attaching, so the change's owner can fold it in on resumption. Material belonging to the *current* change is [Held](#held) instead.
+A message flagged `aside` parks a topic for later without breaking the current flow. The agent scans open [discussions](#discussion) and changes for overlap and routes by content: appends to an existing discussion when the aside continues that thread; else opens a new parked change with an [Intent](#intent) only if the aside is Intent-shaped; else opens a new [discussion](#discussion) record. Placement is confirmed in one line. Overlap noticed with an existing change is named in the confirmation without attaching, so the change's owner can fold it in on resumption. Material belonging to the *current* change goes to its [Unresolved](#unresolved) instead, or to its [Log](#log) during Build.
 
 
 # Pause Keyword
@@ -1359,12 +1356,12 @@ A message flagged `aside` parks a topic for later without breaking the current f
 ```yaml
 id: p6r
 approvals:
-  tearne: {at: 2026-10-22, hash: 53e12ec8}
+  tearne: {at: 2026-10-26, hash: 1ecbac2d}
 ```
 
-When the user asks to `pause` the agent adds a dated entry to `changes/resume.md`, naming what was in progress, where it sits and anything unapproved, then stops. An entry is only a pointer. A discussion keeps its detail in its [*Resume* anchor](#discussion-records), and a build in its [Log](#build). A change paused mid-planning has neither, so the entry itself names the part being drafted.
+When the user says `pause`, the agent adds a dated entry to `changes/resume.md` naming what was in progress, where it sits and anything unapproved, then stops. An entry is only a pointer: a discussion keeps its detail in its [*Resume* anchor](#discussion-records) and a build in its [Log](#log), while a change paused mid-planning has neither, so the entry names the part being drafted.
 
-Resuming an entry's work, by whatever route, deletes the entry, and the file goes if empty. Otherwise an entry stays until the user asks for its deletion, never inside a yes to something else. At [Archiving](#archiving) the agent walks the entries one at a time, offering to delete one that names the archived change, and to keep, delete or move into a change or discussion any other. The file is committed like any file.
+Resuming an entry's work by any route deletes it, and an empty file with it. Otherwise an entry stays until the user asks for its deletion, never inside a yes to something else. At [Archiving](#archiving) the agent reviews the entries one at a time, offering to delete one naming the archived change and to keep, delete or move into a change or discussion any other. The file is committed like any file.
 
 **Detail**
 
@@ -1378,20 +1375,20 @@ Resuming an entry's work, by whatever route, deletes the entry, and the file goe
 ```yaml
 id: t4m
 approvals:
-  tearne: {at: 2026-10-26, hash: 9475655c}
+  tearne: {at: 2026-10-26, hash: 30205476}
 ```
 
 The user may throw out a thought at any time, and the agent keeps the breadcrumb trail. Each thought goes to one of four places, and the agent says in a line which, asking only when unclear:
 - answered now, when a line will do;
 - a digression, for as long as it earns, ending by naming the item returned to;
-- [held](#held), when it belongs to the current change; or
+- noted in the current change's [Unresolved](#unresolved), or its [Log](#log) during Build; or
 - parked as a change or discussion of its own, as the [aside keyword](#aside-keyword) does.
 
-While a set is in progress, every message ends with a **status line** showing the stack: the set and item, each level stepped off it, and the count in Held when there is one. With nothing in progress there is no line.
+While a set is in progress, every message ends with a **status line** showing the stack: the set and item, each level stepped off it, and the count of open items, if any. With nothing in progress there is no line.
 
 **Detail**
 
-`map edits 3 of 7` on the item; `map edits 3 of 7 > aside` while placing a stray thought; `map edits 3 of 7 · held 2` with two items in Held.
+`map edits 3 of 7` on the item; `map edits 3 of 7 > aside` while placing a stray thought; `map edits 3 of 7 · open 2` with two open items.
 
 
 # Maintenance
@@ -1403,9 +1400,11 @@ While a set is in progress, every message ends with a **status line** showing th
 
 ```yaml
 id: t7v
+approvals:
+  tearne: {at: 2026-10-26, hash: e6e91eef}
 ```
 
-The upkeep of the map and the backlog, put to the user as three reviews. Each is one yes-or-no at its moment, and each opens a list of findings walked one item at a time.
+The upkeep of the map and the backlog, put to the user as three reviews. Each is one yes-or-no at its moment, and each opens a list of findings taken one item at a time.
 
 | Review | Reads | Moment |
 |--------|-------|--------|
@@ -1537,10 +1536,10 @@ It is the single-agent form of [Cross-Agent Falsifiability](#cross-agent-falsifi
 ```yaml
 id: b7k
 approvals:
-  tearne: {at: 2026-10-22, hash: c20b8ddc}
+  tearne: {at: 2026-10-26, hash: 2e262881}
 ```
 
-Backlog Review is offered by the agent as a yes-or-no at the [Startup Scan](#startup-scan). It covers parked changes and [discussions](#discussion) in `changes/open/`, walked one at a time. A parked change is settled — kept, updated, renumbered, merged, or discarded. A discussion has its agreements, open questions, and anything that could become a change surfaced; the user chooses what to take forward.
+Backlog Review is offered by the agent as a yes-or-no at the [Startup Scan](#startup-scan). It covers parked changes and [discussions](#discussion) in `changes/open/`, taken one at a time. A parked change is settled — kept, updated, renumbered, merged, or discarded. A discussion has its agreements, open questions, and anything that could become a change surfaced; the user chooses what to take forward.
 
 It looks for:
 
@@ -1558,7 +1557,7 @@ It looks for:
 ```yaml
 id: f2s
 approvals:
-  tearne: {at: 2026-09-13, hash: 407154f5}
+  tearne: {at: 2026-10-26, hash: 4ecad464}
 ```
 
 A stakeholder approves the map a few nodes at a time. Each node can carry an [approval stamp](#approval-stamp) per person, recording when they approved it and a [fingerprint](#fingerprint) of the text they saw. A stamp is scaffolding, written and reported rather than negotiated.
@@ -1567,7 +1566,7 @@ Nothing is marked when a node changes. Drift is found by comparing: a node is *d
 
 **See also**
 
-- [Orient Then Focus](#orient-then-focus) — due nodes are summarised, then walked one at a time.
+- [Orient Then Focus](#orient-then-focus) — due nodes are summarised, then taken one at a time.
 - [Node Sizing](#node-sizing) — re-approval is a re-read of one short node, which is what keeps it humane.
 
 

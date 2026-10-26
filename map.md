@@ -3,12 +3,13 @@
 [Contents](#contents) \
 [Distribution](#distribution) \
 [Testing](testing.map.md#testing) \
+[Method Map Form](#method-map-form) \
 [NDD](ndd.map.md#ndd)
 
 ```yaml
 id: p1j
 approvals:
-  tearne: {at: 2026-09-14, hash: 04ca2bc1}
+  tearne: {at: 2026-10-18, hash: f85f06f5}
 ```
 
 The repository that develops and ships Non-Dead Design. The method itself is the [NDD](ndd.map.md#ndd) branch, kept in its own file. This trunk describes how the method is distributed, released and installed. The reasoning behind the method is under [Principles](ndd.map.md#principles).
@@ -16,6 +17,8 @@ The repository that develops and ships Non-Dead Design. The method itself is the
 - **Distribution** — how NDD reaches a client project: the shipped layout, the release checklist, the installer and the agent rules.
 
 - **Testing** — how this repository checks itself: the checks, their runnable forms under `tests/`, shipped so clients have access to tests which matter.
+
+- **Method Map Form** — the convention this project's method map follows.
 
 - **NDD** — the method, in `ndd.map.md`.
 
@@ -33,9 +36,11 @@ id: ct6
     - [Release Steps](#release-steps)
     - [Installer](#installer)
     - [Agent Rules](#agent-rules)
-      - [Rule Form](#rule-form)
+      - [Rule Layout](#rule-layout)
+      - [Rule Phrasing](#rule-phrasing)
       - [Rule Selection](#rule-selection)
   - [Testing](testing.map.md#testing)
+  - [Method Map Form](#method-map-form)
   - [NDD](ndd.map.md#ndd)
 
 
@@ -64,10 +69,10 @@ A client project then holds two maps: its own in the project root, and NDD's und
 ```yaml
 id: l2s
 approvals:
-  tearne: {at: 2026-10-16, hash: adc6d0a5}
+  tearne: {at: 2026-10-20, hash: 6db4f3e3}
 ```
 
-The checklist for a new version of NDD, published by moving `main`. After [archiving](ndd.map.md#archiving) the agent asks whether it is time for one and the user decides. If several changes are obviously shipping together no need to ask. If releasing, a full [Map Review](ndd.map.md#map-review) is offered first, then the agent confirms the user wants each of the following:
+The checklist for a new version of NDD, published by moving `main`, and one of the next steps offered at [Archiving](ndd.map.md#archiving). If releasing, the agent confirms the user wants each of the following:
 
 1. Run every test under [Testing](testing.map.md#testing) and see it pass.
 2. Fold the dev headings in `CHANGELOG.md` into one dated heading, as [Versioning](ndd.map.md#versioning) describes.
@@ -99,7 +104,8 @@ It refuses to run from its own checkout directory; this repository reads its sou
 # Agent Rules
 
 [↑ Distribution](#distribution) \
-[Rule Form](#rule-form) \
+[Rule Layout](#rule-layout) \
+[Rule Phrasing](#rule-phrasing) \
 [Rule Selection](#rule-selection)
 
 ```yaml
@@ -117,27 +123,42 @@ It is hand-maintained at the checkout root, where its links to `ndd.map.md` reso
 The agent re-reads the file at the start of every [Build](ndd.map.md#build) and after any context compaction. Which rules it carries is settled by [Rule Selection](#rule-selection). Its orientation paragraph has [Distribution](#distribution) as its source.
 
 
-# Rule Form
+# Rule Layout
+
+[↑ Agent Rules](#agent-rules)
+
+```yaml
+id: r4l
+approvals:
+  tearne: {at: 2026-10-22, hash: 4f74ac69}
+```
+
+The rendering gathers by trigger what the map holds by concept, so an agent finds everything for one trigger in one rule. The trigger is named in each rule's first sentence, as [Rule Phrasing](#rule-phrasing) sets out; the concept is named in its heading.
+
+- Each rule sits under a short level-3 heading naming its source node. Where several rules come from one node, each heading adds what that rule covers, as in *Engagement Rule: Diffs*. Agents cite rules by heading, and a node name takes the reader straight to the map, where a number leaves them to look it up.
+
+- Each rule closes with a link to its source node.
+
+- A rule with an occasional trigger, such as a session's start or a move between lifecycle stages, points to its node to be read and keeps only what shows it was followed. A rule that holds on every turn or fires often carries its substance in full, as a read each time would be skipped.
+
+
+# Rule Phrasing
 
 [↑ Agent Rules](#agent-rules)
 
 ```yaml
 id: f7m
 approvals:
-  tearne: {at: 2026-10-07, hash: e4b32c06}
+  tearne: {at: 2026-10-22, hash: 340edf62}
 ```
 
-Each rule in the rendering is phrased to maximise compliance.
-
-- Each rule sits under a short, numbered level-3 heading, so markdown tooling can navigate and rules can be named.
+Phrasing is intended to maximise compliance.
 
 - Each rule is trigger-centred: its first sentence states the act as a trigger the agent can recognise, or says that it applies to everything the agent writes. The rest gives the reason — agents generalise from explanation rather than bare instruction.
 
 - A rule that forbids something names the required alternative instead — "leave git writes to the user", not "never commit" — because a bare prohibition raises the salience of the thing it forbids.
 
 - A rule with no exception ends by saying what to do when it cannot be followed, usually to stop and ask; an unconditional "always" invites the agent to fabricate compliance.
-
-- The rule closes with a link to its source node.
 
 
 # Rule Selection
@@ -161,3 +182,16 @@ Everything else stays in the map. A rule that fails a test should be adapted, cu
 The rendering stays short because adherence degrades with instruction count, and across all rules at once, so each rule kept taxes the rest.
 
 If, at rendering time, the agent reviewing the rules set identifies they are sub-optimal the issues should be traced upstream to this map and discussed.
+
+
+# Method Map Form
+
+[↑ NDD Project](#ndd-project)
+
+```yaml
+id: f3c
+approvals:
+  tearne: {at: 2026-10-22, hash: 0dbdf9b9}
+```
+
+NDD's own method map is concept-first: each fact is owned by the concept it concerns, and a node for a moment in the workflow, such as [Archiving](ndd.map.md#archiving) or the [Startup Scan](ndd.map.md#startup-scan), lists its steps as links to their owners. This is the [Economy](ndd.map.md#economy) convention chosen for this project, not one NDD imposes. The [agent rules](#agent-rules) take the other axis, gathering by trigger, as [Rule Layout](#rule-layout) sets out.

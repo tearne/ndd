@@ -32,11 +32,12 @@ The Change Specification is drafted finding by finding from the full Map Review 
 14. Unstamped nodes over the size bound. *Done 2026-10-26.* Bootstrapping, Map Structure, Orient Then Focus and Change Lifecycle were tightened under the bound and stamped; Thought Management was done in 13.
 15. Rendering check. *Done 2026-10-26.* No new disagreements; 080 stays parked.
 16. Re-check the inline agent rules against their nodes. *Done 2026-10-26.* Seven rules re-rendered; the diff-fence detail left to 040. Along the way the Engagement Rule now expects the agent to review and comment on user edits in one pass, and Drafts hands off to it.
-17. Held folds into Unresolved, which is empty before Build; the Log carries Build's open items, resolved before Conclude. *In progress.* Raised by the user (2026-10-26): agents had been carrying Held into Build because its only deadline was Conclude.
+17. Held folds into Unresolved, which is empty before Build; the Log carries Build's open items, resolved before Conclude. *Done 2026-10-26.* Log split out of Build as its own node; Held deleted, its id retired. Raised by the user (2026-10-26): agents had been carrying Held into Build because its only deadline was Conclude.
+18. *Unresolved* cleared before plan approval. *Done 2026-10-26.* "Walk" reworded in seven nodes; link-held detail folded into Economy; the picture-and-Detail check parked as 085; "hand back" discarded, each remaining use naming its sense.
 
-## Held
+## Log
 
-- Reword "walk" across the map (about 10 places) in favour of plainer verbs such as "review".
-- *Formatting*: when a link holds a step's detail, the wording says so, as in "as Pause Keyword directs".
-- Map Review or Tidy: check each node keeps the picture in its body and implementation precision in *Detail*.
-- "Hand back" carries three senses (build for testing, build to planning, user after editing a draft); settle or replace them.
+- 2026-10-26: Build started; lock taken. Version claimed: 2.8.0-dev (minor). No drift in the live files since the spec baseline, so promotion is bulk.
+- Landed `AGENT-RULES.md` and `map.md` from their target copies.
+- Promoted the target map into `ndd.map.md` in bulk. Tests pass; every link resolves; no node became due for tearne (22 due, all pre-existing; 10 cleared).
+- Surprise: the *Sync Rule* rule still says "offer to hold the text in the change", plain English that now echoes the retired Held. Left as is; raise at Conclude.

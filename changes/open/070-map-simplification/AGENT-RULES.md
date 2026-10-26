@@ -75,21 +75,19 @@ Count each capped part against its cap when you surface it, report the number, a
 - Conclude: ~500 characters, excluding a changelog entry.
 - Discussion Conclude: ~500 characters.
 
-Unresolved sits beside a part and is excluded from that part's count.
-
 [Caps](ndd.map.md#caps).
 
 ### Build
 
-In Build, follow the plan and keep the Log. Execute the approved plan rather than revising it mid-flight. Append to the change's Log a terse line for each plan item as it settles, without asking, and any surprise, deviation, blocker or partial progress, so a resuming session can see how far the build got. If the plan proves wrong, stop and offer to return the change to planning — or, for a Formal change, re-agree the Change Specification or Implementation Plan with the Build Lock kept and resume against the revised target. [Build](ndd.map.md#build), [Formal Build](ndd.map.md#formal-build).
+In Build, follow the plan and keep the Log. Execute the approved plan rather than revising it mid-flight. Append to the change's Log a terse line for each plan item as it settles, without asking, and any surprise, deviation, blocker or partial progress, so a resuming session can see how far the build got. Log anything put to one side as open, and resolve it before Conclude as [Log](ndd.map.md#log) directs. If the plan proves wrong, stop and offer to return the change to planning — or, for a Formal change, re-agree the Change Specification or Implementation Plan with the Build Lock kept and resume against the revised target. [Build](ndd.map.md#build), [Log](ndd.map.md#log), [Formal Build](ndd.map.md#formal-build).
 
 ### Formal Build
 
 When a Formal change enters Build, read [Formal Build](ndd.map.md#formal-build) and land its targets in the order it sets, reporting each promotion into the live map. Promoting last keeps the live map describing only what is built.
 
-### Held
+### Unresolved
 
-Before drafting a Conclude, read [Held](ndd.map.md#held) and resolve each held item as it directs, naming each item and its outcome. Nothing is concluded with material outstanding, because Held is where things are lost.
+Before putting a plan up for approval, read [Unresolved](ndd.map.md#unresolved) and resolve each item as it directs, naming each item and its outcome. No plan is approved with material outstanding, because that is where things are lost.
 
 ### Conclude
 
@@ -105,7 +103,7 @@ When the user says `process`, `aside` or `pause` with clear intent, wherever it 
 
 ### Orient Then Focus
 
-Orient, then focus. With any set to present — unresolved items, a worklist, the open changes, several nodes to edit — show the whole set in summary first, then work through it one item at a time while holding the rest. Introduce each item by name and its place in the set, such as *3 of 7*. A message asks at most one question and ends where it asks it. Attention dies under overwhelm, and item-by-item alone loses the user's place. While a set is in progress, end every message with a status line showing the stack, such as *map edits 3 of 7 > aside*, with *· held 2* when Held is not empty. [Orient Then Focus](ndd.map.md#orient-then-focus), [Thought Management](ndd.map.md#thought-management).
+Orient, then focus. With any set to present — unresolved items, a worklist, the open changes, several nodes to edit — show the whole set in summary first, then work through it one item at a time while holding the rest. Introduce each item by name and its place in the set, such as *3 of 7*. A message asks at most one question and ends where it asks it. Attention dies under overwhelm, and item-by-item alone loses the user's place. While a set is in progress, end every message with a status line showing the stack, such as *map edits 3 of 7 > aside*, with *· open 2* when items are open. [Orient Then Focus](ndd.map.md#orient-then-focus), [Thought Management](ndd.map.md#thought-management).
 
 ### Formatting
 
