@@ -15,6 +15,6 @@ Developing the map naturally leaves duplicated text across nodes: each addition 
 
 ## Related
 
-- [070 Map simplification](070-map-simplification.md): the sweep in progress.
+- [070 Map simplification](../archive/2026-10-26-map-simplification.md): the sweep, concluded 2026-10-26.
 </content>
 </invoke>

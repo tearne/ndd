@@ -2,6 +2,11 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 2.8.0-dev
+
+- The method map is simplified: each fact has one owning node that others link to, and nodes over the ~800 bound are tightened.
+- *Held* is folded into *Unresolved*, which is emptied before Build. An open change file with a `## Held` section renames it and clears it before Build.
+
 ## 2.7.0 — 2026-10-19
 
 - New *Pause Keyword*: on request the agent writes `changes/resume.md` naming what was in progress, where it sits and what is unapproved. The Startup Scan reports it, and resuming the paused work deletes it (AGENT-RULES rules 1 and 20).

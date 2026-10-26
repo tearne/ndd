@@ -8,13 +8,13 @@ Simplify and harmonise the method map so each node carries less, says it once an
 
 ## Change Specification
 
-Targets: whole-map copy [`070-map-simplification/ndd.map.md`](070-map-simplification/ndd.map.md) and [`070-map-simplification/AGENT-RULES.md`](070-map-simplification/AGENT-RULES.md), and project-map copy [`070-map-simplification/map.md`](070-map-simplification/map.md). Review findings in [`070-map-simplification/findings.md`](070-map-simplification/findings.md).
+Targets: whole-map copy `070-map-simplification/ndd.map.md` and `070-map-simplification/AGENT-RULES.md`, and project-map copy `070-map-simplification/map.md`. Review findings in `070-map-simplification/findings.md`. The companion folder was dropped at Archiving; its files are in git history.
 
 ## Context
 
 Additive changes had left nodes over their size bound, prose overlapping, and rules rendering everything their nodes ask for at once; Archiving and the Startup Scan were the known hotspots. Raised during change 020 (2026-10-16); Startup Scan added during change 090 (2026-10-18).
 
-The Change Specification is drafted finding by finding from the full Map Review in [`findings.md`](070-map-simplification/findings.md), each edit settled and stamped in the target copies. Steps:
+The Change Specification is drafted finding by finding from the full Map Review in `findings.md`, each edit settled and stamped in the target copies. Steps:
 
 1. Archiving cluster: one owner per step, Archiving a list of links. *Done 2026-10-20.*
 2. Startup Scan report items: one owner per item. *Done 2026-10-22.* Along the way, pause notes became dated entries reviewed at Archiving; Startup Scan was split into picture and *Detail*, its interrupted-build text moving to Build Lock; Rule Form split into Rule Layout and Rule Phrasing; rule headings name their source node, unnumbered; rules with an occasional trigger point to their node (nine converted), the rest stay inline.
@@ -40,4 +40,8 @@ The Change Specification is drafted finding by finding from the full Map Review 
 - 2026-10-26: Build started; lock taken. Version claimed: 2.8.0-dev (minor). No drift in the live files since the spec baseline, so promotion is bulk.
 - Landed `AGENT-RULES.md` and `map.md` from their target copies.
 - Promoted the target map into `ndd.map.md` in bulk. Tests pass; every link resolves; no node became due for tearne (22 due, all pre-existing; 10 cleared).
-- Surprise: the *Sync Rule* rule still says "offer to hold the text in the change", plain English that now echoes the retired Held. Left as is; raise at Conclude.
+- Surprise: the *Sync Rule* rule still says "offer to hold the text in the change", plain English that now echoes the retired Held. Resolved: the sentence, unsourced in the node, was cut from the rule.
+
+## Conclude
+
+Built as specified, with one deviation: the closing sentence of the *Sync Rule* rule, offering to hold forward-looking map text in the change, was cut before Conclude, since its node does not carry it and it echoed the retired Held. Documents touched: `ndd.map.md`, `map.md`, `AGENT-RULES.md`. Along the way 100 and 050 were closed, 085 (Picture and Detail check) was parked, and 040 gained a note on diffs whose long lines change only a little.

@@ -57,7 +57,7 @@ Count and report characters on every node you edit. Count the body plus *Detail*
 
 ### Sync Rule
 
-Write the map as what exists, never what is planned. An edit describing unbuilt work waits until the work is built. If the user asks for a forward-looking map edit, say why it waits and offer to hold the text in the change instead. [Sync Rule](ndd.map.md#sync-rule).
+Write the map as what exists, never what is planned. An edit describing unbuilt work waits until the work is built. [Sync Rule](ndd.map.md#sync-rule).
 
 ### Plan
 
