@@ -498,12 +498,14 @@ A file's *Contents* lists the nodes in that file; a branch that continues in ano
 ```yaml
 id: z9p
 approvals:
-  tearne: {at: 2026-10-22, hash: bb4e18ca}
+  tearne: {at: 2026-10-26, hash: b2d72af5}
 ```
 
-Keep nodes small and focussed on one concept. The rough upper bound for size is around 800 characters, but the real test is felt during review.
+A node's rough upper bound is around 800 characters, but the real test is felt during review.
 
-Each time the agent edits a node it counts and reports the characters, including the *Detail* section and taking an inline link as the length of its visible text. The [navigation links](#navigation-links), *See also*, tables and diagrams are excluded. If over the bound the agent flags the node, stamped or not, since an edit reopens its length, rather than silently trimming pre-existing text. On a map that carries stamps, a review, as distinct from an edit, does not flag a node that is not [due](#sign-off) for the session's [approver](#approver): the call was previously made and signed off. When the approver is not known, every node over the bound is flagged, and the agent says so.
+Each time the agent edits a node it counts and reports its characters, *Detail* included and an inline link taken as its visible text; [navigation links](#navigation-links), *See also*, tables and diagrams are excluded. Over the bound, the agent flags the node, stamped or not, since an edit reopens its length. Rather than trimming silently, it proposes the best fit: tightening the prose, cutting what another node already owns, or splitting a node that carries two concepts.
+
+On a map that carries stamps, a review, unlike an edit, does not flag a node that is not [due](#sign-off) for the session's [approver](#approver): the call was made and signed off. When the approver is not known, every node over the bound is flagged, and the agent says so.
 
 **See also**
 

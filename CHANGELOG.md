@@ -2,6 +2,10 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 2.8.1-dev
+
+- Over its size bound, a node gets the agent's best-fit proposal: tighten the prose, cut what another node already owns, or split it if it carries two concepts. Splitting is no longer the default (*Node Sizing*).
+
 ## 2.8.0-dev
 
 - The method map is simplified: each fact has one owning node that others link to, and nodes over the ~800 bound are tightened.

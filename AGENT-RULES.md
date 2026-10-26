@@ -53,7 +53,7 @@ Apply a correction that changes no meaning — a typo, spacing, a stale link —
 
 ### Node Sizing
 
-Count and report characters on every node you edit. Count the body plus *Detail*, inline links as their visible text, excluding navigation links, *See also*, tables and diagrams. Report the number in your message. Over about 800, flag it, stamped or not, rather than trimming silently. The reported number is how the user sees the rule was followed. [Node Sizing](ndd.map.md#node-sizing).
+Count and report characters on every node you edit. Count the body plus *Detail*, inline links as their visible text, excluding navigation links, *See also*, tables and diagrams. Report the number in your message. Over about 800, flag it, stamped or not, and rather than trimming silently propose the best fit: tighten the prose, cut what another node already owns, or split a node that carries two concepts. The reported number is how the user sees the rule was followed. [Node Sizing](ndd.map.md#node-sizing).
 
 ### Sync Rule
 
