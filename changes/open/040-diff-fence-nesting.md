@@ -9,3 +9,5 @@ Raised as an aside (2026-10-16).
 ## Context
 
 Rule 8's "```diff-fenced block" has no source in the map: the Engagement Rule says only "plus a diff for an edit". Noticed during change 091 (2026-10-17); the user expects it to fit in the Engagement Rule's *Detail*.
+
+During change 070 (2026-10-26), a diff whose long line changed by a word or two hid the change, and the user read it as unchanged. Listing the changed words beneath the diff fixed it; the Engagement Rule's *Detail* could say so alongside the fence-nesting rule.

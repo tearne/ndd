@@ -8,17 +8,17 @@ Full-scope Map Review run on the 070 target copy, 2026-10-18. Working list for t
 2. Startup Scan: each feature that adds a report item also says so in its own node (Versioning, Pause Keyword, Drafts, Backlog Review, Build Lock). *(done 2026-10-22: Pause Keyword, Backlog Review, Archiving, Startup Scan, Build Lock)*
 3. Preparation by style: Plan, Change Style (prose and table), and the style nodes. *(done 2026-10-22: Plan, Change Style; style nodes and table kept as owners)*
 4. Wrong style returns to planning: Change Style, Trivial, Vibe, Emergent. *(done 2026-10-22: cut from Trivial and Vibe; Change Style owns it; Emergent never said it)*
-5. Stamped nodes exempt from size flags: Node Sizing, Tidy, Shape.
-6. Tidy after a hand-back: Engagement Rule, Drafts, Tidy.
-7. Approval writes a stamp: Engagement Rule and Sign-off; Engagement Rule's step 3 repeats Drafts.
-8. Cap counting and adjudication: Intent, Conclude, Discussion Conclude, Node Sizing.
-9. Held and Context each describe the other.
-10. A change is defined in both Change-Management and Change Lifecycle.
-11. Review moments: Maintenance's table and Map Review's table. Overlaps 050. Also from 1: Map Review states its offer twice (moments list and table), and Maintenance a third time.
+5. Stamped nodes exempt from size flags: Node Sizing, Tidy, Shape. *(done 2026-10-22: Node Sizing owns it, Tidy links; Shape kept as its own check)*
+6. Tidy after a hand-back: Engagement Rule, Drafts, Tidy. *(done 2026-10-22: Tidy owns its trigger; Drafts and Engagement Rule link)*
+7. Approval writes a stamp: Engagement Rule and Sign-off; Engagement Rule's step 3 repeats Drafts. *(done 2026-10-22: Engagement Rule links Drafts and Sign-off; its approval-link correction from 13 folded in)*
+8. Cap counting and adjudication: Intent, Conclude, Discussion Conclude, Node Sizing. *(done 2026-10-22: new Caps node owns it; capped nodes link; rule renamed Caps)*
+9. Held and Context each describe the other. *(done 2026-10-22: Context and Conclude link to Held; Held owns outcomes; 100 folded in)*
+10. A change is defined in both Change-Management and Change Lifecycle. *(done 2026-10-22: Change Lifecycle owns the definition; Change-Management gives the changes/ picture)*
+11. Review moments: Maintenance's table and Map Review's table. Overlaps 050. Also from 1: Map Review states its offer twice (moments list and table), and Maintenance a third time. *(done 2026-10-22: Map Review list cut, tables kept; 050 closed, Rendering already reads the code)*
 
 ## Clarity
 
-12. Approver announces the handle twice, and is ambiguous: "the first time" against "before stamping".
+12. Approver announces the handle twice, and is ambiguous: "the first time" against "before stamping". *(done 2026-10-22: announce at first stamp and on any change)*
 
 ## Corrections, batched for the end
 

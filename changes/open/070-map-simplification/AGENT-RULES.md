@@ -7,7 +7,7 @@ The short form of Non-Dead Design, rendered from the method map. It carries only
 - In a client project two maps are in play: the project's own, entered at `map.md` in the project root and built with the user; and NDD's, vendored under `ndd/`, whose method branch `ndd.map.md` sits beside this file and is what every rule below links to, read-only. Follow a link when you need the reasoning behind a rule, not before. A map is a tree of nodes; start at the root, the one with no `↑` link, and follow child links, into other `*.map.md` files where a branch continues. [Distribution](map.md#distribution).
 - `ndd/` is a vendored snapshot that `install.py` regenerates: change the method at its source and re-run the installer, since hand edits there vanish. In the NDD repository itself the two maps are one, and this file and the maps beside it are the sources. The version you are running is the semver at the top of `CHANGELOG.md` beside this file.
 - Re-read this file whenever your instructions are re-injected after a compaction, and at the start of every Build.
-- A draft is only the text you surfaced; an action named alongside it, such as writing a log entry or a new file, needs its own draft. A draft goes to chat unless the user says *write*, which means put it in place and stop until they hand back, then run Tidy over what changed before asking anything. *Write* is never approval and never a cue to move on, even when it arrives in reply to an "Approve?" ask — the stamp follows a separate yes. A bare *write* covers one draft; only an instruction that says so, such as "write everything from here", covers the session. A draft written in place sits between `<!-- draft -->` and `<!-- /draft -->` until approved: approval deletes the markers, declining deletes the region. [Drafts](ndd.map.md#drafts).
+- A draft is only the text you surfaced; an action named alongside it, such as a log entry or a new file, needs its own draft. A draft goes to chat unless the user says *write*, which means put it in place and stop until the user next replies, then review any edit they made as *Engagement Rule: User Edits* says. *Write* is never approval and never a cue to move on, even when it arrives in reply to an "Approve?" ask — the stamp follows a separate yes. A bare *write* covers one draft; only an instruction saying so covers the session. A draft written in place sits between `<!-- draft -->` and `<!-- /draft -->` until approved: approval deletes the markers, declining deletes the region. [Drafts](ndd.map.md#drafts).
 
 ## Rules
 
@@ -25,7 +25,7 @@ When the user approves a plan, read [Build Lock](ndd.map.md#build-lock) and take
 
 ### Gates and Permissions: Active Change
 
-Write project files only under an active change. With no `active.md`, write inside `changes/` and nowhere else. The one exception is a map edit that describes what already exists. If a needed write fits neither case, stop and ask rather than making it. [Gates and Permissions](ndd.map.md#gates-and-permissions), [Edit Governance](ndd.map.md#edit-governance).
+Write project files only under an active change. With no `active.md`, write inside `changes/` and nowhere else. The one exception is the map exemption: a map edit that describes what already exists. If a needed write fits neither case, stop and ask rather than making it. [Gates and Permissions](ndd.map.md#gates-and-permissions), [Edit Governance](ndd.map.md#edit-governance).
 
 ### Gates and Permissions: Git Writes
 
@@ -37,7 +37,7 @@ Treat only a clear yes as approval, and only for what was shown. Approval is an 
 
 ### Engagement Rule: Edit Order
 
-Make every map edit in one order: draft, surface with its count, settle on approval. Surface the drafted node text and its character count, then treat it as settled only when the reply is approval. On a map that carries stamps, settling also writes the approver's stamp, computed with the shipped fingerprint script, and reports its hash beside the count. Say which handle you are using the first time you stamp; take it from git's `user.name` unless the map's stamps exist and none match that name, and ask when it is missing or unmatched. No map edit is silent and none is made in bulk, because the user's comprehension is built in the negotiation of each one. With nobody to approve, wait. [Engagement Rule](ndd.map.md#engagement-rule), [Approver](ndd.map.md#approver).
+Make every map edit in one order: draft, surface with its count, settle on approval. Surface the drafted node text and its character count, then treat it as settled only when the reply is approval. On a map that carries stamps, settling also writes the approver's stamp, computed with the shipped fingerprint script, and reports its hash beside the count. The first time you stamp, resolve and name the handle as [Approver](ndd.map.md#approver) directs. No map edit is silent and none is made in bulk, because the user's comprehension is built in the negotiation of each one. With nobody to approve, wait. [Engagement Rule](ndd.map.md#engagement-rule), [Approver](ndd.map.md#approver).
 
 ### Engagement Rule: Diffs
 
@@ -45,38 +45,39 @@ Show every edit you put up for approval, to a map node or any other file, as a d
 
 ### Node Identity
 
-Name a node by its heading when citing it anywhere user-facing — chat, change files, status lines, commits, PR text. The yaml id is an agent-side fingerprint construct; headings are what users navigate. [Node Identity](ndd.map.md#node-identity).
+Name a node by its heading when citing it anywhere user-facing — chat, change files, status lines, commits, PR text. The yaml id is an agent-side token that survives renames; headings are what users navigate. [Node Identity](ndd.map.md#node-identity).
 
 ### Engagement Rule: Corrections
 
-Apply corrections without surfacing only when every item in hand is one. A typo, spacing, or a stale link that changes no meaning is applied and reported. If any item in the batch changes meaning, the whole batch goes through Map Edit Order, because a batch inherits its fastest path. [Engagement Rule](ndd.map.md#engagement-rule).
+Apply a correction that changes no meaning — a typo, spacing, a stale link — and report it rather than surfacing it, but only when every item in hand is one; otherwise every item is surfaced for approval. [Engagement Rule](ndd.map.md#engagement-rule).
 
 ### Node Sizing
 
-Count and report characters on every node you edit. Count the body plus *Detail*, inline links as their visible text, excluding navigation links, *See also*, tables and diagrams. Report the number in your message. Over about 800, flag it and leave the split to the user. The reported number is how the user sees the rule was followed. [Node Sizing](ndd.map.md#node-sizing).
+Count and report characters on every node you edit. Count the body plus *Detail*, inline links as their visible text, excluding navigation links, *See also*, tables and diagrams. Report the number in your message. Over about 800, flag it, stamped or not, rather than trimming silently. The reported number is how the user sees the rule was followed. [Node Sizing](ndd.map.md#node-sizing).
 
 ### Sync Rule
 
 Write the map as what exists, never what is planned. An edit describing unbuilt work waits until the work is built. If the user asks for a forward-looking map edit, say why it waits and offer to hold the text in the change instead. [Sync Rule](ndd.map.md#sync-rule).
 
-### Plan: Parts
+### Plan
 
 When planning a change, read [Plan](ndd.map.md#plan) and build its parts in the order it sets, reading each part's node before drafting it, and surfacing each with its count to be settled by approval before the next begins. Once the preparation section is approved, trim the [Intent](ndd.map.md#intent) as it directs. A plan approved whole is a plan not read.
 
-### Plan: Caps
+### Caps
 
-Count each part against its cap when you surface it, report the number, and past a cap ask the user to adjudicate rather than trimming silently or presenting it as final.
+Count each capped part against its cap when you surface it, report the number, and past a cap ask the user to adjudicate rather than trimming silently or presenting it as final. Every cap is soft.
 
-- Intent: ~500 characters.
-- Bounds: ~200 characters (soft — overrun signals the wrong style).
-- Focus: ~300 characters (soft — overrun signals Formal is the fit).
-- Change Specification: each map node follows the [Node Sizing](ndd.map.md#node-sizing) conventions.
-- Implementation Plan: format-dependent — a map-shape part follows the [Node Sizing](ndd.map.md#node-sizing) conventions per node; a prose or table part carries its own convention where a cap is meaningful.
+- Intent: ~500 characters, *Context* excluded.
+- Bounds: ~200 characters; overrun also signals the wrong style.
+- Focus: ~300 characters; overrun also signals Formal is the fit.
+- Change Specification: each map node per [Node Sizing](ndd.map.md#node-sizing).
+- Implementation Plan: each node per [Node Sizing](ndd.map.md#node-sizing) if map-shaped, else its own convention.
 - Conclude: ~500 characters, excluding a changelog entry.
+- Discussion Conclude: ~500 characters.
 
 Unresolved sits beside a part and is excluded from that part's count.
 
-[Intent](ndd.map.md#intent), [Bounds](ndd.map.md#bounds), [Focus](ndd.map.md#focus), [Change Specification](ndd.map.md#change-specification), [Conclude](ndd.map.md#conclude).
+[Caps](ndd.map.md#caps).
 
 ### Build
 
@@ -112,4 +113,4 @@ Typeset map prose by the conventions. One continuous line per paragraph with no 
 
 ### Engagement Rule: User Edits
 
-When the user has edited or reviewed the map, re-read the current node from disk before continuing work on it. Report its new count and any knock-on you can see — a link that no longer resolves, a sibling that now overlaps — and log it only if it changes what the build must do. The user edits freely and unannounced; the rule binds you, not them, so never treat their edit as something to approve. [Engagement Rule](ndd.map.md#engagement-rule).
+When the user has edited or reviewed the map, re-read the node from disk and review the edit in one pass: run [Tidy](ndd.map.md#tidy) over it as it directs, comment on anything you would question, and log it only if it changes what the build must do. The user edits freely and unannounced; their edit needs no approval, but your review of it is expected. [Engagement Rule](ndd.map.md#engagement-rule).
