@@ -130,12 +130,12 @@ The agent re-reads the file at the start of every [Build](ndd.map.md#build) and 
 ```yaml
 id: r4l
 approvals:
-  tearne: {at: 2026-10-22, hash: 4f74ac69}
+  tearne: {at: 2026-10-30, hash: ce0e175c}
 ```
 
 The rendering gathers by trigger what the map holds by concept, so an agent finds everything for one trigger in one rule. The trigger is named in each rule's first sentence, as [Rule Phrasing](#rule-phrasing) sets out; the concept is named in its heading.
 
-- Each rule sits under a short level-3 heading naming its source node. Where several rules come from one node, each heading adds what that rule covers, as in *Engagement Rule: Diffs*. Agents cite rules by heading, and a node name takes the reader straight to the map, where a number leaves them to look it up.
+- Each rule sits under a short level-3 heading naming its source node. Where several rules come from one node, each heading adds what that rule covers, as in *Engagement Rule: Corrections*.
 
 - Each rule closes with a link to its source node.
 

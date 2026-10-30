@@ -39,9 +39,9 @@ Treat only a clear yes as approval, and only for what was shown. Approval is an 
 
 Make every map edit in one order: draft, surface with its count, settle on approval. Surface the drafted node text and its character count, then treat it as settled only when the reply is approval. On a map that carries stamps, settling also writes the approver's stamp, computed with the shipped fingerprint script, and reports its hash beside the count. The first time you stamp, resolve and name the handle as [Approver](ndd.map.md#approver) directs. No map edit is silent and none is made in bulk, because the user's comprehension is built in the negotiation of each one. With nobody to approve, wait. [Engagement Rule](ndd.map.md#engagement-rule), [Approver](ndd.map.md#approver).
 
-### Engagement Rule: Diffs
+### Diffs
 
-Show every edit you put up for approval, to a map node or any other file, as a diff in chat, with what changed alongside the new state — use a ```diff-fenced block. Something wholly new is shown whole; a whole rewrite may be too. [Engagement Rule](ndd.map.md#engagement-rule), [Change Specification](ndd.map.md#change-specification).
+Show every edit you put up for approval, to a map node or any other file, as a diff in chat, with what changed alongside the new state. Fence it as `diff` with more backticks than any fence inside it, and beneath a long line that changes only a little, list the changed words. Something wholly new is shown whole; a whole rewrite may be too. [Diffs](ndd.map.md#diffs), [Change Specification](ndd.map.md#change-specification).
 
 ### Node Identity
 

@@ -73,12 +73,12 @@ Show every edit you put up for approval, to a map node or any other file, as a d
 ```yaml
 id: r4l
 approvals:
-  tearne: {at: 2026-10-26, hash: 3e1b375e}
+  tearne: {at: 2026-10-30, hash: ce0e175c}
 ```
 
 The rendering gathers by trigger what the map holds by concept, so an agent finds everything for one trigger in one rule. The trigger is named in each rule's first sentence, as [Rule Phrasing](#rule-phrasing) sets out; the concept is named in its heading.
 
-- Each rule sits under a short level-3 heading naming its source node. Where several rules come from one node, each heading adds what that rule covers, as in *Engagement Rule: Corrections*. Agents cite rules by heading, and a node name takes the reader straight to the map, where a number leaves them to look it up.
+- Each rule sits under a short level-3 heading naming its source node. Where several rules come from one node, each heading adds what that rule covers, as in *Engagement Rule: Corrections*.
 
 - Each rule closes with a link to its source node.
 
@@ -92,3 +92,18 @@ Raised as an aside (2026-10-16).
 The *Engagement Rule: Diffs* rule's "```diff-fenced block" has no source in the map: the Engagement Rule says only "plus a diff for an edit". Noticed during change 091 (2026-10-17); the user expects it to fit in the Engagement Rule's *Detail*.
 
 During change 070 (2026-10-26), a diff whose long line changed by a word or two hid the change, and the user read it as unchanged. Listing the changed words beneath the diff fixed it; the Engagement Rule's *Detail* could say so alongside the fence-nesting rule.
+
+## Conclude
+
+Rule Layout was revised before approval: its sentence on citing rules by heading was dropped as owned by Node Identity, bringing the node under the size bound. Diffs was also added to *Contents*, which the Change Specification had not listed. The install test failed on an uncommitted deletion, not on this change; that, and the installer shipping NDD's own `changes/` tree, went to discussion 090 Installer review.
+
+## Log
+
+- 2026-10-30: Plan re-reviewed target by target before approval. Rule Layout revised: the "Agents cite rules by heading…" sentence dropped as owned by Node Identity, bringing the node from ~895 to ~770 characters; re-stamped `ce0e175c`. The *Contents* entry for Diffs approved separately, as it was not in the Change Specification.
+- 2026-10-30: Plan approved. Build Lock taken; `2.8.2-dev` (patch) claimed.
+- 2026-10-30: Reconciled against live files: no drift, no references to *Engagement Rule: Diffs* outside the targets.
+- 2026-10-30: Diffs rule landed in `AGENT-RULES.md`, replacing *Engagement Rule: Diffs*.
+- 2026-10-30: Rule Layout landed in `map.md`; stamp matches.
+- 2026-10-30: Engagement Rule and Diffs promoted into `ndd.map.md`, Diffs added to *Contents*; stamps match. Nodes due for tearne unchanged from HEAD.
+- 2026-10-30: `fingerprint_test.py` passes. `install_test.py` fails, not from 040: the installer copies every git-tracked file, and `changes/resume.md`, deleted on resuming this change, is still tracked. Passes at HEAD.
+- 2026-10-30: Open item (the installer aborts when a tracked file is missing from the working tree, and ships NDD's `changes/` tree) resolved: parked into new discussion 090 Installer review.

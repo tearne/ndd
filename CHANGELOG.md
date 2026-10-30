@@ -2,6 +2,10 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 2.8.2-dev
+
+- New *Diffs* node, under *Engagement Rule*: a surfaced diff's fence has more backticks than any fence inside it, and a long line changed by only a word or two has the changed words listed beneath. The *Engagement Rule: Diffs* agent rule is renamed *Diffs* and carries both.
+
 ## 2.8.1-dev
 
 - Over its size bound, a node gets the agent's best-fit proposal: tighten the prose, cut what another node already owns, or split it if it carries two concepts. Splitting is no longer the default (*Node Sizing*).

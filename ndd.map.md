@@ -64,6 +64,7 @@ id: ct5
     - [Edit Governance](#edit-governance)
       - [Sync Rule](#sync-rule)
       - [Engagement Rule](#engagement-rule)
+        - [Diffs](#diffs)
   - [Change-Management](#change-management)
     - [Change Lifecycle](#change-lifecycle)
       - [Lifecycle Flow Reads](#lifecycle-flow-reads)
@@ -647,23 +648,41 @@ The map describes what exists, never what is planned: an edit describing work no
 
 # Engagement Rule
 
-[↑ Edit Governance](#edit-governance)
+[↑ Edit Governance](#edit-governance) \
+[Diffs](#diffs)
 
 ```yaml
 id: n3g
 approvals:
-  tearne: {at: 2026-10-26, hash: 97fa4876}
+  tearne: {at: 2026-10-26, hash: b4bd8360}
 ```
 
 [Orient Then Focus](#orient-then-focus) applied to the map. Nodes are
 1. drafted,
-2. surfaced with [character count](#node-sizing), plus a diff for an edit,
+2. surfaced with [character count](#node-sizing), plus a [diff](#diffs) for an edit,
 3. written as [Drafts](#drafts) directs, and
 4. treated as settled only once the reply is [approval](#approval), which [stamps](#sign-off) the node where the map carries stamps.
 
 No edit is silent or made in bulk. Corrections that change no meaning — a typo, spacing, a stale link — are applied and reported rather than surfaced, but only if every item in hand is one.
 
 The rule binds the agent, not the user, who edits the map freely and unannounced. Their edit needs no approval, but the agent is expected to review it in one pass: running [Tidy](#tidy) over it as it directs, commenting on anything it would question, and logging it only if it changes what the build must do.
+
+
+# Diffs
+
+[↑ Engagement Rule](#engagement-rule)
+
+```yaml
+id: d7f
+approvals:
+  tearne: {at: 2026-10-26, hash: da360f8c}
+```
+
+The agent shows every edit it puts up for approval as a diff in chat, so the user sees what changed alongside the new state. This holds for any file, not only the map. Something wholly new is shown whole, and a whole rewrite may be.
+
+**Detail**
+
+The diff sits in a `diff`-fenced block whose fence has more backticks than any fence inside it, so a quoted yaml block or code fence cannot close it early and strip its colouring. When a long line changes by only a word or two, the changed words are listed beneath the diff, since a line-level diff otherwise reads as a repeat.
 
 
 # Change-Management
