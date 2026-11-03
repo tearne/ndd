@@ -1,8 +1,10 @@
 # Rule rendering test
 
+**Change Style:** Formal
+
 ## Intent
 
-When the agent rules are re-rendered, test each new or reworded rule by giving subagents the same task with the old rule and with the new one, and comparing what they produce, so a rule that backfires is caught before it ships.
+When the agent rules are re-rendered, test each new or reworded rule by giving subagents the same task with the rule as it stood, or without it, and with the new wording, then comparing what they produce, so a rule that backfires is caught before it ships.
 
 ## Context
 
