@@ -40,6 +40,7 @@ id: ct6
       - [Rule Layout](#rule-layout)
       - [Rule Phrasing](#rule-phrasing)
       - [Rule Selection](#rule-selection)
+      - [Rule Testing](#rule-testing)
   - [Testing](testing.map.md#testing)
   - [Method Map Form](#method-map-form)
   - [NDD](ndd.map.md#ndd)
@@ -131,7 +132,8 @@ The installer copies into a client's `ndd/` only what the agent and user need at
 [↑ Distribution](#distribution) \
 [Rule Layout](#rule-layout) \
 [Rule Phrasing](#rule-phrasing) \
-[Rule Selection](#rule-selection)
+[Rule Selection](#rule-selection) \
+[Rule Testing](#rule-testing)
 
 ```yaml
 id: r8d
@@ -207,6 +209,23 @@ Everything else stays in the map. A rule that fails a test should be adapted, cu
 The rendering stays short because adherence degrades with instruction count, and across all rules at once, so each rule kept taxes the rest.
 
 If, at rendering time, the agent reviewing the rules set identifies they are sub-optimal the issues should be traced upstream to this map and discussed.
+
+
+# Rule Testing
+
+[↑ Agent Rules](#agent-rules)
+
+```yaml
+id: t5r
+approvals:
+  tearne: {at: 2026-11-03, hash: 6ba76a77}
+```
+
+A rule can read well and still backfire, because what an agent does with it shows only in use. Each new or reworded rule is therefore tested before it ships: subagents are given the same task, some with the rule as it stood, or without it, and some with the new wording, and what they produce is compared.
+
+**Detail**
+
+The task tempts the failures the rule targets and probes where it might overreach, in two forms: a fresh draft, and a small edit to text that already breaks the rule, which shows whether the rule pushes an unasked rewrite. The subagents see the rule but not the map, since in use an agent works from the rule rather than the node behind it. A difference that matters sends the rule back to drafting, and the outcome goes in the change's [Log](ndd.map.md#log).
 
 
 # Method Map Form

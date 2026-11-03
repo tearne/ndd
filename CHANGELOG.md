@@ -2,6 +2,10 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 2.10.1-dev
+
+- New *Rule Testing* node under *Agent Rules*: each new or reworded agent rule is tested against the wording it replaces before it ships.
+
 ## 2.10.0-dev
 
 - Drafts and the light Map Review now check nodes against the same standard, set out in *Node*. The *Formatting* agent rule becomes *Node Standard*.
