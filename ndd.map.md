@@ -419,6 +419,8 @@ approvals:
 
 ```yaml
 id: h4q
+approvals:
+  tearne: {at: 2026-11-03, hash: 22ed8a0e}
 ```
 
 A fingerprint is a hash of what a reader sees in a node. It covers the heading, prose, callouts, *Detail* and *See also*; it excludes the scaffolding block and navigation links.
@@ -427,7 +429,7 @@ Comparing fingerprints is a test of equality: a node put back to earlier text re
 
 **Detail**
 
-Take the node from its heading line to the line before the next heading. Drop the scaffolding block and the navigation-link lines whole; inline links in the prose stay as written, markdown included. Remove every whitespace character. The fingerprint is the first eight hex digits of the SHA-256 of that UTF-8 string. An agent computes it with the shipped `util/fingerprint.py`, never by reasoning; [Fingerprint Check](testing.map.md#fingerprint-check) is the reference that pins the rule.
+Take the node from its heading line to the line before the next heading. Drop, whole, the navigation-link lines under the heading and the scaffolding block; any other link stays as written, markdown included. Remove every whitespace character. The fingerprint is the first eight hex digits of the SHA-256 of that UTF-8 string. An agent computes it with the shipped `util/fingerprint.py`, never by reasoning; [Fingerprint Check](testing.map.md#fingerprint-check) is the reference that pins the rule.
 
 
 # Fingerprint Helper

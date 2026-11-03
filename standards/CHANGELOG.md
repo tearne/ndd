@@ -7,7 +7,7 @@ A changelog records notable changes to the project, newest at the top. It comple
 Each heading is a released version or a change awaiting release.
 
 - Each entry is an `H2` heading with a version: `## 1.2.0`.
-- A change awaiting release is entered under its final dev version: `## 1.2.1-dev.3`, or `## 1.2.1-dev` where the changelog is the only version record.
+- A change awaiting release is entered under its final dev version: `## 1.2.1-dev.3`, or `## 1.2.1-dev` if it was never handed back for testing.
 - At release, the dev headings fold into one heading under the latest number without suffix, with the date: `## 1.3.0 — 2026-04-24`.
 - Entries are added to the top of the file.
 - For the bump kind and dev versions, follow [Versioning](../ndd.map.md#versioning).

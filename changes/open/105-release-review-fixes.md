@@ -48,3 +48,28 @@ Work the findings group by group, A first, then B to F. Each map edit is settled
 - F8: *Caps* rule's Focus line matches its node; A/B skipped on the user's say, as a one-clause conformance edit.
 - F9: dismissed; the *Drafts* rule beside *Edit Order* already covers how a draft is written.
 - F10: dismissed; "or reviewed" cues the agent to re-read for edits it was not told of.
+- *Fingerprint* Detail: navigation-link lines are dropped only under the heading, matching the helper (791). Inline links stay hashed, as decided in 080; rename-proof inline links not pursued.
+- Resumed 2026-11-03 in a new session: F 11–19 were never recorded, so the map-against-files pass is re-run to recover them.
+- Group F recovered as 12 items, renumbered F11–F22; open until settled:
+  - F11 *Installer*: pointer replaced only in the current wording, map says any pointer into `ndd/`.
+  - F12 *Installer*: only `ndd.map.md` backed up as `ndd.prev.map.md`.
+  - F13 *Installer*: "never overwrites other files" vs pointer refresh and `.gitignore` append.
+  - F14 *Installer*: called POS-style, but `install.py` departs from `standards/POS.md` (list-form subprocess, `FileNotFoundError`, no `run()`).
+  - F15 *Installer*: omits all-or-nothing asset check, `--version`, uv/venv requirement.
+  - F16 fixtures: "two that must" should be three; edited copy calls itself "the copy beside it".
+  - F17 *Versioning*: `-dev.N` vs bare `-dev` in `CHANGELOG.md`; exception owned only by the changelog standard.
+  - F18 *Install Check*: self-refusal case runs in the checkout and asserts only no `ndd/`.
+  - F19 *Agent Rules* Detail: *Distribution* sources only the first *Orientation* bullet.
+  - F20 *Drafts*: rule's "a keyword's placement" exemption absent from the node.
+  - F21 *Contents*: always due; neither stamped nor exempt by the map.
+  - F22 *Shipped Assets*: "stays in the checkout" list omits root `CLAUDE.md`, `AGENTS.md`, `.claude/`.
+- F11: dismissed; the pointer wording has not changed since go-live, and any `ndd/` target is accepted, so the map holds.
+- F12: *Installer* names `ndd.map.md` as the map kept as `ndd.prev.map.md`.
+- F13: *Installer*'s closing sentence says it rewrites only its own pointers, matching its bullet (796).
+- F14: `install.py`'s git probe uses a `shell=True` string per POS, no `FileNotFoundError`; install test passes.
+- F15: *Installer* Detail adds the all-or-nothing asset check (878, over the bound, accepted); `--version` and the uv requirement dismissed as covered by POS.
+- F16: fixture prose says three edits must move a fingerprint; the edited copy no longer calls itself "the copy beside it". Fixture hashes updated in both stamps, `EXPECTED` and the *Fingerprint Check* table; fingerprint test passes.
+- F17: map holds; `standards/CHANGELOG.md` now gives bare `-dev` for a change never handed back, matching *Versioning*.
+- F18: *Install Check* says the self-refusal case writes no `ndd/`, as the test asserts, not "nothing".
+- F19: `AGENT-RULES.md` *Orientation* bullets 2 and 3 cite *Installer*, *Versioning* and *Agent Rules*; *Agent Rules* drops its one-source sentence, now 780 (settles C12's overrun). A/B skipped: links added, no rule reworded.
+- Surprise: the original F list was lost with the previous session; neither the Log nor the pause entry held it. Raised by the user as a major gap in change self-sufficiency and in pausing.

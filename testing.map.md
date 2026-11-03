@@ -38,7 +38,7 @@ id: ct7
 ```yaml
 id: c5m
 approvals:
-  tearne: {at: 2026-11-03, hash: 476a1269}
+  tearne: {at: 2026-11-03, hash: 1418eab1}
 ```
 
 Every agent must produce the same fingerprint for the same node text, or approval stamps cannot be compared. `tests/fingerprint_test.py` holds the reference: a second, independent implementation of the [Fingerprint](ndd.map.md#fingerprint) rule, standard library only and short enough to read whole. It passes when its fingerprints match the table in *Detail* and the shipped [helper](ndd.map.md#fingerprint-helper) agrees, both on those fingerprints and on which nodes are due for a person. The test and its fixtures stay in the NDD checkout, where a maintainer changing the helper runs them.
@@ -49,7 +49,7 @@ Every agent must produce the same fingerprint for the same node text, or approva
 
 | Node | Original | Edited | Edit made |
 |---|---|---|---|
-| Fixture | ab9e6f02 | 5fd5a260 | prose changed |
+| Fixture | 11f6836e | c332f293 | prose changed |
 | Plain Prose | bcf6b47b | bcf6b47b | paragraph re-wrapped and indented |
 | Full Sections | 188f743f | 188f743f | child link renamed |
 | Child, then Renamed Child | 250ae92a | 103b2b33 | heading renamed |
@@ -64,12 +64,12 @@ Every agent must produce the same fingerprint for the same node text, or approva
 ```yaml
 id: k3w
 approvals:
-  tearne: {at: 2026-11-03, hash: 8b40920b}
+  tearne: {at: 2026-11-03, hash: e01ce559}
 ```
 
 `tests/install_test.py` runs the [installer](map.md#installer) into a temporary directory and asserts that:
 
-- run from its own checkout, it exits non-zero and writes nothing;
+- run from its own checkout, it exits non-zero and writes no `ndd/`;
 
 - what lands in `ndd/` is exactly the [shipped assets](map.md#shipped-assets), scripts still executable;
 

@@ -89,22 +89,22 @@ The checklist for a new version of NDD, published by moving `main`, and one of t
 ```yaml
 id: n5w
 approvals:
-  tearne: {at: 2026-11-03, hash: e7886bce}
+  tearne: {at: 2026-11-03, hash: 83ce0609}
 ```
 
 A [POS-style](standards/POS.md) `install.py` at this project's root, run from a consumer's project to install or upgrade NDD. It:
 
-- clears the consumer's `ndd/` and copies the [shipped assets](#shipped-assets) into it from this checkout's disk, uncommitted edits included and scripts still executable; the last installed map that differs from the new one is kept as `ndd.prev.map.md`;
+- clears the consumer's `ndd/` and copies the [shipped assets](#shipped-assets) into it from this checkout's disk, uncommitted edits included and scripts still executable; the last installed `ndd.map.md` that differs from the new one is kept as `ndd.prev.map.md`;
 
 - points `CLAUDE.md` and `AGENTS.md` at `ndd/AGENT-RULES.md`, replacing a file that only points into `ndd/` and warning on anything else;
 
 - adds `ndd/` to `.gitignore`, with each entry file it created, and `.claude/` unless files under it are tracked.
 
-It owns `ndd/` outright but never overwrites other files in the consumer's project.
+It owns `ndd/` outright; elsewhere it rewrites only its own pointers, and never a file with the consumer's content.
 
 **Detail**
 
-It refuses to run from its own checkout, which is never installed into itself.
+It refuses to run from its own checkout. It checks that every shipped asset is present before touching `ndd/`, so a broken checkout leaves an install as it was.
 
 
 # Shipped Assets
@@ -139,7 +139,7 @@ The installer copies into a client's `ndd/` only what the agent and user need at
 ```yaml
 id: r8d
 approvals:
-  tearne: {at: 2026-11-03, hash: 13ad4271}
+  tearne: {at: 2026-11-03, hash: 58711f50}
 ```
 
 `AGENT-RULES.md` is a rendering of the core rules within this map, optimised for agents; an agent follows instructions best with concrete rules based on clear triggers. This map remains authoritative, and the rendering is a route into it: a reference in agent output names the source node, not the rule heading. A rule's source node is read on demand rather than preemptively at start.
@@ -148,7 +148,7 @@ approvals:
 
 It is hand-maintained at the checkout root, where its links to `ndd.map.md` resolve exactly as they do in a client's `ndd/`. A change that edits a node an agent rule cites updates the rule in the same build; drift noticed otherwise is corrected on sight.
 
-The agent re-reads the file at the start of every [Build](ndd.map.md#build) and after any context compaction. Which rules it carries is settled by [Rule Selection](#rule-selection). Its orientation paragraph has [Distribution](#distribution) as its source.
+The agent re-reads the file at the start of every [Build](ndd.map.md#build) and after any context compaction. Which rules it carries is settled by [Rule Selection](#rule-selection).
 
 
 # Rule Layout

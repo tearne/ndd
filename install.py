@@ -133,10 +133,8 @@ def ignored_entries(project: Path, created: list[str]) -> list[str]:
 
 
 def tracks_files_under(project: Path, directory: str) -> bool:
-    try:
-        result = subprocess.run(["git", "ls-files", "--", directory], cwd=project, capture_output=True, text=True)
-    except FileNotFoundError:
-        return False
+    # A silent probe, so not echoed through a run() helper; a missing git exits non-zero.
+    result = subprocess.run(f"git ls-files -- {directory}", shell=True, cwd=project, capture_output=True, text=True)
     return result.returncode == 0 and bool(result.stdout.strip())
 
 

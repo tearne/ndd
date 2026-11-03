@@ -8,10 +8,10 @@
 ```yaml
 id: fx1
 approvals:
-  expected: {at: 2026-09-11, hash: ab9e6f02}
+  expected: {at: 2026-09-11, hash: 11f6836e}
 ```
 
-A small map whose only purpose is to pin the Fingerprint rule. Each node carries a stamp for a person called `expected` holding its own fingerprint, so the whole file is a Sign-off with nothing due. The copy beside it, `fixture-edited.map.md`, applies edits that must not change a fingerprint, and two that must.
+A small map whose only purpose is to pin the Fingerprint rule. Each node carries a stamp for a person called `expected` holding its own fingerprint, so the whole file is a Sign-off with nothing due. The copy beside it, `fixture-edited.map.md`, applies edits that must not change a fingerprint, and three that must, this paragraph among them.
 
 
 # Plain Prose
