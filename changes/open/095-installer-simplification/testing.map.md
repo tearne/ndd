@@ -7,13 +7,15 @@
 
 ```yaml
 id: t4k
+approvals:
+  tearne: {at: 2026-11-03, hash: d356e923}
 ```
 
-How this repository checks itself. A test is a node in this branch stating what must hold and how it is verified, with the runnable form under `tests/` beside the map rather than inside it, so the map stays a description of what exists. The branch lives in `testing.map.md`, and it ships with the maps along with `tests/`, so a client's agent runs the same checks this repository does rather than writing its own.
+This repository checks itself with tests, each a node in this branch stating what must hold and how it is verified. Its runnable form sits under `tests/` rather than in the map, so the map stays a description of what exists.
 
-- **Fingerprint Check** — the reference implementation of the [Fingerprint](ndd.map.md#fingerprint) rule and the cases that pin it.
+- **[Fingerprint Check](#fingerprint-check)** — the reference implementation of the [Fingerprint](ndd.map.md#fingerprint) rule and the cases that pin it.
 
-- **Install Check** — the installer run end to end into a scratch project, fresh and as an upgrade.
+- **[Install Check](#install-check)** — the installer run end to end into a scratch project, fresh and as an upgrade.
 
 
 # Contents
@@ -59,6 +61,22 @@ Every agent must produce the same fingerprint for the same node text, or approva
 
 ```yaml
 id: k3w
+approvals:
+  tearne: {at: 2026-11-03, hash: 8b40920b}
 ```
 
-`tests/install_test.py` runs the [installer](map.md#installer) into a temporary directory and asserts: it exits non-zero and writes nothing when run from its own checkout; what lands in `ndd/` is every file git tracks but the two entry files, scripts still executable; `CLAUDE.md` and `AGENTS.md` are pointers and `.gitignore` covers `ndd/`; every link in the installed maps resolves; and a second run over a changed `ndd.map.md` and a retired file backs up the one and removes the other. It prints the shipped files, so a stray one is seen.
+`tests/install_test.py` runs the [installer](map.md#installer) into a temporary directory and asserts that:
+
+- run from its own checkout, it exits non-zero and writes nothing;
+
+- what lands in `ndd/` is exactly the [shipped assets](map.md#shipped-assets), scripts still executable;
+
+- `CLAUDE.md` and `AGENTS.md` are pointers, and `.gitignore` covers `ndd/`, both entry files and `.claude/`;
+
+- every link in the installed maps resolves;
+
+- a second run over a changed `ndd.map.md` and a stray file keeps the old map as `ndd.prev.map.md` and clears the stray;
+
+- an entry file the project already had is left out of `.gitignore`.
+
+It prints the shipped files, so a stray one is seen.
