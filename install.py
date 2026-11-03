@@ -4,14 +4,14 @@
 # dependencies = ["rich"]
 # ///
 
-# NDD installer. Copies the method's source files out of this checkout into
-# ./ndd/ in the current project, as they are, and wires up the agent entry
-# files. Re-run at any time to upgrade in place (git pull this repo first); the
+# NDD installer. Copies the shipped assets out of this checkout into a fresh
+# ./ndd/ in the current project, as they are on disk, and wires up the agent
+# entry files. Re-run at any time to upgrade in place (git pull this repo first); the
 # prior method map is kept as ndd/ndd.prev.map.md so migration can be reasoned
 # about.
 #
-# Nothing is rendered: what ships is the checkout itself, every tracked file
-# but the entry files in NOT_SHIPPED. The NDD repository reads its own files
+# Nothing is rendered: what ships is the files in SHIPPED, uncommitted edits
+# included, and nothing else of the checkout. The NDD repository reads its own files
 # directly and is never installed into itself. Clone the repo wherever
 # you like and run this from the project you want to opt in, e.g.
 #   cd my-project && path/to/ndd/install.py
@@ -29,18 +29,22 @@ from rich.console import Console
 console = Console()
 
 SOURCE = Path(__file__).parent
-# Everything git tracks ships, except the repository's own agent entry files,
-# which the client gets its own of. No list to maintain: a new file ships once
-# it is committed, and the install test prints what shipped.
-NOT_SHIPPED = {"CLAUDE.md", "AGENTS.md"}
-RETIRED_FILES = ["BOOTSTRAP.md", "ndd.md", "ndd.prev.md", "standards/VERSIONING.md"]  # shipped by earlier versions; removed on upgrade
+# What the agent and user need at run time, as map.md#shipped-assets lists it.
+# A directory ships whole. The install test's link check catches a linked file
+# left off.
+SHIPPED = [
+    "AGENT-RULES.md",
+    "map.md", "ndd.map.md", "testing.map.md",
+    "util/fingerprint.py",
+    "standards",
+    "CHANGELOG.md", "README.md", "LICENSE",
+]
 
 CLAUDE_POINTER = "@ndd/AGENT-RULES.md"
 AGENTS_INSTRUCTION = (
     "# Agent instructions\n\n"
     "Read `ndd/AGENT-RULES.md` and follow it before doing anything else."
 )
-GITIGNORE_ENTRIES = ["ndd/", "CLAUDE.md", "AGENTS.md", ".claude/"]
 
 
 def main():
@@ -51,60 +55,67 @@ def main():
     console.print(f"Installing NDD into [bold]{project}[/bold]\n")
 
     copy_method(ndd)
-    own_entry_file(project / "CLAUDE.md", CLAUDE_POINTER)
-    own_entry_file(project / "AGENTS.md", AGENTS_INSTRUCTION)
-    ensure_gitignore(project / ".gitignore")
+    created = [path.name for path, desired in ((project / "CLAUDE.md", CLAUDE_POINTER), (project / "AGENTS.md", AGENTS_INSTRUCTION))
+               if own_entry_file(path, desired)]
+    ensure_gitignore(project / ".gitignore", ignored_entries(project, created))
 
     console.print("\n[bold green]Done.[/bold green] NDD installed into ./ndd/")
 
 
-# Copy the checkout into ndd/ as it is. Files retired from the method
-# are removed on upgrade.
+# Write ndd/ fresh, so nothing an earlier version shipped lingers. Every
+# shipped file is checked first, so a broken checkout leaves ndd/ untouched.
 def copy_method(ndd: Path) -> None:
-    ndd.mkdir(parents=True, exist_ok=True)
-    for src in shipped_files():
-        dest = ndd / src.relative_to(SOURCE)
-        if dest.name == "ndd.map.md":
-            back_up_map(dest, src.read_text())
-        copy_asset(src, dest)
-    for name in RETIRED_FILES:
-        retired = ndd / name
-        if retired.exists():
-            retired.unlink()
-            report("removed", retired, "no longer part of the method")
+    sources = shipped_files()
+    previous = previous_map(ndd)
+    if ndd.exists():
+        shutil.rmtree(ndd)
+        report("cleared", ndd)
+    for src in sources:
+        copy_asset(src, ndd / src.relative_to(SOURCE))
+    if previous:
+        (ndd / "ndd.prev.map.md").write_text(previous)
+        report("backed up", ndd / "ndd.prev.map.md", "previous map")
 
 
 def shipped_files() -> list[Path]:
-    tracked = subprocess.run("git ls-files", shell=True, cwd=SOURCE, capture_output=True, text=True, check=True).stdout.split()
-    return [SOURCE / name for name in sorted(tracked) if name not in NOT_SHIPPED]
+    missing = [name for name in SHIPPED if not (SOURCE / name).exists()]
+    if missing:
+        console.print(f"[bold red]Error:[/bold red] shipped assets missing from the checkout: {', '.join(missing)}")
+        sys.exit(1)
+    files = []
+    for name in SHIPPED:
+        path = SOURCE / name
+        files += sorted(p for p in path.rglob("*") if p.is_file()) if path.is_dir() else [path]
+    return files
 
 
-# Keep the old map as ndd.prev.map.md only when it actually changed — so a
-# redundant re-run preserves the last real backup.
-def back_up_map(dest: Path, content: str) -> None:
-    if dest.exists() and dest.read_text() != content:
-        backup = dest.parent / "ndd.prev.map.md"
-        backup.write_text(dest.read_text())
-        report("backed up", backup, "previous map")
+# The map to keep as ndd.prev.map.md: the old one if the new differs, else the
+# existing backup — so a redundant re-run preserves the last real one.
+def previous_map(ndd: Path) -> str | None:
+    old, backup = ndd / "ndd.map.md", ndd / "ndd.prev.map.md"
+    if old.exists() and old.read_text() != (SOURCE / "ndd.map.md").read_text():
+        return old.read_text()
+    return backup.read_text() if backup.exists() else None
 
 
 # An entry file whose whole content is a pointer into ndd/ is installer
 # boilerplate from some version, and fair game to rewrite; anything more is the
-# consumer's own and is never overwritten.
-def own_entry_file(path: Path, desired: str) -> None:
+# consumer's own and is never overwritten. Returns whether it was created.
+def own_entry_file(path: Path, desired: str) -> bool:
     if path.exists():
         current = path.read_text().rstrip("\n")
         if current == desired:
             report("already present", path)
-            return
+            return False
         if not is_installer_pointer(current, desired):
             report("conflict", path, f"exists with other content — add '{desired}' yourself")
-            return
+            return False
         path.write_text(desired + "\n")
         report("updated", path, "pointer refreshed")
-        return
+        return False
     path.write_text(desired + "\n")
     report("created", path)
+    return True
 
 
 def is_installer_pointer(current: str, desired: str) -> bool:
@@ -112,10 +123,27 @@ def is_installer_pointer(current: str, desired: str) -> bool:
     return re.fullmatch(shape, current) is not None
 
 
-def ensure_gitignore(path: Path) -> None:
+# Ignore only what the project doesn't already own: an entry file it had
+# before is its own, and so is a .claude/ with files checked in.
+def ignored_entries(project: Path, created: list[str]) -> list[str]:
+    entries = ["ndd/", *created]
+    if not tracks_files_under(project, ".claude"):
+        entries.append(".claude/")
+    return entries
+
+
+def tracks_files_under(project: Path, directory: str) -> bool:
+    try:
+        result = subprocess.run(["git", "ls-files", "--", directory], cwd=project, capture_output=True, text=True)
+    except FileNotFoundError:
+        return False
+    return result.returncode == 0 and bool(result.stdout.strip())
+
+
+def ensure_gitignore(path: Path, entries: list[str]) -> None:
     content = path.read_text() if path.exists() else ""
     lines = content.splitlines()
-    to_add = [e for e in GITIGNORE_ENTRIES if e not in lines]
+    to_add = [e for e in entries if e not in lines]
     if not to_add:
         report("already present", path)
         return
@@ -127,21 +155,10 @@ def ensure_gitignore(path: Path) -> None:
 
 # Shipped scripts must stay runnable, so the mode travels with the text.
 def copy_asset(src: Path, dest: Path) -> None:
-    write_asset(dest, src.read_text())
-    shutil.copymode(src, dest)
-
-
-def write_asset(dest: Path, content: str) -> None:
-    if dest.exists():
-        if dest.read_text() == content:
-            report("already present", dest)
-            return
-        dest.write_text(content)
-        report("updated", dest)
-        return
     dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_text(content)
-    report("created", dest)
+    shutil.copyfile(src, dest)
+    shutil.copymode(src, dest)
+    report("copied", dest)
 
 
 # The NDD repository reads its own sources — AGENT-RULES.md and the maps at
@@ -171,8 +188,8 @@ def read_version() -> str:
 
 
 def report(status: str, path: Path, note: str = "") -> None:
-    colours = {"created": "green", "updated": "cyan", "backed up": "cyan",
-               "already present": "dim", "conflict": "yellow", "removed": "magenta"}
+    colours = {"created": "green", "copied": "green", "updated": "cyan", "backed up": "cyan",
+               "already present": "dim", "conflict": "yellow", "cleared": "magenta"}
     colour = colours.get(status, "white")
     label = f"[{colour}]{status:<15}[/{colour}]"
     detail = f"  [dim]{note}[/dim]" if note else ""

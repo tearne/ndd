@@ -4,9 +4,10 @@
 # ///
 
 # Checks install.py end to end, as testing.map.md#install-check describes: it
-# refuses its own checkout, a fresh install ships every tracked file but the
-# entry files with scripts executable and every link resolving, and an upgrade
-# backs up a changed ndd.map.md and removes retired files.
+# refuses its own checkout, a fresh install ships exactly the shipped assets
+# with scripts executable and every link resolving, an upgrade backs up a
+# changed ndd.map.md and clears strays, and an entry file the project already
+# had stays out of .gitignore.
 
 import re
 import subprocess
@@ -16,8 +17,11 @@ from pathlib import Path
 
 CHECKOUT = Path(__file__).resolve().parent.parent
 INSTALLER = CHECKOUT / "install.py"
-NOT_SHIPPED = {"CLAUDE.md", "AGENTS.md"}
-RETIRED = "BOOTSTRAP.md"
+# The shipped assets as map.md#shipped-assets lists them, held here
+# independently of the installer's own list so the two are checked against each other.
+SHIPPED_ASSETS = ["AGENT-RULES.md", "map.md", "ndd.map.md", "testing.map.md", "util/fingerprint.py",
+                  "standards", "CHANGELOG.md", "README.md", "LICENSE"]
+STRAY = "BOOTSTRAP.md"
 failures = []
 
 
@@ -26,11 +30,13 @@ def main():
     with tempfile.TemporaryDirectory() as scratch:
         project = Path(scratch)
         install(project)
-        ships_the_checkout_minus_residue(project / "ndd")
+        ships_exactly_the_shipped_assets(project / "ndd")
         entry_files_point_into_ndd(project)
         scripts_are_executable(project / "ndd")
         every_link_resolves(project / "ndd")
-        upgrade_backs_up_and_retires(project)
+        upgrade_backs_up_and_clears_strays(project)
+    with tempfile.TemporaryDirectory() as scratch:
+        existing_entry_file_is_not_ignored(Path(scratch))
     for failure in failures:
         print(f"FAIL {failure}")
     print("OK" if not failures else f"{len(failures)} failures")
@@ -43,9 +49,12 @@ def refuses_own_checkout():
     check(not (CHECKOUT / "ndd").exists(), "installer wrote ndd/ into its own checkout")
 
 
-def ships_the_checkout_minus_residue(ndd: Path):
-    tracked = subprocess.run(["git", "ls-files"], cwd=CHECKOUT, capture_output=True, text=True, check=True).stdout.split()
-    expected = {Path(name) for name in tracked if name not in NOT_SHIPPED}
+def ships_exactly_the_shipped_assets(ndd: Path):
+    expected = set()
+    for name in SHIPPED_ASSETS:
+        path = CHECKOUT / name
+        found = [p for p in path.rglob("*") if p.is_file()] if path.is_dir() else [path]
+        expected |= {p.relative_to(CHECKOUT) for p in found}
     shipped = {p.relative_to(ndd) for p in ndd.rglob("*") if p.is_file()}
     check(shipped == expected, f"shipped set differs: extra {sorted(map(str, shipped - expected))}, missing {sorted(map(str, expected - shipped))}")
     print("shipped:", *sorted(map(str, shipped)), sep="\n  ")
@@ -54,7 +63,9 @@ def ships_the_checkout_minus_residue(ndd: Path):
 def entry_files_point_into_ndd(project: Path):
     check((project / "CLAUDE.md").read_text().strip() == "@ndd/AGENT-RULES.md", "CLAUDE.md is not the pointer")
     check("ndd/AGENT-RULES.md" in (project / "AGENTS.md").read_text(), "AGENTS.md does not name ndd/AGENT-RULES.md")
-    check("ndd/" in (project / ".gitignore").read_text().splitlines(), ".gitignore lacks ndd/")
+    ignored = (project / ".gitignore").read_text().splitlines()
+    for entry in ["ndd/", "CLAUDE.md", "AGENTS.md", ".claude/"]:
+        check(entry in ignored, f".gitignore lacks {entry}")
 
 
 def scripts_are_executable(ndd: Path):
@@ -62,11 +73,8 @@ def scripts_are_executable(ndd: Path):
         check(script.stat().st_mode & 0o111, f"{script.relative_to(ndd)} is not executable")
 
 
-# Change records under changes/ cite the map by bare anchor and are not checked.
 def every_link_resolves(ndd: Path):
     for md in ndd.rglob("*.md"):
-        if md.relative_to(ndd).parts[0] == "changes":
-            continue
         for target in re.findall(r"\]\(([^)]+)\)", md.read_text()):
             if target.startswith("http"):
                 continue
@@ -77,15 +85,23 @@ def every_link_resolves(ndd: Path):
                 check(anchor in anchors(linked), f"{md.relative_to(ndd)} links to missing anchor {target}")
 
 
-def upgrade_backs_up_and_retires(project: Path):
+def upgrade_backs_up_and_clears_strays(project: Path):
     ndd = project / "ndd"
     changed = (ndd / "ndd.map.md").read_text() + "\nan edit from before the upgrade\n"
     (ndd / "ndd.map.md").write_text(changed)
-    (ndd / RETIRED).write_text("shipped by an earlier version\n")
+    (ndd / STRAY).write_text("shipped by an earlier version\n")
     install(project)
     check((ndd / "ndd.prev.map.md").read_text() == changed, "changed ndd.map.md was not backed up as ndd.prev.map.md")
     check((ndd / "ndd.map.md").read_text() == (CHECKOUT / "ndd.map.md").read_text(), "ndd.map.md was not refreshed")
-    check(not (ndd / RETIRED).exists(), f"retired {RETIRED} was not removed")
+    check(not (ndd / STRAY).exists(), f"stray {STRAY} was not cleared")
+
+
+def existing_entry_file_is_not_ignored(project: Path):
+    own = "# Our own agent notes\n"
+    (project / "CLAUDE.md").write_text(own)
+    install(project)
+    check((project / "CLAUDE.md").read_text() == own, "the project's own CLAUDE.md was overwritten")
+    check("CLAUDE.md" not in (project / ".gitignore").read_text().splitlines(), "the project's own CLAUDE.md was put in .gitignore")
 
 
 def install(project: Path, expect_success: bool = True) -> subprocess.CompletedProcess:

@@ -9,18 +9,18 @@
 ```yaml
 id: p1j
 approvals:
-  tearne: {at: 2026-10-18, hash: f85f06f5}
+  tearne: {at: 2026-11-03, hash: e3beed4f}
 ```
 
 The repository that develops and ships Non-Dead Design. The method itself is the [NDD](ndd.map.md#ndd) branch, kept in its own file. This trunk describes how the method is distributed, released and installed. The reasoning behind the method is under [Principles](ndd.map.md#principles).
 
-- **Distribution** — how NDD reaches a client project: the shipped layout, the release checklist, the installer and the agent rules.
+- **[Distribution](#distribution)** — how NDD reaches a client project: the shipped layout, the release checklist, the installer and the agent rules.
 
-- **Testing** — how this repository checks itself: the checks, their runnable forms under `tests/`, shipped so clients have access to tests which matter.
+- **[Testing](testing.map.md#testing)** — how this repository checks itself: the checks and their runnable forms under `tests/`.
 
-- **Method Map Form** — the convention this project's method map follows.
+- **[Method Map Form](#method-map-form)** — the convention this project's method map follows.
 
-- **NDD** — the method, in `ndd.map.md`.
+- **[NDD](ndd.map.md#ndd)** — the method, in `ndd.map.md`.
 
 
 # Contents
@@ -35,6 +35,7 @@ id: ct6
   - [Distribution](#distribution)
     - [Release Steps](#release-steps)
     - [Installer](#installer)
+      - [Shipped Assets](#shipped-assets)
     - [Agent Rules](#agent-rules)
       - [Rule Layout](#rule-layout)
       - [Rule Phrasing](#rule-phrasing)
@@ -80,25 +81,49 @@ The checklist for a new version of NDD, published by moving `main`, and one of t
 
 # Installer
 
-[↑ Distribution](#distribution)
+[↑ Distribution](#distribution) \
+[Shipped Assets](#shipped-assets)
 
 ```yaml
 id: n5w
+approvals:
+  tearne: {at: 2026-11-03, hash: e7886bce}
 ```
 
-A [POS-style](standards/POS.md) `install.py` script at the root of this project, run by a consumer from their own project to install or upgrade NDD. It:
+A [POS-style](standards/POS.md) `install.py` at this project's root, run from a consumer's project to install or upgrade NDD. It:
 
-- copies every file git tracks in this checkout into `ndd/`, scripts still executable, except `CLAUDE.md` and `AGENTS.md`; a changed `ndd.map.md` is backed up as `ndd.prev.map.md` and retired files are removed;
+- clears the consumer's `ndd/` and copies the [shipped assets](#shipped-assets) into it from this checkout's disk, uncommitted edits included and scripts still executable; the last installed map that differs from the new one is kept as `ndd.prev.map.md`;
 
-- points `CLAUDE.md` and `AGENTS.md` at `ndd/AGENT-RULES.md`; a file that only contains pointers into `ndd/` is replaced, anything else is left with a warning;
+- points `CLAUDE.md` and `AGENTS.md` at `ndd/AGENT-RULES.md`, replacing a file that only points into `ndd/` and warning on anything else;
 
-- ensures `ndd/`, the two agent entry files and `.claude/` are in `.gitignore`.
+- adds `ndd/` to `.gitignore`, with each entry file it created, and `.claude/` unless files under it are tracked.
 
 It owns `ndd/` outright but never overwrites other files in the consumer's project.
 
 **Detail**
 
-It refuses to run from its own checkout directory; this repository reads its sources directly and is never installed into itself.
+It refuses to run from its own checkout, which is never installed into itself.
+
+
+# Shipped Assets
+
+[↑ Installer](#installer)
+
+```yaml
+id: s4h
+approvals:
+  tearne: {at: 2026-11-03, hash: d5f0779e}
+```
+
+The installer copies into a client's `ndd/` only what the agent and user need at run time, named in an explicit list:
+
+- `AGENT-RULES.md`, the agent rules.
+- `map.md`, `ndd.map.md` and `testing.map.md`, the maps.
+- `util/fingerprint.py`, which computes approval stamps.
+- `standards/`, which nodes link to.
+- `CHANGELOG.md`, `README.md` and `LICENSE`.
+
+`changes/`, `install.py`, `.gitignore` and `tests/` stay in the checkout. The [Install Check](testing.map.md#install-check) catches a linked file left off the list.
 
 
 # Agent Rules

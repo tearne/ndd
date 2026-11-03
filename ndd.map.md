@@ -12,19 +12,19 @@
 ```yaml
 id: a3k
 approvals:
-  tearne: {at: 2026-10-07, hash: 34571557}
+  tearne: {at: 2026-11-03, hash: 86fe8bf6}
 ```
 
 NDD, Non-Dead Design, aims to improve knowledge management for agentic software development. The name reflects the [three deaths](#three-deaths) it seeks to prevent: of specifications, of structural thinking, and of comprehension.
 
 The map is the one artefact that keeps all three alive: a conceptual **map** of the system, acting as the hub for specification and change management rather than a document off to one side.
 
-- **Principles** — the founding rationale in more detail.
-- **Map** — the developer's conceptual model of the system, and the primary specification.
-- **Change-Management** — how the spec evolves, through a change lifecycle and user-owned gates.
-- **Maintenance** — the reviews that keep the map, the code and the backlog in step.
-- **Tooling** — the generic markdown tooling the format is designed to exploit.
-- **Standards** — suggested coding standards NDD ships for the code agents write on a project.
+- **[Principles](#principles)** — the founding rationale in more detail.
+- **[Map](#map)** — the developer's conceptual model of the system, and the primary specification.
+- **[Change-Management](#change-management)** — how the spec evolves, through a change lifecycle and user-owned gates.
+- **[Maintenance](#maintenance)** — the reviews that keep the map, the code and the backlog in step.
+- **[Tooling](#tooling)** — the generic markdown tooling the format is designed to exploit.
+- **[Standards](#standards)** — suggested coding standards for the code agents write.
 
 
 # Contents
