@@ -286,9 +286,13 @@ The map is the developer's conceptual model of the system. NDD assumes that any 
 
 ```yaml
 id: nd1
+approvals:
+  tearne: {at: 2026-11-03, hash: a844a1ce}
 ```
 
 A node represents **one** concept and includes a heading, name-anchored navigation links to its parent and children, an agent-maintained scaffolding block holding its metadata, and terse prose leading with the mental picture. Optional *Detail* and *See also* sections follow.
+
+Every node follows the standards in [Node Sections](#node-sections), [Node Sizing](#node-sizing) and [Writing Style](#writing-style). The agent checks each draft against all three before surfacing it, and once a change is archived, [Map Review](#map-review) checks the map against them again.
 
 The format is a strict superset of a plain-markdown section — strip the scaffolding and links and what remains is an ordinary heading with prose, so a map renders and navigates as plain markdown in any tool.
 
@@ -588,7 +592,7 @@ Typographic conventions for map prose.
 ```yaml
 id: e2c
 approvals:
-  tearne: {at: 2026-10-26, hash: 98082826}
+  tearne: {at: 2026-11-03, hash: 52a9fa4f}
 ```
 
 A node says each thing once, and nothing the reader already has. The ways it fails, most often:
@@ -597,7 +601,7 @@ A node says each thing once, and nothing the reader already has. The ways it fai
 
 - A *See also* entry repeating the prose or its target, where an inline link would do.
 
-- Provenance, such as what came first or why it was chosen, which belongs in the change record.
+- Provenance, such as what came first or how a choice was reached, which belongs in the change record; the reason a choice holds is [intent](#intent-memory), and stays.
 
 - An example the linked node already gives.
 
@@ -1447,7 +1451,7 @@ Deferring upkeep for a stretch — an emergency fix, a push elsewhere — is saf
 ```yaml
 id: m3r
 approvals:
-  tearne: {at: 2026-10-22, hash: d958a19d}
+  tearne: {at: 2026-11-03, hash: a727efdc}
 ```
 
 Map Review is offered by the agent as a yes-or-no at the moments in the table below, each setting its scope.
@@ -1458,7 +1462,7 @@ Findings are not stored. A review recomputes from the map, so a deferred finding
 
 | Scope | Checks | Moment |
 |-------|--------|--------|
-| Light | [Shape](#shape), and prose against [Writing Style](#writing-style) | Offered after an [archive](#archiving) |
+| Light | [Shape](#shape), and each node against the standards [Node](#node) names | Offered after an [archive](#archiving) |
 | Full | Light plus [Consistency](#consistency), [Rendering](#rendering) | Offered before a release |
 
 

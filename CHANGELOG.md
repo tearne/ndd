@@ -2,6 +2,11 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 2.10.0-dev
+
+- Drafts and the light Map Review now check nodes against the same standard, set out in *Node*. The *Formatting* agent rule becomes *Node Standard*.
+- *Economy* keeps the reason for a choice in the node.
+
 ## 2.9.0-dev.1
 
 - The installer ships only the *Shipped Assets*, written fresh into a cleared `ndd/` on each run; `changes/` and `tests/`, for example, no longer ship.
