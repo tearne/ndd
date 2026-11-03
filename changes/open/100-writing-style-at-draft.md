@@ -6,4 +6,4 @@ Make the agent check every map draft against all of *Writing Style* before surfa
 
 ## Context
 
-Set aside during 095's planning (2026-11-03), after the user had to ask for a *Writing Style* review on successive drafts.
+Set aside during 095's planning (2026-11-03), after the user had to ask for a *Writing Style* review on successive drafts. It also absorbs 075 Duplication drift: an edit restating a fact where it is added, rather than linking to the fact's owner, is an *Economy* failure the check should catch, as 070's sweep found.
