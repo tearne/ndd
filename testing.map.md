@@ -8,10 +8,10 @@
 ```yaml
 id: t4k
 approvals:
-  tearne: {at: 2026-11-03, hash: d356e923}
+  tearne: {at: 2026-11-03, hash: 6ab49724}
 ```
 
-This repository checks itself with tests, each a node in this branch stating what must hold and how it is verified. Its runnable form sits under `tests/` rather than in the map, so the map stays a description of what exists.
+This repository checks itself with tests, each a node in this branch stating what must hold and how it is verified. Each test's runnable form sits under `tests/` rather than in the map, so the map stays a description of what exists.
 
 - **[Fingerprint Check](#fingerprint-check)** — the reference implementation of the [Fingerprint](ndd.map.md#fingerprint) rule and the cases that pin it.
 
@@ -38,12 +38,14 @@ id: ct7
 ```yaml
 id: c5m
 approvals:
-  tearne: {at: 2026-09-13, hash: a4340fad}
+  tearne: {at: 2026-11-03, hash: 476a1269}
 ```
 
-Every agent must produce the same fingerprint for the same node text, or approval stamps cannot be compared. `tests/fingerprint_test.py` is the reference implementation of the [Fingerprint](ndd.map.md#fingerprint) rule, standard library only and short enough to read whole, run against two fixtures beside it: `fixture.map.md`, a small map exercising every node section, and `fixture-edited.map.md`, the same map after edits that must not move a fingerprint and three that must. It passes when every node's fingerprint is the one tabled in *Detail*. An agent about to trust any other implementation, its own included, runs that implementation over the fixtures and compares with the table.
+Every agent must produce the same fingerprint for the same node text, or approval stamps cannot be compared. `tests/fingerprint_test.py` holds the reference: a second, independent implementation of the [Fingerprint](ndd.map.md#fingerprint) rule, standard library only and short enough to read whole. It passes when its fingerprints match the table in *Detail* and the shipped [helper](ndd.map.md#fingerprint-helper) agrees, both on those fingerprints and on which nodes are due for a person. The test and its fixtures stay in the NDD checkout, where a maintainer changing the helper runs them.
 
 **Detail**
+
+`fixture.map.md` is a small map exercising every node section; `fixture-edited.map.md` is the same map after edits that must not move a fingerprint and three that must. A further case checks that a stamp quoted in a node's prose is not read as one.
 
 | Node | Original | Edited | Edit made |
 |---|---|---|---|

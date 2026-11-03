@@ -1,13 +1,12 @@
 # Agent rules
 
-The short form of Non-Dead Design, rendered from the method map. It carries only the rules that apply in almost every session, whose observance can be checked, and whose breach is costly; everything else stays in the map. The map is the source — this file is a route into it, not a destination. Where the two disagree the map wins; `ndd.map.md` beside this file explains each rule, and each rule's heading names its source node, which is how output should refer to it. Each rule below ends with a link to its home node in the map.
+The short form of Non-Dead Design, rendered from the method map. It carries only the rules that apply in almost every session, whose observance can be checked, and whose breach is costly; everything else stays in the map. The map is the source — this file is a route into it, not a destination. Where the two disagree the map wins; `ndd.map.md` beside this file explains each rule. Each rule's heading names its source node, and output cites that node, not the rule heading. Each rule links the nodes it renders.
 
 ## Orientation
 
 - In a client project two maps are in play: the project's own, entered at `map.md` in the project root and built with the user; and NDD's, vendored under `ndd/`, whose method branch `ndd.map.md` sits beside this file and is what every rule below links to, read-only. Follow a link when you need the reasoning behind a rule, not before. A map is a tree of nodes; start at the root, the one with no `↑` link, and follow child links, into other `*.map.md` files where a branch continues. [Distribution](map.md#distribution).
 - `ndd/` is a vendored snapshot that `install.py` regenerates: change the method at its source and re-run the installer, since hand edits there vanish. In the NDD repository itself the two maps are one, and this file and the maps beside it are the sources. The version you are running is the semver at the top of `CHANGELOG.md` beside this file.
 - Re-read this file whenever your instructions are re-injected after a compaction, and at the start of every Build.
-- A draft is only the text you surfaced; an action named alongside it, such as a log entry or a new file, needs its own draft. A draft goes to chat unless the user says *write*, which means put it in place and stop until the user next replies, then review any edit they made as *Engagement Rule: User Edits* says. *Write* is never approval and never a cue to move on, even when it arrives in reply to an "Approve?" ask — the stamp follows a separate yes. A bare *write* covers one draft; only an instruction saying so covers the session. A draft written in place sits between `<!-- draft -->` and `<!-- /draft -->` until approved: approval deletes the markers, declining deletes the region. [Drafts](ndd.map.md#drafts).
 
 ## Rules
 
@@ -25,7 +24,7 @@ When the user approves a plan, read [Build Lock](ndd.map.md#build-lock) and take
 
 ### Gates and Permissions: Active Change
 
-Write project files only under an active change. With no `active.md`, write inside `changes/` and nowhere else. The one exception is the map exemption: a map edit that describes what already exists. If a needed write fits neither case, stop and ask rather than making it. [Gates and Permissions](ndd.map.md#gates-and-permissions), [Edit Governance](ndd.map.md#edit-governance).
+Write project files only while a change is in Build. Otherwise write inside `changes/` and nowhere else, including when a change returned to planning still holds the lock in `active.md`. The one exception is the map exemption: a map edit that describes what already exists. If a needed write fits neither case, stop and ask rather than making it. [Gates and Permissions](ndd.map.md#gates-and-permissions), [Edit Governance](ndd.map.md#edit-governance).
 
 ### Gates and Permissions: Git Writes
 
@@ -34,6 +33,11 @@ Leave git writes to the user. Commit, push, branch and reset happen only on an e
 ### Approval
 
 Treat only a clear yes as approval, and only for what was shown. Approval is an affirmative given in reply to your asking. Silence, a tangent, or a reply that raises new questions is not approval. It covers what was surfaced and no more: agreeing to draft prose is not approval of the prose, and delivering a draft — in chat or written in place — is never approval of it. [Approval](ndd.map.md#approval).
+
+
+### Drafts
+
+A draft is only the text you surfaced; an action named alongside it, such as a new file, needs its own draft unless the method lets you take it without asking, as with a Log line or a keyword's placement. A draft goes to chat unless the user says *write*, which means put it in place and stop until the user next replies, then review any edit they made as *Engagement Rule: User Edits* says. *Write* is never approval and never a cue to move on, even when it arrives in reply to an "Approve?" ask — the stamp follows a separate yes. A bare *write* covers one draft; only an instruction saying so covers the session. A draft written in place sits between `<!-- draft -->` and `<!-- /draft -->` until approved: approval deletes the markers, declining deletes the region. [Drafts](ndd.map.md#drafts).
 
 ### Engagement Rule: Edit Order
 
@@ -69,7 +73,7 @@ Count each capped part against its cap when you surface it, report the number, a
 
 - Intent: ~500 characters, *Context* excluded.
 - Bounds: ~200 characters; overrun also signals the wrong style.
-- Focus: ~300 characters; overrun also signals Formal is the fit.
+- Focus: ~300 characters; overrun also signals the wrong style.
 - Change Specification: each map node per [Node Sizing](ndd.map.md#node-sizing).
 - Implementation Plan: each node per [Node Sizing](ndd.map.md#node-sizing) if map-shaped, else its own convention.
 - Conclude: ~500 characters, excluding a changelog entry.
@@ -87,7 +91,7 @@ When a Formal change enters Build, read [Formal Build](ndd.map.md#formal-build) 
 
 ### Unresolved
 
-Before putting a plan up for approval, read [Unresolved](ndd.map.md#unresolved) and resolve each item as it directs, naming each item and its outcome. No plan is approved with material outstanding, because that is where things are lost.
+Before putting a plan part up for approval, read [Unresolved](ndd.map.md#unresolved) and resolve each item that belongs to it as it directs, naming each item and its outcome; before the whole plan, resolve the rest. No plan is approved with material outstanding, because that is where things are lost.
 
 ### Conclude
 
@@ -105,9 +109,9 @@ When the user says `process`, `aside` or `pause` with clear intent, wherever it 
 
 Orient, then focus. With any set to present — unresolved items, a worklist, the open changes, several nodes to edit — show the whole set in summary first, then work through it one item at a time while holding the rest. Introduce each item by name and its place in the set, such as *3 of 7*. A message asks at most one question and ends where it asks it. Attention dies under overwhelm, and item-by-item alone loses the user's place. While a set is in progress, end every message with a status line showing the stack, such as *map edits 3 of 7 > aside*, with *· open 2* when items are open. [Orient Then Focus](ndd.map.md#orient-then-focus), [Thought Management](ndd.map.md#thought-management).
 
-### Node Standard
+### Node
 
-Check every map draft against the node standard before surfacing it, since a slip caught here costs the user nothing. Check only the text you draft, and offer flaws found elsewhere in the node as separate edits. The body alone gives the reader the node; *Detail* holds only precision they can stop before, such as parameters and algorithms. Track the user's model, not the code's shape, and keep sentences whole. Say each thing once: no sentence restating its neighbour, no provenance though a choice's reason stays, no example or *See also* entry repeating what a link already gives, no flourish, and one owner for a fact touching several nodes, the rest linking to it. Typeset by the conventions: one continuous line per paragraph, a blank line between bullets that wrap, two blank lines before a node title, *italics* for a named section or element, **bold** only to introduce a term of art on first use, an inline link when a sentence names another node in passing and a *See also* entry with its own reason otherwise. Beside each draft, list what you changed to meet the standard. [Node](ndd.map.md#node), [Writing Style](ndd.map.md#writing-style).
+Check every map draft against the node standard before surfacing it, since a slip caught here costs the user nothing. Check only the text you draft, and offer flaws found elsewhere in the node as separate edits. The body alone gives the reader the node; *Detail* holds only precision they can stop before, such as parameters and algorithms. Track the user's model, not the code's shape, and keep sentences whole. Say each thing once: no sentence restating its neighbour, no provenance though a choice's reason stays, no example or *See also* entry repeating what a link already gives, no flourish, and one owner for a fact touching several nodes, the rest linking to it. Typeset by the conventions: one continuous line per paragraph, a blank line between bullets that wrap, two blank lines before a node title, *italics* for a named section or element, **bold** only to introduce a term of art on first use, an inline link when a sentence names another node in passing and a *See also* entry with its own reason otherwise. Beside each draft, list what you changed to meet the standard. [Node](ndd.map.md#node).
 
 ### Engagement Rule: User Edits
 

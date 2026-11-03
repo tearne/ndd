@@ -149,6 +149,8 @@ The principles below are the binding constraints every change answers to, and th
 
 ```yaml
 id: d3t
+approvals:
+  tearne: {at: 2026-11-03, hash: e08a18de}
 ```
 
 The three deaths the method's name refers to, each a way understanding is lost once agents write the code.
@@ -157,7 +159,7 @@ The three deaths the method's name refers to, each a way understanding is lost o
 
 - **Structural thinking dies** when the human no longer authors the codebase and the agent's output has nowhere to be reasoned about.
 
-- **Comprehension dies** when the developer's role stops being architecturally fun, because understanding is sustained by engagement, not discipline.
+- **Comprehension dies** when the developer's role stops being architecturally fun, because understanding is sustained by [engagement](#enjoyment), not discipline.
 
 
 # Comprehension is an Activity
@@ -168,7 +170,7 @@ The three deaths the method's name refers to, each a way understanding is lost o
 id: c8a
 ```
 
-No artifact substitutes for the activity of structural thinking itself. Reading a spec doesn't build the model; maintaining the map does — the deliberate construction that keeps the user's structural grasp growing as fast as agents produce code.
+No artefact substitutes for the activity of structural thinking itself. Reading a spec doesn't build the model; maintaining the map does — the deliberate construction that keeps the user's structural grasp growing as fast as agents produce code.
 
 
 # Intent Memory
@@ -192,7 +194,7 @@ id: j2e
 
 Structural thinking must stay enjoyable — it's the part strong practitioners value, and a process that reduces the user to reviewing agent diffs destroys engagement. Engagement, not discipline, is what sustains comprehension over time: you keep understanding a system because staying in the structural thinking is rewarding, not by willpower. Enjoyment is a binding constraint, not a bonus.
 
-Its corollary is **artifact economy**: every word in a change document or map node competes for the reader's attention, so bloat and duplication turn a dialogic activity with the agent into a wading exercise.
+Its corollary is **artefact economy**: every word in a change document or map node competes for the reader's attention, so bloat and duplication turn a dialogic activity with the agent into a wading exercise.
 
 
 # Local Sufficiency
@@ -224,11 +226,13 @@ A tree delivers local sufficiency for free: every node has one parent, one home,
 
 ```yaml
 id: f9x
+approvals:
+  tearne: {at: 2026-11-03, hash: f2edd114}
 ```
 
 If the map is the source of truth, independent agents can render it — and differences between renderings test its quality. A good map renders consistently where it matters; a bad one doesn't, exposing abstraction leaks and model-vs-reality drift without the user reading code.
 
-Full cross-rendering is expensive, kept for high-stakes moments. Its everyday forms are two [Maintenance](#maintenance) checks. The **ambiguity test** asks whether a fresh agent could build a node without guessing, and [Consistency](#consistency) applies it from the map side. [Rendering](#rendering) tests the one rendering that exists against the map from the code side.
+Full cross-rendering is expensive, kept for high-stakes moments. Its lighter forms are two [Map Review](#map-review) checks. The **ambiguity test** asks whether a fresh agent could build a node without guessing, and [Consistency](#consistency) applies it from the map side. [Rendering](#rendering) tests the one rendering that exists against the map from the code side.
 
 
 # Orient Then Focus
@@ -287,12 +291,12 @@ The map is the developer's conceptual model of the system. NDD assumes that any 
 ```yaml
 id: nd1
 approvals:
-  tearne: {at: 2026-11-03, hash: a844a1ce}
+  tearne: {at: 2026-11-03, hash: fc25e803}
 ```
 
-A node represents **one** concept and includes a heading, name-anchored navigation links to its parent and children, an agent-maintained scaffolding block holding its metadata, and terse prose leading with the mental picture. Optional *Detail* and *See also* sections follow.
+A node represents **one** concept: a heading, [navigation links](#navigation-links) to its parent and children, a scaffolding block holding its metadata, and the [sections](#node-sections) that carry its content.
 
-Every node follows the standards in [Node Sections](#node-sections), [Node Sizing](#node-sizing) and [Writing Style](#writing-style). The agent checks each draft against all three before surfacing it, and once a change is archived, [Map Review](#map-review) checks the map against them again.
+Every node follows the standards in [Node Sections](#node-sections), [Node Sizing](#node-sizing) and [Writing Style](#writing-style). The agent checks each draft against all three before surfacing it, checking only the text it drafts and offering flaws elsewhere in the node as separate edits, and lists beside the draft what it changed to meet them. Once a change is archived, [Map Review](#map-review) checks the map against them again.
 
 The format is a strict superset of a plain-markdown section — strip the scaffolding and links and what remains is an ordinary heading with prose, so a map renders and navigates as plain markdown in any tool.
 
@@ -308,14 +312,14 @@ The format is a strict superset of a plain-markdown section — strip the scaffo
 ```yaml
 id: w9c
 approvals:
-  tearne: {at: 2026-10-26, hash: 6c2ed09f}
+  tearne: {at: 2026-11-03, hash: 9638883b}
 ```
 
 A node's name can change; its identity can't. A small immutable token in the yaml scaffolding block survives node renames and moves. [Navigation](#navigation-links) never uses it, nor does agent output — references name the heading, so the id can be meaningless.
 
 **Detail**
 
-The **scaffolding block** is fenced YAML directly under the navigation links containing the `id` and any [approval stamps](#approval-stamp). It's agent-maintained. The `id:` key is map-unique, lowercase alphanumeric, three or more characters (e.g. `k7f`) - a token rather than a readable slug to avoid edit or link temptation. A user may hand-draft a node without a block; [Tidy](#tidy) adds the block and reports it, so identity is never silently missing.
+The **scaffolding block** is fenced YAML directly under the navigation links containing the `id` and any [approval stamps](#approval-stamp). It's agent-maintained. The `id:` key is map-unique, lowercase alphanumeric, three or more characters (e.g. `k7f`) — a token rather than a readable slug to avoid edit or link temptation. A user may hand-draft a node without a block; [Tidy](#tidy) adds the block and reports it, so identity is never silently missing.
 
 
 # Navigation Links
@@ -325,10 +329,10 @@ The **scaffolding block** is fenced YAML directly under the navigation links con
 ```yaml
 id: b3q
 approvals:
-  tearne: {at: 2026-10-26, hash: 2d48a853}
+  tearne: {at: 2026-11-03, hash: 7f473cdf}
 ```
 
-The tree is defined by its links. Each node names its parent and each child. Siblings aren't listed directly.
+The tree is defined by its links, which resolve by node name. Each node names its parent and each child. Siblings aren't listed directly.
 
 > [!IMPORTANT] Links resolve by node name, so ordinary markdown tooling navigates them.
 
@@ -367,13 +371,15 @@ The main user-facing parts of a node are each optional and include, in a fixed o
 
 ```yaml
 id: c5k
+approvals:
+  tearne: {at: 2026-11-03, hash: 82a4fbdf}
 ```
 
-A callout is a "don't skim this" flag on a point the prose already makes. It marks the load-bearing moments where skimming would lose the reader, such as a design trade-off, a non-obvious assumption, or a constraint that shapes the whole node.
+A callout is a "don't skim this" flag on a point the prose already makes. It marks the load-bearing moments where skimming would lose the reader, such as a design trade-off, a non-obvious assumption, or a constraint that shapes the whole node. It is never a highlighter for every notable fact.
 
 **Detail**
 
-Rendered as a `> [!IMPORTANT]` blockquote, never as a highlighter for every notable fact.
+Rendered as a `> [!IMPORTANT]` blockquote.
 
 
 # Approval Stamp
@@ -592,7 +598,7 @@ Typographic conventions for map prose.
 ```yaml
 id: e2c
 approvals:
-  tearne: {at: 2026-11-03, hash: 52a9fa4f}
+  tearne: {at: 2026-11-03, hash: ee636ce4}
 ```
 
 A node says each thing once, and nothing the reader already has. The ways it fails, most often:
@@ -611,7 +617,7 @@ Across nodes the same holds: a fact touching several nodes has one owner, and th
 
 **See also**
 
-- [Enjoyment](#enjoyment) — artifact economy: why every word competes for the reader's attention.
+- [Enjoyment](#enjoyment) — artefact economy: why every word competes for the reader's attention.
 
 
 # Edit Governance
@@ -622,6 +628,8 @@ Across nodes the same holds: a fact touching several nodes has one owner, and th
 
 ```yaml
 id: e7m
+approvals:
+  tearne: {at: 2026-11-03, hash: a6197505}
 ```
 
 The rules for changing the artefact itself. Three questions govern every edit:
@@ -632,11 +640,11 @@ The rules for changing the artefact itself. Three questions govern every edit:
 
 - *when* a node is due for work — [Maintenance](#maintenance).
 
-Because these edits describe reality rather than intent, they fall outside the active-change requirement — the **map exemption**: no open change is needed, and they may happen at any time. That exemption lifts only the active-change constraint; the [Engagement Rule](#engagement-rule)'s per-node negotiation for map updates still applies.
+A map edit that describes what already exists falls outside the write gate — the **map exemption**: no change need be in Build, and the edit may happen at any time. That exemption lifts only the write gate; the [Engagement Rule](#engagement-rule)'s per-node negotiation for map updates still applies.
 
 **See also**
 
-- [Gates and Permissions](#gates-and-permissions) — the active-change requirement this exemption stands against.
+- [Gates and Permissions](#gates-and-permissions) — owns the write gate this exemption lifts.
 
 
 # Sync Rule
@@ -728,13 +736,13 @@ A change's file name is its title in two to five hyphenated words, optionally be
 ```yaml
 id: l5g
 approvals:
-  tearne: {at: 2026-10-26, hash: a09ed9b7}
+  tearne: {at: 2026-11-03, hash: ddd4d371}
 ```
 
 A change is a single markdown document that advances through three phases:
 
 1. **[Plan](#plan)** — producing the change document, in the shape its [Change Style](#change-style) sets.
-2. **[Build](#build)** — doing the work against the Plan, the same whichever style made it.
+2. **[Build](#build)** — doing the work against the Plan.
 3. **[Conclude](#conclude)** — a retrospective once the work is accepted.
 
 Each phase is surfaced for the user's explicit approval before the next begins.
@@ -767,14 +775,14 @@ At each move between lifecycle stages the agent first reads the governing map no
 ```yaml
 id: v3d
 approvals:
-  tearne: {at: 2026-10-26, hash: 15d534c5}
+  tearne: {at: 2026-11-03, hash: c65e5735}
 ```
 
-The plan builds up in **parts**, each drafted then surfaced for approval before the next. Every plan starts with the [Intent](#intent); the parts that follow are set by its [Change Style](#change-style).
+The plan is the part of a change document written before [Build](#build); the Log and Conclude come after. It builds up in **parts**, each drafted then surfaced for approval before the next. Every plan starts with the [Intent](#intent); the parts that follow are set by its [Change Style](#change-style).
 
 What may be written meanwhile is set by [Gates and Permissions](#gates-and-permissions). Two further sections sit outside the parts sequence, ungated: [Context](#context), which explains why the change exists, and [Unresolved](#unresolved), which holds what the plan has yet to settle.
 
-A Plan need not be fully formed to exist. A change may sit at any degree of formation — from an [Intent](#intent)-only draft just parked via [aside](#aside-keyword), up to a completed preparation section awaiting approval.
+A plan need not be fully formed to exist. A change that is not building is **parked** in `changes/open/`, at any degree of formation: from an [Intent](#intent)-only draft just set down via [aside](#aside-keyword), up to a completed preparation section awaiting approval.
 
 
 # Intent
@@ -784,10 +792,10 @@ A Plan need not be fully formed to exist. A change may sit at any degree of form
 ```yaml
 id: i8b
 approvals:
-  tearne: {at: 2026-10-22, hash: 30406eab}
+  tearne: {at: 2026-11-03, hash: 34cf51a9}
 ```
 
-The opening part: what the change must achieve, in domain language, stated so the user can approve it. Not how it will be delivered unless relevant to the requirement, and not why it is needed: every *why* — history, provenance, the reasoning that led here — belongs in [Context](#context). Kept brief and requiring user approval before anything else proceeds. For a [Trivial](#trivial) change the Intent is the whole plan.
+The opening part: what the change must achieve, in domain language, stated so the user can approve it. Not how it will be delivered unless relevant to the requirement, and not why it is needed: every *why* — history, provenance, the reasoning that led here — belongs in [Context](#context). It requires user approval before anything else proceeds.
 
 Its prose has a [cap](#caps), so the opening scans in seconds. Once the change's preparation section — [Bounds](#bounds), [Focus](#focus), or [Change Specification](#change-specification) — is approved, the agent re-reads the Intent and cuts whatever it now carries, surfacing the trimmed Intent with its count. Trivial changes have no preparation section and no trim step.
 
@@ -837,18 +845,18 @@ An empty section is deleted; its absence is the signal that the plan is ready.
 ```yaml
 id: u6k
 approvals:
-  tearne: {at: 2026-10-26, hash: ee9b3f1a}
+  tearne: {at: 2026-11-03, hash: 69d0dc78}
 ```
 
 The agent executes the plan against the real project files rather than changing it mid-flight, posting concise updates. It interrupts only when something warrants it — a planned pause, surprise, ambiguity, an error in the plan, or a task that [edits the map](#engagement-rule).
 
 Only one change builds at a time, held by the [build lock](#build-lock), and its progress is kept in the [Log](#log).
 
+The user can return the change to planning at any time, the lock kept or released as [Build Lock](#build-lock) directs; a [Formal](#formal-build) change can instead re-agree its target in place.
+
 **Detail**
 
-A [versioned](#versioning) project agrees a bump kind on build start and sets a dev version at each hand-back for testing.
-
-The change can be returned to planning for rewriting any time the user chooses.
+The change claims its version at build start, as [Versioning](#versioning) directs.
 
 
 # Build Lock
@@ -875,12 +883,12 @@ At the [Startup Scan](#startup-scan), a lock on a change whose work is unfinishe
 ```yaml
 id: g2l
 approvals:
-  tearne: {at: 2026-10-26, hash: 63a3f7e4}
+  tearne: {at: 2026-11-03, hash: 68ee06ba}
 ```
 
 A running record at the foot of the change document, kept during [Build](#build) so a resuming session can see how far the build got. The agent writes a terse line for each plan item as it settles, without asking, and records the unexpected: surprises, deviations, blockers, partial progress.
 
-Any items put to one side during Build are logged as open and must be resolved before [Concluding](#conclude): each folded into the build, parked as a change of its own, or discarded if the user chooses. Nothing open is carried past Build.
+Any items put to one side during Build are logged as open and must be resolved before [Concluding](#conclude): each folded into the build, parked as a change of its own, or discarded if the user chooses.
 
 
 # Conclude
@@ -891,7 +899,7 @@ Any items put to one side during Build are logged as open and must be resolved b
 ```yaml
 id: o4j
 approvals:
-  tearne: {at: 2026-10-26, hash: 6419b68c}
+  tearne: {at: 2026-11-03, hash: 5574d06b}
 ```
 
 The closing note, written only once the user confirms the build is done. It records the delta from the plan — deviations, surprises, documents touched — not a summary of what the plan already said.
@@ -904,7 +912,7 @@ Its mere presence is the marker that the change is finished.
 
 **See also**
 
-- [Enjoyment](#enjoyment) — artifact economy: why Conclude is capped short and never re-tells the journey.
+- [Enjoyment](#enjoyment) — artefact economy: why Conclude is capped short and never re-tells the journey.
 
 
 # Archiving
@@ -914,14 +922,14 @@ Its mere presence is the marker that the change is finished.
 ```yaml
 id: a9v
 approvals:
-  tearne: {at: 2026-10-22, hash: 44491f2f}
+  tearne: {at: 2026-11-03, hash: bb8e02e6}
 ```
 
 Archiving closes a change once its [Conclude](#conclude) note is approved. Its steps, in order:
 
 1. Add the change's entry to the changelog, if the project is [versioned](#versioning).
 2. Run [Tidy](#tidy) across the map.
-3. Move the change from `changes/open/` to `changes/archive/`, dropping any leading number and adding the ISO date it concluded, so `140-config-file-format.md` becomes `2026-05-14-config-file-format.md`. Its [companion folder](#companion-folder) goes with it.
+3. Move the change from `changes/open/` to `changes/archive/`, dropping any leading number and adding the ISO date it concluded, so `140-config-file-format.md` becomes `2026-05-14-config-file-format.md`. Its companion folder follows, as [Companion Folder](#companion-folder) directs.
 4. Release the [build lock](#build-lock).
 5. Review any pause entries in `changes/resume.md`, as [Pause Keyword](#pause-keyword) directs.
 6. Ask what next: a [Map Review](#map-review), the project's release steps if its map defines any, or something else.
@@ -985,10 +993,10 @@ A durable home for unfinished thinking that precedes an [Intent](#intent). A dis
 ```yaml
 id: r7b
 approvals:
-  tearne: {at: 2026-10-18, hash: 65003849}
+  tearne: {at: 2026-11-03, hash: 87342ca1}
 ```
 
-The record itself. Kept concise, in whatever prose shape fits the topic — agreements with their essential reasoning, open questions, options and links to related work. The agent prunes and rewrites the record freely to reflect current thinking, outside the [Engagement Rule](#engagement-rule): Discussion edits are not drafted-surfaced-settled or counted. Git history holds the deep archive, and past reasoning is retained only where its loss would risk revisiting a dead-end or where an idea is worth flagging for later resurfacing.
+The record itself, a file in `changes/open/` named by a readable slug ending `-discussion.md`. Kept concise, in whatever prose shape fits the topic — agreements with their essential reasoning, open questions, options and links to related work. The agent prunes and rewrites the record freely to reflect current thinking, outside the [Engagement Rule](#engagement-rule): discussion edits are neither surfaced nor counted. Git history holds the deep archive; past reasoning stays only where losing it risks revisiting a dead end, or where an idea is worth resurfacing later.
 
 On a [pause](#pause-keyword) the agent leaves a **Resume** anchor with return points and a pointer to current thinking; the anchor is trimmed on resumption. The agent flags meaningful connections and discusses uncertain or consequential relationships before settling them.
 
@@ -1000,14 +1008,14 @@ On a [pause](#pause-keyword) the agent leaves a **Resume** anchor with return po
 ```yaml
 id: d9k
 approvals:
-  tearne: {at: 2026-10-26, hash: 127cbc1d}
+  tearne: {at: 2026-11-03, hash: 11a385f9}
 ```
 
 The closing note for a discussion, proposed by either party: the agent when the discussion looks near its end, the user when they say so. Within its [cap](#caps), it states what the discussion produced — understanding, decisions, promoted candidates linked to their new [parked changes](#plan) — what was dropped, and any ideas worth resurfacing later. The user approves before archiving.
 
 First the agent reviews anything in the record that could become its own change; the user promotes each to a parked change (Intent only) or drops it, and none is left hanging.
 
-On approval the file, a readable slug ending `-discussion.md`, is prefixed with the ISO date and moved to `changes/archive/`, its links updated.
+On approval the [record](#discussion-records) is prefixed with the ISO date and moved to `changes/archive/`, its links updated.
 
 
 # Change Style
@@ -1021,10 +1029,10 @@ On approval the file, a readable slug ending `-discussion.md`, is prefixed with 
 ```yaml
 id: e3n
 approvals:
-  tearne: {at: 2026-10-22, hash: 8eb92b8d}
+  tearne: {at: 2026-11-03, hash: 37a9e242}
 ```
 
-Each change is worked in one of four styles, each giving the [Plan](#plan) its own shape after [Intent](#intent). [Build](#build) and [Conclude](#conclude) are the same whichever is chosen. The agent proposes a style once Intent is approved — default **Formal** — and the user confirms. The chosen style is recorded as a `**Change Style:** <name>` line beneath the change's title, before the Intent.
+Each change is worked in one of four styles, each giving the [Plan](#plan) its own shape after [Intent](#intent). [Build](#build) and [Conclude](#conclude) are the same whichever is chosen. The agent proposes a style once Intent is approved, and the user confirms. The chosen style is recorded as a `**Change Style:** <name>` line beneath the change's title, before the Intent.
 
 | Style | Preparation before Build |
 |-------|--------------------------|
@@ -1043,10 +1051,10 @@ The four are not a ladder: the agent proposes the style whose shape fits, not th
 ```yaml
 id: t0v
 approvals:
-  tearne: {at: 2026-10-22, hash: d1e60a67}
+  tearne: {at: 2026-11-03, hash: 666e287e}
 ```
 
-Uses [Intent](#intent) only — the whole plan. The lightest of the four styles. Chosen when a change has virtually no substantive ambiguity — the domain outcome is clear, and the agent finds no decision along the way that would reasonably need surfacing for approval. During [Build](#build) the agent verifies proportionately to what is being changed and reports results; anything consequential that emerges is surfaced rather than absorbed silently.
+Uses [Intent](#intent) only — the whole plan. Chosen when a change has virtually no substantive ambiguity — the domain outcome is clear, and the agent finds no decision along the way that would reasonably need surfacing for approval. During [Build](#build) the agent verifies proportionately to what is being changed and reports results; anything consequential that emerges is surfaced rather than absorbed silently.
 
 
 # Vibe
@@ -1057,12 +1065,10 @@ Uses [Intent](#intent) only — the whole plan. The lightest of the four styles.
 ```yaml
 id: v2m
 approvals:
-  tearne: {at: 2026-10-22, hash: 4d35bbc8}
+  tearne: {at: 2026-11-03, hash: 41c8aded}
 ```
 
-Uses [Intent](#intent) and a light [Bounds](#bounds) section. Chosen when the user opts to let the agent decide the shape of the work as it goes; the safeguard is the agent's judgement about when to escalate, not an upfront specification. For example, stakes may be low enough that tighter specification isn't worth the effort. Bounds is kept brief on purpose — a short shared understanding of anything context-specific worth naming, and nothing more. Wordy Bounds would drain the very attention Vibe was chosen to save.
-
-During [Build](#build) the agent works within the agreed envelope and escalates on its own judgement when something turns up that Bounds could not have anticipated.
+Uses [Intent](#intent) and a light [Bounds](#bounds) section. Chosen when the user opts to let the agent decide the shape of the work as it goes, for instance when the stakes are too low for tighter specification to be worth the effort. The safeguard is the agent's judgement, not an upfront specification: during [Build](#build) the agent works within the agreed envelope and escalates when something turns up that Bounds could not have anticipated.
 
 
 # Bounds
@@ -1072,12 +1078,12 @@ During [Build](#build) the agent works within the agreed envelope and escalates 
 ```yaml
 id: b3n
 approvals:
-  tearne: {at: 2026-10-22, hash: fdd6b4a5}
+  tearne: {at: 2026-11-03, hash: f7ffb588}
 ```
 
-The preparation section for a [Vibe](#vibe) change: a brief shared understanding, agreed after [Intent](#intent), of anything context-specific worth naming before [Build](#build) begins. The agent proposes Bounds. The safeguard is the agent's judgement to escalate when the stakes rise, not an attempt to enumerate every case.
+The preparation section for a [Vibe](#vibe) change: a brief shared understanding, agreed after [Intent](#intent), of anything context-specific worth naming before [Build](#build) begins. The agent proposes Bounds. It is kept brief on purpose, since wordy Bounds would drain the very attention Vibe was chosen to save, and it need not enumerate every case.
 
-Bounds are context-dependent — a hard constraint, a performance sensitive piece of adjacent code, a checkpoint the user wants surfaced, or a specific decision to reserve.
+Bounds are context-dependent — a hard constraint, a performance-sensitive piece of adjacent code, a checkpoint the user wants surfaced, or a specific decision to reserve.
 
 Bounds has a [cap](#caps).
 
@@ -1090,10 +1096,10 @@ Bounds has a [cap](#caps).
 ```yaml
 id: e5x
 approvals:
-  tearne: {at: 2026-10-15, hash: 089de978}
+  tearne: {at: 2026-11-03, hash: 5efd51f9}
 ```
 
-Uses [Intent](#intent) and [Focus](#focus) sections. Chosen when what the change should produce is best found by doing the work step by step, each step informing the next, rather than specified first. Focus names the work pursued; there is no worklist or done-when, because knowing when to close is part of the work.
+Uses [Intent](#intent) and [Focus](#focus) sections. Chosen when what the change should produce is best found by doing the work step by step, each step informing the next, rather than specified first.
 
 Emergent is real-time collaboration on a moving target: user and agent shape the work together, adjusting as understanding shifts. [Build](#build) delivers within the change as the work emerges, each map edit under the [Engagement Rule](#engagement-rule). An artefact, understanding, a decision, or a handoff to a further change is each a complete outcome.
 
@@ -1126,10 +1132,10 @@ If the work shifts, Focus can be re-agreed rather than the change concluded. Foc
 ```yaml
 id: f8p
 approvals:
-  tearne: {at: 2026-09-30, hash: 5af3bc71}
+  tearne: {at: 2026-11-03, hash: 7cf2352e}
 ```
 
-Uses Intent, [Change Specification](#change-specification) and optionally [Implementation Plan](#implementation-plan) sections. Chosen when it is worth agreeing what "done" looks like before [Build](#build) begins. The Change Specification captures the target — what must hold when the change lands — and Build is executed against it. When delivery choices warrant explicit agreement in their own right, an Implementation Plan follows the Change Specification; otherwise none is needed.
+Uses Intent, [Change Specification](#change-specification) and optionally [Implementation Plan](#implementation-plan) sections. Chosen when it is worth agreeing what "done" looks like before [Build](#build) begins. The Change Specification captures the target — what must hold when the change lands — and Build is executed against it.
 
 Formal is the default when the agent is unsure which style fits, and is particularly valuable for high-value work where drafting the map structure upfront pays back many times over.
 
@@ -1141,12 +1147,12 @@ Formal is the default when the agent is unsure which style fits, and is particul
 ```yaml
 id: s7q
 approvals:
-  tearne: {at: 2026-10-17, hash: 73f49c5e}
+  tearne: {at: 2026-11-03, hash: 2ca6aa8d}
 ```
 
 The preparation section for a [Formal](#formal) change: specifying what must hold when the change lands.
 
-The specification consists of map nodes, plus target versions of any agreed non-map assets, inline or in the [companion folder](#companion-folder) with a one-line relative path specified. When the specification will touch multiple nodes, the agent proposes a sub-map or whole-map file copy, kept in the companion folder, pausing to give opportunity to check in so diffs are effective during planning. Once built the live map must describe the completed result.
+The specification consists of map nodes, plus target versions of any agreed non-map assets, inline or in the [companion folder](#companion-folder) with a one-line relative path specified. When the specification will touch multiple nodes, the agent proposes a sub-map or whole-map copy in the companion folder, then pauses for the user to commit it, so that diffs against it show only the planned edits. Once built the live map must describe the completed result.
 
 Node approval follows the normal [Engagement Rule](#engagement-rule), with approval stamps that transfer to the live map during Build. Each non-map target is surfaced as a diff and approved likewise, and questioned if it takes over the map's job of describing the system.
 
@@ -1158,12 +1164,12 @@ Node approval follows the normal [Engagement Rule](#engagement-rule), with appro
 ```yaml
 id: ip5
 approvals:
-  tearne: {at: 2026-10-26, hash: 8d4aea6a}
+  tearne: {at: 2026-11-03, hash: 252ddbe2}
 ```
 
-An optional preparation section for a [Formal](#formal) change, added when consequential delivery choices remain after the [Change Specification](#change-specification) is agreed. Captures decisions about how to deliver — sequencing, staging, dependencies, rollback — rather than a step-by-step checklist. Omitted when the delivery path is obvious.
+An optional preparation section for a [Formal](#formal) change, proposed by the agent when consequential delivery choices remain after the [Change Specification](#change-specification) is agreed. Captures decisions about how to deliver — sequencing, staging, dependencies, rollback — rather than a step-by-step checklist.
 
-The agent proposes an Implementation Plan when the specification alone does not settle delivery. If added, Build follows it; deviations go to the [Log](#log), and material rework re-agrees the plan with the [Build Lock](#build-lock) kept, resuming against the revised plan — a full return to planning is reserved for abandoning Formal.
+If added, Build follows it; deviations go to the [Log](#log), and material rework is re-agreed as [Formal Build](#formal-build) directs.
 
 
 # Formal Build
@@ -1173,12 +1179,12 @@ The agent proposes an Implementation Plan when the specification alone does not 
 ```yaml
 id: fb9
 approvals:
-  tearne: {at: 2026-10-17, hash: 2a078af1}
+  tearne: {at: 2026-11-03, hash: b535d646}
 ```
 
 Layered onto general [Build](#build); the Formal additions follow.
 
-Before proposing Build, the agent reconciles the [Change Specification](#change-specification) against current reality; revisions required by intervening work return the change to spec development, as do issues uncovered during the build. Build-time re-agreement keeps the [Build Lock](#build-lock), resuming against the revised target when agreed.
+Before proposing Build, the agent reconciles the [Change Specification](#change-specification) against current reality. Revisions required by intervening work, or issues uncovered during the build, are re-agreed in the Change Specification or [Implementation Plan](#implementation-plan) with the [Build Lock](#build-lock) kept, and Build resumes against the revised target.
 
 Build lands non-map assets in place, matching any approved non-map targets. Last of all, approved nodes on the Change Specification target promote into the live map. Where the live map has drifted from the baseline, promotion goes per node so drift surfaces before Conclude.
 
@@ -1228,7 +1234,7 @@ A versioned project keeps a changelog and uses semver. Each change carries its o
 ```yaml
 id: x7t
 approvals:
-  tearne: {at: 2026-10-22, hash: f34db38b}
+  tearne: {at: 2026-11-03, hash: 88e38a52}
 ```
 
 First in every session, the agent reads the project's change status. It then announces the session's mode — planning, building, discussing, or a combination — reports what it found, and proposes the next step.
@@ -1247,7 +1253,7 @@ The report covers:
 
 - If no work is already in progress, an offer of a [Backlog Review](#backlog-review).
 
-A project with no `map.md` and no `changes/` tree hasn't started; the agent [bootstraps](#bootstrapping) it instead.
+A project that hasn't started is offered [bootstrapping](#bootstrapping) instead.
 
 
 # Bootstrapping
@@ -1274,19 +1280,19 @@ Adopting an existing codebase adds a survey: the agent reads its assets and prop
 
 ```yaml
 id: g5m
+approvals:
+  tearne: {at: 2026-11-03, hash: 26948f21}
 ```
 
-Two rules gating what the agent may do without asking:
+Three rules gating what the agent may do without asking:
 
 - **Approval** — what counts as the user saying yes.
 
 - **Write permission** — what the agent may change at each point.
 
-Writing is gated by phase and by an active change. During [Plan](#plan) the agent writes only inside `changes/`; project files are read-only. Writing a project file needs a change under [build](#build), recorded in `active.md`, unless the [map exemption](#edit-governance) applies. Reading anything is always allowed.
+- **Git writes** — commit, push, branch and reset, which happen only on the user's explicit instruction.
 
-**Detail**
-
-Git write operations — commit, push, branch, reset — always require explicit user instruction; the agent never does them on its own initiative.
+Writing is gated by phase. Outside [Build](#build) the agent writes only inside `changes/`; project files are read-only. Writing a project file needs the change to be in Build, holding the lock in `active.md`, unless the [map exemption](#edit-governance) applies; a change returned to planning keeps the lock but not the permission. Reading anything is always allowed.
 
 
 # Approval
@@ -1310,16 +1316,16 @@ Approval requires a clear affirmative in response to the agent asking. Silence, 
 ```yaml
 id: d4r
 approvals:
-  tearne: {at: 2026-10-26, hash: 04f8905c}
+  tearne: {at: 2026-11-03, hash: c5517199}
 ```
 
-A draft is only the text surfaced; an action named alongside it, such as a log entry or a new file, needs its own draft. Drafts go to chat by default, or in place if the user says *write*, after which the agent stops until the user next replies, then reviews any edit they made as the [Engagement Rule](#engagement-rule) directs. A bare *write* covers one draft; only an instruction saying so covers the session. *Write* is never approval and never a cue to move on.
+A draft is only the text surfaced; an action named alongside it, such as a new file, needs its own draft unless the method lets the agent act without asking, as with a [Log](#log) line. Drafts go to chat unless the user says *write*: then the draft goes in place and the agent stops until the user next replies, reviewing any edit as the [Engagement Rule](#engagement-rule) directs. A bare *write* covers one draft; only an instruction saying so covers the session. *Write* is never approval and never a cue to move on, even in reply to an ask for approval.
 
 **Detail**
 
-A draft written in place sits between `<!-- draft -->` and `<!-- /draft -->`, visible in the raw file and hidden when rendered, so a lost session cannot leave it reading as settled. Approval deletes the markers; declining deletes the region.
+A draft written in place sits between `<!-- draft -->` and `<!-- /draft -->`, visible raw but hidden when rendered, so a lost session cannot leave it reading as settled. Approval deletes the markers; declining deletes the region.
 
-A marker quoted in code, as here, is a mention, not a marker.
+A marker quoted in code, as here, is only a mention.
 
 
 # Keywords
@@ -1368,10 +1374,18 @@ The entry is dated and captures the observation plus any surrounding context (ph
 ```yaml
 id: y2f
 approvals:
-  tearne: {at: 2026-10-26, hash: 9b127ccb}
+  tearne: {at: 2026-11-03, hash: f1667f1a}
 ```
 
-A message flagged `aside` parks a topic for later without breaking the current flow. The agent scans open [discussions](#discussion) and changes for overlap and routes by content: appends to an existing discussion when the aside continues that thread; else opens a new parked change with an [Intent](#intent) only if the aside is Intent-shaped; else opens a new [discussion](#discussion) record. Placement is confirmed in one line. Overlap noticed with an existing change is named in the confirmation without attaching, so the change's owner can fold it in on resumption. Material belonging to the *current* change goes to its [Unresolved](#unresolved) instead, or to its [Log](#log) during Build.
+A message flagged `aside` parks a topic for later without breaking the current flow. The agent scans open [discussions](#discussion) and changes for overlap and routes by content:
+
+- appends to an existing discussion when the aside continues that thread;
+
+- else opens a new parked change with an [Intent](#intent) only, if the aside is Intent-shaped;
+
+- else opens a new [discussion](#discussion) record.
+
+Placement is confirmed in one line. Overlap noticed with an existing change is named in the confirmation without attaching, so the change's owner can fold it in on resumption. Material belonging to the *current* change is noted there instead, as [Thought Management](#thought-management) sets out.
 
 
 # Pause Keyword
@@ -1451,14 +1465,14 @@ Deferring upkeep for a stretch — an emergency fix, a push elsewhere — is saf
 ```yaml
 id: m3r
 approvals:
-  tearne: {at: 2026-11-03, hash: a727efdc}
+  tearne: {at: 2026-11-03, hash: e29ca8cc}
 ```
 
 Map Review is offered by the agent as a yes-or-no at the moments in the table below, each setting its scope.
 
 [Tidy](#tidy) has already run and reported by then, so a yes opens the **findings list**: everything the Tidy and Map Review checks found that needs a judgement, summarised first and then considered one item at a time by [Orient Then Focus](#orient-then-focus). A finding quotes what it faults and what already covers it, so the overlap is seen rather than asserted.
 
-Findings are not stored. A review recomputes from the map, so a deferred finding reappears next time and costs a word to dismiss again. The checks stay askable by name, as is a scope, for anyone who wants less or more than the moment offers.
+Findings are not stored. A review recomputes from the map, so a deferred finding reappears next time and costs a word to dismiss again. The checks stay askable by name, and so does a scope, for anyone who wants less or more than the moment offers.
 
 | Scope | Checks | Moment |
 |-------|--------|--------|
@@ -1510,6 +1524,8 @@ It looks for:
 
 ```yaml
 id: k4c
+approvals:
+  tearne: {at: 2026-11-03, hash: 353b04df}
 ```
 
 A check on whether the map's ideas hold together. It reads across nodes rather than within one, so it costs more than a check on one node.
@@ -1528,7 +1544,7 @@ It looks for:
 
 **Detail**
 
-The ambiguity test is the everyday form of [Cross-Agent Falsifiability](#cross-agent-falsifiability): a node it flags is a map-quality gap, not an implementation problem.
+A node the [ambiguity test](#cross-agent-falsifiability) flags is a map-quality gap, not an implementation problem.
 
 
 # Rendering
@@ -1537,6 +1553,8 @@ The ambiguity test is the everyday form of [Cross-Agent Falsifiability](#cross-a
 
 ```yaml
 id: r3n
+approvals:
+  tearne: {at: 2026-11-03, hash: 6f79f14d}
 ```
 
 A check on whether what exists still reads as a rendering of the map. The agent compares an agreed scope — the whole map, or one area — against the code and files, and reports each place they disagree. Each disagreement is settled one way or the other: the map corrected to what exists, or the code corrected under a change.
@@ -1551,7 +1569,7 @@ It looks for:
 
 - A node the code could have satisfied several ways — ambiguity seen from the code side, for the map to close.
 
-It is the single-agent form of [Cross-Agent Falsifiability](#cross-agent-falsifiability). Because it reads the code it is the costliest check, and the catch-up when map upkeep has been deferred for a while.
+Because it reads the code it is the costliest check, and the catch-up when map upkeep has been deferred for a while.
 
 
 # Backlog Review
@@ -1628,10 +1646,10 @@ The method needs no bespoke application — it rides generic markdown tooling. I
 ```yaml
 id: s9d
 approvals:
-  tearne: {at: 2026-10-16, hash: af27ef94}
+  tearne: {at: 2026-11-03, hash: 5f73e572}
 ```
 
-Guidance for the code written by agents on user projects, distinct from the map spec that governs the *map*. NDD ships a set of **suggested** standards a project adopts, adapts, or ignores — installed as plain markdown under `ndd/standards/`, not folded into the map. This node is the index: an agent scans it to see what exists and opens only the guide a task touches. The code **Style** guide is an always-on default (deviate only when flagged and approved); the rest load on reference.
+Guidance for the code agents write on user projects, distinct from the map spec that governs the map. NDD ships a set of suggested standards a project adopts, adapts or ignores, installed as plain markdown under `ndd/standards/` rather than folded into the map. The table below indexes them: an agent scans it to see what exists and opens only the guide a task touches. The code *Style* guide is an always-on default, deviated from only when flagged and approved; the rest load on reference.
 
 **Detail**
 

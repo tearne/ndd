@@ -71,13 +71,14 @@ A client project then holds two maps: its own in the project root, and NDD's und
 ```yaml
 id: l2s
 approvals:
-  tearne: {at: 2026-10-20, hash: 6db4f3e3}
+  tearne: {at: 2026-11-03, hash: 670dadc8}
 ```
 
 The checklist for a new version of NDD, published by moving `main`, and one of the next steps offered at [Archiving](ndd.map.md#archiving). If releasing, the agent confirms the user wants each of the following:
 
-1. Run every test under [Testing](testing.map.md#testing) and see it pass.
-2. Fold the dev headings in `CHANGELOG.md` into one dated heading, as [Versioning](ndd.map.md#versioning) describes.
+1. Run [Tidy](ndd.map.md#tidy) across the maps and offer the full [Map Review](ndd.map.md#map-review).
+2. Run every test under [Testing](testing.map.md#testing) and see it pass.
+3. Fold the dev headings in `CHANGELOG.md` into one dated heading, as [Versioning](ndd.map.md#versioning) describes.
 
 
 # Installer
@@ -138,10 +139,10 @@ The installer copies into a client's `ndd/` only what the agent and user need at
 ```yaml
 id: r8d
 approvals:
-  tearne: {at: 2026-10-07, hash: 654e177f}
+  tearne: {at: 2026-11-03, hash: 13ad4271}
 ```
 
-`AGENT-RULES.md` is a rendering of the core rules within this map, optimised for agents; an agent follows instructions best with concrete rules based on clear triggers. This map remains authoritative, and the rendering is a route into it: a reference in agent output names the source node, not the rule heading. Each agent rule names its source node, read on demand rather than preemptively at start.
+`AGENT-RULES.md` is a rendering of the core rules within this map, optimised for agents; an agent follows instructions best with concrete rules based on clear triggers. This map remains authoritative, and the rendering is a route into it: a reference in agent output names the source node, not the rule heading. A rule's source node is read on demand rather than preemptively at start.
 
 **Detail**
 
@@ -157,14 +158,14 @@ The agent re-reads the file at the start of every [Build](ndd.map.md#build) and 
 ```yaml
 id: r4l
 approvals:
-  tearne: {at: 2026-10-30, hash: ce0e175c}
+  tearne: {at: 2026-11-03, hash: 44ba6e37}
 ```
 
 The rendering gathers by trigger what the map holds by concept, so an agent finds everything for one trigger in one rule. The trigger is named in each rule's first sentence, as [Rule Phrasing](#rule-phrasing) sets out; the concept is named in its heading.
 
 - Each rule sits under a short level-3 heading naming its source node. Where several rules come from one node, each heading adds what that rule covers, as in *Engagement Rule: Corrections*.
 
-- Each rule closes with a link to its source node.
+- Each rule closes with links to the nodes it renders, unless it already links them inline as nodes to be read.
 
 - A rule with an occasional trigger, such as a session's start or a move between lifecycle stages, points to its node to be read and keeps only what shows it was followed. A rule that holds on every turn or fires often carries its substance in full, as a read each time would be skipped.
 
@@ -208,7 +209,7 @@ Everything else stays in the map. A rule that fails a test should be adapted, cu
 
 The rendering stays short because adherence degrades with instruction count, and across all rules at once, so each rule kept taxes the rest.
 
-If, at rendering time, the agent reviewing the rules set identifies they are sub-optimal the issues should be traced upstream to this map and discussed.
+If, at rendering time, the agent reviewing the rule set finds it sub-optimal, the issues should be traced upstream to this map and discussed.
 
 
 # Rule Testing

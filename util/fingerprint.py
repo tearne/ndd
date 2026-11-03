@@ -51,6 +51,15 @@ def fingerprint(node_lines: list[str]) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()[:8]
 
 
+def scaffolding_block(body: list[str]) -> list[str]:
+    i = 0
+    while i < len(body) and (body[i].strip() == "" or LINK_ONLY_LINE.match(body[i])):
+        i += 1
+    if i < len(body) and body[i].startswith("```yaml"):
+        return body[i:end_of_fence(body, i) + 1]
+    return []
+
+
 def strip_scaffolding(body: list[str]) -> list[str]:
     i = 0
     while i < len(body) and (body[i].strip() == "" or LINK_ONLY_LINE.match(body[i])):
@@ -66,9 +75,12 @@ def due_for(nodes: dict[str, list[str]], person: str) -> list[str]:
     return [name for name, lines in nodes.items() if stamps(lines).get(person) != fingerprint(lines)]
 
 
+# Stamps are read from the scaffolding block only, so an example stamp quoted
+# later in the node is never taken for a real one. Approval Stamp
+# (ndd.map.md#approval-stamp).
 def stamps(node_lines: list[str]) -> dict[str, str]:
     found = {}
-    for line in node_lines:
+    for line in scaffolding_block(node_lines[1:]):
         m = STAMP.match(line)
         if m:
             person = m.group(1) or m.group(2) or m.group(3)

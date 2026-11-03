@@ -8,7 +8,7 @@ Notable changes to NDD, newest first. The current version is the topmost heading
 
 ## 2.10.0-dev
 
-- Drafts and the light Map Review now check nodes against the same standard, set out in *Node*. The *Formatting* agent rule becomes *Node Standard*.
+- Drafts and the light Map Review now check nodes against the same standard, set out in *Node*. The *Formatting* agent rule becomes *Node*.
 - *Economy* keeps the reason for a choice in the node.
 
 ## 2.9.0-dev.1

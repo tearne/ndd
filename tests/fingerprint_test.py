@@ -5,7 +5,7 @@
 
 # Reference implementation of the Fingerprint rule (ndd.map.md#fingerprint),
 # checked against the fixtures beside it, whose expected hashes are also listed
-# in map.md#fingerprint-check. Then checks that util/fingerprint.py agrees.
+# in testing.map.md#fingerprint-check. Then checks that util/fingerprint.py agrees.
 
 import hashlib
 import re
@@ -89,8 +89,26 @@ def main():
             if listed != due:
                 failures += 1
                 print(f"FAIL {file}: due for {person} expected {due}, helper listed {listed}")
+    failures += quoted_stamp_ignored()
     print("OK" if not failures else f"{failures} failures")
     sys.exit(1 if failures else 0)
+
+
+# A stamp quoted in a node's prose, after its scaffolding block, must not be read
+# as a stamp: carol's real stamp matches, and the quoted one, if read, would not.
+def quoted_stamp_ignored() -> int:
+    import tempfile
+    body = ["# Quoted\n", "\n", "Prose quoting a stamp:\n", "\n", "```yaml\n", "approvals:\n", "  carol: {at: 2026-01-01, hash: 00000000}\n", "```\n"]
+    real = fingerprint(body)
+    node = body[:1] + ["\n", "```yaml\n", "id: q1t\n", "approvals:\n", f"  carol: {{at: 2026-01-01, hash: {real}}}\n", "```\n"] + body[1:]
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "quoted.map.md"
+        path.write_text("".join(node), encoding="utf-8")
+        listed = subprocess.run([HELPER, path, "--due", "carol"], capture_output=True, text=True).stdout.split("\n")[:-1]
+    if listed:
+        print(f"FAIL quoted stamp: carol expected nothing due, helper listed {listed}")
+        return 1
+    return 0
 
 
 if __name__ == "__main__":
