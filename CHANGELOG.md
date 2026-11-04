@@ -2,37 +2,13 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
-## 3.0.0-dev
+## 3.0.0 — 2026-11-04
 
 - The method now ships in a `method/` directory; re-running the installer migrates a 2.x install.
-
-## 2.10.2-dev
-
-- The fingerprint helper reads stamps only from a node's scaffolding block, and never lists *Contents* as due.
-
-## 2.10.1-dev
-
-- New *Rule Testing* node under *Agent Rules*: each new or reworded agent rule is tested against the wording it replaces before it ships.
-
-## 2.10.0-dev
-
-- Drafts and the light Map Review now check nodes against the same standard, set out in *Node*. The *Formatting* agent rule becomes *Node*.
-- *Economy* keeps the reason for a choice in the node.
-
-## 2.9.0-dev.1
-
-- The installer ships only the *Shipped Assets*, written fresh into a cleared `ndd/` on each run; `changes/` and `tests/`, for example, no longer ship.
-
-## 2.8.2-dev
-
-- New *Diffs* node, under *Engagement Rule*: a surfaced diff's fence has more backticks than any fence inside it, and a long line changed by only a word or two has the changed words listed beneath. The *Engagement Rule: Diffs* agent rule is renamed *Diffs* and carries both.
-
-## 2.8.1-dev
-
-- Over its size bound, a node gets the agent's best-fit proposal: tighten the prose, cut what another node already owns, or split it if it carries two concepts. Splitting is no longer the default (*Node Sizing*).
-
-## 2.8.0-dev
-
+- New *Rule Testing* node: each new or reworded agent rule is tested against the wording it replaces before it ships.
+- Drafts and the light Map Review now check nodes against the same standard, set out in *Node*.
+- New *Diffs* node: how a diff surfaced for approval is fenced, with the changed words listed beneath a long line.
+- *Node Sizing*: for a node over the bound, the agent proposes the best fit (tighten, cut what another node owns, or split) rather than splitting by default.
 - The method map is simplified: each fact has one owning node that others link to, and nodes over the ~800 bound are tightened.
 - *Held* is folded into *Unresolved*, which is emptied before Build. An open change file with a `## Held` section renames it and clears it before Build.
 
