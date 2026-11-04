@@ -1,10 +1,10 @@
-# Ship only the method map
+# Stop shipping the project maps
 
 **Change Style:** Formal
 
 ## Intent
 
-Stop shipping the main map, `map.md`, and the tests map, `testing.map.md`. A client doesn't need either: they describe how this repository builds, releases and tests itself. In a client's `ndd/`, `ndd.map.md` stands as its own root.
+Stop shipping the main map, `map.md`, and the tests map, `testing.map.md`, which a client doesn't need. In a client's `ndd/`, `ndd.map.md` stands as its own root.
 
 ## Context
 
@@ -17,4 +17,3 @@ Raised during 105 (2026-11-03). The shipped `testing.map.md` described tests tha
 - *Fingerprint* points to *Fingerprint Check* in `testing.map.md` as the reference that pins the rule.
 - `README.md` ships and links to `map.md`.
 - *Distribution* says a client's `ndd/map.md` is this project map.
-- Title "Ship only the method map" no longer matches the Intent.
