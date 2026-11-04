@@ -3,24 +3,21 @@
 [Contents](#contents) \
 [Distribution](#distribution) \
 [Testing](testing.map.md#testing) \
-[Method Map Form](#method-map-form) \
-[NDD](ndd.map.md#ndd)
+[Method Map Form](#method-map-form)
 
 ```yaml
 id: p1j
 approvals:
-  tearne: {at: 2026-11-03, hash: e3beed4f}
+  tearne: {at: 2026-11-04, hash: 1b3b9b8b}
 ```
 
-The repository that develops and ships Non-Dead Design. The method itself is the [NDD](ndd.map.md#ndd) branch, kept in its own file. This trunk describes how the method is distributed, released and installed. The reasoning behind the method is under [Principles](ndd.map.md#principles).
+The repository that develops and ships Non-Dead Design. The method itself has its own map, [NDD](method/ndd.map.md#ndd), which this project builds and ships as an asset rather than as a branch. This map describes how the method is distributed, released and installed. The reasoning behind the method is under [Principles](method/ndd.map.md#principles).
 
 - **[Distribution](#distribution)** — how NDD reaches a client project: the shipped layout, the release checklist, the installer and the agent rules.
 
 - **[Testing](testing.map.md#testing)** — how this repository checks itself: the checks and their runnable forms under `tests/`.
 
 - **[Method Map Form](#method-map-form)** — the convention this project's method map follows.
-
-- **[NDD](ndd.map.md#ndd)** — the method, in `ndd.map.md`.
 
 
 # Contents
@@ -43,7 +40,6 @@ id: ct6
       - [Rule Testing](#rule-testing)
   - [Testing](testing.map.md#testing)
   - [Method Map Form](#method-map-form)
-  - [NDD](ndd.map.md#ndd)
 
 
 # Distribution
@@ -55,11 +51,13 @@ id: ct6
 
 ```yaml
 id: d5v
+approvals:
+  tearne: {at: 2026-11-04, hash: f34ff91c}
 ```
 
-NDD is distributed as a git checkout: the user clones this repository and runs its [installer](#installer) from within their own project, which vendors the method into an `ndd/` subdirectory there. Upgrading is `git pull` in the checkout, then the same run.
+NDD is distributed as a git checkout: the user clones this repository and runs its [installer](#installer) from within their own project, which vendors the method into an `ndd/` subdirectory there, as [Installation](method/ndd.map.md#installation) describes from the client's side.
 
-A client project then holds two maps: its own in the project root, and NDD's under `ndd/`, whose `map.md` is this project map and whose `ndd.map.md` is the part the agent rules link to. Nothing is rendered on the way, so a client reads exactly what this repository reads.
+Only the method ships, as [Shipped Assets](#shipped-assets) lists; this project map and the testing map stay here. Nothing is rendered on the way, so a client reads exactly what this repository reads.
 
 `main` is the single moving edge — no cut releases; the shipped `CHANGELOG.md` names the current version.
 
@@ -71,14 +69,14 @@ A client project then holds two maps: its own in the project root, and NDD's und
 ```yaml
 id: l2s
 approvals:
-  tearne: {at: 2026-11-03, hash: 670dadc8}
+  tearne: {at: 2026-11-04, hash: f3e0e188}
 ```
 
-The checklist for a new version of NDD, published by moving `main`, and one of the next steps offered at [Archiving](ndd.map.md#archiving). If releasing, the agent confirms the user wants each of the following:
+The checklist for a new version of NDD, published by moving `main`, and one of the next steps offered at [Archiving](method/ndd.map.md#archiving). If releasing, the agent confirms the user wants each of the following:
 
-1. Run [Tidy](ndd.map.md#tidy) across the maps and offer the full [Map Review](ndd.map.md#map-review).
+1. Run [Tidy](method/ndd.map.md#tidy) across the maps and offer the full [Map Review](method/ndd.map.md#map-review).
 2. Run every test under [Testing](testing.map.md#testing) and see it pass.
-3. Fold the dev headings in `CHANGELOG.md` into one dated heading, as [Versioning](ndd.map.md#versioning) describes.
+3. Fold the dev headings in `CHANGELOG.md` into one dated heading, as [Versioning](method/ndd.map.md#versioning) describes.
 
 
 # Installer
@@ -89,18 +87,16 @@ The checklist for a new version of NDD, published by moving `main`, and one of t
 ```yaml
 id: n5w
 approvals:
-  tearne: {at: 2026-11-03, hash: 83ce0609}
+  tearne: {at: 2026-11-04, hash: d1da4379}
 ```
 
-A [POS-style](standards/POS.md) `install.py` at this project's root, run from a consumer's project to install or upgrade NDD. It:
+A [POS-style](method/standards/POS.md) `install.py` at this project's root, run from a consumer's project to install or upgrade NDD; [Installation](method/ndd.map.md#installation) gives the consumer's side. It:
 
-- clears the consumer's `ndd/` and copies the [shipped assets](#shipped-assets) into it from this checkout's disk, uncommitted edits included and scripts still executable; the last installed `ndd.map.md` that differs from the new one is kept as `ndd.prev.map.md`;
+- clears the consumer's `ndd/` and copies the [shipped assets](#shipped-assets) into it from this checkout's disk, uncommitted edits included and scripts still executable; the last installed `ndd.map.md` that differs from the new one is kept beside it as `ndd.prev.map.md`;
 
-- points `CLAUDE.md` and `AGENTS.md` at `ndd/AGENT-RULES.md`, replacing a file that only points into `ndd/` and warning on anything else;
+- points `CLAUDE.md` and `AGENTS.md` at `ndd/method/AGENT-RULES.md`, replacing a file that only points into `ndd/` and warning on anything else;
 
 - adds `ndd/` to `.gitignore`, with each entry file it created, and `.claude/` unless files under it are tracked.
-
-It owns `ndd/` outright; elsewhere it rewrites only its own pointers, and never a file with the consumer's content.
 
 **Detail**
 
@@ -114,18 +110,15 @@ It refuses to run from its own checkout. It checks that every shipped asset is p
 ```yaml
 id: s4h
 approvals:
-  tearne: {at: 2026-11-04, hash: e643fce7}
+  tearne: {at: 2026-11-04, hash: 40393b0e}
 ```
 
-The installer copies into a client's `ndd/` only what the agent and user need at run time, named in an explicit list:
+The installer copies into a client's `ndd/` only what the agent and user need at run time:
 
-- `AGENT-RULES.md`, the agent rules.
-- `map.md`, `ndd.map.md` and `testing.map.md`, the maps.
-- `util/fingerprint.py`, which computes approval stamps.
-- `standards/`, which nodes link to.
-- `CHANGELOG.md`, `README.md` and `LICENSE`.
+- `method/`, holding the agent rules, the method map, the fingerprint helper and the standards.
+- `CHANGELOG.md`, `README.md` and `LICENSE`, from the root.
 
-Everything else stays in the checkout, for example `changes/`, `tests/` and `install.py`. The [Install Check](testing.map.md#install-check) catches a linked file left off the list.
+Everything else stays in the checkout, for example `map.md`, `changes/`, `tests/` and `install.py`. The [Install Check](testing.map.md#install-check) catches a shipped file linking outside what ships.
 
 
 # Agent Rules
@@ -139,16 +132,16 @@ Everything else stays in the checkout, for example `changes/`, `tests/` and `ins
 ```yaml
 id: r8d
 approvals:
-  tearne: {at: 2026-11-03, hash: 58711f50}
+  tearne: {at: 2026-11-04, hash: add5868a}
 ```
 
-`AGENT-RULES.md` is a rendering of the core rules within this map, optimised for agents; an agent follows instructions best with concrete rules based on clear triggers. This map remains authoritative, and the rendering is a route into it: a reference in agent output names the source node, not the rule heading. A rule's source node is read on demand rather than preemptively at start.
+`AGENT-RULES.md` is a rendering of the core rules within the method map, optimised for agents; an agent follows instructions best with concrete rules based on clear triggers. The map remains authoritative, and how a client's agent uses the rendering is set out in [Installation](method/ndd.map.md#installation). A rule's source node is read on demand rather than preemptively at start.
 
 **Detail**
 
-It is hand-maintained at the checkout root, where its links to `ndd.map.md` resolve exactly as they do in a client's `ndd/`. A change that edits a node an agent rule cites updates the rule in the same build; drift noticed otherwise is corrected on sight.
+It is hand-maintained in `method/`, where its links to `ndd.map.md` resolve exactly as they do in a client's `ndd/method/`. A change that edits a node an agent rule cites updates the rule in the same build; drift noticed otherwise is corrected on sight.
 
-The agent re-reads the file at the start of every [Build](ndd.map.md#build) and after any context compaction. Which rules it carries is settled by [Rule Selection](#rule-selection).
+Which rules it carries is settled by [Rule Selection](#rule-selection).
 
 
 # Rule Layout
@@ -219,14 +212,14 @@ If, at rendering time, the agent reviewing the rule set finds it sub-optimal, th
 ```yaml
 id: t5r
 approvals:
-  tearne: {at: 2026-11-03, hash: 6ba76a77}
+  tearne: {at: 2026-11-04, hash: 42050ea7}
 ```
 
 A rule can read well and still backfire, because what an agent does with it shows only in use. Each new or reworded rule is therefore tested before it ships: subagents are given the same task, some with the rule as it stood, or without it, and some with the new wording, and what they produce is compared.
 
 **Detail**
 
-The task tempts the failures the rule targets and probes where it might overreach, in two forms: a fresh draft, and a small edit to text that already breaks the rule, which shows whether the rule pushes an unasked rewrite. The subagents see the rule but not the map, since in use an agent works from the rule rather than the node behind it. A difference that matters sends the rule back to drafting, and the outcome goes in the change's [Log](ndd.map.md#log).
+The task tempts the failures the rule targets and probes where it might overreach, in two forms: a fresh draft, and a small edit to text that already breaks the rule, which shows whether the rule pushes an unasked rewrite. The subagents see the rule but not the map, since in use an agent works from the rule rather than the node behind it. A difference that matters sends the rule back to drafting, and the outcome goes in the change's [Log](method/ndd.map.md#log).
 
 
 # Method Map Form
@@ -236,7 +229,7 @@ The task tempts the failures the rule targets and probes where it might overreac
 ```yaml
 id: f3c
 approvals:
-  tearne: {at: 2026-10-22, hash: 0dbdf9b9}
+  tearne: {at: 2026-11-04, hash: b9fd3121}
 ```
 
-NDD's own method map is concept-first: each fact is owned by the concept it concerns, and a node for a moment in the workflow, such as [Archiving](ndd.map.md#archiving) or the [Startup Scan](ndd.map.md#startup-scan), lists its steps as links to their owners. This is the [Economy](ndd.map.md#economy) convention chosen for this project, not one NDD imposes. The [agent rules](#agent-rules) take the other axis, gathering by trigger, as [Rule Layout](#rule-layout) sets out.
+NDD's own method map is concept-first: each fact is owned by the concept it concerns, and a node for a moment in the workflow, such as [Archiving](method/ndd.map.md#archiving) or the [Startup Scan](method/ndd.map.md#startup-scan), lists its steps as links to their owners. This is the [Economy](method/ndd.map.md#economy) convention chosen for this project, not one NDD imposes. The [agent rules](#agent-rules) take the other axis, gathering by trigger, as [Rule Layout](#rule-layout) sets out.

@@ -1,18 +1,18 @@
 # NDD
 
-[↑ NDD Project](map.md#ndd-project) \
 [Contents](#contents) \
 [Principles](#principles) \
 [Map](#map) \
 [Change-Management](#change-management) \
 [Maintenance](#maintenance) \
 [Tooling](#tooling) \
-[Standards](#standards)
+[Standards](#standards) \
+[Installation](#installation)
 
 ```yaml
 id: a3k
 approvals:
-  tearne: {at: 2026-11-03, hash: 86fe8bf6}
+  tearne: {at: 2026-11-04, hash: 04cc7765}
 ```
 
 NDD, Non-Dead Design, aims to improve knowledge management for agentic software development. The name reflects the [three deaths](#three-deaths) it seeks to prevent: of specifications, of structural thinking, and of comprehension.
@@ -25,6 +25,7 @@ The map is the one artefact that keeps all three alive: a conceptual **map** of 
 - **[Maintenance](#maintenance)** — the reviews that keep the map, the code and the backlog in step.
 - **[Tooling](#tooling)** — the generic markdown tooling the format is designed to exploit.
 - **[Standards](#standards)** — suggested coding standards for the code agents write.
+- **[Installation](#installation)** — how the method sits in a client project, and the rules file the agent follows.
 
 
 # Contents
@@ -115,6 +116,7 @@ id: ct5
       - [Approver](#approver)
   - [Tooling](#tooling)
   - [Standards](#standards)
+  - [Installation](#installation)
 
 
 # Principles
@@ -420,7 +422,7 @@ approvals:
 ```yaml
 id: h4q
 approvals:
-  tearne: {at: 2026-11-03, hash: 22ed8a0e}
+  tearne: {at: 2026-11-04, hash: ba917fe4}
 ```
 
 A fingerprint is a hash of what a reader sees in a node. It covers the heading, prose, callouts, *Detail* and *See also*; it excludes the scaffolding block and navigation links.
@@ -429,7 +431,7 @@ Comparing fingerprints is a test of equality: a node put back to earlier text re
 
 **Detail**
 
-Take the node from its heading line to the line before the next heading. Drop, whole, the navigation-link lines under the heading and the scaffolding block; any other link stays as written, markdown included. Remove every whitespace character. The fingerprint is the first eight hex digits of the SHA-256 of that UTF-8 string. An agent computes it with the shipped `util/fingerprint.py`, never by reasoning; [Fingerprint Check](testing.map.md#fingerprint-check) is the reference that pins the rule.
+Take the node from its heading line to the line before the next heading. Drop, whole, the navigation-link lines under the heading and the scaffolding block; any other link stays as written, markdown included. Remove every whitespace character. The fingerprint is the first eight hex digits of the SHA-256 of that UTF-8 string. An agent computes it with the shipped `util/fingerprint.py`, never by reasoning.
 
 
 # Fingerprint Helper
@@ -438,6 +440,8 @@ Take the node from its heading line to the line before the next heading. Drop, w
 
 ```yaml
 id: u6h
+approvals:
+  tearne: {at: 2026-11-04, hash: 47c88c97}
 ```
 
 `util/fingerprint.py` is the script an agent runs to compute node fingerprints: to write an [approval stamp](#approval-stamp), and at [Sign-off](#sign-off) to find what is due.
@@ -453,9 +457,9 @@ It reads only; stamps are still written by the agent.
 Example usage:
 
 ```
-ndd/util/fingerprint.py map.md
-ndd/util/fingerprint.py map.md "Node Name"
-ndd/util/fingerprint.py map.md --due "Alice Smith"
+ndd/method/util/fingerprint.py map.md
+ndd/method/util/fingerprint.py map.md "Node Name"
+ndd/method/util/fingerprint.py map.md --due "Alice Smith"
 ```
 
 A [POS-style](standards/POS.md) script run with `uv`, one map file at a time, so a map in several files takes one run per file. A name with spaces is quoted on the command line only.
@@ -489,9 +493,11 @@ The root defaults to the project's name, preferring a term that carries domain i
 
 ```yaml
 id: k2v
+approvals:
+  tearne: {at: 2026-11-04, hash: bda1d47e}
 ```
 
-A project has one map; a file is only where a branch of it lives. The entry point is `map.md` in the project root, the one file whose top node has no parent link. Any node's children may live beside or beneath it in a file with a name related to the node, with the extension `.map.md`: a *Testing* node's branch would likely be `testing.map.md`. The hanging node's child links point into that file and the branch's top node keeps a parent link back, so the tree is still read by following links, and the hanging node's prose explains the branch's scope.
+A project has one primary map, its specification; a file is only where a branch of it lives. The entry point is `map.md` in the project root, whose top node has no parent link. Other documents may share the format without being part of it, as an installed method's map does. Any node's children may live beside or beneath it in a file with a name related to the node, with the extension `.map.md`: a *Testing* node's branch would likely be `testing.map.md`. The hanging node's child links point into that file and the branch's top node keeps a parent link back, so the tree is still read by following links, and the hanging node's prose explains the branch's scope.
 
 A branch is split out for size, or for a conceptual boundary worth seeing in the file list.
 
@@ -1646,10 +1652,10 @@ The method needs no bespoke application — it rides generic markdown tooling. I
 ```yaml
 id: s9d
 approvals:
-  tearne: {at: 2026-11-03, hash: 5f73e572}
+  tearne: {at: 2026-11-04, hash: aa5a8b75}
 ```
 
-Guidance for the code agents write on user projects, distinct from the map spec that governs the map. NDD ships a set of suggested standards a project adopts, adapts or ignores, installed as plain markdown under `ndd/standards/` rather than folded into the map. The table below indexes them: an agent scans it to see what exists and opens only the guide a task touches. The code *Style* guide is an always-on default, deviated from only when flagged and approved; the rest load on reference.
+Guidance for the code agents write on user projects, distinct from the map spec that governs the map. NDD ships a set of suggested standards a project adopts, adapts or ignores, shipped as plain markdown in `standards/` beside this map rather than folded into it. The table below indexes them: an agent scans it to see what exists and opens only the guide a task touches. The code *Style* guide is an always-on default, deviated from only when flagged and approved; the rest load on reference.
 
 **Detail**
 
@@ -1659,3 +1665,20 @@ Guidance for the code agents write on user projects, distinct from the map spec 
 | `RUST.md` | Rust addendum to Style | Writing Rust |
 | `POS.md` | Python as a readable alternative to shell scripts for admin/small tasks | Writing a system-administration or small utility script |
 | `CHANGELOG.md` | Changelog format | Drafting a changelog entry |
+
+
+# Installation
+
+[↑ NDD](#ndd)
+
+```yaml
+id: i4n
+approvals:
+  tearne: {at: 2026-11-04, hash: ebf79311}
+```
+
+NDD's installer copies the method into a client project's `ndd/` directory. Every run rewrites `ndd/`, so a hand edit there is lost: the method changes at its source, and upgrading is a pull in the NDD clone and a fresh run. The `CHANGELOG.md` there names the installed version.
+
+The project's own map, entered at `map.md` in its root, is its specification. The method's map, `ndd.map.md` in `ndd/`, shares the format but describes the method, not the project, so it is no branch of the project's map.
+
+`AGENT-RULES.md`, which the installer points `CLAUDE.md` and `AGENTS.md` at, renders the method's core rules for the agent. The map stays authoritative, so output citing a rule names its source node. The agent re-reads the file at the start of every [Build](#build) and after any context compaction.

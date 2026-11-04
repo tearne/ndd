@@ -8,12 +8,12 @@
 ```yaml
 id: t4k
 approvals:
-  tearne: {at: 2026-11-03, hash: 6ab49724}
+  tearne: {at: 2026-11-04, hash: 7288292a}
 ```
 
 This repository checks itself with tests, each a node in this branch stating what must hold and how it is verified. Each test's runnable form sits under `tests/` rather than in the map, so the map stays a description of what exists.
 
-- **[Fingerprint Check](#fingerprint-check)** — the reference implementation of the [Fingerprint](ndd.map.md#fingerprint) rule and the cases that pin it.
+- **[Fingerprint Check](#fingerprint-check)** — the reference implementation of the [Fingerprint](method/ndd.map.md#fingerprint) rule and the cases that pin it.
 
 - **[Install Check](#install-check)** — the installer run end to end into a scratch project, fresh and as an upgrade.
 
@@ -38,10 +38,10 @@ id: ct7
 ```yaml
 id: c5m
 approvals:
-  tearne: {at: 2026-11-03, hash: 1418eab1}
+  tearne: {at: 2026-11-04, hash: 5a165bce}
 ```
 
-Every agent must produce the same fingerprint for the same node text, or approval stamps cannot be compared. `tests/fingerprint_test.py` holds the reference: a second, independent implementation of the [Fingerprint](ndd.map.md#fingerprint) rule, standard library only and short enough to read whole. It passes when its fingerprints match the table in *Detail* and the shipped [helper](ndd.map.md#fingerprint-helper) agrees, both on those fingerprints and on which nodes are due for a person. The test and its fixtures stay in the NDD checkout, where a maintainer changing the helper runs them.
+Every agent must produce the same fingerprint for the same node text, or approval stamps cannot be compared. `tests/fingerprint_test.py` holds the reference: a second, independent implementation of the [Fingerprint](method/ndd.map.md#fingerprint) rule, standard library only and short enough to read whole. It passes when its fingerprints match the table in *Detail* and the shipped [helper](method/ndd.map.md#fingerprint-helper) agrees, both on those fingerprints and on which nodes are due for a person. The test and its fixtures stay in the NDD checkout, where a maintainer changing the helper runs them.
 
 **Detail**
 
@@ -64,7 +64,7 @@ Every agent must produce the same fingerprint for the same node text, or approva
 ```yaml
 id: k3w
 approvals:
-  tearne: {at: 2026-11-03, hash: e01ce559}
+  tearne: {at: 2026-11-04, hash: 91293f4e}
 ```
 
 `tests/install_test.py` runs the [installer](map.md#installer) into a temporary directory and asserts that:
@@ -75,7 +75,7 @@ approvals:
 
 - `CLAUDE.md` and `AGENTS.md` are pointers, and `.gitignore` covers `ndd/`, both entry files and `.claude/`;
 
-- every link in the installed maps resolves;
+- every link in a shipped file resolves within what ships;
 
 - a second run over a changed `ndd.map.md` and a stray file keeps the old map as `ndd.prev.map.md` and clears the stray;
 
