@@ -1318,16 +1318,14 @@ Approval requires a clear affirmative in response to the agent asking. Silence, 
 ```yaml
 id: d4r
 approvals:
-  tearne: {at: 2026-11-03, hash: c5517199}
+  tearne: {at: 2026-11-04, hash: 1e1e06c4}
 ```
 
-A draft is only the text surfaced; an action named alongside it, such as a new file, needs its own draft unless the method lets the agent act without asking, as with a [Log](#log) line. Drafts go to chat unless the user says *write*: then the draft goes in place and the agent stops until the user next replies, reviewing any edit as the [Engagement Rule](#engagement-rule) directs. A bare *write* covers one draft; only an instruction saying so covers the session. *Write* is never approval and never a cue to move on, even in reply to an ask for approval.
+A draft is only the text surfaced; any action undertaken alongside it needs its own draft unless the method lets the agent act without asking, for example adding a [Log](#log) line, updating a [discussion](#discussion-records), or opening a change from an [aside](#aside-keyword). Drafts go to chat unless the user says *write*: then the draft goes in place and the agent stops until the user next replies, reviewing any edit as the [Engagement Rule](#engagement-rule) directs. A bare *write* covers one draft; only an instruction saying so covers the session. *Write* is never approval and never a cue to move on, even in reply to an ask for approval.
 
 **Detail**
 
 A draft written in place sits between `<!-- draft -->` and `<!-- /draft -->`, visible raw but hidden when rendered, so a lost session cannot leave it reading as settled. Approval deletes the markers; declining deletes the region.
-
-A marker quoted in code, as here, is only a mention.
 
 
 # Keywords
@@ -1489,12 +1487,12 @@ Findings are not stored. A review recomputes from the map, so a deferred finding
 ```yaml
 id: u8k
 approvals:
-  tearne: {at: 2026-10-22, hash: cc4f2516}
+  tearne: {at: 2026-11-04, hash: 9ce9ef04}
 ```
 
-Agent-run housekeeping, run on the nodes the user has edited as soon as the agent is told or notices, before it asks anything else, and across the whole map before an [archive](#archiving). The agent needs no prompting and reports briefly every fix made and every count it took. It is restricted to [corrections](#engagement-rule), never changes of meaning; anything needing judgement is either left for a subsequent [Map Review](#map-review) or handed back to the user immediately.
+Agent-run housekeeping, run on the nodes the user has edited as soon as the agent is told or notices, before it asks anything else, and across the whole map before an [archive](#archiving). The agent needs no prompting and reports briefly every fix made and every count it took. It is restricted to [corrections](#engagement-rule), never changes of meaning; anything needing judgement is either left for a subsequent [Map Review](#map-review) or discussed immediately.
 
-It fixes and reports a [tree overview](#map-structure) out of step with the navigation links, a missing scaffolding [id](#node-identity) or [navigation link](#navigation-links), a link left behind by a rename, and an unambiguous grammatical slip. It reports the count of nodes over the [size bound](#node-sizing) that Node Sizing would flag. It reports, without removing, any [draft markers](#drafts) other than those around a draft awaiting the user.
+It fixes and reports a [tree overview](#map-structure) out of step with the navigation links, a missing scaffolding [id](#node-identity) or [navigation link](#navigation-links), a link left behind by a rename, and unambiguous grammatical slips. It reports nodes over the [size bound](#node-sizing) and any [draft markers](#drafts) other than those around a draft awaiting the user; a marker quoted in code is only a mention.
 
 
 # Shape
@@ -1602,12 +1600,12 @@ It looks for:
 ```yaml
 id: f2s
 approvals:
-  tearne: {at: 2026-10-26, hash: 4ecad464}
+  tearne: {at: 2026-11-04, hash: 6ea9a6bd}
 ```
 
 A stakeholder approves the map a few nodes at a time. Each node can carry an [approval stamp](#approval-stamp) per person, recording when they approved it and a [fingerprint](#fingerprint) of the text they saw. A stamp is scaffolding, written and reported rather than negotiated.
 
-Nothing is marked when a node changes. Drift is found by comparing: a node is *due* for a person when its fingerprint no longer matches their stamp, or it has none for them. A map with no stamps shows nothing, and gains its first only when the user asks for one; from then on every approval of a node edit stamps it for the [approver](#approver).
+Nothing is marked when a node changes. Drift is found by comparing: a node is *due* for a person when its fingerprint no longer matches their stamp, or it has none for them. The [tree overview](#map-structure) in *Contents* is never due, since [Tidy](#tidy) keeps it in step rather than anyone approving it. A map with no stamps shows nothing, and gains its first only when the user asks for one; from then on every approval of a node edit stamps it for the [approver](#approver).
 
 **See also**
 

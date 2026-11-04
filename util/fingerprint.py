@@ -70,9 +70,10 @@ def strip_scaffolding(body: list[str]) -> list[str]:
 
 
 # A node is due for a person when it has no stamp for them or the stamp's hash
-# is not the node's current fingerprint. Sign-off (ndd.map.md#sign-off).
+# is not the node's current fingerprint. Contents is never due. Sign-off
+# (ndd.map.md#sign-off).
 def due_for(nodes: dict[str, list[str]], person: str) -> list[str]:
-    return [name for name, lines in nodes.items() if stamps(lines).get(person) != fingerprint(lines)]
+    return [name for name, lines in nodes.items() if name != "Contents" and stamps(lines).get(person) != fingerprint(lines)]
 
 
 # Stamps are read from the scaffolding block only, so an example stamp quoted

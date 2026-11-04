@@ -114,7 +114,7 @@ It refuses to run from its own checkout. It checks that every shipped asset is p
 ```yaml
 id: s4h
 approvals:
-  tearne: {at: 2026-11-03, hash: d5f0779e}
+  tearne: {at: 2026-11-04, hash: e643fce7}
 ```
 
 The installer copies into a client's `ndd/` only what the agent and user need at run time, named in an explicit list:
@@ -125,7 +125,7 @@ The installer copies into a client's `ndd/` only what the agent and user need at
 - `standards/`, which nodes link to.
 - `CHANGELOG.md`, `README.md` and `LICENSE`.
 
-`changes/`, `install.py`, `.gitignore` and `tests/` stay in the checkout. The [Install Check](testing.map.md#install-check) catches a linked file left off the list.
+Everything else stays in the checkout, for example `changes/`, `tests/` and `install.py`. The [Install Check](testing.map.md#install-check) catches a linked file left off the list.
 
 
 # Agent Rules

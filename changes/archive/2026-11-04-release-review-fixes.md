@@ -72,4 +72,12 @@ Work the findings group by group, A first, then B to F. Each map edit is settled
 - F17: map holds; `standards/CHANGELOG.md` now gives bare `-dev` for a change never handed back, matching *Versioning*.
 - F18: *Install Check* says the self-refusal case writes no `ndd/`, as the test asserts, not "nothing".
 - F19: `AGENT-RULES.md` *Orientation* bullets 2 and 3 cite *Installer*, *Versioning* and *Agent Rules*; *Agent Rules* drops its one-source sentence, now 780 (settles C12's overrun). A/B skipped: links added, no rule reworded.
+- F20: *Drafts* node and rule now name the same exemptions: adding a Log line, updating a discussion, opening a change from an aside; "a keyword's placement" cut from the rule. The quoted-marker sentence moved to *Tidy* (845, accepted). *Drafts* 812, flagged. A/B tested, 2 arms each: same behaviour; the old arms reached the discussion update and aside only through the Keywords exemption and the discussion node, the new ones read them from the rule.
+- *Tidy* edited by the user: lists nodes over the bound rather than counting them; 760.
+- F21: *Contents* is never due: `util/fingerprint.py` skips it in `--due`, pinned by a new `contents_never_due` test (fails on the old helper, passes now); *Sign-off* says so (≈700).
+- F22: *Shipped Assets* says everything else stays in the checkout, naming `changes/`, `tests/` and `install.py` as examples (499). Group F settled.
 - Surprise: the original F list was lost with the previous session; neither the Log nor the pause entry held it. Raised by the user as a major gap in change self-sufficiency and in pausing.
+
+## Conclude
+
+All six groups were settled; the checkpoint wasn't needed. Group F was lost with the first session and recovered as 12 items. E1 and E2 were parked as a discussion, and 106 and 115 were parked. Beyond the maps and rules, the fixes touched `util/fingerprint.py` (stamps read from scaffolding only; *Contents* never due), `install.py`'s git probe, `standards/CHANGELOG.md`, and both tests. Accepted over the bound: *Installer* (878) and *Drafts* (812).

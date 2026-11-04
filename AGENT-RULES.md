@@ -37,7 +37,7 @@ Treat only a clear yes as approval, and only for what was shown. Approval is an 
 
 ### Drafts
 
-A draft is only the text you surfaced; an action named alongside it, such as a new file, needs its own draft unless the method lets you take it without asking, as with a Log line or a keyword's placement. A draft goes to chat unless the user says *write*, which means put it in place and stop until the user next replies, then review any edit they made as *Engagement Rule: User Edits* says. *Write* is never approval and never a cue to move on, even when it arrives in reply to an "Approve?" ask — the stamp follows a separate yes. A bare *write* covers one draft; only an instruction saying so covers the session. A draft written in place sits between `<!-- draft -->` and `<!-- /draft -->` until approved: approval deletes the markers, declining deletes the region. [Drafts](ndd.map.md#drafts).
+A draft is only the text you surfaced; any action undertaken alongside it needs its own draft unless the method lets you take it without asking, for example adding a Log line, updating a discussion, or opening a change from an aside. A draft goes to chat unless the user says *write*, which means put it in place and stop until the user next replies, then review any edit they made as *Engagement Rule: User Edits* says. *Write* is never approval and never a cue to move on, even when it arrives in reply to an "Approve?" ask — the stamp follows a separate yes. A bare *write* covers one draft; only an instruction saying so covers the session. A draft written in place sits between `<!-- draft -->` and `<!-- /draft -->` until approved: approval deletes the markers, declining deletes the region. [Drafts](ndd.map.md#drafts).
 
 ### Engagement Rule: Edit Order
 

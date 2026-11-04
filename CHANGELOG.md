@@ -2,6 +2,10 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 2.10.2-dev
+
+- The fingerprint helper reads stamps only from a node's scaffolding block, and never lists *Contents* as due.
+
 ## 2.10.1-dev
 
 - New *Rule Testing* node under *Agent Rules*: each new or reworded agent rule is tested against the wording it replaces before it ships.

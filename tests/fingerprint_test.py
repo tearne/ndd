@@ -90,6 +90,7 @@ def main():
                 failures += 1
                 print(f"FAIL {file}: due for {person} expected {due}, helper listed {listed}")
     failures += quoted_stamp_ignored()
+    failures += contents_never_due()
     print("OK" if not failures else f"{failures} failures")
     sys.exit(1 if failures else 0)
 
@@ -107,6 +108,24 @@ def quoted_stamp_ignored() -> int:
         listed = subprocess.run([HELPER, path, "--due", "carol"], capture_output=True, text=True).stdout.split("\n")[:-1]
     if listed:
         print(f"FAIL quoted stamp: carol expected nothing due, helper listed {listed}")
+        return 1
+    return 0
+
+
+# A Contents node is never due, though it carries no stamp; the stamped node
+# beside it matches, so nothing is due for carol.
+def contents_never_due() -> int:
+    import tempfile
+    contents = ["# Contents\n", "\n", "```yaml\n", "id: c1t\n", "```\n", "\n", "- [Stamped](#stamped)\n", "\n"]
+    body = ["# Stamped\n", "\n", "Prose.\n"]
+    real = fingerprint(body)
+    node = body[:1] + ["\n", "```yaml\n", "id: s1t\n", "approvals:\n", f"  carol: {{at: 2026-01-01, hash: {real}}}\n", "```\n"] + body[1:]
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "contents.map.md"
+        path.write_text("".join(contents + node), encoding="utf-8")
+        listed = subprocess.run([HELPER, path, "--due", "carol"], capture_output=True, text=True).stdout.split("\n")[:-1]
+    if listed:
+        print(f"FAIL contents: carol expected nothing due, helper listed {listed}")
         return 1
     return 0
 
