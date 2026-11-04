@@ -10,3 +10,7 @@ Opened 2026-11-03 from the pre-release Map Review (change 105).
 
 - Is a session-conduct branch the right cut, and which nodes move?
 - Child order under *Change-Management*: *Startup Scan* and *Bootstrapping* come first in time but sit after *Versioning*; *Gates and Permissions* is referenced by *Plan* but sits second to last. Settle after the cut.
+
+## Conclude
+
+Produced 120 Session conduct branch, which carries the branch cut and the child-order question. The rest is dropped.
