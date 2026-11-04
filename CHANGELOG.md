@@ -2,6 +2,10 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 3.0.0-dev
+
+- The method now ships in a `method/` directory; re-running the installer migrates a 2.x install.
+
 ## 2.10.2-dev
 
 - The fingerprint helper reads stamps only from a node's scaffolding block, and never lists *Contents* as due.

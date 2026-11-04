@@ -1,6 +1,6 @@
 # NDD
 
-Non-Dead Design: a method for keeping specification, structural thinking and comprehension alive in agentic software development. The system is described by a conceptual map, written in markdown and maintained with the agent, which serves as the hub for specification and change management. The reasoning is in the map itself, under [Principles](ndd.map.md#principles); the method starts at [NDD](ndd.map.md#ndd) and this repository's own map at [map.md](map.md).
+Non-Dead Design: a method for keeping specification, structural thinking and comprehension alive in agentic software development. The system is described by a conceptual map, written in markdown and maintained with the agent, which serves as the hub for specification and change management. The reasoning is in the map itself, under [Principles](method/ndd.map.md#principles); the method starts at [NDD](method/ndd.map.md#ndd), and the source repository's own map is `map.md`.
 
 ## Installation
 

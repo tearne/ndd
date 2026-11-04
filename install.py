@@ -7,8 +7,8 @@
 # NDD installer. Copies the shipped assets out of this checkout into a fresh
 # ./ndd/ in the current project, as they are on disk, and wires up the agent
 # entry files. Re-run at any time to upgrade in place (git pull this repo first); the
-# prior method map is kept as ndd/ndd.prev.map.md so migration can be reasoned
-# about.
+# prior method map is kept as ndd/method/ndd.prev.map.md so migration can be
+# reasoned about.
 #
 # Nothing is rendered: what ships is the files in SHIPPED, uncommitted edits
 # included, and nothing else of the checkout. The NDD repository reads its own files
@@ -29,21 +29,16 @@ from rich.console import Console
 console = Console()
 
 SOURCE = Path(__file__).parent
-# What the agent and user need at run time, as map.md#shipped-assets lists it.
-# A directory ships whole. The install test's link check catches a linked file
-# left off.
-SHIPPED = [
-    "AGENT-RULES.md",
-    "map.md", "ndd.map.md", "testing.map.md",
-    "util/fingerprint.py",
-    "standards",
-    "CHANGELOG.md", "README.md", "LICENSE",
-]
+# What the agent and user need at run time, as map.md#shipped-assets lists it:
+# the method directory whole, and the root files that describe the release. The
+# install test's link check catches a shipped link leaving what ships.
+SHIPPED = ["method", "CHANGELOG.md", "README.md", "LICENSE"]
 
-CLAUDE_POINTER = "@ndd/AGENT-RULES.md"
+RULES = "ndd/method/AGENT-RULES.md"
+CLAUDE_POINTER = f"@{RULES}"
 AGENTS_INSTRUCTION = (
     "# Agent instructions\n\n"
-    "Read `ndd/AGENT-RULES.md` and follow it before doing anything else."
+    f"Read `{RULES}` and follow it before doing anything else."
 )
 
 
@@ -73,8 +68,8 @@ def copy_method(ndd: Path) -> None:
     for src in sources:
         copy_asset(src, ndd / src.relative_to(SOURCE))
     if previous:
-        (ndd / "ndd.prev.map.md").write_text(previous)
-        report("backed up", ndd / "ndd.prev.map.md", "previous map")
+        (ndd / "method" / "ndd.prev.map.md").write_text(previous)
+        report("backed up", ndd / "method" / "ndd.prev.map.md", "previous map")
 
 
 def shipped_files() -> list[Path]:
@@ -90,12 +85,17 @@ def shipped_files() -> list[Path]:
 
 
 # The map to keep as ndd.prev.map.md: the old one if the new differs, else the
-# existing backup — so a redundant re-run preserves the last real one.
+# existing backup — so a redundant re-run preserves the last real one. Each is
+# looked for under method/ first, then where the flat layout before 3.0.0 kept it.
 def previous_map(ndd: Path) -> str | None:
-    old, backup = ndd / "ndd.map.md", ndd / "ndd.prev.map.md"
-    if old.exists() and old.read_text() != (SOURCE / "ndd.map.md").read_text():
+    old, backup = installed(ndd, "ndd.map.md"), installed(ndd, "ndd.prev.map.md")
+    if old and old.read_text() != (SOURCE / "method" / "ndd.map.md").read_text():
         return old.read_text()
-    return backup.read_text() if backup.exists() else None
+    return backup.read_text() if backup else None
+
+
+def installed(ndd: Path, name: str) -> Path | None:
+    return next((p for p in (ndd / "method" / name, ndd / name) if p.exists()), None)
 
 
 # An entry file whose whole content is a pointer into ndd/ is installer
@@ -119,7 +119,7 @@ def own_entry_file(path: Path, desired: str) -> bool:
 
 
 def is_installer_pointer(current: str, desired: str) -> bool:
-    shape = re.escape(desired).replace(re.escape("ndd/AGENT-RULES.md"), r"ndd/[^\s`]+")
+    shape = re.escape(desired).replace(re.escape(RULES), r"ndd/[^\s`]+")
     return re.fullmatch(shape, current) is not None
 
 
@@ -159,8 +159,8 @@ def copy_asset(src: Path, dest: Path) -> None:
     report("copied", dest)
 
 
-# The NDD repository reads its own sources — AGENT-RULES.md and the maps at
-# its root — so installing it into itself would only make a copy that lags.
+# The NDD repository reads its own sources — method/ and the maps at its root —
+# so installing it into itself would only make a copy that lags.
 def refuse_own_checkout(project: Path) -> None:
     if project.resolve() == SOURCE.resolve():
         console.print(

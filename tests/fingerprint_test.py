@@ -3,9 +3,9 @@
 # requires-python = "==3.12.*"
 # ///
 
-# Reference implementation of the Fingerprint rule (ndd.map.md#fingerprint),
+# Reference implementation of the Fingerprint rule (method/ndd.map.md#fingerprint),
 # checked against the fixtures beside it, whose expected hashes are also listed
-# in testing.map.md#fingerprint-check. Then checks that util/fingerprint.py agrees.
+# in testing.map.md#fingerprint-check. Then checks that method/util/fingerprint.py agrees.
 
 import hashlib
 import re
@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).parent
-HELPER = HERE.parent / "util" / "fingerprint.py"
+HELPER = HERE.parent / "method" / "util" / "fingerprint.py"
 
 EXPECTED = {
     "fixture.map.md": {

@@ -1,1 +1,1 @@
-@AGENT-RULES.md
+@method/AGENT-RULES.md

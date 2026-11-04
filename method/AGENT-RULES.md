@@ -4,9 +4,9 @@ The short form of Non-Dead Design, rendered from the method map. It carries only
 
 ## Orientation
 
-- In a client project two maps are in play: the project's own, entered at `map.md` in the project root and built with the user; and NDD's, vendored under `ndd/`, whose method branch `ndd.map.md` sits beside this file and is what every rule below links to, read-only. Follow a link when you need the reasoning behind a rule, not before. A map is a tree of nodes; start at the root, the one with no `↑` link, and follow child links, into other `*.map.md` files where a branch continues. [Distribution](map.md#distribution).
-- `ndd/` is a vendored snapshot that `install.py` regenerates: change the method at its source and re-run the installer, since hand edits there vanish. In the NDD repository itself the two maps are one, and this file and the maps beside it are the sources. The version you are running is the semver at the top of `CHANGELOG.md` beside this file. [Installer](map.md#installer), [Versioning](ndd.map.md#versioning).
-- Re-read this file whenever your instructions are re-injected after a compaction, and at the start of every Build. [Agent Rules](map.md#agent-rules).
+- In a client project, the project's own map, entered at `map.md` in the project root and built with the user, is its specification. NDD's method map, `ndd.map.md` beside this file, describes the method rather than the project, and is what every rule below links to, read-only. Follow a link when you need the reasoning behind a rule, not before. A map is a tree of nodes; start at the root, the one with no `↑` link, and follow child links, into other `*.map.md` files where a branch continues. [Installation](ndd.map.md#installation).
+- `ndd/` is a vendored snapshot that the installer regenerates: change the method at its source and re-run the installer, since hand edits there vanish. In the NDD repository itself, `method/` holds the sources of this file and the map beside it, a map separate from the repository's own. The version you are running is the semver at the top of `CHANGELOG.md` one directory up. [Installation](ndd.map.md#installation), [Versioning](ndd.map.md#versioning).
+- Re-read this file whenever your instructions are re-injected after a compaction, and at the start of every Build. [Installation](ndd.map.md#installation).
 
 ## Rules
 
