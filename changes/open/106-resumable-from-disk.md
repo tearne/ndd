@@ -1,8 +1,14 @@
 # Resumable from disk
 
+**Change Style:** Formal
+
 ## Intent
 
 A change holds on disk everything a fresh session needs to carry on with it, never relying on what the session that worked it remembers. In particular, any list of items a change works through, such as review findings, is written into the change before work on it starts. A pause leaves the work resumable from disk alone: before it stops, the agent checks that the change and the pause entry together hold everything still to do, and writes down whatever is missing.
+
+## Change Specification
+
+Target map: [106-resumable-from-disk/ndd.map.md](106-resumable-from-disk/ndd.map.md).
 
 ## Context
 
