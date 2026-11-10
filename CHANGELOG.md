@@ -2,6 +2,10 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 3.5.1-dev.34
+
+- A prototype map viewer in `tools/`, not shipped: serves a map read-only for review, including what changed since each approval (*Map Viewer*).
+
 ## 3.5.0 — 2026-11-10
 
 - A release step may write the files its draft shows, such as the changelog fold, once the user approves that draft, with no change in Build (*Gates and Permissions*).

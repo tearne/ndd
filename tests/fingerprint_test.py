@@ -15,6 +15,7 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 HELPER = HERE.parent / "method" / "util" / "fingerprint.py"
+VIEWER = HERE.parent / "tools" / "map_viewer.py"  # carries its own copy of the rule
 
 EXPECTED = {
     "fixture.map.md": {
@@ -91,8 +92,26 @@ def main():
                 print(f"FAIL {file}: due for {person} expected {due}, helper listed {listed}")
     failures += quoted_stamp_ignored()
     failures += contents_never_due()
+    failures += viewer_agrees()
     print("OK" if not failures else f"{failures} failures")
     sys.exit(1 if failures else 0)
+
+
+
+# The map viewer carries its own copy of the rule so it runs standalone; it must
+# give the same fingerprints.
+def viewer_agrees() -> int:
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("map_viewer", VIEWER)
+    viewer = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(viewer)
+    failures = 0
+    for file, expected in EXPECTED.items():
+        for name, lines in nodes(HERE / file).items():
+            if name in expected and viewer.fingerprint(lines) != expected[name]:
+                failures += 1
+                print(f"FAIL {file}: {name} expected {expected[name]}, viewer computed {viewer.fingerprint(lines)}")
+    return failures
 
 
 # A stamp quoted in a node's prose, after its scaffolding block, must not be read

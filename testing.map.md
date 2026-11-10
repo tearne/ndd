@@ -38,10 +38,10 @@ id: ct7
 ```yaml
 id: c5m
 approvals:
-  tearne: {at: 2026-11-04, hash: 5a165bce}
+  tearne: {at: 2026-11-10, hash: 80ee4e2f}
 ```
 
-Every agent must produce the same fingerprint for the same node text, or approval stamps cannot be compared. `tests/fingerprint_test.py` holds the reference: a second, independent implementation of the [Fingerprint](method/ndd.map.md#fingerprint) rule, standard library only and short enough to read whole. It passes when its fingerprints match the table in *Detail* and the shipped [helper](method/ndd.map.md#fingerprint-helper) agrees, both on those fingerprints and on which nodes are due for a person. The test and its fixtures stay in the NDD checkout, where a maintainer changing the helper runs them.
+Every agent must produce the same fingerprint for the same node text, or approval stamps cannot be compared. `tests/fingerprint_test.py` holds the reference: a second, independent implementation of the [Fingerprint](method/ndd.map.md#fingerprint) rule, standard library only and short enough to read whole. It passes when its fingerprints match the table in *Detail* and the shipped [helper](method/ndd.map.md#fingerprint-helper) agrees, both on those fingerprints and on which nodes are due for a person, and the [map viewer](map.md#map-viewer) on the fingerprints. The test and its fixtures stay in the NDD checkout, where a maintainer changing the helper runs them.
 
 **Detail**
 

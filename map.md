@@ -3,19 +3,22 @@
 [Contents](#contents) \
 [Distribution](#distribution) \
 [Testing](testing.map.md#testing) \
+[Map Viewer](#map-viewer) \
 [Method Map Form](#method-map-form)
 
 ```yaml
 id: p1j
 approvals:
-  tearne: {at: 2026-11-04, hash: 1b3b9b8b}
+  tearne: {at: 2026-11-10, hash: 8f112952}
 ```
 
-The repository that develops and ships Non-Dead Design. The method itself has its own map, [NDD](method/ndd.map.md#ndd), which this project builds and ships as an asset rather than as a branch. This map describes how the method is distributed, released and installed. The reasoning behind the method is under [Principles](method/ndd.map.md#principles).
+The repository that develops and ships Non-Dead Design. The method itself has its own map, [NDD](method/ndd.map.md#ndd), which this project builds and ships as an asset rather than as a branch. This map describes how the method is distributed, released and installed, and the tooling prototyped beside it. The reasoning behind the method is under [Principles](method/ndd.map.md#principles).
 
 - **[Distribution](#distribution)** — how NDD reaches a client project: the shipped layout, the release checklist, the installer and the agent rules.
 
 - **[Testing](testing.map.md#testing)** — how this repository checks itself: the checks and their runnable forms under `tests/`.
+
+- **[Map Viewer](#map-viewer)** — a prototype that serves a map read-only in the browser for review.
 
 - **[Method Map Form](#method-map-form)** — the convention this project's method map follows.
 
@@ -39,6 +42,7 @@ id: ct6
       - [Rule Selection](#rule-selection)
       - [Rule Testing](#rule-testing)
   - [Testing](testing.map.md#testing)
+  - [Map Viewer](#map-viewer)
   - [Method Map Form](#method-map-form)
 
 
@@ -220,6 +224,31 @@ A rule can read well and still backfire, because what an agent does with it show
 **Detail**
 
 The task tempts the failures the rule targets and probes where it might overreach, in two forms: a fresh draft, and a small edit to text that already breaks the rule, which shows whether the rule pushes an unasked rewrite. The subagents see the rule but not the map, since in use an agent works from the rule rather than the node behind it. A difference that matters sends the rule back to drafting, and the outcome goes in the change's [Log](method/ndd.map.md#log).
+
+
+# Map Viewer
+
+[↑ NDD Project](#ndd-project)
+
+```yaml
+id: mv4
+approvals:
+  tearne: {at: 2026-11-10, hash: e6383ba4}
+```
+
+A prototype: `tools/map_viewer.py`, a single-file POS script serving a map read-only in the browser for review. With no login it listens on 127.0.0.1 only, reached by ssh port forwarding; approvals and edits go through the agent in that session. It is not shipped.
+
+> [!IMPORTANT]
+> A proof of concept, not yet a supported tool.
+
+- **Tree** — the contents, followed through child links, each file's part shaded.
+
+- **Node** — the node rendered, with each approver's stamp marked current or stale.
+
+- **Approval diff** — for a stale stamp, the approved text found in git by its fingerprint, and what changed since.
+
+It carries its own copy of the [Fingerprint](method/ndd.map.md#fingerprint) rule, kept in step by [Fingerprint Check](testing.map.md#fingerprint-check). `tools/viewer_demo.py` builds a demo map showing every approval state.
+
 
 
 # Method Map Form
