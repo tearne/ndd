@@ -2,6 +2,10 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 3.1.0-dev
+
+- A change keeps on disk all it needs to resume: worklists such as review findings go in before work starts, and a pause writes down what's left (new rule *Change Lifecycle: State on Disk*).
+
 ## 3.0.0 — 2026-11-04
 
 - The method now ships in a `method/` directory; re-running the installer migrates a 2.x install.

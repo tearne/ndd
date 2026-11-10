@@ -85,6 +85,10 @@ Count each capped part against its cap when you surface it, report the number, a
 
 In Build, follow the plan and keep the Log. Execute the approved plan rather than revising it mid-flight. Append to the change's Log a terse line for each plan item as it settles, without asking, and any surprise, deviation, blocker or partial progress, so a resuming session can see how far the build got. Log anything put to one side as open, and resolve it before Conclude as [Log](ndd.map.md#log) directs. If the plan proves wrong, stop and offer to return the change to planning — or, for a Formal change, re-agree the Change Specification or Implementation Plan with the Build Lock kept and resume against the revised target. [Build](ndd.map.md#build), [Log](ndd.map.md#log), [Formal Build](ndd.map.md#formal-build).
 
+### Change Lifecycle: State on Disk
+
+Keep everything needed to resume a change on disk, in the change or its companion folder, never only in chat or context. Write a list the change works through, such as review findings, into the change before working through it, and before stopping on a `pause`, write down whatever still to do is missing. A fresh session sees only what is on disk. [Change Lifecycle](ndd.map.md#change-lifecycle), [Pause Keyword](ndd.map.md#pause-keyword).
+
 ### Formal Build
 
 When a Formal change enters Build, read [Formal Build](ndd.map.md#formal-build) and land its targets in the order it sets, reporting each promotion into the live map. Promoting last keeps the live map describing only what is built.
