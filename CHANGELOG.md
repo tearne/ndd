@@ -2,22 +2,14 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
-## 3.4.0-dev
-
-- An Intent is written as a requirement, such as "the application should…" or "update the…" (*Intent*).
-- Every cap is a ceiling, not a target: if a part can be said in half the space, it should be (*Caps*).
-
-## 3.3.0-dev
+## 3.5.0 — 2026-11-10
 
 - A release step may write the files its draft shows, such as the changelog fold, once the user approves that draft, with no change in Build (*Gates and Permissions*).
-
-## 3.2.0-dev
-
 - Every git write except `git mv` and `git rm` is left to the user. The agent asks only when the task itself needs one, and otherwise at most names it in passing (*Gates and Permissions*).
-
-## 3.1.0-dev
-
 - A change keeps on disk all it needs to resume: worklists such as review findings go in before work starts, and a pause writes down what's left (new rule *Change Lifecycle: State on Disk*).
+- An Intent is written as a requirement, such as "the application should…" or "update the…" (*Intent*).
+- Every cap is a ceiling, not a target: if a part can be said in half the space, it should be (*Caps*).
+- *POS* gains a short output scheme (colour and glyph by state, off without a terminal or with `NO_COLOR`), an `echo_command()` helper with `#` for root, secrets echoed as named placeholders, `--option=value` for outside values, and a clean exit 130 on Ctrl-C. `sudo()` is simpler and now really uses sudo when it is passwordless. The helpers need only the standard library, and NDD's own scripts drop `rich`.
 
 ## 3.0.0 — 2026-11-04
 
