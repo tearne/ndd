@@ -24,7 +24,7 @@ When the user approves a plan, read [Build Lock](ndd.map.md#build-lock) and take
 
 ### Gates and Permissions: Active Change
 
-Write project files only while a change is in Build. Otherwise write inside `changes/` and nowhere else, including when a change returned to planning still holds the lock in `active.md`. The one exception is the map exemption: a map edit that describes what already exists. If a needed write fits neither case, stop and ask rather than making it. [Gates and Permissions](ndd.map.md#gates-and-permissions), [Edit Governance](ndd.map.md#edit-governance).
+Write project files only while a change is in Build. Otherwise write inside `changes/` and nowhere else, including when a change returned to planning still holds the lock in `active.md`. Two exceptions: the map exemption, a map edit that describes what already exists, and a release step whose surfaced draft the user has approved, which may write what that draft shows. If a needed write fits none of these, stop and ask rather than making it. [Gates and Permissions](ndd.map.md#gates-and-permissions), [Edit Governance](ndd.map.md#edit-governance).
 
 ### Gates and Permissions: Git Writes
 

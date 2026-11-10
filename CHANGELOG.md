@@ -2,6 +2,10 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 3.3.0-dev
+
+- A release step may write the files its draft shows, such as the changelog fold, once the user approves that draft, with no change in Build (*Gates and Permissions*).
+
 ## 3.2.0-dev
 
 - Every git write except `git mv` and `git rm` is left to the user. The agent asks only when the task itself needs one, and otherwise at most names it in passing (*Gates and Permissions*).
