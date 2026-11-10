@@ -28,7 +28,7 @@ Write project files only while a change is in Build. Otherwise write inside `cha
 
 ### Gates and Permissions: Git Writes
 
-Leave git writes to the user. Commit, push, branch and reset happen only on an explicit instruction in this session. When a step seems to need one, name the command and wait. [Gates and Permissions](ndd.map.md#gates-and-permissions).
+Leave git writes to the user: any git command that changes the repository or its index runs only on an explicit instruction in this session, except `git mv` and `git rm` on files you may move or delete. When the task itself needs a git write, ask for it; otherwise you may name one in passing, but neither ask nor wait, so git stays out of the flow. [Gates and Permissions](ndd.map.md#gates-and-permissions).
 
 ### Approval
 

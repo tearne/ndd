@@ -2,6 +2,10 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 3.2.0-dev
+
+- Every git write except `git mv` and `git rm` is left to the user. The agent asks only when the task itself needs one, and otherwise at most names it in passing (*Gates and Permissions*).
+
 ## 3.1.0-dev
 
 - A change keeps on disk all it needs to resume: worklists such as review findings go in before work starts, and a pause writes down what's left (new rule *Change Lifecycle: State on Disk*).

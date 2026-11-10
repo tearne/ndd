@@ -1289,7 +1289,7 @@ Adopting an existing codebase adds a survey: the agent reads its assets and prop
 ```yaml
 id: g5m
 approvals:
-  tearne: {at: 2026-11-03, hash: 26948f21}
+  tearne: {at: 2026-11-10, hash: b2c61377}
 ```
 
 Three rules gating what the agent may do without asking:
@@ -1298,7 +1298,7 @@ Three rules gating what the agent may do without asking:
 
 - **Write permission** — what the agent may change at each point.
 
-- **Git writes** — commit, push, branch and reset, which happen only on the user's explicit instruction.
+- **Git writes** — any git command that changes the repository or its index. Only `git mv` and `git rm` go ahead unasked, on files the agent may move or delete. The rest happen only when the user asks: where the task itself needs one, the agent asks for it; otherwise it may name one in passing, but neither asks nor waits.
 
 Writing is gated by phase. Outside [Build](#build) the agent writes only inside `changes/`; project files are read-only. Writing a project file needs the change to be in Build, holding the lock in `active.md`, unless the [map exemption](#edit-governance) applies; a change returned to planning keeps the lock but not the permission. Reading anything is always allowed.
 
