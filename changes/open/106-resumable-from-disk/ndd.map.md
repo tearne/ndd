@@ -744,7 +744,7 @@ A change's file name is its title in two to five hyphenated words, optionally be
 ```yaml
 id: l5g
 approvals:
-  tearne: {at: 2026-11-03, hash: ddd4d371}
+  tearne: {at: 2026-11-05, hash: 69388622}
 ```
 
 A change is a single markdown document that advances through three phases:
@@ -755,7 +755,7 @@ A change is a single markdown document that advances through three phases:
 
 Each phase is surfaced for the user's explicit approval before the next begins.
 
-The document is the single carrier of state: where a change sits is read from what it contains, not from any status field. A part reaches the document once [approved](#approval), or sooner if the user asks for the draft in place.
+The document, with its [companion folder](#companion-folder), carries the change's state: where the change sits is read from what it contains, and nothing needed to resume it is left in chat or context alone. A list the change works through, such as review findings, goes in before work on it starts.
 
 The Plan → Build boundary is the load-bearing gate: the change's own work waits for an approved plan, apart from the [map exemption](#edit-governance).
 
@@ -783,10 +783,10 @@ At each move between lifecycle stages the agent first reads the governing map no
 ```yaml
 id: v3d
 approvals:
-  tearne: {at: 2026-11-03, hash: c65e5735}
+  tearne: {at: 2026-11-05, hash: 2f11e8ef}
 ```
 
-The plan is the part of a change document written before [Build](#build); the Log and Conclude come after. It builds up in **parts**, each drafted then surfaced for approval before the next. Every plan starts with the [Intent](#intent); the parts that follow are set by its [Change Style](#change-style).
+The plan is the part of a change document written before [Build](#build); the Log and Conclude come after. It builds up in **parts**, each drafted then surfaced for approval before the next, and reaching the document once [approved](#approval), or sooner if the user asks for the draft in place. Every plan starts with the [Intent](#intent); the parts that follow are set by its [Change Style](#change-style).
 
 What may be written meanwhile is set by [Gates and Permissions](#gates-and-permissions). Two further sections sit outside the parts sequence, ungated: [Context](#context), which explains why the change exists, and [Unresolved](#unresolved), which holds what the plan has yet to settle.
 
@@ -1401,12 +1401,12 @@ Placement is confirmed in one line. Overlap noticed with an existing change is n
 ```yaml
 id: p6r
 approvals:
-  tearne: {at: 2026-10-26, hash: 1ecbac2d}
+  tearne: {at: 2026-11-05, hash: 1459bece}
 ```
 
-When the user says `pause`, the agent adds a dated entry to `changes/resume.md` naming what was in progress, where it sits and anything unapproved, then stops. An entry is only a pointer: a discussion keeps its detail in its [*Resume* anchor](#discussion-records) and a build in its [Log](#log), while a change paused mid-planning has neither, so the entry names the part being drafted.
+When the user says `pause`, the agent adds a dated entry to `changes/resume.md` naming what was in progress, where it sits and anything unapproved, then stops. An entry points to where the work is kept: a discussion's [*Resume* anchor](#discussion-records) or the [change](#change-lifecycle). Before stopping, the agent writes there whatever still to do is missing, or into the entry if there is nowhere else.
 
-Resuming an entry's work by any route deletes it, and an empty file with it. Otherwise an entry stays until the user asks for its deletion, never inside a yes to something else. At [Archiving](#archiving) the agent reviews the entries one at a time, offering to delete one naming the archived change and to keep, delete or move into a change or discussion any other. The file is committed like any file.
+Resuming an entry's work by any route deletes it, and an empty file with it. Otherwise an entry stays until the user asks for its deletion, never inside a yes to something else. At [Archiving](#archiving) the agent reviews the entries one at a time, offering to delete one naming the archived change and to keep, delete or move into a change or discussion any other.
 
 **Detail**
 
@@ -1471,14 +1471,14 @@ Deferring upkeep for a stretch — an emergency fix, a push elsewhere — is saf
 ```yaml
 id: m3r
 approvals:
-  tearne: {at: 2026-11-03, hash: e29ca8cc}
+  tearne: {at: 2026-11-05, hash: 326c7e0b}
 ```
 
 Map Review is offered by the agent as a yes-or-no at the moments in the table below, each setting its scope.
 
 [Tidy](#tidy) has already run and reported by then, so a yes opens the **findings list**: everything the Tidy and Map Review checks found that needs a judgement, summarised first and then considered one item at a time by [Orient Then Focus](#orient-then-focus). A finding quotes what it faults and what already covers it, so the overlap is seen rather than asserted.
 
-Findings are not stored. A review recomputes from the map, so a deferred finding reappears next time and costs a word to dismiss again. The checks stay askable by name, and so does a scope, for anyone who wants less or more than the moment offers.
+With many findings, the agent recommends a [change](#change-lifecycle) to hold and work through them. Otherwise findings are not stored: a review recomputes from the map, so a deferred finding reappears next time and costs a word to dismiss again. The checks stay askable by name, and so does a scope, for anyone who wants less or more than the moment offers.
 
 | Scope | Checks | Moment |
 |-------|--------|--------|

@@ -4,11 +4,17 @@
 
 ## Intent
 
-A change holds on disk everything a fresh session needs to carry on with it, never relying on what the session that worked it remembers. In particular, any list of items a change works through, such as review findings, is written into the change before work on it starts. A pause leaves the work resumable from disk alone: before it stops, the agent checks that the change and the pause entry together hold everything still to do, and writes down whatever is missing.
+A change should hold on disk everything a fresh session needs to carry on with it, including any list it works through and, at a pause, whatever is still to do.
 
 ## Change Specification
 
 Target map: [106-resumable-from-disk/ndd.map.md](106-resumable-from-disk/ndd.map.md).
+
+`method/AGENT-RULES.md` target: a new rule after *Build*:
+
+> ### Change Lifecycle: State on Disk
+>
+> Keep everything needed to resume a change on disk, in the change or its companion folder, never only in chat or context. Write a list the change works through, such as review findings, into the change before working through it, and before stopping on a `pause`, write down whatever still to do is missing. A fresh session sees only what is on disk. [Change Lifecycle](ndd.map.md#change-lifecycle), [Pause Keyword](ndd.map.md#pause-keyword).
 
 ## Context
 
