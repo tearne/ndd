@@ -69,7 +69,7 @@ When planning a change, read [Plan](ndd.map.md#plan) and build its parts in the 
 
 ### Caps
 
-Count each capped part against its cap when you surface it, report the number, and past a cap ask the user to adjudicate rather than trimming silently or presenting it as final. Every cap is soft.
+Count each capped part against its cap when you surface it, report the number, and past a cap ask the user to adjudicate rather than trimming silently or presenting it as final. Every cap is soft, and a ceiling, never a target: if it can be said in half the space, say it in half.
 
 - Intent: ~500 characters, *Context* excluded.
 - Bounds: ~200 characters; overrun also signals the wrong style.

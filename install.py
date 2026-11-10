@@ -1,7 +1,6 @@
 #!/usr/bin/env -S uv run --script --
 # /// script
 # requires-python = "==3.12.*"
-# dependencies = ["rich"]
 # ///
 
 # NDD installer. Copies the shipped assets out of this checkout into a fresh
@@ -24,9 +23,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from rich.console import Console
-
-console = Console()
+GREEN, YELLOW, RED, CYAN = "32", "33", "31", "36"  # ANSI colour codes
 
 SOURCE = Path(__file__).parent
 # What the agent and user need at run time, as map.md#shipped-assets lists it:
@@ -47,14 +44,15 @@ def main():
     project = Path.cwd()
     ndd = project / "ndd"
     refuse_own_checkout(project)
-    console.print(f"Installing NDD into [bold]{project}[/bold]\n")
+    print(f"Installing NDD into {project}\n")
 
     copy_method(ndd)
     created = [path.name for path, desired in ((project / "CLAUDE.md", CLAUDE_POINTER), (project / "AGENTS.md", AGENTS_INSTRUCTION))
                if own_entry_file(path, desired)]
     ensure_gitignore(project / ".gitignore", ignored_entries(project, created))
 
-    console.print("\n[bold green]Done.[/bold green] NDD installed into ./ndd/")
+    print()
+    success("Done. NDD installed into ./ndd/")
 
 
 # Write ndd/ fresh, so nothing an earlier version shipped lingers. Every
@@ -75,7 +73,7 @@ def copy_method(ndd: Path) -> None:
 def shipped_files() -> list[Path]:
     missing = [name for name in SHIPPED if not (SOURCE / name).exists()]
     if missing:
-        console.print(f"[bold red]Error:[/bold red] shipped assets missing from the checkout: {', '.join(missing)}")
+        error(f"Shipped assets missing from the checkout: {', '.join(missing)}")
         sys.exit(1)
     files = []
     for name in SHIPPED:
@@ -163,10 +161,8 @@ def copy_asset(src: Path, dest: Path) -> None:
 # so installing it into itself would only make a copy that lags.
 def refuse_own_checkout(project: Path) -> None:
     if project.resolve() == SOURCE.resolve():
-        console.print(
-            "[bold red]Error:[/bold red] refusing to run — this is the NDD checkout, which reads its sources directly.\n"
-            "Run install.py from the project you want to opt in."
-        )
+        error("Refusing to run — this is the NDD checkout, which reads its sources directly.\n"
+              "Run install.py from the project you want to opt in.")
         sys.exit(1)
 
 
@@ -185,17 +181,40 @@ def read_version() -> str:
     return "unknown"
 
 
+STATUS_COLOURS = {"conflict": YELLOW, "already present": ""}  # any other status is green: done
+
+
 def report(status: str, path: Path, note: str = "") -> None:
-    colours = {"created": "green", "copied": "green", "updated": "cyan", "backed up": "cyan",
-               "already present": "dim", "conflict": "yellow", "cleared": "magenta"}
-    colour = colours.get(status, "white")
-    label = f"[{colour}]{status:<15}[/{colour}]"
-    detail = f"  [dim]{note}[/dim]" if note else ""
-    console.print(f"  {label} {path}{detail}")
+    code = STATUS_COLOURS.get(status, GREEN)
+    label = styled(f"{status:<15}", code, sys.stdout) if code else f"{status:<15}"
+    print(f"  {label} {path}" + (f"  {note}" if note else ""))
+
+
+def success(text: str) -> None:
+    print(styled(f"✓ {text}", GREEN, sys.stdout))
+
+
+def warn(text: str) -> None:
+    print(styled(f"⚠ {text}", YELLOW, sys.stdout))
+
+
+def error(text: str) -> None:
+    print(styled(f"✗ {text}", RED, sys.stderr), file=sys.stderr)
+
+
+def styled(text: str, code: str, stream) -> str:
+    if stream.isatty() and "NO_COLOR" not in os.environ:
+        return f"\033[{code}m{text}\033[0m"
+    return text
 
 
 if __name__ == "__main__":
     if not os.environ.get("VIRTUAL_ENV"):
-        print("Error: no virtual environment detected. Run this script via './install.py' (requires uv), or activate a virtual environment first.")
+        error("No virtual environment detected. Run this script via './install.py' (requires uv), or activate a virtual environment first.")
         sys.exit(100)
-    main()
+    try:
+        main()
+    except (KeyboardInterrupt, EOFError):
+        print()
+        warn("Aborted.")
+        sys.exit(130)

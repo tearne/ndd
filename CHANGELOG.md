@@ -2,6 +2,11 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 3.4.0-dev
+
+- An Intent is written as a requirement, such as "the application should…" or "update the…" (*Intent*).
+- Every cap is a ceiling, not a target: if a part can be said in half the space, it should be (*Caps*).
+
 ## 3.3.0-dev
 
 - A release step may write the files its draft shows, such as the changelog fold, once the user approves that draft, with no change in Build (*Gates and Permissions*).

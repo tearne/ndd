@@ -1,7 +1,6 @@
 #!/usr/bin/env -S uv run --script --
 # /// script
 # requires-python = "==3.12.*"
-# dependencies = ["rich"]
 # ///
 
 # Helper for Sign-off (ndd.map.md#sign-off): prints the fingerprints of a map's
@@ -16,11 +15,9 @@ import re
 import sys
 from pathlib import Path
 
-from rich.console import Console
+VERSION = "1.1.0"
 
-VERSION = "1.0.0"
-
-console = Console()
+GREEN, YELLOW, RED, CYAN = "32", "33", "31", "36"  # ANSI colour codes
 
 HEADING = re.compile(r"^#{1,6} (.+?)\s*$")
 FENCE = re.compile(r"^```")
@@ -113,7 +110,7 @@ def end_of_fence(lines: list[str], start: int) -> int:
 
 def print_one(nodes: dict[str, list[str]], name: str) -> None:
     if name not in nodes:
-        console.print(f"[bold red]Error:[/bold red] no node named '{name}'.")
+        error(f"No node named '{name}'.")
         sys.exit(1)
     print(fingerprint(nodes[name]))
 
@@ -137,8 +134,31 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def success(text: str) -> None:
+    print(styled(f"✓ {text}", GREEN, sys.stdout))
+
+
+def warn(text: str) -> None:
+    print(styled(f"⚠ {text}", YELLOW, sys.stdout))
+
+
+def error(text: str) -> None:
+    print(styled(f"✗ {text}", RED, sys.stderr), file=sys.stderr)
+
+
+def styled(text: str, code: str, stream) -> str:
+    if stream.isatty() and "NO_COLOR" not in os.environ:
+        return f"\033[{code}m{text}\033[0m"
+    return text
+
+
 if __name__ == "__main__":
     if not os.environ.get("VIRTUAL_ENV"):
-        print("Error: no virtual environment detected. Run this script via './fingerprint.py' (requires uv), or activate a virtual environment first.")
+        error("No virtual environment detected. Run this script via './fingerprint.py' (requires uv), or activate a virtual environment first.")
         sys.exit(100)
-    main()
+    try:
+        main()
+    except (KeyboardInterrupt, EOFError):
+        print()
+        warn("Aborted.")
+        sys.exit(130)

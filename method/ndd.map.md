@@ -800,10 +800,10 @@ A plan need not be fully formed to exist. A change that is not building is **par
 ```yaml
 id: i8b
 approvals:
-  tearne: {at: 2026-11-03, hash: 34cf51a9}
+  tearne: {at: 2026-11-10, hash: 2df60ca2}
 ```
 
-The opening part: what the change must achieve, in domain language, stated so the user can approve it. Not how it will be delivered unless relevant to the requirement, and not why it is needed: every *why* — history, provenance, the reasoning that led here — belongs in [Context](#context). It requires user approval before anything else proceeds.
+The opening part: what the change should achieve, in domain language and the voice of a requirement, such as "the application should…" or "update the…", so it never reads as a description of what exists, and the user can approve it. Not how it will be delivered unless relevant to the requirement, and not why it is needed: every *why* — history, provenance, the reasoning that led here — belongs in [Context](#context). It requires user approval before anything else proceeds.
 
 Its prose has a [cap](#caps), so the opening scans in seconds. Once the change's preparation section — [Bounds](#bounds), [Focus](#focus), or [Change Specification](#change-specification) — is approved, the agent re-reads the Intent and cuts whatever it now carries, surfacing the trimmed Intent with its count. Trivial changes have no preparation section and no trim step.
 
@@ -963,10 +963,10 @@ A folder beside a change document in `changes/open/`, named to match it, holding
 ```yaml
 id: c5p
 approvals:
-  tearne: {at: 2026-10-26, hash: 1d26b720}
+  tearne: {at: 2026-11-10, hash: cc37c7ca}
 ```
 
-Some parts of a change or discussion carry a cap, listed below, to keep them quick to read. Every cap is soft. The agent counts a capped text as [Node Sizing](#node-sizing) does, each time it surfaces it, and reports the number; past the cap it asks the user to adjudicate rather than trimming silently or presenting the text as final. For [Bounds](#bounds) or [Focus](#focus), an overrun also suggests another [Change Style](#change-style) fits better.
+Some parts of a change or discussion carry a cap, listed below, to keep them quick to read. Every cap is soft, and a ceiling rather than a target: a part that can be said in half the space should be. The agent counts a capped text as [Node Sizing](#node-sizing) does, each time it surfaces it, and reports the number; past the cap it asks the user to adjudicate rather than trimming silently or presenting the text as final. For [Bounds](#bounds) or [Focus](#focus), an overrun also suggests another [Change Style](#change-style) fits better.
 
 | Text | Cap |
 |------|-----|

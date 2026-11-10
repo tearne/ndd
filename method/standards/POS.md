@@ -4,12 +4,26 @@ The POS style helps Python take the place of native shell scripts for administra
 POS guidance:
 - Prefer `subprocess` for shell commands; use Python for control flow. This makes commands easy to read and copy-paste elsewhere.
     - Always use `shell=True` with a plain string — this keeps commands terminal-ready and avoids the need for `FileNotFoundError` handling (the shell handles command resolution; use `returncode` or `check=True` for error detection instead).
-    - Use a helper function similar to `run()` (below) instead of `subprocess.run()` directly — it prints the command before executing. Use `subprocess.run()` directly only when there is a specific reason not to echo (e.g. a command that produces high-frequency output where the prefix would be noise):
+    - Use a helper function similar to `run()` (below) instead of `subprocess.run()` directly — it echoes the command before executing. Use `subprocess.run()` directly only when there is a specific reason not to echo (e.g. a command polled in a loop: call `echo_command()` once before the loop instead):
         ```python
         def run(cmd: str, **kwargs) -> subprocess.CompletedProcess:
-            _console.print(f"$ {cmd}", style="cyan")
+            echo_command(cmd)
+            return subprocess.run(f"set -o pipefail && {cmd}", shell=True, executable="/bin/bash", **kwargs)
+
+
+        def echo_command(cmd: str, root: bool = False) -> None:
+            print(styled(f"{'#' if root else '$'} {cmd}", CYAN, sys.stdout))
+        ```
+    - Commands are echoed to the screen but never written to a log. Where a command carries a secret, echo a named placeholder in its place, so the line stays readable and still says what goes there:
+        ```python
+        def run(cmd: str, secrets: dict[str, str] | None = None, **kwargs) -> subprocess.CompletedProcess:
+            shown = cmd
+            for name, value in (secrets or {}).items():
+                shown = shown.replace(value, f"<{name}>")
+            echo_command(shown)
             return subprocess.run(f"set -o pipefail && {cmd}", shell=True, executable="/bin/bash", **kwargs)
         ```
+        Called as `run(f"login --token={token}", secrets={"token": token})`, it echoes `$ login --token=<token>`.
     - Examples:
         - To download the latest version of the `helix` `deb` for `amd64`:
         ```py
@@ -20,6 +34,7 @@ POS guidance:
         run("""DEBIAN_FRONTEND=noninteractive apt-get install -y curl""")
         ```
     - But don't take this to an extreme and force trivial actions like loops into the shell.
+    - When a command includes a value from outside the script (an ID, a token, user input), quote it and attach it with `=`: `--option={shlex.quote(value)}`, not `--option {value}`. Quoting stops the shell splitting it; `=` stops a value starting with `-` being read as another option.
 - Prefer a single Python source file, unless it compromises readability.
 - Make the python file executable and use a `uv` shebang:
     ```sh
@@ -36,21 +51,52 @@ POS guidance:
     parser.add_argument("--version", action="version", version=f"%(prog)s {VERSION}")
     ```
 - Key functions go at the top of the file; utility functions at the bottom.
-- Use a "main guard" at the bottom of the file. Include a venv check here before calling `main()`:
+- Use a "main guard" at the bottom of the file. Include a venv check here before calling `main()`, and end cleanly on Ctrl-C or Ctrl-D: no traceback, exit 130 as the shell does. Catch the interrupt only here, never in prompt loops or helpers, where it would trap the user:
     ```py
     if __name__ == "__main__":
         if not os.environ.get("VIRTUAL_ENV"):
-            print("Error: no virtual environment detected. Run this script via './<script-name>' (requires uv), or activate a virtual environment first.")
+            error("No virtual environment detected. Run this script via './<script-name>' (requires uv), or activate a virtual environment first.")
             sys.exit(100)
-        main()
+        try:
+            main()
+        except (KeyboardInterrupt, EOFError):
+            print()
+            warn("Aborted.")
+            sys.exit(130)
     ```
-- Prefer built-in libraries to maximise future compatibility. Suggested (when relevant): `argparse`, `atexit`, `getpass`, `os`, `pathlib`, `shutil`, `subprocess`, `sys`, `time`. Pre-approved external: `rich`. Other third-party libraries may be proposed if they are mainstream or would significantly enhance readability.
+- Prefer built-in libraries to maximise future compatibility. Suggested (when relevant): `argparse`, `atexit`, `getpass`, `os`, `pathlib`, `shutil`, `subprocess`, `sys`, `time`. Pre-approved external: `rich`, though the helpers here need nothing beyond the standard library, so a script can run before its dependencies can be fetched. Other third-party libraries may be proposed if they are mainstream or would significantly enhance readability.
 - When a `Path` object is already in hand, prefer `path.open(mode)` over `open(path, mode)`.
 - Use `atexit` for cleanup of resources that must be released on normal exit and on `sys.exit()` (e.g. a log file opened at startup). Note: `atexit` handlers do not run on `os._exit()` or unhandled signals such as `SIGKILL`.
     ```py
     log = log_path.open("w")
     atexit.register(log.close)
     ```
+
+## Output
+
+Colour means state: green good, yellow attention, red bad, cyan a command. Each mark has a glyph (`✓ ⚠ ✗ $`) that keeps its meaning when colour is off, which it is when the stream isn't a terminal or `NO_COLOR` is set. Headings and plain lines are ordinary `print()`. Anything the user must act on, such as a URL to open, is printed last, so it is still on screen while the script waits.
+
+```python
+GREEN, YELLOW, RED, CYAN = "32", "33", "31", "36"  # ANSI colour codes
+
+
+def success(text: str) -> None:
+    print(styled(f"✓ {text}", GREEN, sys.stdout))
+
+
+def warn(text: str) -> None:
+    print(styled(f"⚠ {text}", YELLOW, sys.stdout))
+
+
+def error(text: str) -> None:
+    print(styled(f"✗ {text}", RED, sys.stderr), file=sys.stderr)
+
+
+def styled(text: str, code: str, stream) -> str:
+    if stream.isatty() and "NO_COLOR" not in os.environ:
+        return f"\033[{code}m{text}\033[0m"
+    return text
+```
 
 ## Config File Modifications
 
@@ -130,25 +176,18 @@ def init_sudo():
     sys.exit(1)
 
 
-def sudo(cmd):
+def sudo(cmd: str) -> None:
     if _sudo_password is None:
         raise RuntimeError("init_sudo() must be called before sudo()")
-    if os.geteuid() == 0 or _sudo_password is _PASSWORDLESS:
-        run(cmd)
-    else:
-        _console.print(f"$ {cmd}", style="bold cyan")
-        proc = subprocess.Popen(
-            ["sudo", "-S", "bash", "-c", f"set -o pipefail && {cmd}"], text=True,
-            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-        )
-        proc.stdin.write(_sudo_password + "\n")
-        proc.stdin.close()
-        output, _ = proc.communicate()
-        if output:
-            print(output, end="")
-        if proc.returncode != 0:
-            print(f"FAILED (exit {proc.returncode}): {cmd}")
-            sys.exit(1)
+    echo_command(cmd, root=True)
+    argv = ["bash", "-c", f"set -o pipefail && {cmd}"]
+    if os.geteuid() != 0:
+        argv = ["sudo", "-S", "-p", "", *argv]
+    password = None if _sudo_password is _PASSWORDLESS else _sudo_password + "\n"
+    result = subprocess.run(argv, input=password, text=True)
+    if result.returncode != 0:
+        error(f"FAILED (exit {result.returncode}): {cmd}")
+        sys.exit(1)
 ```
 
 Use `sudo()` exactly as you would use `subprocess.run()` for shell commands. The `init_sudo()` call belongs in `main()`, alongside other startup concerns like argument parsing — not in a helper buried in the business logic.
