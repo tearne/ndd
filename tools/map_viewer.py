@@ -19,13 +19,14 @@ import hashlib
 import html
 import os
 import re
+import shlex
 import subprocess
 import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, quote, urlparse
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 
 GREEN, YELLOW, RED = "32", "33", "31"  # ANSI colour codes
 
@@ -204,6 +205,14 @@ main { max-width: 52rem; padding: 2rem 1.5rem; flex: 1; min-width: 0; }
 pre { background: #f4f4f4; padding: .75rem; overflow-x: auto; white-space: pre-wrap; }
 table { border-collapse: collapse; }
 td, th { border: 1px solid #ccc; padding: .2rem .5rem; text-align: left; }
+blockquote { margin: 1rem 0; padding: 0 1rem; border-left: 4px solid #ddd; color: #555; }
+.alert { margin: 1rem 0; padding: .1rem 1rem; border-left: 4px solid; }
+.alert-title { font-weight: 600; margin: .5rem 0 0; }
+.alert-note { border-color: #4078c0; } .alert-note .alert-title { color: #4078c0; }
+.alert-tip { border-color: #2a8a3a; } .alert-tip .alert-title { color: #2a8a3a; }
+.alert-important { border-color: #8250df; } .alert-important .alert-title { color: #8250df; }
+.alert-warning { border-color: #b8860b; } .alert-warning .alert-title { color: #b8860b; }
+.alert-caution { border-color: #c03030; } .alert-caution .alert-title { color: #c03030; }
 
 /* The tree */
 aside { width: 18rem; flex: none; height: 100vh; overflow-y: auto; position: sticky; top: 0; box-sizing: border-box;
@@ -416,41 +425,129 @@ def children(file: str, name: str) -> list[tuple[str, str]]:
 
 # --- Rendering ---
 
+# The markdown maps use, rendered block by block: paragraphs, headings, nested and numbered
+# lists, blockquotes and GitHub alerts, tables and fenced code. Hand-rolled rather than a
+# library so the script still runs anywhere with no network.
 def render_markdown(lines: list[str], file: str) -> str:
-    out, paragraph, in_code, table = [], [], False, []
+    return "\n".join(blocks_of([line.rstrip("\n") for line in lines], file))
 
-    def flush():
-        if paragraph:
-            out.append(f"<p>{inline(' '.join(paragraph), file)}</p>")
-            paragraph.clear()
-        if table:
-            out.append(render_table(table, file))
-            table.clear()
 
-    for line in lines:
-        text = line.rstrip("\n")
-        if text.startswith("```"):
-            flush()
-            out.append("</pre>" if in_code else "<pre>")
-            in_code = not in_code
-        elif in_code:
-            out.append(html.escape(text) + "\n")
-        elif LINK_ONLY_LINE.match(text):
-            continue  # navigation links: the tree shows them
-        elif text.startswith("|"):
-            table.append(text)
-        elif not text.strip():
-            flush()
-        elif m := re.match(r"^(\s*)(-|\d+\.) (.*)", text):
-            flush()
-            out.append(f'<div style="margin-left:{len(m.group(1)) // 2 + 1}rem">{html.escape(m.group(2)) if m.group(2) != "-" else "•"} {inline(m.group(3), file)}</div>')
-        elif text.startswith("#"):
-            flush()
-            out.append(f"<h2>{inline(text.lstrip('# '), file)}</h2>")
+LIST_ITEM = re.compile(r"^( *)([-*+]|\d+[.)]) +(.*)")
+HEADING = re.compile(r"^(#{2,6}) +(.*?)\s*#*\s*$")
+CODE_FENCE = re.compile(r"^\s*(`{3,})")
+ALERT = re.compile(r"^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*$", re.IGNORECASE)
+
+
+def blocks_of(lines: list[str], file: str) -> list[str]:
+    out, i = [], 0
+    while i < len(lines):
+        if not lines[i].strip():
+            i += 1
+            continue
+        block, i = block_at(lines, i, file)
+        out.append(block)
+    return out
+
+
+# The block starting at line i, rendered, and the line after it.
+def block_at(lines: list[str], i: int, file: str) -> tuple[str, int]:
+    text = lines[i]
+    if m := CODE_FENCE.match(text):
+        return code_block(lines, i, m.group(1))
+    if m := HEADING.match(text):
+        return f"<h{len(m.group(1))}>{inline(m.group(2), file)}</h{len(m.group(1))}>", i + 1
+    if text.startswith(">"):
+        return blockquote(lines, i, file)
+    if text.startswith("|"):
+        end = run_end(lines, i, lambda line: line.startswith("|"))
+        return render_table(lines[i:end], file), end
+    if m := LIST_ITEM.match(text):
+        return list_block(lines, i, m, file)
+    end = run_end(lines, i + 1, lambda line: line.strip() and not starts_block(line))
+    return f"<p>{inline(' '.join(line.strip() for line in lines[i:end]), file)}</p>", end
+
+
+def starts_block(line: str) -> bool:
+    return bool(CODE_FENCE.match(line) or HEADING.match(line) or LIST_ITEM.match(line)
+                or line.startswith((">", "|")))
+
+
+def run_end(lines: list[str], i: int, belongs) -> int:
+    while i < len(lines) and belongs(lines[i]):
+        i += 1
+    return i
+
+
+# A fence closes on a line of at least as many backticks, so a fence can quote a shorter one.
+def code_block(lines: list[str], i: int, ticks: str) -> tuple[str, int]:
+    end = run_end(lines, i + 1, lambda line: not (line.strip().startswith(ticks) and set(line.strip()) == {"`"}))
+    code = "".join(html.escape(line) + "\n" for line in lines[i + 1:end])
+    return f"<pre><code>{code}</code></pre>", end + 1
+
+
+# A GitHub alert, a blockquote opening with [!IMPORTANT] or the like, gets its kind as a title.
+def blockquote(lines: list[str], i: int, file: str) -> tuple[str, int]:
+    end = run_end(lines, i, lambda line: line.startswith(">"))
+    inner = [re.sub(r"^> ?", "", line) for line in lines[i:end]]
+    if inner and (m := ALERT.match(inner[0])):
+        kind = m.group(1).lower()
+        body = "\n".join(blocks_of(inner[1:], file))
+        return f'<div class="alert alert-{kind}"><p class="alert-title">{kind.title()}</p>{body}</div>', end
+    return f"<blockquote>{chr(10).join(blocks_of(inner, file))}</blockquote>", end
+
+
+# A run of items sharing one indent and one kind, bulleted or numbered. An item holds what
+# follows it indented deeper, so a nested list or a second paragraph renders inside it.
+# Items with no blank line between them are tight: their text is not wrapped in paragraphs.
+def list_block(lines: list[str], i: int, first: re.Match, file: str) -> tuple[str, int]:
+    indent, ordered = len(first.group(1)), first.group(2)[0].isdigit()
+    items, loose, item = [], False, first
+    while True:
+        body, i = list_item(lines, i, item, indent)
+        items.append(body)
+        loose = loose or "" in body
+        after = run_end(lines, i, lambda line: not line.strip())
+        item = LIST_ITEM.match(lines[after]) if after < len(lines) else None
+        if not (item and len(item.group(1)) == indent and item.group(2)[0].isdigit() == ordered):
+            break
+        loose = loose or after > i
+        i = after
+    rendered = "".join(f"<li>{item_html(body, loose, file)}</li>" for body in items)
+    if not ordered:
+        return f"<ul>{rendered}</ul>", i
+    start = int(first.group(2)[:-1])
+    return f'<ol{f" start={start}" if start != 1 else ""}>{rendered}</ol>', i
+
+
+# One item's lines with its marker removed and its continuation de-indented, and the line after it.
+def list_item(lines: list[str], i: int, item: re.Match, indent: int) -> tuple[list[str], int]:
+    content_indent = item.start(3)
+    body, i = [item.group(3)], i + 1
+    while i < len(lines):
+        line = lines[i]
+        if not line.strip():
+            after = run_end(lines, i, lambda line: not line.strip())
+            if after == len(lines) or indentation(lines[after]) <= indent:
+                break
+            body.extend([""] * (after - i))
+            i = after
+        elif indentation(line) > indent:
+            body.append(line[min(content_indent, indentation(line)):])
+            i += 1
         else:
-            paragraph.append(text.strip())
-    flush()
-    return "\n".join(out)
+            break
+    return body, i
+
+
+def item_html(body: list[str], loose: bool, file: str) -> str:
+    blocks = blocks_of(body, file)
+    if not loose and blocks and blocks[0].startswith("<p>"):
+        blocks[0] = blocks[0][3:-4]
+    return "\n".join(blocks)
+
+
+def indentation(line: str) -> int:
+    return len(line) - len(line.lstrip(" "))
 
 
 def render_table(rows: list[str], file: str) -> str:
@@ -511,23 +608,46 @@ def map_path(file: str) -> Path:
 
 
 # The node in each commit of its file, newest first, found by id or else by name: a list
-# of (commit, date, node lines), the lines None where the node is absent. Run per
+# of (commit, date, node lines), the lines None where the node is absent. Every version of
+# the file comes from one git process, so a long history still answers quickly. Run per
 # request, so not echoed.
 def node_history(file: str, name: str) -> list[tuple[str, str, list[str] | None]]:
     path = map_path(file)
     node_id = id_of(node_lines(read_map(file), name))
-    log = subprocess.run(f"git log --format='%h %as' -n 500 -- {quote_shell(path.name)}", shell=True,
+    log = subprocess.run(f"git log --format='%h %as' -n 500 -- {shlex.quote(path.name)}", shell=True,
                          cwd=path.parent, capture_output=True, text=True)
-    history = []
-    for entry in log.stdout.splitlines():
-        commit, date = entry.split()
-        shown = subprocess.run(f"git show {commit}:./{quote_shell(path.name)}", shell=True, cwd=path.parent,
-                               capture_output=True, text=True)
-        old = shown.stdout.splitlines(keepends=True)
-        match = [n for n in nodes_of(old) if node_id and id_of(node_lines(old, n)) == node_id] or \
-                [n for n in nodes_of(old) if n == name]
-        history.append((commit, date, node_lines(old, match[0]) if match else None))
-    return history
+    commits = [entry.split() for entry in log.stdout.splitlines()]
+    versions = file_versions([commit for commit, _ in commits], path)
+    return [(commit, date, node_in(old, node_id, name)) for (commit, date), old in zip(commits, versions)]
+
+
+# The file's text at each commit, read through a single git cat-file --batch.
+def file_versions(commits: list[str], path: Path) -> list[list[str]]:
+    if not commits:
+        return []
+    request = "".join(f"{commit}:./{path.name}\n" for commit in commits)
+    shown = subprocess.run("git cat-file --batch", shell=True, cwd=path.parent, input=request.encode("utf-8"),
+                           capture_output=True).stdout
+    versions, at = [], 0
+    for _ in commits:
+        header_end = shown.index(b"\n", at)
+        header = shown[at:header_end].split()
+        if header[-1] == b"missing":
+            versions.append([])
+            at = header_end + 1
+            continue
+        size = int(header[2])
+        versions.append(shown[header_end + 1:header_end + 1 + size].decode("utf-8").splitlines(keepends=True))
+        at = header_end + 1 + size + 1  # each object is followed by a newline
+    return versions
+
+
+# The node with this id in an old version of the file, or else the one with this name.
+def node_in(old: list[str], node_id: str | None, name: str) -> list[str] | None:
+    ranges = node_ranges(old)
+    by_id = [old[start:end] for _, (start, end) in ranges if node_id and id_of(old[start:end]) == node_id]
+    by_name = [old[start:end] for node, (start, end) in ranges if node == name]
+    return (by_id or by_name or [None])[0]
 
 
 def word_diff(before: str, after: str) -> str:
@@ -549,10 +669,6 @@ def node_url(file: str, name: str) -> str:
 
 def slug(heading: str) -> str:
     return re.sub(r"[^a-z0-9 -]", "", heading.lower()).replace(" ", "-")
-
-
-def quote_shell(text: str) -> str:
-    return "'" + text.replace("'", "'\\''") + "'"
 
 
 def find_map(path: Path) -> Path:

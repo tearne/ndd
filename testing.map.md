@@ -3,12 +3,13 @@
 [↑ NDD Project](map.md#ndd-project) \
 [Contents](#contents) \
 [Fingerprint Check](#fingerprint-check) \
-[Install Check](#install-check)
+[Install Check](#install-check) \
+[Map Viewer Check](#map-viewer-check)
 
 ```yaml
 id: t4k
 approvals:
-  tearne: {at: 2026-11-04, hash: 7288292a}
+  tearne: {at: 2026-11-11, hash: c3ffa732}
 ```
 
 This repository checks itself with tests, each a node in this branch stating what must hold and how it is verified. Each test's runnable form sits under `tests/` rather than in the map, so the map stays a description of what exists.
@@ -16,6 +17,8 @@ This repository checks itself with tests, each a node in this branch stating wha
 - **[Fingerprint Check](#fingerprint-check)** — the reference implementation of the [Fingerprint](method/ndd.map.md#fingerprint) rule and the cases that pin it.
 
 - **[Install Check](#install-check)** — the installer run end to end into a scratch project, fresh and as an upgrade.
+
+- **[Map Viewer Check](#map-viewer-check)** — the viewer's pages served from the demo map and checked against what each demo node shows.
 
 
 # Contents
@@ -29,6 +32,7 @@ id: ct7
 - [Testing](#testing)
   - [Fingerprint Check](#fingerprint-check)
   - [Install Check](#install-check)
+  - [Map Viewer Check](#map-viewer-check)
 
 
 # Fingerprint Check
@@ -82,3 +86,30 @@ approvals:
 - an entry file the project already had is left out of `.gitignore`.
 
 It prints the shipped files, so a stray one is seen.
+
+
+# Map Viewer Check
+
+[↑ Testing](#testing)
+
+```yaml
+id: v8c
+approvals:
+  tearne: {at: 2026-11-11, hash: 5a5b687f}
+```
+
+`tests/map_viewer/map_viewer_test.py` builds the demo map with `viewer_demo.py` beside it, serves it with the [map viewer](map.md#map-viewer) on a free port of 127.0.0.1, and checks each page against what its demo node says it shows:
+
+- `/` opening the root node, and *Contents* never due;
+
+- each stamp marked current or stale, a stale one linking to its approval diff;
+
+- the approval diff marking changed words, finding a renamed node by its id, and saying when the approved text was never committed;
+
+- the tree crossing into a branch file;
+
+- the markdown maps use rendered, from nested and numbered lists to alerts and fences;
+
+- an unknown node answered 404, and a path outside the map 403.
+
+It needs no internet access, so it runs wherever the viewer does.

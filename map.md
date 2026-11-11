@@ -233,7 +233,7 @@ The task tempts the failures the rule targets and probes where it might overreac
 ```yaml
 id: mv4
 approvals:
-  tearne: {at: 2026-11-10, hash: e6383ba4}
+  tearne: {at: 2026-11-11, hash: a2b904ee}
 ```
 
 A prototype: `tools/map_viewer.py`, a single-file POS script serving a map read-only in the browser for review. With no login it listens on 127.0.0.1 only, reached by ssh port forwarding; approvals and edits go through the agent in that session. It is not shipped.
@@ -247,7 +247,7 @@ A prototype: `tools/map_viewer.py`, a single-file POS script serving a map read-
 
 - **Approval diff** — for a stale stamp, the approved text found in git by its fingerprint, and what changed since.
 
-It carries its own copy of the [Fingerprint](method/ndd.map.md#fingerprint) rule, kept in step by [Fingerprint Check](testing.map.md#fingerprint-check). `tools/viewer_demo.py` builds a demo map showing every approval state.
+It renders markdown itself, so it runs without internet access, and carries its own copy of the [Fingerprint](method/ndd.map.md#fingerprint) rule, kept in step by [Fingerprint Check](testing.map.md#fingerprint-check). `tests/map_viewer/viewer_demo.py` builds a demo map showing every approval state, which [Map Viewer Check](testing.map.md#map-viewer-check) tests it on.
 
 
 

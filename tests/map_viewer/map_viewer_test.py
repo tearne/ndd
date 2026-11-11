@@ -1,0 +1,180 @@
+#!/usr/bin/env -S uv run --script --
+# /// script
+# requires-python = "==3.12.*"
+# ///
+
+# Serves the demo map that viewer_demo.py beside it builds and checks the viewer's pages
+# against what each demo node says it shows. Standard library only, and offline: the
+# server runs in this process on a free port of 127.0.0.1.
+
+import importlib.util
+import os
+import subprocess
+import sys
+import tempfile
+import threading
+import urllib.error
+import urllib.request
+from http.server import ThreadingHTTPServer
+from pathlib import Path
+from urllib.parse import quote
+
+HERE = Path(__file__).resolve().parent
+VIEWER = HERE.parents[1] / "tools" / "map_viewer.py"
+
+
+def main():
+    with tempfile.TemporaryDirectory() as scratch:
+        demo = Path(scratch) / "demo"
+        build_demo(demo)
+        base = serve(demo)
+        failures = sum(check() for check in [
+            lambda: root_redirects_to_demo(base),
+            lambda: stamps_show_their_state(base),
+            lambda: stale_stamp_links_to_its_diff(base),
+            lambda: diff_shows_changed_words(base),
+            lambda: renamed_node_found_by_id(base),
+            lambda: uncommitted_approval_explained(base),
+            lambda: contents_never_due(base),
+            lambda: tree_crosses_files(base),
+            lambda: markdown_rendered(base),
+            lambda: bad_requests_answered(base),
+        ])
+    if failures:
+        print(f"{failures} check(s) failed")
+        sys.exit(1)
+    print("OK")
+
+
+def build_demo(demo: Path) -> None:
+    subprocess.run(f"{sys.executable} {HERE / 'viewer_demo.py'} {demo}", shell=True, check=True,
+                   capture_output=True)
+
+
+# The viewer, loaded as a module and serving the demo from a background thread.
+def serve(demo: Path) -> str:
+    spec = importlib.util.spec_from_file_location("map_viewer", VIEWER)
+    viewer = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(viewer)
+    viewer.ROOT, viewer.ENTRY = demo.resolve(), "map.md"
+    server = ThreadingHTTPServer(("127.0.0.1", 0), viewer.Handler)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    return f"http://127.0.0.1:{server.server_address[1]}"
+
+
+# --- Checks, each returning its number of failures ---
+
+def root_redirects_to_demo(base: str) -> int:
+    with urllib.request.urlopen(base + "/") as response:
+        return expect("root", response.url.endswith(node_path("map.md", "Demo")), "/ should open the root node, Demo")
+
+
+def stamps_show_their_state(base: str) -> int:
+    return (expect("Current", page(base, "Current").count("class=ok>current") == 2, "alice and bob both current")
+            + expect("Stale", "class=stale>stale" in page(base, "Stale"), "alice's stamp stale")
+            + expect("Mixed", "class=ok>current" in (mixed := page(base, "Mixed")) and "class=stale>stale" in mixed,
+                     "one stamp current, one stale")
+            + expect("Unstamped", "No stamps" in page(base, "Unstamped"), "no stamps listed")
+            + expect("Quoted Handle", "carol: qa" in page(base, "Quoted Handle"), "the quoted handle shown"))
+
+
+def stale_stamp_links_to_its_diff(base: str) -> int:
+    return expect("Stale", f'href="{approval_path("Stale", "alice")}"' in page(base, "Stale"),
+                  "the stale fingerprint links to its approval diff")
+
+
+def diff_shows_changed_words(base: str) -> int:
+    diff = fetch(base + approval_path("Edited", "alice"))
+    return (expect("Edited diff", "<del>removed.</del><ins>removed; now they are highlighted where added too.</ins>" in diff,
+                   "the changed words marked")
+            + expect("Edited diff", "<ins>This paragraph is new." in diff, "the new paragraph marked")
+            + expect("Edited diff", "not yet committed" in diff, "the current text reported as uncommitted"))
+
+
+def renamed_node_found_by_id(base: str) -> int:
+    diff = fetch(base + approval_path("Renamed", "alice"))
+    return expect("Renamed diff", "<del>Old Name</del><ins>Renamed</ins>" in diff,
+                  "the old heading found by id and shown as replaced")
+
+
+def uncommitted_approval_explained(base: str) -> int:
+    diff = fetch(base + approval_path("Lost Approval", "bob"))
+    return expect("Lost Approval diff", "isn't in this file's git history" in diff, "nothing to compare, said so")
+
+
+def contents_never_due(base: str) -> int:
+    return expect("Contents", "never stamped and never due" in page(base, "Contents"), "Contents is never due")
+
+
+def tree_crosses_files(base: str) -> int:
+    leaf = page(base, "Branch Leaf", "branch.map.md")
+    return (expect("Branch Leaf", '<span class="branch-file">branch.map.md</span>' in leaf, "the branch file tagged")
+            + expect("Branch Leaf", 'class="here">Branch Leaf</a>' in leaf, "the current node marked in the tree"))
+
+
+def markdown_rendered(base: str) -> int:
+    rendering = page(base, "Rendering")
+    expected = {
+        "italics and bold": "<em>italics</em> and <strong>bold</strong>",
+        "inline code": "<code>inline code</code>",
+        "a link to another node": f'<a href="{node_path("map.md", "Current")}">Current</a>',
+        "a nested list inside its item": "<li>A nested bullet\n<ol><li>A numbered item, nested deeper</li>",
+        "a numbered list keeping its start": "<ol start=3><li>A numbered list starting at three</li>",
+        "heading levels": "<h2>A Heading</h2>",
+        "a smaller heading": "<h3>A Smaller Heading</h3>",
+        "a blockquote": "<blockquote><p>A blockquote.</p></blockquote>",
+        "an alert": '<div class="alert alert-important"><p class="alert-title">Important</p>',
+        "a table": "<tr><td>one</td><td>1</td></tr>",
+        "a fence quoting a shorter one": "<pre><code>```python\n",
+    }
+    return sum(expect("Rendering", html in rendering, what) for what, html in expected.items())
+
+
+def bad_requests_answered(base: str) -> int:
+    return (expect("unknown node", status(base + node_path("map.md", "No Such Node")) == 404, "404")
+            + expect("outside the map", status(base + node_path("../outside.md", "X")) == 403, "403"))
+
+
+# --- Helpers ---
+
+def page(base: str, name: str, file: str = "map.md") -> str:
+    return fetch(base + node_path(file, name))
+
+
+def fetch(url: str) -> str:
+    with urllib.request.urlopen(url) as response:
+        return response.read().decode("utf-8")
+
+
+def status(url: str) -> int:
+    try:
+        with urllib.request.urlopen(url) as response:
+            return response.status
+    except urllib.error.HTTPError as error:
+        return error.code
+
+
+def node_path(file: str, name: str) -> str:
+    return f"/node?file={quote(file)}&name={quote(name)}"
+
+
+def approval_path(name: str, who: str) -> str:
+    return f"/approval?file=map.md&name={quote(name)}&who={quote(who)}"
+
+
+def expect(where: str, condition: bool, what: str) -> int:
+    if condition:
+        return 0
+    print(f"FAIL {where}: {what}")
+    return 1
+
+
+if __name__ == "__main__":
+    if not os.environ.get("VIRTUAL_ENV"):
+        print("No virtual environment detected. Run this script via './map_viewer_test.py' (requires uv), or activate a virtual environment first.", file=sys.stderr)
+        sys.exit(100)
+    try:
+        main()
+    except (KeyboardInterrupt, EOFError):
+        print()
+        sys.exit(130)

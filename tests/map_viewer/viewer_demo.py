@@ -8,7 +8,7 @@
 # with stamps chosen so every approval state and kind of diff appears. Run it, then
 # point the viewer at the result:
 #
-#   tools/viewer_demo.py                 # builds /tmp/map-viewer-demo
+#   tests/map_viewer/viewer_demo.py      # builds /tmp/map-viewer-demo
 #   tools/map_viewer.py /tmp/map-viewer-demo
 #
 # Each node says what it demonstrates. Stamps are computed with the viewer's own
@@ -22,11 +22,11 @@ import subprocess
 import sys
 from pathlib import Path
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 
 GREEN, YELLOW, RED, CYAN = "32", "33", "31", "36"  # ANSI colour codes
 
-VIEWER = Path(__file__).resolve().parent / "map_viewer.py"
+VIEWER = Path(__file__).resolve().parents[2] / "tools" / "map_viewer.py"
 
 # Each node: its file, its navigation links, its text as committed and as it stands
 # now (None if absent), and who approved which version.
@@ -73,7 +73,7 @@ NODES = [
          now="Alice approved this node when its words were struck through where removed; now they are highlighted where added too.\n\nThis paragraph stays the same.\n\nThis paragraph is new.",
          approved={"alice": "committed"}),
     dict(file="map.md", name="Rendering", nav=["[↑ Demo](#demo)"],
-         committed="Text in *italics* and **bold**, `inline code`, and a link to [Current](#current).\n\n- A bullet\n- Another, with a link to [Branch Leaf](branch.map.md#branch-leaf)\n  - A nested bullet\n\n| Column | Value |\n|--------|-------|\n| one | 1 |\n| two | 2 |\n\n```python\nprint(\"a code block\")\n```",
+         committed="Text in *italics* and **bold**, `inline code`, and a link to [Current](#current).\n\n- A bullet\n- Another, with a link to [Branch Leaf](branch.map.md#branch-leaf)\n  - A nested bullet\n    1. A numbered item, nested deeper\n    2. And a second\n\n3. A numbered list starting at three\n4. And four\n\n## A Heading\n\n### A Smaller Heading\n\n> A blockquote.\n\n> [!IMPORTANT]\n> An alert, as GitHub draws one.\n\n| Column | Value |\n|--------|-------|\n| one | 1 |\n| two | 2 |\n\n````markdown\n```python\nprint(\"a fence quoting a shorter one\")\n```\n````",
          now="same", approved={"alice": "now"}),
     dict(file="branch.map.md", name="Branch", nav=["[↑ Demo](map.md#demo)", "[Branch Leaf](#branch-leaf)"],
          committed="This node lives in another file, branch.map.md, and joins the tree through Demo's child link.",
@@ -94,7 +94,7 @@ def main():
             sys.exit(1)
         shutil.rmtree(target)
     target.mkdir(parents=True)
-    (target / ".map-viewer-demo").write_text("Built by tools/viewer_demo.py; safe to delete.\n")
+    (target / ".map-viewer-demo").write_text("Built by tests/map_viewer/viewer_demo.py; safe to delete.\n")
     viewer = load_viewer()
     ids = {node["name"]: next(IDS) for node in NODES}
 
