@@ -228,21 +228,25 @@ The task tempts the failures the rule targets and probes where it might overreac
 
 # Map Viewer
 
-[↑ NDD Project](#ndd-project)
+[↑ NDD Project](#ndd-project) \
+[Map Viewer Sign-off](#map-viewer-sign-off) \
+[Map Viewer Security](#map-viewer-security)
 
 ```yaml
 id: mv4
 approvals:
-  tearne: {at: 2026-11-16, hash: c72b6a08}
+  tearne: {at: 2026-11-16, hash: ef72c7b7}
 ```
 
-A prototype: `method/util/map_viewer.py`, a single-file POS script serving a map read-only in the browser for review. It ships with the method, so a project runs it from its root as `ndd/method/util/map_viewer.py`. With no login it listens on 127.0.0.1 only, reached by ssh port forwarding; approvals and edits go through the agent in that session.
+A prototype: `method/util/map_viewer.py`, a single-file POS script serving a map in the browser for review. It ships with the method, so a project runs it from its root as `ndd/method/util/map_viewer.py`. With no login it listens on 127.0.0.1 only, and it writes nothing but sign-offs.
 
 - **Tree** — the contents, followed through child links, each file's part shaded.
 
 - **Node** — the node rendered, with each approver's stamp marked current or stale.
 
 - **Approval diff** — for a stale stamp, the approved text found in git by its fingerprint, and what changed since.
+
+- **[Sign off](#map-viewer-sign-off)** — on a node, a button stamping it for the names ticked.
 
 It renders markdown itself, so it runs without internet access, and carries its own copy of the [Fingerprint](method/ndd.map.md#fingerprint) rule, kept in step by [Fingerprint Check](testing.map.md#fingerprint-check).
 
