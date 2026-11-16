@@ -6,9 +6,14 @@
 # Serves the demo map that viewer_demo.py beside it builds and checks the viewer's pages
 # against what each demo node says it shows. Standard library only, and offline: the
 # server runs in this process on a free port of 127.0.0.1.
+#
+# Setting up: install uv (https://docs.astral.sh/uv/) and git, then run ./map_viewer_test.py
+# from this directory. The check that the page script parses also wants Node.js on the PATH
+# (https://nodejs.org/, or a package manager's nodejs); without it that check is skipped.
 
 import importlib.util
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -20,7 +25,7 @@ from pathlib import Path
 from urllib.parse import quote
 
 HERE = Path(__file__).resolve().parent
-VIEWER = HERE.parents[1] / "tools" / "map_viewer.py"
+VIEWER = HERE.parents[1] / "method" / "util" / "map_viewer.py"
 
 
 def main():
@@ -39,6 +44,9 @@ def main():
             lambda: tree_crosses_files(base),
             lambda: markdown_rendered(base),
             lambda: bad_requests_answered(base),
+            lambda: pages_swappable(base),
+            lambda: side_pane_served(base),
+            lambda: script_parses(base),
         ])
     if failures:
         print(f"{failures} check(s) failed")
@@ -109,7 +117,10 @@ def contents_never_due(base: str) -> int:
 def tree_crosses_files(base: str) -> int:
     leaf = page(base, "Branch Leaf", "branch.map.md")
     return (expect("Branch Leaf", '<span class="branch-file">branch.map.md</span>' in leaf, "the branch file tagged")
-            + expect("Branch Leaf", 'class="here">Branch Leaf</a>' in leaf, "the current node marked in the tree"))
+            + expect("Branch Leaf", 'class="here">Branch Leaf</a>' in leaf, "the current node marked in the tree")
+            + expect("Demo", '<span class="branch-file">linked.map.md</span>' in page(base, "Demo"),
+                     "a map linked only in prose drawn as its own tree")
+            + expect("tree", without_mark(leaf) == without_mark(page(base, "Demo")), "the same tree on every page"))
 
 
 def markdown_rendered(base: str) -> int:
@@ -135,10 +146,54 @@ def bad_requests_answered(base: str) -> int:
             + expect("outside the map", status(base + node_path("../outside.md", "X")) == 403, "403"))
 
 
+# The page script moves between nodes by swapping one page's <main> and <aside> into the
+# other, so every page must have exactly one of each.
+def pages_swappable(base: str) -> int:
+    pages = [page(base, "Demo"), page(base, "Branch Leaf", "branch.map.md"), fetch(base + approval_path("Edited", "alice"))]
+    return sum(expect("page shape", p.count("<main>") == 1 and p.count("<aside>") == 1, "one <main> and one <aside>")
+               for p in pages)
+
+
+# A split page carries a second pane, named by its side parameter: a node, or, when empty,
+# a note on how to fill it.
+def side_pane_served(base: str) -> int:
+    split = fetch(base + node_path("map.md", "Rendering") + "&side=" + quote(node_path("map.md", "Current")))
+    empty = fetch(base + node_path("map.md", "Rendering") + "&side=")
+    side_of = lambda html: html[html.index('<section id="side">'):] if '<section id="side">' in html else ""
+    return (expect("split page", "<h1>Current</h1>" in side_of(split) and "<h1>Rendering</h1>" in split,
+                   "both nodes shown, Current in the side pane")
+            + expect("split page", "Links followed in the node on the left open here" in side_of(empty),
+                     "an empty side pane says how to fill it")
+            + expect("split page", status(base + node_path("map.md", "Rendering") + "&side=" + quote("/elsewhere")) == 404,
+                     "a side pane naming no view answered 404")
+            + expect("unsplit page", '<section id="side">' not in page(base, "Rendering"), "no side pane"))
+
+
+# The page script, as served, parses as JavaScript. Checked with node when it is installed,
+# and skipped otherwise, so the suite still runs on the standard library alone.
+def script_parses(base: str) -> int:
+    if not shutil.which("node"):
+        print("skip script parses: node not installed")
+        return 0
+    served = page(base, "Demo")
+    script = served[served.index("<script>") + len("<script>"):served.index("</script>")]
+    with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False) as js:
+        js.write(script)
+    try:
+        checked = subprocess.run(["node", "--check", js.name], capture_output=True, text=True)
+    finally:
+        os.unlink(js.name)
+    return expect("page script", checked.returncode == 0, f"parses as JavaScript: {checked.stderr.strip()}")
+
+
 # --- Helpers ---
 
 def page(base: str, name: str, file: str = "map.md") -> str:
     return fetch(base + node_path(file, name))
+
+
+def without_mark(html: str) -> str:
+    return html[html.index("<aside>"):html.index("</aside>")].replace(' class="here"', "")
 
 
 def fetch(url: str) -> str:

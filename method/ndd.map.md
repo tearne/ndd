@@ -115,6 +115,7 @@ id: ct5
     - [Sign-off](#sign-off)
       - [Approver](#approver)
   - [Tooling](#tooling)
+    - [Map Viewer](#map-viewer)
   - [Standards](#standards)
   - [Installation](#installation)
 
@@ -1636,13 +1637,42 @@ The user can override the handle, for one approval or for the rest of the sessio
 
 # Tooling
 
-[↑ NDD](#ndd)
+[↑ NDD](#ndd) \
+[Map Viewer](#map-viewer)
 
 ```yaml
 id: g8l
+approvals:
+  tearne: {at: 2026-11-16, hash: b2bce1d0}
 ```
 
-The method needs no bespoke application — it rides generic markdown tooling. In an editor with a markdown language server (marksman, in Helix), the name-anchored [navigation links](#navigation-links) become jump-to-definition targets: `gd` walks the tree parent-to-child, and the symbol picker (Helix `Space+s`) lists every node by name for a direct jump anywhere. The format is kept deliberately plain so richer surfaces stay cheap to build on top later.
+The method needs no bespoke application — it rides generic markdown tooling. In an editor with a markdown language server (marksman, in Helix), the name-anchored [navigation links](#navigation-links) become jump-to-definition targets: `gd` walks the tree parent-to-child, and the symbol picker (Helix `Space+s`) lists every node by name for a direct jump anywhere. The format is kept deliberately plain so richer surfaces stay cheap to build on top, such as the [map viewer](#map-viewer).
+
+
+# Map Viewer
+
+[↑ Tooling](#tooling)
+
+```yaml
+id: m8v
+approvals:
+  tearne: {at: 2026-11-16, hash: 4058d54d}
+```
+
+`util/map_viewer.py` serves a project's map in the browser, so a stakeholder can read and review it outside the agent session: the contents tree, each node with its [approval stamps](#approval-stamp) marked current or stale, and, for a stale stamp, what changed since it was approved. A second pane keeps one node in view while following its links.
+
+It only reads; approvals and edits still go through the agent. It has no login, so it listens on 127.0.0.1 only.
+
+**Detail**
+
+From the project root, with uv and git installed:
+
+```
+ndd/method/util/map_viewer.py                            # the project's map.md, on port 8080
+ndd/method/util/map_viewer.py path/to/map.md --port 9000
+```
+
+To view it from another machine, forward the port first: `ssh -L 8080:127.0.0.1:8080 host`.
 
 
 # Standards

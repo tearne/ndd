@@ -4,12 +4,13 @@
 [Contents](#contents) \
 [Fingerprint Check](#fingerprint-check) \
 [Install Check](#install-check) \
-[Map Viewer Check](#map-viewer-check)
+[Map Viewer Check](#map-viewer-check) \
+[Map Viewer Browser Check](#map-viewer-browser-check)
 
 ```yaml
 id: t4k
 approvals:
-  tearne: {at: 2026-11-11, hash: c3ffa732}
+  tearne: {at: 2026-11-16, hash: 710420b9}
 ```
 
 This repository checks itself with tests, each a node in this branch stating what must hold and how it is verified. Each test's runnable form sits under `tests/` rather than in the map, so the map stays a description of what exists.
@@ -19,6 +20,8 @@ This repository checks itself with tests, each a node in this branch stating wha
 - **[Install Check](#install-check)** — the installer run end to end into a scratch project, fresh and as an upgrade.
 
 - **[Map Viewer Check](#map-viewer-check)** — the viewer's pages served from the demo map and checked against what each demo node shows.
+
+- **[Map Viewer Browser Check](#map-viewer-browser-check)** — the page script driven in a headless browser on the same demo map.
 
 
 # Contents
@@ -33,6 +36,7 @@ id: ct7
   - [Fingerprint Check](#fingerprint-check)
   - [Install Check](#install-check)
   - [Map Viewer Check](#map-viewer-check)
+  - [Map Viewer Browser Check](#map-viewer-browser-check)
 
 
 # Fingerprint Check
@@ -68,7 +72,7 @@ Every agent must produce the same fingerprint for the same node text, or approva
 ```yaml
 id: k3w
 approvals:
-  tearne: {at: 2026-11-04, hash: 9b993f6e}
+  tearne: {at: 2026-11-16, hash: f2e62af9}
 ```
 
 `tests/install_test.py` runs the [installer](map.md#installer) into a temporary directory and asserts that:
@@ -83,7 +87,9 @@ approvals:
 
 - a second run over a changed `ndd.map.md` and a stray file keeps the old map as `ndd.prev.map.md` and clears the stray, and so does a run over the flat layout from before 3.0.0;
 
-- an entry file the project already had is left out of `.gitignore`.
+- an entry file the project already had is left out of `.gitignore`;
+
+- the shipped [map viewer](map.md#map-viewer), run from the project's root, serves its map.
 
 It prints the shipped files, so a stray one is seen.
 
@@ -95,21 +101,24 @@ It prints the shipped files, so a stray one is seen.
 ```yaml
 id: v8c
 approvals:
-  tearne: {at: 2026-11-11, hash: 5a5b687f}
+  tearne: {at: 2026-11-16, hash: 1fa6c24d}
 ```
 
-`tests/map_viewer/map_viewer_test.py` builds the demo map with `viewer_demo.py` beside it, serves it with the [map viewer](map.md#map-viewer) on a free port of 127.0.0.1, and checks each page against what its demo node says it shows:
-
-- `/` opening the root node, and *Contents* never due;
-
-- each stamp marked current or stale, a stale one linking to its approval diff;
-
-- the approval diff marking changed words, finding a renamed node by its id, and saying when the approved text was never committed;
-
-- the tree crossing into a branch file;
-
-- the markdown maps use rendered, from nested and numbered lists to alerts and fences;
-
-- an unknown node answered 404, and a path outside the map 403.
+`tests/map_viewer/map_viewer_test.py` builds the demo map with `viewer_demo.py` beside it, serves it with the [map viewer](map.md#map-viewer) on a free port of 127.0.0.1, and checks each page against what its demo node says it shows: stamps and approval diffs, one tree across files, markdown rendering, the page shape the page script swaps, a split page's second pane, and answers to bad requests. Where node is installed, it also checks that the page script parses.
 
 It needs no internet access, so it runs wherever the viewer does.
+
+
+# Map Viewer Browser Check
+
+[↑ Testing](#testing)
+
+```yaml
+id: v9b
+approvals:
+  tearne: {at: 2026-11-16, hash: 9b9603d8}
+```
+
+`tests/map_viewer/browser_test.py` drives the [map viewer](map.md#map-viewer)'s page script in headless Chromium, on the demo map [Map Viewer Check](#map-viewer-check) serves. It checks the tree keeping its folds across links and back and forward, never redrawn; the fold button; an approval diff swapped in; the second pane through split, reload, swap and close; and each pane's history. Any script error fails it.
+
+It needs Playwright, pinned to the version whose Chromium is installed, and skips when that browser is missing; its header says how to set both up.

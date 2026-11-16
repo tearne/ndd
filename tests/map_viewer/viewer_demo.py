@@ -9,7 +9,7 @@
 # point the viewer at the result:
 #
 #   tests/map_viewer/viewer_demo.py      # builds /tmp/map-viewer-demo
-#   tools/map_viewer.py /tmp/map-viewer-demo
+#   method/util/map_viewer.py /tmp/map-viewer-demo
 #
 # Each node says what it demonstrates. Stamps are computed with the viewer's own
 # fingerprint, so "current" and "text changed since" are real.
@@ -22,11 +22,11 @@ import subprocess
 import sys
 from pathlib import Path
 
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 
 GREEN, YELLOW, RED, CYAN = "32", "33", "31", "36"  # ANSI colour codes
 
-VIEWER = Path(__file__).resolve().parents[2] / "tools" / "map_viewer.py"
+VIEWER = Path(__file__).resolve().parents[2] / "method" / "util" / "map_viewer.py"
 
 # Each node: its file, its navigation links, its text as committed and as it stands
 # now (None if absent), and who approved which version.
@@ -34,7 +34,7 @@ NODES = [
     dict(file="map.md", name="Demo",
          nav=["[Contents](#contents)", "[Approval States](#approval-states)", "[Changes](#changes)",
               "[Branch](branch.map.md#branch)", "[Rendering](#rendering)"],
-         committed="A demo map for the viewer. Each child shows one thing: approval states, what changed since an approval, a branch in another file, and rendering.",
+         committed="A demo map for the viewer. Each child shows one thing: approval states, what changed since an approval, a branch in another file, and rendering. A [further map](linked.map.md#linked-map), linked only here in prose, still has its own tree beneath.",
          now="same", approved={"alice": "now"}),
     dict(file="map.md", name="Contents", nav=["[↑ Demo](#demo)"],
          committed="- [Demo](#demo)\n  - [Approval States](#approval-states)\n    - [Current](#current)\n    - [Stale](#stale)\n    - [Mixed](#mixed)\n    - [Unstamped](#unstamped)\n    - [Quoted Handle](#quoted-handle)\n    - [Renamed](#renamed)\n    - [Lost Approval](#lost-approval)\n  - [Changes](#changes)\n    - [Edited](#edited)\n  - [Branch](branch.map.md#branch)\n    - [Branch Leaf](branch.map.md#branch-leaf)\n  - [Rendering](#rendering)",
@@ -80,6 +80,9 @@ NODES = [
          now="same", approved={"bob": "now"}),
     dict(file="branch.map.md", name="Branch Leaf", nav=["[↑ Branch](#branch)"],
          committed="A leaf in the branch file.", now="same", approved={}),
+    dict(file="linked.map.md", name="Linked Map", nav=[],
+         committed="A map of its own, reached from Demo's prose rather than a child link, so it is drawn as a tree of its own beneath the main one.",
+         now="same", approved={}),
 ]
 
 IDS = iter(f"d{i:02d}" for i in range(100))

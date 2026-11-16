@@ -9,9 +9,14 @@
 # session. Listens on 127.0.0.1 only, since there is no login; reach it from elsewhere
 # by port forwarding (e.g. ssh -L 8080:127.0.0.1:8080 host).
 #
-#   tools/map_viewer.py                 # the map.md in the current directory
-#   tools/map_viewer.py path/to/map.md  # a given map
-#   tools/map_viewer.py --port 9000
+# Shipped with the method, so in a project NDD is installed in, from the project root:
+#
+#   ndd/method/util/map_viewer.py                 # the map.md in the current directory
+#   ndd/method/util/map_viewer.py path/to/map.md  # a given map
+#   ndd/method/util/map_viewer.py --port 9000
+#
+# It needs uv (https://docs.astral.sh/uv/), which fetches Python 3.12 if it is missing,
+# and git for what changed since an approval. In the NDD repository, it is method/util/map_viewer.py.
 
 import argparse
 import difflib
@@ -26,7 +31,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, quote, urlparse
 
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 
 GREEN, YELLOW, RED = "32", "33", "31"  # ANSI colour codes
 
@@ -67,16 +72,13 @@ class Handler(BaseHTTPRequestHandler):
 
     def get(self):
         url = urlparse(self.path)
-        query = {k: v[0] for k, v in parse_qs(url.query).items()}
+        query = {k: v[0] for k, v in parse_qs(url.query, keep_blank_values=True).items()}
         if url.path == "/":
             self.redirect(node_url(ENTRY, root_node(read_map(ENTRY))))
-        elif url.path == "/node":
-            self.send_page(node_page(query["file"], query["name"], read_map(query["file"])))
-        elif url.path == "/approval":
-            lines = read_map(query["file"])
-            at, hash_ = stamp_details(node_lines(lines, query["name"]))[query["who"]]
-            history = node_history(query["file"], query["name"])
-            self.send_page(approval_page(query["file"], query["name"], query["who"], at, hash_, lines, history))
+        elif url.path in ("/node", "/approval"):
+            title, body = view(url.path, query)
+            side = side_pane(query["side"]) if "side" in query else None
+            self.send_page(page(title, body, tree_html((query["file"], query["name"])), side))
         else:
             self.send_error(404)
 
@@ -99,17 +101,38 @@ class Handler(BaseHTTPRequestHandler):
 
 # --- Pages ---
 
-def node_page(file: str, name: str, lines: list[str]) -> str:
+# A page's title and content: a node, or what changed in it since someone approved it.
+def view(path: str, query: dict[str, str]) -> tuple[str, str]:
+    lines = read_map(query["file"])
+    if path == "/node":
+        return node_view(query["file"], query["name"], lines)
+    at, hash_ = stamp_details(node_lines(lines, query["name"]))[query["who"]]
+    history = node_history(query["file"], query["name"])
+    return approval_view(query["file"], query["name"], query["who"], at, hash_, lines, history)
+
+
+# The second pane: the view its link names, such as /node?file=…&name=…, or, when it names
+# none yet, a note on how to fill it.
+def side_pane(target: str) -> str:
+    if not target:
+        return "<p class=hint>Links followed in the node on the left open here.</p>"
+    url = urlparse(target)
+    if url.path not in ("/node", "/approval"):
+        raise KeyError(target)
+    return view(url.path, {k: v[0] for k, v in parse_qs(url.query).items()})[1]
+
+
+def node_view(file: str, name: str, lines: list[str]) -> tuple[str, str]:
     node = node_lines(lines, name)
     current = fingerprint(node)
     body = render_markdown(strip_scaffolding(node[1:]), file)
-    return page(name, f"""
+    return name, f"""
 <h1>{html.escape(name)}</h1>
 {body}
 <section class="meta">
 <p>Current fingerprint <code>{current}</code></p>
 {approvals_html(file, name, lines, current)}
-</section>""", tree_html((file, name)))
+</section>"""
 
 
 # Who has approved the node, and whether the text has changed since. Contents is a tree
@@ -133,8 +156,8 @@ def approval_row(file: str, name: str, who: str, at: str, hash_: str, current: s
 
 # What changed since someone approved a node: the details of both versions, the changed
 # passages, the whole node as it stands with the same highlights, then the approvals.
-def approval_page(file: str, name: str, who: str, at: str, hash_: str, lines: list[str],
-                  history: list[tuple[str, str, list[str] | None]]) -> str:
+def approval_view(file: str, name: str, who: str, at: str, hash_: str, lines: list[str],
+                  history: list[tuple[str, str, list[str] | None]]) -> tuple[str, str]:
     now = node_lines(lines, name)
     current = fingerprint(now)
     approved = introduced(history, hash_)
@@ -165,7 +188,7 @@ def approval_page(file: str, name: str, who: str, at: str, hash_: str, lines: li
         delta = changed_passages([old[0]] + strip_scaffolding(old[1:]), [now[0]] + strip_scaffolding(now[1:]))
         diff = f'{delta}<h3 class="section">Current Node</h3><pre class=diff>{word_diff("".join(old), "".join(now))}</pre>'
     footer = f'<section class="meta">{approvals_html(file, name, lines, current)}</section>'
-    return page(f"Approval Diff: {name}", head + diff + footer, tree_html((file, name)))
+    return f"Approval Diff: {name}", head + diff + footer
 
 
 # The commit where a version of the node was introduced: in the newest run of commits
@@ -193,13 +216,26 @@ def changed_passages(old: list[str], new: list[str]) -> str:
     return "".join(runs) or "<p>No difference in the approved text.</p>"
 
 
-def page(title: str, body: str, sidebar: str = "") -> str:
-    aside = f"<aside>{sidebar}</aside>" if sidebar else ""
+# A pane's back and forward buttons; the page script enables them as its history allows.
+def steps(pane: str) -> str:
+    return (f'<button class="back" data-pane="{pane}" title="Back in this pane" disabled>◀</button>'
+            f'<button class="forward" data-pane="{pane}" title="Forward in this pane" disabled>▶</button>')
+
+
+# The tree, the node, and, once the page is split, a second pane beside it.
+def page(title: str, body: str, sidebar: str, side: str | None = None) -> str:
+    split = side is not None
+    tools = (f'<div class="pane-tools">{steps("left")}'
+             '<button class="split" title="Open a second pane for the links this node holds">Split</button></div>')
+    side_html = (f'<section id="side"><div class="pane-tools">{steps("side")}'
+                 '<button class="swap" title="Swap the two panes">⇄ Swap</button>'
+                 f'<button class="close" title="Close this pane">× Close</button></div>{side}</section>') if split else ""
     return (f'<!doctype html><html><head><meta charset="utf-8"><title>{html.escape(title)}</title>'
-            f"<style>{STYLE}</style></head><body>{aside}<main>{body}</main><script>{SCRIPT}</script></body></html>")
+            f'<style>{STYLE}</style></head><body{" class=split" if split else ""}><aside>{sidebar}</aside>'
+            f"<main>{tools}{body}</main>{side_html}<script>{SCRIPT}</script></body></html>")
 
 
-STYLE = """
+STYLE = r"""
 body { font-family: system-ui, sans-serif; margin: 0; line-height: 1.5; display: flex; }
 main { max-width: 52rem; padding: 2rem 1.5rem; flex: 1; min-width: 0; }
 pre { background: #f4f4f4; padding: .75rem; overflow-x: auto; white-space: pre-wrap; }
@@ -235,6 +271,16 @@ aside summary:hover .below { visibility: visible; }
 aside .below button { font-size: .7rem; line-height: 1; padding: 0 .3rem; border: 1px solid #ccc; background: #fff;
                       border-radius: 3px; cursor: pointer; }
 
+/* The second pane, scrolled on its own beside the node */
+#side { flex: 1; min-width: 0; max-width: 52rem; box-sizing: border-box; padding: 2rem 1.5rem; height: 100vh;
+        overflow-y: auto; position: sticky; top: 0; border-left: 1px solid #ddd; background: #fcfcfc; }
+.pane-tools { float: right; display: flex; gap: .3rem; margin-left: 1rem; }
+.pane-tools button { font-size: .75rem; padding: .1rem .5rem; border: 1px solid #ccc; background: #fff;
+                     border-radius: 3px; cursor: pointer; color: #555; }
+body.split main .split { display: none; }
+.pane-tools button:disabled { opacity: .35; cursor: default; }
+.hint { color: #888; font-style: italic; }
+
 /* Footer: fingerprint and approvals */
 .meta { border-top: 1px solid #ccc; margin-top: 2rem; padding-top: 1rem; color: #888; font-size: .9rem; }
 .meta a { color: #779; }
@@ -258,13 +304,14 @@ ins { background: #dfd; text-decoration: none; }
 .compare .now { background: #e9f6e9; }
 """
 
-SCRIPT = """
-// A branch's button folds it and everything below it when all of that is open, and opens it all otherwise.
+SCRIPT = r"""
+// A branch's button folds it and everything below it when any of that is open, and opens it all
+// only once all of it is folded.
 function toggleAll(event) {
   event.preventDefault();
   event.stopPropagation();
   const branch = branchOf(event.target.closest("details"));
-  const open = !branch.every(d => d.open);
+  const open = !branch.some(d => d.open);
   branch.forEach(d => d.open = open);
 }
 function branchOf(details) {
@@ -274,13 +321,161 @@ function branchOf(details) {
 function labelButtons() {
   document.querySelectorAll("aside details").forEach(d => {
     const button = d.querySelector(":scope > summary .below button");
-    const allOpen = branchOf(d).every(x => x.open);
-    button.textContent = allOpen ? "−" : "+";
-    button.title = allOpen ? "Fold this and everything below" : "Open this and everything below";
+    const anyOpen = branchOf(d).some(x => x.open);
+    button.textContent = anyOpen ? "−" : "+";
+    button.title = anyOpen ? "Fold this and everything below" : "Open this and everything below";
   });
 }
-document.querySelectorAll("aside details").forEach(d => d.addEventListener("toggle", labelButtons));
-labelButtons();
+function bindTree() {
+  document.querySelectorAll("aside details").forEach(d => d.addEventListener("toggle", labelButtons));
+  labelButtons();
+}
+
+// Moving between pages swaps only the page content, so the tree keeps whatever was folded.
+// The destination's branches are opened, and nothing else. The URL holds the node on the
+// left and, once split, the side pane's link as its side parameter, empty until one is followed.
+function panes(url) {
+  const u = new URL(url, location.href);
+  const side = u.searchParams.get("side");
+  u.searchParams.delete("side");
+  return {left: u.pathname + u.search, side};
+}
+
+function urlOf(left, side) {
+  const u = new URL(left, location.href);
+  if (side !== null) u.searchParams.set("side", side);
+  return u;
+}
+
+// Each pane's history, a list of the views it has shown and where it is in that list, kept
+// in the browser's history entry so pane steps, browser steps and reloads agree.
+let state = history.state || {left: start(panes(location.href).left),
+                               side: panes(location.href).side === null ? null : start(panes(location.href).side)};
+history.replaceState(state, "");
+
+function start(url) { return {stack: [url], at: 0}; }
+
+// A pane's history after it moves to url: anything forward of here is dropped. An empty
+// side pane's place is taken by the first link followed into it.
+function moved(pane, url) {
+  if (!pane) return start(url);
+  const stack = pane.stack.slice(0, pane.at + 1);
+  if (stack[pane.at] === "") stack[pane.at] = url; else stack.push(url);
+  return {stack, at: stack.length - 1};
+}
+
+function stepped(pane, by) {
+  return {stack: pane.stack, at: pane.at + by};
+}
+
+function urlFor(next) {
+  return urlOf(next.left.stack[next.left.at], next.side ? next.side.stack[next.side.at] : null);
+}
+
+function go(next, changed) {
+  show(urlFor(next), changed, next);
+}
+
+// Tree links load on the left. Links in the side pane load there, and so do the node's own
+// links once the page is split.
+document.addEventListener("click", event => {
+  if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  const button = event.target.closest("button");
+  if (button?.matches(".split")) return go({left: state.left, side: start("")}, "side");
+  if (button?.matches(".close")) return go({left: state.left, side: null}, "side");
+  if (button?.matches(".swap") && state.side && state.side.stack[state.side.at])
+    return go({left: state.side, side: state.left}, "both");
+  if (button?.matches(".back, .forward")) {
+    const pane = button.dataset.pane, by = button.matches(".back") ? -1 : 1;
+    return go({...state, [pane]: stepped(state[pane], by)}, pane);
+  }
+  const link = event.target.closest("a[href]");
+  if (!link) return;
+  const url = new URL(link.href, location.href);
+  if (url.origin !== location.origin || !["/node", "/approval"].includes(url.pathname)) return;
+  event.preventDefault();
+  const target = url.pathname + url.search;
+  const inSide = link.closest("#side") || (link.closest("main") && state.side);
+  if (inSide) go({...state, side: moved(state.side, target)}, "side");
+  else go({...state, left: moved(state.left, target)}, "left");
+});
+window.addEventListener("popstate", event => {
+  show(new URL(location.href), "both", event.state || state, false);
+});
+
+async function show(url, changed, next, addToHistory = true) {
+  let response;
+  try {
+    response = await fetch(url);
+  } catch {
+    location.href = url;  // let the browser report it
+    return;
+  }
+  if (!response.ok) {
+    location.href = url;  // the server's error page, loaded whole
+    return;
+  }
+  const page = new DOMParser().parseFromString(await response.text(), "text/html");
+  state = next;
+  if (addToHistory) history.pushState(state, "", url);
+  document.title = page.title;
+  document.body.className = page.body.className;
+  if (changed !== "side") {
+    document.querySelector("main").replaceWith(page.querySelector("main"));
+    window.scrollTo(0, 0);
+    updateTree(page.querySelector("aside"));
+  }
+  if (changed !== "left") showSide(page.querySelector("#side"));
+  enableSteps();
+}
+
+function enableSteps() {
+  document.querySelectorAll("button.back, button.forward").forEach(button => {
+    const pane = state[button.dataset.pane];
+    button.disabled = !pane || (button.matches(".back") ? pane.at === 0 : pane.at === pane.stack.length - 1);
+  });
+}
+
+function showSide(nextSide) {
+  const side = document.querySelector("#side");
+  if (side && nextSide) side.replaceWith(nextSide);
+  else if (nextSide) document.querySelector("main").after(nextSide);
+  else side?.remove();
+}
+
+// The tree is redrawn only if the map's shape changed; otherwise the current node's mark moves
+// and its branches open.
+function updateTree(nextAside) {
+  const aside = document.querySelector("aside");
+  if (!aside || !nextAside) return;
+  if (treeShape(aside) !== treeShape(nextAside)) {
+    aside.replaceWith(nextAside);
+    bindTree();
+  } else {
+    const href = nextAside.querySelector("a.here")?.getAttribute("href");
+    aside.querySelectorAll("a.here").forEach(a => a.classList.remove("here"));
+    const here = href && [...aside.querySelectorAll("a")].find(a => a.getAttribute("href") === href);
+    if (here) {
+      here.classList.add("here");
+      for (let d = here.parentElement.closest("details"); d; d = d.parentElement.closest("details")) {
+        if (here.closest("summary")?.parentElement !== d) d.open = true;
+      }
+    }
+  }
+  document.querySelector("aside a.here")?.scrollIntoView({block: "nearest"});
+}
+
+// The tree's links in order, with their nesting, ignoring which is marked current or folded.
+function treeShape(aside) {
+  return [...aside.querySelectorAll("a")].map(a => {
+    let depth = 0;
+    for (let li = a.closest("li"); li; li = li.parentElement.closest("li")) depth++;
+    return depth + " " + a.getAttribute("href");
+  }).join("\n");
+}
+
+bindTree();
+enableSteps();
 document.querySelector("aside a.here")?.scrollIntoView({block: "center"});
 """
 
@@ -289,14 +484,30 @@ document.querySelector("aside a.here")?.scrollIntoView({block: "center"});
 
 # Node names in file order.
 def nodes_of(lines: list[str]) -> list[str]:
-    return [name for name, _ in node_ranges(lines)]
+    return list(node_index(lines))
 
 
 def node_lines(lines: list[str], name: str) -> list[str]:
-    for node, (start, end) in node_ranges(lines):
-        if node == name:
-            return lines[start:end]
-    raise KeyError(name)
+    start, end = node_index(lines)[name]
+    return lines[start:end]
+
+
+# Each node's line range, by name, in file order. A file read through read_map is indexed
+# once and kept with its text, so drawing the tree doesn't rescan it per lookup; other
+# text, such as an old version from git, is indexed afresh.
+def node_index(lines: list[str]) -> dict[str, tuple[int, int]]:
+    cached = _index_cache.get(id(lines))
+    if cached and cached[0] is lines:
+        return cached[1]
+    return index_of(lines)
+
+
+# The first node of each name wins, as a link to a repeated heading reaches the first.
+def index_of(lines: list[str]) -> dict[str, tuple[int, int]]:
+    index: dict[str, tuple[int, int]] = {}
+    for name, span in node_ranges(lines):
+        index.setdefault(name, span)
+    return index
 
 
 def node_ranges(lines: list[str]) -> list[tuple[str, tuple[int, int]]]:
@@ -376,14 +587,39 @@ def end_of_fence(lines: list[str], start: int) -> int:
 
 
 # The contents tree, followed from the entry map's root through each node's child links.
-# A node outside that tree, such as one in a map the entry links to only in prose,
-# gets its own file's tree beneath.
+# Every other map file linked from a map in the tree, such as one the entry links to only
+# in prose, gets its own file's tree beneath, so the tree is the same on every page.
 def tree_html(current: tuple[str, str]) -> str:
     seen: set = set()
     trees = [tree_item(ENTRY, root_node(read_map(ENTRY)), current, seen)]
-    if current[0] and current[0] not in {f for f, _ in seen}:
-        trees.append(tree_item(current[0], root_node(read_map(current[0])), current, seen))
+    for file in maps_linked_beyond(seen) + ([current[0]] if current[0] else []):
+        if file not in {f for f, _ in seen}:
+            trees.append(tree_item(file, root_node(read_map(file)), current, seen))
     return "".join(f"<ul>{t}</ul>" for t in trees)
+
+
+# The map files linked from the maps already in the tree, and from those in turn, in the
+# order first found, that the tree's child links don't reach.
+def maps_linked_beyond(seen: set) -> list[str]:
+    found = list(dict.fromkeys(f for f, _ in seen))
+    for file in found:
+        found.extend(f for f in linked_maps(file) if f not in found)
+    in_tree = {f for f, _ in seen}
+    return [f for f in found if f not in in_tree]
+
+
+def linked_maps(file: str) -> list[str]:
+    targets = re.findall(r"\]\(([^)#]+\.md)#", "".join(read_map(file)))
+    linked = []
+    for target in targets:
+        path = os.path.normpath(Path(file).parent / target)
+        try:
+            map_path(path).stat()
+        except (OSError, PermissionError):
+            continue
+        if path not in linked:
+            linked.append(path)
+    return linked
 
 
 # Each file's part of the tree is shaded, its file name at the top right on hover. Shades
@@ -590,13 +826,19 @@ def resolve(target: str, file: str) -> tuple[str, str] | None:
 # Every map file is read through here, from under the map's directory only. Files are read
 # often while drawing the tree, so each is kept until it changes on disk.
 _read_cache: dict[str, tuple[int, list[str]]] = {}
+# Keyed by the text's id; the entry holds the text itself, so the id can't be reused.
+_index_cache: dict[int, tuple[list[str], dict[str, tuple[int, int]]]] = {}
 
 
 def read_map(file: str) -> list[str]:
     path = map_path(file)
     mtime = path.stat().st_mtime_ns
     if file not in _read_cache or _read_cache[file][0] != mtime:
-        _read_cache[file] = (mtime, path.read_text(encoding="utf-8").splitlines(keepends=True))
+        if file in _read_cache:
+            _index_cache.pop(id(_read_cache[file][1]), None)
+        lines = path.read_text(encoding="utf-8").splitlines(keepends=True)
+        _read_cache[file] = (mtime, lines)
+        _index_cache[id(lines)] = (lines, index_of(lines))
     return _read_cache[file][1]
 
 

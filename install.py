@@ -78,7 +78,8 @@ def shipped_files() -> list[Path]:
     files = []
     for name in SHIPPED:
         path = SOURCE / name
-        files += sorted(p for p in path.rglob("*") if p.is_file()) if path.is_dir() else [path]
+        # Python's bytecode caches are left behind: they are local to whoever ran the scripts.
+        files += sorted(p for p in path.rglob("*") if p.is_file() and "__pycache__" not in p.parts) if path.is_dir() else [path]
     return files
 
 

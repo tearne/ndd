@@ -15,7 +15,7 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 HELPER = HERE.parent / "method" / "util" / "fingerprint.py"
-VIEWER = HERE.parent / "tools" / "map_viewer.py"  # carries its own copy of the rule
+VIEWER = HERE.parent / "method" / "util" / "map_viewer.py"  # carries its own copy of the rule
 
 EXPECTED = {
     "fixture.map.md": {

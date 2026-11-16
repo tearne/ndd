@@ -114,12 +114,12 @@ It refuses to run from its own checkout. It checks that every shipped asset is p
 ```yaml
 id: s4h
 approvals:
-  tearne: {at: 2026-11-04, hash: 40393b0e}
+  tearne: {at: 2026-11-16, hash: 18d10271}
 ```
 
 The installer copies into a client's `ndd/` only what the agent and user need at run time:
 
-- `method/`, holding the agent rules, the method map, the fingerprint helper and the standards.
+- `method/`, holding the agent rules, the method map, the fingerprint helper, the [map viewer](#map-viewer) and the standards, without the Python bytecode caches running its scripts leaves behind.
 - `CHANGELOG.md`, `README.md` and `LICENSE`, from the root.
 
 Everything else stays in the checkout, for example `map.md`, `changes/`, `tests/` and `install.py`. The [Install Check](testing.map.md#install-check) catches a shipped file linking outside what ships.
@@ -233,13 +233,10 @@ The task tempts the failures the rule targets and probes where it might overreac
 ```yaml
 id: mv4
 approvals:
-  tearne: {at: 2026-11-11, hash: a2b904ee}
+  tearne: {at: 2026-11-16, hash: c72b6a08}
 ```
 
-A prototype: `tools/map_viewer.py`, a single-file POS script serving a map read-only in the browser for review. With no login it listens on 127.0.0.1 only, reached by ssh port forwarding; approvals and edits go through the agent in that session. It is not shipped.
-
-> [!IMPORTANT]
-> A proof of concept, not yet a supported tool.
+A prototype: `method/util/map_viewer.py`, a single-file POS script serving a map read-only in the browser for review. It ships with the method, so a project runs it from its root as `ndd/method/util/map_viewer.py`. With no login it listens on 127.0.0.1 only, reached by ssh port forwarding; approvals and edits go through the agent in that session.
 
 - **Tree** — the contents, followed through child links, each file's part shaded.
 
@@ -247,7 +244,7 @@ A prototype: `tools/map_viewer.py`, a single-file POS script serving a map read-
 
 - **Approval diff** — for a stale stamp, the approved text found in git by its fingerprint, and what changed since.
 
-It renders markdown itself, so it runs without internet access, and carries its own copy of the [Fingerprint](method/ndd.map.md#fingerprint) rule, kept in step by [Fingerprint Check](testing.map.md#fingerprint-check). `tests/map_viewer/viewer_demo.py` builds a demo map showing every approval state, which [Map Viewer Check](testing.map.md#map-viewer-check) tests it on.
+It renders markdown itself, so it runs without internet access, and carries its own copy of the [Fingerprint](method/ndd.map.md#fingerprint) rule, kept in step by [Fingerprint Check](testing.map.md#fingerprint-check).
 
 
 

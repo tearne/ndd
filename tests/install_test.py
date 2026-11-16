@@ -7,12 +7,16 @@
 # refuses its own checkout, a fresh install ships exactly the shipped assets
 # with scripts executable and every link resolving within what ships, an upgrade
 # backs up a changed ndd.map.md and clears strays, from the flat layout too,
-# and an entry file the project already had stays out of .gitignore.
+# an entry file the project already had stays out of .gitignore, and the shipped map
+# viewer serves the project's map.
 
 import re
+import socket
 import subprocess
 import sys
 import tempfile
+import time
+import urllib.request
 from pathlib import Path
 
 CHECKOUT = Path(__file__).resolve().parent.parent
@@ -34,6 +38,7 @@ def main():
         entry_files_point_into_ndd(project)
         scripts_are_executable(project / "ndd")
         every_link_resolves(project / "ndd")
+        viewer_serves_the_project(project)
         upgrade_backs_up_and_clears_strays(project)
     with tempfile.TemporaryDirectory() as scratch:
         flat_layout_upgrade_backs_up_and_clears_strays(Path(scratch))
@@ -55,10 +60,11 @@ def ships_exactly_the_shipped_assets(ndd: Path):
     expected = set()
     for name in SHIPPED_ASSETS:
         path = CHECKOUT / name
-        found = [p for p in path.rglob("*") if p.is_file()] if path.is_dir() else [path]
+        found = [p for p in path.rglob("*") if p.is_file() and "__pycache__" not in p.parts] if path.is_dir() else [path]
         expected |= {p.relative_to(CHECKOUT) for p in found}
     shipped = {p.relative_to(ndd) for p in ndd.rglob("*") if p.is_file()}
     check(shipped == expected, f"shipped set differs: extra {sorted(map(str, shipped - expected))}, missing {sorted(map(str, expected - shipped))}")
+    check(not any("__pycache__" in p.parts for p in shipped), "a bytecode cache was shipped")
     print("shipped:", *sorted(map(str, shipped)), sep="\n  ")
 
 
@@ -86,6 +92,33 @@ def every_link_resolves(ndd: Path):
             check(linked.exists(), f"{md.relative_to(ndd)} links to missing {target}")
             if anchor and linked.exists():
                 check(anchor in anchors(linked), f"{md.relative_to(ndd)} links to missing anchor {target}")
+
+
+# The viewer ships with the method and, run from the project root, serves the project's map.
+def viewer_serves_the_project(project: Path):
+    viewer = project / "ndd" / "method" / "util" / "map_viewer.py"
+    if not viewer.exists():
+        return check(False, "the map viewer is not shipped")
+    (project / "map.md").write_text("# Project\n\nA project's map.\n")
+    with socket.socket() as probe:
+        probe.bind(("127.0.0.1", 0))
+        port = probe.getsockname()[1]
+    server = subprocess.Popen([str(viewer), "--port", str(port)], cwd=project,
+                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    try:
+        page = ""
+        for _ in range(100):  # uv may take a moment to start it
+            try:
+                with urllib.request.urlopen(f"http://127.0.0.1:{port}/") as response:
+                    page = response.read().decode("utf-8")
+                break
+            except OSError:
+                time.sleep(0.1)
+        check("<h1>Project</h1>" in page, "the shipped viewer did not serve the project's map")
+    finally:
+        server.terminate()
+        server.wait()
+        (project / "map.md").unlink()
 
 
 def upgrade_backs_up_and_clears_strays(project: Path):

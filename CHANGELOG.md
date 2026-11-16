@@ -2,6 +2,11 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 3.6.0-dev
+
+- Map viewer shipped: run `ndd/method/util/map_viewer.py` from a project root to review its map in the browser (*Map Viewer*).
+- Installer no longer ships Python bytecode caches (*Shipped Assets*).
+
 ## 3.5.2-dev
 
 - Map viewer improved: fuller markdown rendering, faster approval diffs, and page tests (*Map Viewer*, *Map Viewer Check*).
