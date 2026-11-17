@@ -9,7 +9,7 @@
 ```yaml
 id: p1j
 approvals:
-  tearne: {at: 2026-11-10, hash: 8f112952}
+  tearne: {at: 2026-11-17, hash: 4b86776e}
 ```
 
 The repository that develops and ships Non-Dead Design. The method itself has its own map, [NDD](method/ndd.map.md#ndd), which this project builds and ships as an asset rather than as a branch. This map describes how the method is distributed, released and installed, and the tooling prototyped beside it. The reasoning behind the method is under [Principles](method/ndd.map.md#principles).
@@ -18,7 +18,7 @@ The repository that develops and ships Non-Dead Design. The method itself has it
 
 - **[Testing](testing.map.md#testing)** — how this repository checks itself: the checks and their runnable forms under `tests/`.
 
-- **[Map Viewer](#map-viewer)** — a prototype that serves a map read-only in the browser for review.
+- **[Map Viewer](#map-viewer)** — a prototype that serves a map in the browser for review and sign-off.
 
 - **[Method Map Form](#method-map-form)** — the convention this project's method map follows.
 
@@ -116,15 +116,15 @@ It refuses to run from its own checkout. It checks that every shipped asset is p
 ```yaml
 id: s4h
 approvals:
-  tearne: {at: 2026-11-16, hash: 18d10271}
+  tearne: {at: 2026-11-17, hash: 6be4dbca}
 ```
 
 The installer copies into a client's `ndd/` only what the agent and user need at run time:
 
 - `method/`, holding the agent rules, the method map, the fingerprint helper, the [map viewer](#map-viewer) and the standards, without the Python bytecode caches running its scripts leaves behind.
-- `CHANGELOG.md`, `README.md` and `LICENSE`, from the root.
+- `CHANGELOG.md` and `LICENSE` from the root, and `README.ndd.md` as `README.md`, so a project's people find the method's introduction at the top of `ndd/`.
 
-Everything else stays in the checkout, for example `map.md`, `changes/`, `tests/` and `install.py`. The [Install Check](testing.map.md#install-check) catches a shipped file linking outside what ships.
+Everything else stays in the checkout, for example `map.md`, `changes/`, `tests/`, `install.py` and the root `README.md`. The [Install Check](testing.map.md#install-check) catches a shipped file linking outside what ships.
 
 
 # Agent Rules

@@ -116,6 +116,7 @@ id: ct5
       - [Approver](#approver)
   - [Tooling](#tooling)
     - [Map Viewer](#map-viewer)
+      - [Map Viewer Access](#map-viewer-access)
   - [Standards](#standards)
   - [Installation](#installation)
 
@@ -1651,12 +1652,13 @@ The method needs no bespoke application — it rides generic markdown tooling. I
 
 # Map Viewer
 
-[↑ Tooling](#tooling)
+[↑ Tooling](#tooling) \
+[Map Viewer Access](#map-viewer-access)
 
 ```yaml
 id: m8v
 approvals:
-  tearne: {at: 2026-11-17, hash: 3e7b921e}
+  tearne: {at: 2026-11-17, hash: 320e5c6c}
 ```
 
 `util/map_viewer.py` serves a project's map in the browser for reading and review: the contents tree, each node with its [approval stamps](#approval-stamp) marked current or stale, and, for a stale one, what changed since. A second pane keeps one node in view while following its links.
@@ -1672,7 +1674,37 @@ ndd/method/util/map_viewer.py  # the project's map.md, on port 8080
 ndd/method/util/map_viewer.py path/to/map.md --port 9000
 ```
 
-To view it from another machine, forward the port first: `ssh -L 8080:127.0.0.1:8080 host`.
+To view it from another machine, forward a port to it as [Map Viewer Access](#map-viewer-access) describes.
+
+
+# Map Viewer Access
+
+[↑ Map Viewer](#map-viewer)
+
+```yaml
+id: va3
+approvals:
+  tearne: {at: 2026-11-17, hash: 960692e9}
+```
+
+The viewer listens on 127.0.0.1 alone, so another machine reaches it by forwarding a port, one hop at a time. Each hop may listen on any port; the one nearest the viewer connects to the viewer's, 8080 by default. The browser must address it as 127.0.0.1 or localhost, since the viewer refuses any other host name.
+
+**Detail**
+
+- Direct SSH access: `ssh -L 8081:127.0.0.1:8080 host`, or `LocalForward 8081 127.0.0.1:8080` under the host in `~/.ssh/config`; then open `localhost:8081`.
+
+  ```
+  browser ── localhost:8081
+      ──ssh──▶ host 127.0.0.1:8080
+  ```
+
+- SSH to an Incus container: on the host, proxy a port into the container with `incus config device add <container> viewer proxy listen=tcp:127.0.0.1:8081 connect=tcp:127.0.0.1:8080`; forward to it as above, with `8082:127.0.0.1:8081` or `LocalForward 8082 127.0.0.1:8081`; then open `localhost:8082`.
+
+  ```
+  browser ── localhost:8082
+      ──ssh──▶ host 127.0.0.1:8081
+      ──proxy──▶ container 127.0.0.1:8080
+  ```
 
 
 # Standards
@@ -1704,10 +1736,10 @@ Guidance for the code agents write on user projects, distinct from the map spec 
 ```yaml
 id: i4n
 approvals:
-  tearne: {at: 2026-11-04, hash: ebf79311}
+  tearne: {at: 2026-11-17, hash: ac7cb95d}
 ```
 
-NDD's installer copies the method into a client project's `ndd/` directory. Every run rewrites `ndd/`, so a hand edit there is lost: the method changes at its source, and upgrading is a pull in the NDD clone and a fresh run. The `CHANGELOG.md` there names the installed version.
+NDD's installer copies the method into a client project's `ndd/` directory, where `README.md` introduces it and `CHANGELOG.md` names the installed version. Every run rewrites `ndd/`, so a hand edit there is lost: the method changes at its source, and upgrading is a pull in the NDD clone and a fresh run.
 
 The project's own map, entered at `map.md` in its root, is its specification. The method's map, `ndd.map.md` in `ndd/`, shares the format but describes the method, not the project, so it is no branch of the project's map.
 

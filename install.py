@@ -29,7 +29,9 @@ SOURCE = Path(__file__).parent
 # What the agent and user need at run time, as map.md#shipped-assets lists it:
 # the method directory whole, and the root files that describe the release. The
 # install test's link check catches a shipped link leaving what ships.
-SHIPPED = ["method", "CHANGELOG.md", "README.md", "LICENSE"]
+SHIPPED = ["method", "CHANGELOG.md", "README.ndd.md", "LICENSE"]
+# The method's readme ships as ndd/README.md; the root README.md is the repository's own.
+RENAMED = {"README.ndd.md": "README.md"}
 
 RULES = "ndd/method/AGENT-RULES.md"
 CLAUDE_POINTER = f"@{RULES}"
@@ -64,7 +66,8 @@ def copy_method(ndd: Path) -> None:
         shutil.rmtree(ndd)
         report("cleared", ndd)
     for src in sources:
-        copy_asset(src, ndd / src.relative_to(SOURCE))
+        relative = src.relative_to(SOURCE)
+        copy_asset(src, ndd / RENAMED.get(str(relative), relative))
     if previous:
         (ndd / "method" / "ndd.prev.map.md").write_text(previous)
         report("backed up", ndd / "method" / "ndd.prev.map.md", "previous map")

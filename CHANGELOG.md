@@ -2,6 +2,11 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 3.7.1-dev.1
+
+- `ndd/README.md` introduces working with NDD (method map: *Installation*).
+- Reaching the map viewer from another machine (method map: *Map Viewer Access*).
+
 ## 3.7.0-dev.7
 
 - Map viewer records sign-offs: a *Sign off* button on each node stamps it for the names ticked (method map: *Map Viewer*, *Sign-off*).

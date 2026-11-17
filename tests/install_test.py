@@ -23,7 +23,8 @@ CHECKOUT = Path(__file__).resolve().parent.parent
 INSTALLER = CHECKOUT / "install.py"
 # The shipped assets as map.md#shipped-assets lists them, held here
 # independently of the installer's own list so the two are checked against each other.
-SHIPPED_ASSETS = ["method", "CHANGELOG.md", "README.md", "LICENSE"]
+SHIPPED_ASSETS = ["method", "CHANGELOG.md", "README.ndd.md", "LICENSE"]
+RENAMED = {"README.ndd.md": "README.md"}
 RULES = "ndd/method/AGENT-RULES.md"
 STRAY = "BOOTSTRAP.md"
 failures = []
@@ -61,8 +62,10 @@ def ships_exactly_the_shipped_assets(ndd: Path):
     for name in SHIPPED_ASSETS:
         path = CHECKOUT / name
         found = [p for p in path.rglob("*") if p.is_file() and "__pycache__" not in p.parts] if path.is_dir() else [path]
-        expected |= {p.relative_to(CHECKOUT) for p in found}
+        expected |= {Path(RENAMED.get(str(p.relative_to(CHECKOUT)), p.relative_to(CHECKOUT))) for p in found}
     shipped = {p.relative_to(ndd) for p in ndd.rglob("*") if p.is_file()}
+    check((ndd / "README.md").read_text() == (CHECKOUT / "README.ndd.md").read_text(),
+          "ndd/README.md is not the method readme")
     check(shipped == expected, f"shipped set differs: extra {sorted(map(str, shipped - expected))}, missing {sorted(map(str, expected - shipped))}")
     check(not any("__pycache__" in p.parts for p in shipped), "a bytecode cache was shipped")
     print("shipped:", *sorted(map(str, shipped)), sep="\n  ")
