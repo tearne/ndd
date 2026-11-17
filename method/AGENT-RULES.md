@@ -41,7 +41,7 @@ A draft is only the text you surfaced; any action undertaken alongside it needs 
 
 ### Engagement Rule: Edit Order
 
-Make every map edit in one order: draft, surface with its count, settle on approval. Surface the drafted node text and its character count, then treat it as settled only when the reply is approval. On a map that carries stamps, settling also writes the approver's stamp, computed with the shipped fingerprint script, and reports its hash beside the count. The first time you stamp, resolve and name the handle as [Approver](ndd.map.md#approver) directs. No map edit is silent and none is made in bulk, because the user's comprehension is built in the negotiation of each one. With nobody to approve, wait. [Engagement Rule](ndd.map.md#engagement-rule), [Approver](ndd.map.md#approver).
+Make every map edit in one order: draft, surface with its count, settle on approval. Surface the drafted node text and its character count, then treat it as settled only when the reply is approval. On a map that carries stamps, settling also writes the signer's stamp, computed with the shipped fingerprint script, and reports its hash beside the count. The first time you stamp, resolve and name the handle as [Signer](ndd.map.md#signer) directs. No map edit is silent and none is made in bulk, because the user's comprehension is built in the negotiation of each one. With nobody to approve, wait. [Engagement Rule](ndd.map.md#engagement-rule), [Signer](ndd.map.md#signer).
 
 ### Diffs
 

@@ -4,7 +4,7 @@
 # ///
 
 # Helper for Sign-off (ndd.map.md#sign-off): prints the fingerprints of a map's
-# nodes, or lists the nodes due for a person against their approval stamps. The
+# nodes, or lists the nodes due for a person against their sign-off stamps. The
 # reference implementation of the rule is tests/fingerprint_test.py, which also
 # checks that this helper agrees with it.
 
@@ -23,7 +23,7 @@ HEADING = re.compile(r"^#{1,6} (.+?)\s*$")
 FENCE = re.compile(r"^```")
 LINK_ONLY_LINE = re.compile(r"^\[[^\]]+\]\([^)]+\)\s*\\?\s*$")
 # A key may hold spaces; one with a colon or leading punctuation is quoted, per
-# the Approval Stamp node.
+# the Sign-off Stamp node.
 STAMP = re.compile(r"^\s+(?:\"([^\"]+)\"|'([^']+)'|([^\s\"'][^:]*?))\s*:\s*\{.*?\bhash:\s*([0-9a-f]{8})\b")
 
 
@@ -74,8 +74,8 @@ def due_for(nodes: dict[str, list[str]], person: str) -> list[str]:
 
 
 # Stamps are read from the scaffolding block only, so an example stamp quoted
-# later in the node is never taken for a real one. Approval Stamp
-# (ndd.map.md#approval-stamp).
+# later in the node is never taken for a real one. Sign-off Stamp
+# (ndd.map.md#sign-off-stamp).
 def stamps(node_lines: list[str]) -> dict[str, str]:
     found = {}
     for line in scaffolding_block(node_lines[1:]):

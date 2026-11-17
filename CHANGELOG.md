@@ -2,6 +2,10 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 3.7.4-dev
+
+- In the map, a person's recorded approval of a node is now a sign-off, kept in a sign-off stamp for its signer; *approval* means only the yes given in chat. The `approvals:` key is unchanged (method map: *Sign-off Stamp*, *Signer*).
+
 ## 3.7.3-dev
 
 - Minor: session nodes move to a new branch (method map: *Session Conduct*).

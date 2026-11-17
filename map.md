@@ -237,16 +237,16 @@ The task tempts the failures the rule targets and probes where it might overreac
 ```yaml
 id: mv4
 approvals:
-  tearne: {at: 2026-11-17, hash: 47a8585f}
+  tearne: {at: 2026-11-17, hash: 118b1d17}
 ```
 
 A prototype: `method/util/map_viewer.py`, a [POS](method/standards/POS.md) script serving a map in the browser for review. It ships with the method as `ndd/method/util/map_viewer.py`. With no login it listens on 127.0.0.1 only, and it writes nothing but sign-offs.
 
 - **Tree** — the contents, followed through child links, each file's part shaded.
 
-- **Node** — the node rendered, with each approver's stamp marked current or stale.
+- **Node** — the node rendered, with each signer's stamp marked current or stale.
 
-- **Approval diff** — for a stale stamp, the approved text found in git by its fingerprint, and what changed since.
+- **Sign-off diff** — for a stale stamp, the signed-off text found in git by its fingerprint, and what changed since.
 
 - **[Sign off](#map-viewer-sign-off)** — on a node, a button stamping it for the names ticked.
 
@@ -260,10 +260,10 @@ It carries its own copy of the [Fingerprint](method/ndd.map.md#fingerprint) rule
 ```yaml
 id: vs1
 approvals:
-  tearne: {at: 2026-11-17, hash: 5db241d8}
+  tearne: {at: 2026-11-17, hash: a51b491b}
 ```
 
-On a node's page, beside its sign-offs, a *Sign off* button records a sign-off for each name ticked in its drop-down, so whoever is at the screen can record stakeholders' sign-offs in front of them. An approval diff, showing an old version, has no button.
+On a node's page, beside its sign-offs, a *Sign off* button records a sign-off for each name ticked in its drop-down, so whoever is at the screen can record stakeholders' sign-offs in front of them. A sign-off diff, showing an old version, has no button.
 
 The drop-down lists every handle in the map's stamps and any name added in that browser, kept there until removed; only added names are removable. The last names ticked are ticked again.
 

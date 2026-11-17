@@ -17,7 +17,7 @@
 #   ndd/method/util/map_viewer.py --port 9000
 #
 # It needs uv (https://docs.astral.sh/uv/), which fetches Python 3.12 if it is missing,
-# and git for what changed since an approval. In the NDD repository, it is method/util/map_viewer.py.
+# and git for what changed since a sign-off. In the NDD repository, it is method/util/map_viewer.py.
 
 import argparse
 import difflib
@@ -168,7 +168,7 @@ class Handler(BaseHTTPRequestHandler):
 
 # --- Pages ---
 
-# A page's title and content: a node, or what changed in it since someone approved it.
+# A page's title and content: a node, or what changed in it since someone signed it off.
 def view(path: str, query: dict[str, str]) -> tuple[str, str]:
     lines = read_map(query["file"])
     if path == "/node":
@@ -204,7 +204,7 @@ def node_view(file: str, name: str, lines: list[str]) -> tuple[str, str]:
 
 # In the sign-offs table's Status heading, a Sign off button opening a drop-down of names to
 # tick, with the button that records them at its head; its … says pressing it only opens. The page script
-# fills the drop-down from the map's handles and the names added in this browser. An approval
+# fills the drop-down from the map's handles and the names added in this browser. A sign-off
 # diff shows an old version, so it has none; nor does Contents, which is never stamped.
 def signoff_html(file: str, name: str, current: str) -> str:
     if name == "Contents":
@@ -218,17 +218,17 @@ def signoff_html(file: str, name: str, current: str) -> str:
             '<button class="add-name">Add</button></div></div></details>')
 
 
-# Who has approved the node, and whether the text has changed since. Contents is a tree
+# Who has signed off the node, and whether the text has changed since. Contents is a tree
 # overview kept in step with the navigation links, so it is never stamped or due.
 def approvals_html(file: str, name: str, lines: list[str], current: str, signoff: str = "") -> str:
     if name == "Contents":
         return "<p>Contents is a tree overview of the navigation links, so it is never stamped and never due.</p>"
     rows = "".join(approval_row(file, name, who, at, hash_, current)
                    for who, (at, hash_) in stamp_details(node_lines(lines, name)).items())
-    return f"""<table class=signoffs><tr><th>Approver</th><th>At</th><th>Approved fingerprint</th><th class=status>Status{signoff}</th></tr>{rows or '<tr><td colspan=4>No stamps</td></tr>'}</table>"""
+    return f"""<table class=signoffs><tr><th>Signer</th><th>At</th><th>Signed-off fingerprint</th><th class=status>Status{signoff}</th></tr>{rows or '<tr><td colspan=4>No stamps</td></tr>'}</table>"""
 
 
-# A stale approval's row is tinted, and its fingerprint links to what changed since.
+# A stale sign-off's row is tinted, and its fingerprint links to what changed since.
 def approval_row(file: str, name: str, who: str, at: str, hash_: str, current: str) -> str:
     if hash_ == current:
         return f"<tr><td>{html.escape(who)}</td><td>{html.escape(at)}</td><td><code>{hash_}</code></td><td class=ok>current</td></tr>"
@@ -237,8 +237,8 @@ def approval_row(file: str, name: str, who: str, at: str, hash_: str, current: s
             f'<td><a href="{diff}" title="What changed since"><code>{hash_}</code></a></td><td class=stale>stale</td></tr>')
 
 
-# What changed since someone approved a node: the details of both versions, the changed
-# passages, the whole node as it stands with the same highlights, then the approvals.
+# What changed since someone signed off a node: the details of both versions, the changed
+# passages, the whole node as it stands with the same highlights, then the sign-offs.
 def approval_view(file: str, name: str, who: str, at: str, hash_: str, lines: list[str],
                   history: list[tuple[str, str, list[str] | None]]) -> tuple[str, str]:
     now = node_lines(lines, name)
@@ -253,25 +253,25 @@ def approval_view(file: str, name: str, who: str, at: str, hash_: str, lines: li
     # No page title: it opens with two tables, what is being compared on the left and the
     # two versions' details on the right.
     head = f"""<header class="diff-head">
-<table class="about"><tr><th colspan="2">Approval Diff</th></tr>
+<table class="about"><tr><th colspan="2">Sign-off Diff</th></tr>
 <tr><th>Node</th><td><a href="{node_url(file, name)}">{html.escape(name)}</a></td></tr>
-<tr><th>Approver</th><td>{html.escape(who)}</td></tr>
+<tr><th>Signer</th><td>{html.escape(who)}</td></tr>
 <tr><th>File</th><td>{html.escape(file)}</td></tr>
 </table>
-<table class="compare"><tr><th></th><th class="was">Approved</th><th class="now">Current</th></tr>
+<table class="compare"><tr><th></th><th class="was">Signed off</th><th class="now">Current</th></tr>
 <tr><th>Fingerprint</th><td class="was"><code>{hash_}</code></td><td class="now"><code>{current}</code></td></tr>
 <tr><th>Stamp date</th><td class="was">{html.escape(at)}</td><td class="now">—</td></tr>
 <tr><th>First committed</th><td class="was">{approved_commit}</td><td class="now">{current_commit}</td></tr>
 <tr><th class="sub">on</th><td class="was">{approved_date}</td><td class="now">{current_date}</td></tr>
 </table></header>"""
     if approved is None:
-        diff = "<p>The approved text isn't in this file's git history, so there is nothing to compare against.</p>"
+        diff = "<p>The signed-off text isn't in this file's git history, so there is nothing to compare against.</p>"
     else:
         old = approved[2]
         delta = changed_passages([old[0]] + strip_scaffolding(old[1:]), [now[0]] + strip_scaffolding(now[1:]))
         diff = f'{delta}<h3 class="section">Current Node</h3><pre class=diff>{word_diff("".join(old), "".join(now))}</pre>'
     footer = f'<section class="meta">{approvals_html(file, name, lines, current)}</section>'
-    return f"Approval Diff: {name}", head + diff + footer
+    return f"Sign-off Diff: {name}", head + diff + footer
 
 
 # The commit where a version of the node was introduced: in the newest run of commits
@@ -296,7 +296,7 @@ def changed_passages(old: list[str], new: list[str]) -> str:
         after = html.escape(new[j2].rstrip()) if j2 < len(new) else ""
         body = word_diff("".join(old[i1:i2]), "".join(new[j1:j2]))
         runs.append(f'<pre class=diff><span class=context>{before}</span>\n{body}<span class=context>{after}</span></pre>')
-    return "".join(runs) or "<p>No difference in the approved text.</p>"
+    return "".join(runs) or "<p>No difference in the signed-off text.</p>"
 
 
 # A pane's back and forward buttons; the page script enables them as its history allows.
@@ -368,7 +368,7 @@ body.split main .split { display: none; }
 .pane-tools button:disabled { opacity: .35; cursor: default; }
 .hint { color: #888; font-style: italic; }
 
-/* Footer: fingerprint and approvals */
+/* Footer: fingerprint and sign-offs */
 .meta { border-top: 1px solid #ccc; margin-top: 2rem; padding-top: 1rem; color: #888; font-size: .9rem; }
 .meta a { color: #779; }
 .ok { color: green; }
@@ -404,7 +404,7 @@ body.split main .split { display: none; }
 #uncommitted { position: fixed; top: .6rem; right: .6rem; width: .8rem; height: .8rem; border-radius: 50%;
                background: #d22; box-shadow: 0 0 4px #d22; z-index: 10; cursor: help; }
 
-/* Approval diff */
+/* Sign-off diff */
 del { background: #fdd; }
 ins { background: #dfd; text-decoration: none; }
 .context { color: #999; }
@@ -750,7 +750,7 @@ def id_of(node: list[str]) -> str | None:
     return None
 
 
-# Each approver's stamp date and fingerprint. Stamps are read from the scaffolding block only,
+# Each signer's stamp date and fingerprint. Stamps are read from the scaffolding block only,
 # so an example quoted later in the node is never taken for one.
 def stamp_details(node: list[str]) -> dict[str, tuple[str, str]]:
     found = {}

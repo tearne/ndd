@@ -54,7 +54,7 @@ id: ct5
       - [Navigation Links](#navigation-links)
       - [Node Sections](#node-sections)
         - [Callouts](#callouts)
-      - [Approval Stamp](#approval-stamp)
+      - [Sign-off Stamp](#sign-off-stamp)
         - [Fingerprint](#fingerprint)
           - [Fingerprint Helper](#fingerprint-helper)
     - [Map Structure](#map-structure)
@@ -117,7 +117,7 @@ id: ct5
       - [Rendering](#rendering)
     - [Backlog Review](#backlog-review)
     - [Sign-off](#sign-off)
-      - [Approver](#approver)
+      - [Signer](#signer)
   - [Tooling](#tooling)
     - [Map Viewer](#map-viewer)
       - [Map Viewer Access](#map-viewer-access)
@@ -294,7 +294,7 @@ The map is the developer's conceptual model of the system. NDD assumes that any 
 [Node Identity](#node-identity) \
 [Navigation Links](#navigation-links) \
 [Node Sections](#node-sections) \
-[Approval Stamp](#approval-stamp)
+[Sign-off Stamp](#sign-off-stamp)
 
 ```yaml
 id: nd1
@@ -320,14 +320,14 @@ The format is a strict superset of a plain-markdown section — strip the scaffo
 ```yaml
 id: w9c
 approvals:
-  tearne: {at: 2026-11-03, hash: 9638883b}
+  tearne: {at: 2026-11-17, hash: e785da72}
 ```
 
 A node's name can change; its identity can't. A small immutable token in the yaml scaffolding block survives node renames and moves. [Navigation](#navigation-links) never uses it, nor does agent output — references name the heading, so the id can be meaningless.
 
 **Detail**
 
-The **scaffolding block** is fenced YAML directly under the navigation links containing the `id` and any [approval stamps](#approval-stamp). It's agent-maintained. The `id:` key is map-unique, lowercase alphanumeric, three or more characters (e.g. `k7f`) — a token rather than a readable slug to avoid edit or link temptation. A user may hand-draft a node without a block; [Tidy](#tidy) adds the block and reports it, so identity is never silently missing.
+The **scaffolding block** is fenced YAML directly under the navigation links containing the `id` and any [sign-off stamps](#sign-off-stamp). It's agent-maintained. The `id:` key is map-unique, lowercase alphanumeric, three or more characters (e.g. `k7f`) — a token rather than a readable slug to avoid edit or link temptation. A user may hand-draft a node without a block; [Tidy](#tidy) adds the block and reports it, so identity is never silently missing.
 
 
 # Navigation Links
@@ -390,7 +390,7 @@ A callout is a "don't skim this" flag on a point the prose already makes. It mar
 Rendered as a `> [!IMPORTANT]` blockquote.
 
 
-# Approval Stamp
+# Sign-off Stamp
 
 [↑ Node](#node) \
 [Fingerprint](#fingerprint)
@@ -398,14 +398,14 @@ Rendered as a `> [!IMPORTANT]` blockquote.
 ```yaml
 id: p8m
 approvals:
-  tearne: {at: 2026-09-13, hash: 69e508f0}
+  tearne: {at: 2026-11-17, hash: 064255d3}
 ```
 
-An approval stamp records that one person approved one node. Stamps live in the node's scaffolding block under an `approvals:` mapping keyed by a name or handle, so each person holds exactly one and a re-approval overwrites it. Because they are in the node rather than a separate ledger, they follow it through renames and moves. A node without the mapping is simply unapproved, and most maps never gain one.
+A sign-off stamp records that one person signed off one node. Stamps live in the node's scaffolding block under an `approvals:` mapping keyed by each [signer](#signer)'s name or handle, so each person holds exactly one and a new sign-off overwrites it. Because they are in the node rather than a separate ledger, they follow it through renames and moves. A node without the mapping is simply not signed off, and most maps never gain one.
 
 **Detail**
 
-Each value holds `at`, an ISO 8601 date, and `hash`, the [fingerprint](#fingerprint) of the text approved. Drift uses only the hash; the date says when, and the hash finds the version a person saw. Quote the key if it contains a colon or starts with punctuation.
+Each value holds `at`, an ISO 8601 date, and `hash`, the [fingerprint](#fingerprint) of the text signed off. Drift uses only the hash; the date says when, and the hash finds the version a person saw. Quote the key if it contains a colon or starts with punctuation.
 
 ```yaml
 id: w9c
@@ -419,21 +419,20 @@ approvals:
 - [Sign-off](#sign-off) — the check that reads the stamps.
 - [Node Identity](#node-identity) — the other thing the scaffolding block holds.
 
-
 # Fingerprint
 
-[↑ Approval Stamp](#approval-stamp) \
+[↑ Sign-off Stamp](#sign-off-stamp) \
 [Fingerprint Helper](#fingerprint-helper)
 
 ```yaml
 id: h4q
 approvals:
-  tearne: {at: 2026-11-04, hash: ba917fe4}
+  tearne: {at: 2026-11-17, hash: 68af75d3}
 ```
 
 A fingerprint is a hash of what a reader sees in a node. It covers the heading, prose, callouts, *Detail* and *See also*; it excludes the scaffolding block and navigation links.
 
-Comparing fingerprints is a test of equality: a node put back to earlier text regains its old fingerprint, and so clears for whoever approved that text.
+Comparing fingerprints is a test of equality: a node put back to earlier text regains its old fingerprint, and so clears for whoever signed off that text.
 
 **Detail**
 
@@ -447,16 +446,16 @@ Take the node from its heading line to the line before the next heading. Drop, w
 ```yaml
 id: u6h
 approvals:
-  tearne: {at: 2026-11-04, hash: 47c88c97}
+  tearne: {at: 2026-11-17, hash: a2b17a20}
 ```
 
-`util/fingerprint.py` is the script an agent runs to compute node fingerprints: to write an [approval stamp](#approval-stamp), and at [Sign-off](#sign-off) to find what is due.
+`util/fingerprint.py` is the script an agent runs to compute node fingerprints: to write a [sign-off stamp](#sign-off-stamp), and at [Sign-off](#sign-off) to find what is due.
 
 - Given a map file it prints every node's fingerprint beside its name.
 - Given a node name it prints that one fingerprint alone.
 - With `--due` and a person's name it reads the stamps and prints the nodes due for them, in map order.
 
-It reads only; stamps are still written by the agent.
+It reads only; stamps are written by the agent or the [map viewer](#map-viewer).
 
 **Detail**
 
@@ -523,14 +522,14 @@ A file's *Contents* lists the nodes in that file; a branch that continues in ano
 ```yaml
 id: z9p
 approvals:
-  tearne: {at: 2026-10-26, hash: b2d72af5}
+  tearne: {at: 2026-11-17, hash: a17361fe}
 ```
 
 A node's rough upper bound is around 800 characters, but the real test is felt during review.
 
 Each time the agent edits a node it counts and reports its characters, *Detail* included and an inline link taken as its visible text; [navigation links](#navigation-links), *See also*, tables and diagrams are excluded. Over the bound, the agent flags the node, stamped or not, since an edit reopens its length. Rather than trimming silently, it proposes the best fit: tightening the prose, cutting what another node already owns, or splitting a node that carries two concepts.
 
-On a map that carries stamps, a review, unlike an edit, does not flag a node that is not [due](#sign-off) for the session's [approver](#approver): the call was made and signed off. When the approver is not known, every node over the bound is flagged, and the agent says so.
+On a map that carries stamps, a review, unlike an edit, does not flag a node that is not [due](#sign-off) for the session's [signer](#signer): the call was made and signed off. When the signer is not known, every node over the bound is flagged, and the agent says so.
 
 **See also**
 
@@ -1391,14 +1390,14 @@ Formal is the default when the agent is unsure which style fits, and is particul
 ```yaml
 id: s7q
 approvals:
-  tearne: {at: 2026-11-03, hash: 2ca6aa8d}
+  tearne: {at: 2026-11-17, hash: 6393ee2f}
 ```
 
 The preparation section for a [Formal](#formal) change: specifying what must hold when the change lands.
 
 The specification consists of map nodes, plus target versions of any agreed non-map assets, inline or in the [companion folder](#companion-folder) with a one-line relative path specified. When the specification will touch multiple nodes, the agent proposes a sub-map or whole-map copy in the companion folder, then pauses for the user to commit it, so that diffs against it show only the planned edits. Once built the live map must describe the completed result.
 
-Node approval follows the normal [Engagement Rule](#engagement-rule), with approval stamps that transfer to the live map during Build. Each non-map target is surfaced as a diff and approved likewise, and questioned if it takes over the map's job of describing the system.
+Node approval follows the normal [Engagement Rule](#engagement-rule), with [sign-off stamps](#sign-off-stamp) that transfer to the live map during Build. Each non-map target is surfaced as a diff and approved likewise, and questioned if it takes over the map's job of describing the system.
 
 
 # Implementation Plan
@@ -1481,7 +1480,7 @@ A versioned project keeps a changelog and uses semver. Each change carries its o
 ```yaml
 id: t7v
 approvals:
-  tearne: {at: 2026-10-26, hash: e6e91eef}
+  tearne: {at: 2026-11-17, hash: 76076420}
 ```
 
 The upkeep of the map and the backlog, put to the user as three reviews. Each is one yes-or-no at its moment, and each opens a list of findings taken one item at a time.
@@ -1490,7 +1489,7 @@ The upkeep of the map and the backlog, put to the user as three reviews. Each is
 |--------|-------|--------|
 | [Map Review](#map-review) | The tree and the text, and before a release the ideas and the code too | Offered after an archive and before a release |
 | [Backlog Review](#backlog-review) | The parked changes in `changes/open/` | Offered at the Startup Scan |
-| [Sign-off](#sign-off) | The approval stamps, for a named stakeholder | On request |
+| [Sign-off](#sign-off) | The sign-off stamps, for a named stakeholder | On request |
 
 Deferring upkeep for a stretch — an emergency fix, a push elsewhere — is safe because nothing is marked: each moment re-offers its review, and a release brings the full scope.
 
@@ -1543,14 +1542,14 @@ It fixes and reports a [tree overview](#map-structure) out of step with the navi
 ```yaml
 id: d4p
 approvals:
-  tearne: {at: 2026-09-13, hash: 08d1997e}
+  tearne: {at: 2026-11-17, hash: 80d2a65e}
 ```
 
 A check on how the map is cut: whether the tree's divisions still match how the user thinks of the system.
 
 It looks for:
 
-- A node carrying more ideas than its heading implies; a node the approver has [stamped](#sign-off) as it stands is not raised.
+- A node carrying more ideas than its heading implies; a node the [signer](#signer) has [stamped](#sign-off) as it stands is not raised.
 
 - Sibling nodes that say too little apart and should merge.
 
@@ -1636,38 +1635,36 @@ It looks for:
 # Sign-off
 
 [↑ Maintenance](#maintenance) \
-[Approver](#approver)
+[Signer](#signer)
 
 ```yaml
 id: f2s
 approvals:
-  tearne: {at: 2026-11-16, hash: 983960ae}
+  tearne: {at: 2026-11-17, hash: 13a3fa18}
 ```
 
-A stakeholder signs off the map a few nodes at a time. Each node can carry an [approval stamp](#approval-stamp) per person, recording when they signed off and a [fingerprint](#fingerprint) of the text they saw. A stamp is scaffolding, written and reported rather than negotiated, by the agent or in the [map viewer](#map-viewer).
+A stakeholder signs off the map a few nodes at a time. Each node can carry a [sign-off stamp](#sign-off-stamp) per person, recording when they signed off and a [fingerprint](#fingerprint) of the text they saw. A stamp is scaffolding, written and reported rather than negotiated, by the agent or in the [map viewer](#map-viewer).
 
-Nothing is marked when a node changes. Drift is found by comparing: a node is *due* for a person when its fingerprint no longer matches their stamp, or it has none for them. The [tree overview](#map-structure) in *Contents* is never due, since [Tidy](#tidy) keeps it in step rather than anyone approving it. A map with no stamps shows nothing, and gains its first only when the user asks for one; from then on every approval of a node edit stamps it for the [approver](#approver).
+Nothing is marked when a node changes. Drift is found by comparing: a node is *due* for a person when its fingerprint no longer matches their stamp, or it has none for them. The [tree overview](#map-structure) in *Contents* is never due, since [Tidy](#tidy) keeps it in step rather than anyone signing it off. A map with no stamps shows nothing, and gains its first only when the user asks for one; from then on every approval of a node edit stamps it for the [signer](#signer).
 
 **See also**
 
 - [Orient Then Focus](#orient-then-focus) — due nodes are summarised, then taken one at a time.
-- [Node Sizing](#node-sizing) — re-approval is a re-read of one short node, which is what keeps it humane.
+- [Node Sizing](#node-sizing) — a fresh sign-off is a re-read of one short node, which is what keeps it humane.
 
-
-# Approver
+# Signer
 
 [↑ Sign-off](#sign-off)
 
 ```yaml
 id: v7a
 approvals:
-  tearne: {at: 2026-10-22, hash: 08cd2805}
+  tearne: {at: 2026-11-17, hash: daeff2c7}
 ```
 
-The approver is the person a [sign-off](#sign-off) stamp is written for, named by a handle. The agent resolves the handle the first time a stamp is needed, not at the [Startup Scan](#startup-scan), and says which handle it is using. Git's `user.name` is the handle unless the map already carries stamps and none match that name; then, or when git has no name, the agent asks rather than guessing.
+The signer is the person a [sign-off](#sign-off) stamp is written for, named by a handle. The agent resolves the handle the first time a stamp is needed, not at the [Startup Scan](#startup-scan), and says which handle it is using. Git's `user.name` is the handle unless the map already carries stamps and none match that name; then, or when git has no name, the agent asks rather than guessing.
 
-The user can override the handle, for one approval or for the rest of the session, as when pairing with another person. A one-off override lasts one stamp and the handle then returns to the session default; a session override holds until changed. Whenever the handle changes, the agent names it again.
-
+The user can override the handle, for one sign-off or for the rest of the session, as when pairing with another person. A one-off override lasts one stamp and the handle then returns to the session default; a session override holds until changed. Whenever the handle changes, the agent names it again.
 
 # Tooling
 
@@ -1691,10 +1688,10 @@ The method needs no bespoke application — it rides generic markdown tooling. I
 ```yaml
 id: m8v
 approvals:
-  tearne: {at: 2026-11-17, hash: 320e5c6c}
+  tearne: {at: 2026-11-17, hash: 1cb0db0a}
 ```
 
-`util/map_viewer.py` serves a project's map in the browser for reading and review: the contents tree, each node with its [approval stamps](#approval-stamp) marked current or stale, and, for a stale one, what changed since. A second pane keeps one node in view while following its links.
+`util/map_viewer.py` serves a project's map in the browser for reading and review: the contents tree, each node with its [sign-off stamps](#sign-off-stamp) marked current or stale, and, for a stale one, what changed since. A second pane keeps one node in view while following its links.
 
 It also records [sign-offs](#sign-off) for the names ticked on the page, refusing a node changed since it loaded; it edits nothing else and commits nothing. With no login, it listens on 127.0.0.1 only and refuses writes from other web pages.
 
