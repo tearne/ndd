@@ -8,7 +8,7 @@
 # with stamps chosen so every approval state and kind of diff appears. Run it, then
 # point the viewer at the result:
 #
-#   tests/map_viewer/viewer_demo.py      # builds /tmp/map-viewer-demo
+#   tests/map_viewer/build_demo_map.py   # builds /tmp/map-viewer-demo
 #   method/util/map_viewer.py /tmp/map-viewer-demo
 #
 # Each node says what it demonstrates. Stamps are computed with the viewer's own
@@ -80,9 +80,16 @@ NODES = [
          now="same", approved={"bob": "now"}),
     dict(file="branch.map.md", name="Branch Leaf", nav=["[↑ Branch](#branch)"],
          committed="A leaf in the branch file.", now="same", approved={}),
-    dict(file="linked.map.md", name="Linked Map", nav=[],
+    dict(file="linked.map.md", name="Linked Map",
+         nav=["[Linked Branch](#linked-branch)", "[Second Child](#second-child)"],
          committed="A map of its own, reached from Demo's prose rather than a child link, so it is drawn as a tree of its own beneath the main one.",
          now="same", approved={}),
+    dict(file="linked.map.md", name="Linked Branch", nav=["[↑ Linked Map](#linked-map)", "[Linked Leaf](#linked-leaf)"],
+         committed="A child of Linked Map, with a child of its own.", now="same", approved={}),
+    dict(file="linked.map.md", name="Linked Leaf", nav=["[↑ Linked Branch](#linked-branch)"],
+         committed="A leaf two levels down in the linked map.", now="same", approved={}),
+    dict(file="linked.map.md", name="Second Child", nav=["[↑ Linked Map](#linked-map)"],
+         committed="Linked Map's second child.", now="same", approved={}),
 ]
 
 IDS = iter(f"d{i:02d}" for i in range(100))
@@ -97,7 +104,7 @@ def main():
             sys.exit(1)
         shutil.rmtree(target)
     target.mkdir(parents=True)
-    (target / ".map-viewer-demo").write_text("Built by tests/map_viewer/viewer_demo.py; safe to delete.\n")
+    (target / ".map-viewer-demo").write_text("Built by tests/map_viewer/build_demo_map.py; safe to delete.\n")
     viewer = load_viewer()
     ids = {node["name"]: next(IDS) for node in NODES}
 
@@ -193,7 +200,7 @@ def styled(text: str, code: str, stream) -> str:
 
 if __name__ == "__main__":
     if not os.environ.get("VIRTUAL_ENV"):
-        error("No virtual environment detected. Run this script via './viewer_demo.py' (requires uv), or activate a virtual environment first.")
+        error("No virtual environment detected. Run this script via './build_demo_map.py' (requires uv), or activate a virtual environment first.")
         sys.exit(100)
     try:
         main()

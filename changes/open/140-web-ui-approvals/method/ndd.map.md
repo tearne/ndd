@@ -1656,12 +1656,12 @@ The method needs no bespoke application — it rides generic markdown tooling. I
 ```yaml
 id: m8v
 approvals:
-  tearne: {at: 2026-11-16, hash: ab16b6ce}
+  tearne: {at: 2026-11-17, hash: 3e7b921e}
 ```
 
 `util/map_viewer.py` serves a project's map in the browser for reading and review: the contents tree, each node with its [approval stamps](#approval-stamp) marked current or stale, and, for a stale one, what changed since. A second pane keeps one node in view while following its links.
 
-It also records [sign-offs](#sign-off): whoever is at the screen ticks one or more names and presses *Sign off*, and the viewer stamps the node for each, refusing if it changed since the page loaded; it edits nothing else and commits nothing. With no login, it listens on 127.0.0.1 only and refuses writes from other web pages.
+It also records [sign-offs](#sign-off) for the names ticked on the page, refusing a node changed since it loaded; it edits nothing else and commits nothing. With no login, it listens on 127.0.0.1 only and refuses writes from other web pages.
 
 **Detail**
 

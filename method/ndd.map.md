@@ -1607,10 +1607,10 @@ It looks for:
 ```yaml
 id: f2s
 approvals:
-  tearne: {at: 2026-11-04, hash: 6ea9a6bd}
+  tearne: {at: 2026-11-16, hash: 983960ae}
 ```
 
-A stakeholder approves the map a few nodes at a time. Each node can carry an [approval stamp](#approval-stamp) per person, recording when they approved it and a [fingerprint](#fingerprint) of the text they saw. A stamp is scaffolding, written and reported rather than negotiated.
+A stakeholder signs off the map a few nodes at a time. Each node can carry an [approval stamp](#approval-stamp) per person, recording when they signed off and a [fingerprint](#fingerprint) of the text they saw. A stamp is scaffolding, written and reported rather than negotiated, by the agent or in the [map viewer](#map-viewer).
 
 Nothing is marked when a node changes. Drift is found by comparing: a node is *due* for a person when its fingerprint no longer matches their stamp, or it has none for them. The [tree overview](#map-structure) in *Contents* is never due, since [Tidy](#tidy) keeps it in step rather than anyone approving it. A map with no stamps shows nothing, and gains its first only when the user asks for one; from then on every approval of a node edit stamps it for the [approver](#approver).
 
@@ -1656,19 +1656,19 @@ The method needs no bespoke application — it rides generic markdown tooling. I
 ```yaml
 id: m8v
 approvals:
-  tearne: {at: 2026-11-16, hash: 4058d54d}
+  tearne: {at: 2026-11-17, hash: 3e7b921e}
 ```
 
-`util/map_viewer.py` serves a project's map in the browser, so a stakeholder can read and review it outside the agent session: the contents tree, each node with its [approval stamps](#approval-stamp) marked current or stale, and, for a stale stamp, what changed since it was approved. A second pane keeps one node in view while following its links.
+`util/map_viewer.py` serves a project's map in the browser for reading and review: the contents tree, each node with its [approval stamps](#approval-stamp) marked current or stale, and, for a stale one, what changed since. A second pane keeps one node in view while following its links.
 
-It only reads; approvals and edits still go through the agent. It has no login, so it listens on 127.0.0.1 only.
+It also records [sign-offs](#sign-off) for the names ticked on the page, refusing a node changed since it loaded; it edits nothing else and commits nothing. With no login, it listens on 127.0.0.1 only and refuses writes from other web pages.
 
 **Detail**
 
 From the project root, with uv and git installed:
 
 ```
-ndd/method/util/map_viewer.py                            # the project's map.md, on port 8080
+ndd/method/util/map_viewer.py  # the project's map.md, on port 8080
 ndd/method/util/map_viewer.py path/to/map.md --port 9000
 ```
 

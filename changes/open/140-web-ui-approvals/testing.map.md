@@ -101,10 +101,10 @@ It prints the shipped files, so a stray one is seen.
 ```yaml
 id: v8c
 approvals:
-  tearne: {at: 2026-11-16, hash: 1fa6c24d}
+  tearne: {at: 2026-11-17, hash: 8de533ff}
 ```
 
-`tests/map_viewer/map_viewer_test.py` builds the demo map with `viewer_demo.py` beside it, serves it with the [map viewer](map.md#map-viewer) on a free port of 127.0.0.1, and checks each page against what its demo node says it shows: stamps and approval diffs, one tree across files, markdown rendering, the page shape the page script swaps, a split page's second pane, and answers to bad requests. Where node is installed, it also checks that the page script parses.
+`tests/map_viewer/map_viewer_test.py` builds the demo map with `build_demo_map.py` beside it, serves it with the [map viewer](map.md#map-viewer) on a free port of 127.0.0.1, and checks each page against what its demo node says it shows: stamps and approval diffs, one tree across files, markdown rendering, the page shape the page script swaps, a split page's second pane, and answers to bad requests. On a copy of the demo map, it checks that a [sign-off](map.md#map-viewer-sign-off) writes its stamp, and that the file is left untouched when a sign-off is for a node changed since its page was shown, lacks the run's token, is not a POST, or comes from a foreign Host or Origin. Where node is installed, it also checks that the page script parses.
 
 It needs no internet access, so it runs wherever the viewer does.
 
@@ -116,9 +116,9 @@ It needs no internet access, so it runs wherever the viewer does.
 ```yaml
 id: v9b
 approvals:
-  tearne: {at: 2026-11-16, hash: 9b9603d8}
+  tearne: {at: 2026-11-17, hash: 490f0ceb}
 ```
 
-`tests/map_viewer/browser_test.py` drives the [map viewer](map.md#map-viewer)'s page script in headless Chromium, on the demo map [Map Viewer Check](#map-viewer-check) serves. It checks the tree keeping its folds across links and back and forward, never redrawn; the fold button; an approval diff swapped in; the second pane through split, reload, swap and close; and each pane's history. Any script error fails it.
+`tests/map_viewer/browser_test.py` drives the [map viewer](map.md#map-viewer)'s page script in headless Chromium, on the demo map [Map Viewer Check](#map-viewer-check) serves. It checks the tree keeping its folds across links and back and forward, never redrawn; the fold button; an approval diff swapped in; the second pane through split, reload, swap and close; and each pane's history. On a copy of the demo map, it checks the *Sign off* button: its drop-down's names, one added and removed, the last ticked ticked again, the stamps current once pressed, and none on an approval diff; and the red light while the repository has uncommitted changes. Any script error fails it.
 
 It needs Playwright, pinned to the version whose Chromium is installed, and skips when that browser is missing; its header says how to set both up.

@@ -1,6 +1,7 @@
 # Web UI approvals
 
-**Change Style:** Formal
+**Change Style:** Formal \
+**Version:** 3.7.0-dev
 
 ## Intent
 
@@ -12,24 +13,31 @@ Raised as item 7 of 002 Map viewer iteration on 2026-11-16 and spun out at the u
 
 ## Change Specification
 
-Drafted on copies of the live maps in [140-web-ui-approvals/](140-web-ui-approvals/): `map.md`, `testing.map.md` and `method/ndd.map.md`, taken 2026-11-16 before any edit.
+The agreed nodes are in copies of the live maps in [140-web-ui-approvals/](140-web-ui-approvals/): `map.md`, `testing.map.md` and `method/ndd.map.md`, taken 2026-11-16 before any edit. Each node edit was approved and stamped in the copies:
 
-Progress, 2026-11-16, seven node edits in the copies:
+1. *Sign-off* (method map): signs off, written by the agent or in the map viewer. Stamped 983960ae.
+2. *Map Viewer* (method map): records sign-offs, refuses writes from other web pages. 774 characters, stamped 3e7b921e.
+3. *Map Viewer* (project map): no longer read-only, writes nothing but sign-offs; child links to the two new nodes; a *Sign off* bullet. 669 characters after the user's edit, stamped 47a8585f.
+4. *Map Viewer Sign-off* (project map, new): the button and its drop-down of names, the stamp written, and a red light while the repository has uncommitted changes; no commit from the browser. 777 characters, stamped 5db241d8.
+5. *Map Viewer Security* (project map, new): forged form, DNS rebinding and stale page, each with its guard; Host 127.0.0.1 or localhost. 671 characters, stamped 7268bf69.
+6. *Map Viewer Check* (testing map): sign-off checks, the stamp written and the file untouched on each guard's refusal; `viewer_demo.py` renamed `build_demo_map.py`, as it builds a demo map, folded in at the user's request though outside the Intent. 763 characters, stamped 8de533ff.
+7. *Map Viewer Browser Check* (testing map): the *Sign off* button flow and the uncommitted-changes light. 783 characters, stamped 490f0ceb.
+8. *Contents* (project map): entries for the two new nodes.
 
-1. *Sign-off* (method map): signs off, written by the agent or in the map viewer. Approved, stamped 983960ae.
-2. *Map Viewer* (method map): records sign-offs, refuses writes from other web pages. Approved at 873 characters, stamped ab16b6ce.
-3. *Map Viewer* (project map): no longer read-only, writes nothing but sign-offs; child links to the two new nodes; a *Sign off* bullet. Approved, 792 characters, stamped ef72c7b7.
-4. *Map Viewer Sign-off* (project map, new): not yet surfaced. Draft text in [140-web-ui-approvals/draft-map-viewer-sign-off.md](140-web-ui-approvals/draft-map-viewer-sign-off.md), 929 characters, over the cap, so trim or split before surfacing. Folds in items 2 and 3.
-5. *Map Viewer Security* (project map, new): the two attacks and their guards, as item 4 settled and explained, at the user's request.
-6. *Map Viewer Check*: server-side sign-off checks (stamp written, receipt mismatch refused, token and Host checks).
-7. *Map Viewer Browser Check*: the button and drop-down flow.
+The rename is a `git mv` of `tests/map_viewer/viewer_demo.py`, updating its usage comment and the call in `map_viewer_test.py`. No Implementation Plan: no consequential delivery choices remain.
 
-Then, before the plan goes up: method *Contents* and project map *Contents* entries for the new nodes; delete the settled *Unresolved* items once folded into their nodes; consider an Implementation Plan.
+The demo map's *Linked Map* gains children, *Linked Branch* with *Linked Leaf* beneath it and *Second Child*, so its tree looks like a map; folded in at the user's request, outside the Intent.
 
-## Unresolved
+## Log
 
-1. Settled: no viewer approval; the viewer gains a sign-off facility, and *Approval* is not involved. Sent the Intent back for revision.
-2. Settled: a *Sign off* button in the node's footer, beside its sign-offs; a drop-down of names, several tickable at once, listing every handle in the map's stamps plus names added in that browser, which stay until removed (only added names can be removed); the last ticked are ticked by default, remembered by the browser. Pressing writes one stamp per ticked name. No button on an approval diff.
-3. Settled: the viewer writes only the signer's line under `approvals:` in the node's scaffolding block, adding the mapping if absent and overwriting that person's earlier sign-off; no other text, file or git write. The page carries the fingerprint the server computed when rendering it, sent back on sign-off as a receipt; the server recomputes from disk and refuses if they differ, so a sign-off never covers text the signer was not shown.
-4. Settled: a random token per run, carried by the viewer's own pages and required on every sign-off, stops a forged cross-site form, since other sites cannot read the pages; a Host check on every request (and Origin on writes) refusing anything but 127.0.0.1:<port> stops DNS rebinding, which would otherwise also let a site read the map, a gap open today; writes by POST only. The specification should give these, with the attacks they stop, a security node under the project map's *Map Viewer*, at the user's request.
-5. Settled: parked as 160 Sign-off terminology, prose only, the `approvals:` key kept; 140 writes "sign-off" in the nodes it touches.
+- 2026-11-17: Build Lock taken.
+- 2026-11-17: version 3.7.0-dev claimed, a minor bump.
+- 2026-11-17: Change Specification re-agreed with the lock kept: method map *Map Viewer* trimmed to 774 characters, stamped 3e7b921e, the button's mechanics left to the project map's *Map Viewer Sign-off*.
+- 2026-11-17: user edited the project map's *Map Viewer* in the copy (POS link, shorter shipping line, markdown-rendering sentence cut), now 669 characters; its stamp ef72c7b7 is stale, approved and re-stamped 47a8585f. Resolved.
+- 2026-11-17: `viewer_demo.py` renamed `build_demo_map.py` by `git mv`; its usage comment, marker text and the call in `map_viewer_test.py` updated.
+- 2026-11-17: demo *Linked Map* given *Linked Branch* (with *Linked Leaf*) and *Second Child*; both test suites pass.
+- 2026-11-17: viewer 0.4.0: run token, Host check on every request and Origin on writes, sign-offs by POST only to `/signoff`, the receipt checked against disk, stamps written under `approvals:` (key added if absent, a name's earlier stamp replaced, a colon quoted) by atomic replace, the *Sign off* button and drop-down, the uncommitted-changes light; header comment and `--help` no longer say read-only.
+- 2026-11-17: `map_viewer_test.py` gains sign-off checks on a copy (stamps written; refusals for a changed node, no or wrong token, GET, PUT, foreign or missing Origin, foreign Host, file untouched) and a foreign-Host page read refused; `browser_test.py` gains the *Sign off* flow and the light, committed away on the copy. All four test scripts pass; mutating out the Host and Origin checks fails five checks.
+- 2026-11-17: surprise: the Host check as specified refuses `localhost:8080`, and a forward to a different local port (`ssh -L 9000:127.0.0.1:8080`), since the Host must be 127.0.0.1 at the viewer's own port. Raised with the user. Resolved: *Map Viewer Security* re-agreed with the lock kept, Host 127.0.0.1 or localhost at any port, Origin matching the Host; 671 characters, stamped 7268bf69. Viewer and tests updated; all four test scripts pass.
+- 2026-11-17: promoted into the live map, whole files as the live maps had not drifted from the copies' baseline: `map.md` (*Map Viewer*, *Map Viewer Sign-off*, *Map Viewer Security*, *Contents*), `testing.map.md` (*Map Viewer Check*, *Map Viewer Browser Check*), `method/ndd.map.md` (*Sign-off*, *Map Viewer*). Each live fingerprint matches its stamp.
+- 2026-11-17: handed back for testing as 3.7.0-dev.1.

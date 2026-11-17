@@ -6,7 +6,8 @@
 
 # Drives the viewer's page script in headless Chromium, on the demo map that
 # map_viewer_test.py serves: the tree keeping its folds across moves, the fold button, the
-# second pane and each pane's history. Optional, since it needs Playwright and its
+# second pane and each pane's history, and, on a copy, the Sign off button and the light shown
+# while the repository has uncommitted changes. Optional, since it needs Playwright and its
 # Chromium: with the browser missing it says so and passes, and map_viewer_test.py, which
 # needs neither, still checks the pages themselves.
 #
@@ -23,6 +24,8 @@
 
 import importlib.util
 import os
+import shutil
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -37,6 +40,11 @@ def main():
         demo = Path(scratch) / "demo"
         suite.build_demo(demo)
         base = suite.serve(demo)
+        # Sign-offs write to the map, so they are tried on a copy served on its own.
+        global COPY, SIGNING
+        COPY = Path(scratch) / "copy"
+        shutil.copytree(demo, COPY)
+        SIGNING = suite.serve(COPY)
         try:
             browser = playwright.chromium.launch()
         except Error as error:
@@ -45,7 +53,7 @@ def main():
             return
         failures = 0
         for check in [folds_survive_moves, tree_never_redrawn, approval_diff_swapped, fold_button,
-                      second_pane, pane_history]:
+                      second_pane, pane_history, signoff_button, uncommitted_light]:
             page = browser.new_page()
             page.set_default_timeout(5000)
             errors = []
@@ -184,7 +192,57 @@ def pane_history(page, base, suite) -> int:
                                    "the left pane has nowhere to go back to")
 
 
+# The Sign off button: the drop-down lists the map's handles, a name added there can be
+# removed, pressing stamps the node for the names ticked, which are ticked again on the next
+# node, and an approval diff has no button.
+def signoff_button(page, base, suite) -> int:
+    page.goto(SIGNING + suite.node_path("map.md", "Unstamped"))
+    mark_page(page)
+    box = page.locator("main .signoff")
+    box.locator("summary").click()
+    failures = suite.expect("names", names_listed(box) == ["alice", "bob", "carol: qa"], f"the map's handles, saw {names_listed(box)}")
+    failures += suite.expect("names", box.locator("button.sign").is_disabled(), "Sign off disabled with none ticked")
+    box.locator(".new-name").fill("dave")
+    box.locator("button.add-name").click()
+    failures += suite.expect("add", names_listed(box)[-1] == "dave" and box.locator("li", has_text="dave").locator(".remove").count() == 1,
+                             "an added name listed, removable")
+    failures += suite.expect("add", box.locator("li", has_text="bob").locator(".remove").count() == 0, "a map handle not removable")
+    box.locator("li", has_text="dave").locator(".remove").click()
+    failures += suite.expect("remove", "dave" not in names_listed(box), "a removed name gone")
+    box.locator("li", has_text="alice").locator("input").check()
+    box.locator("li", has_text="bob").locator("input").check()
+    box.locator("button.sign").click()
+    page.wait_for_selector("main .meta td:text-is('alice')")
+    failures += suite.expect("sign off", page.locator("main .meta .ok").count() == 2, "both stamps shown current")
+    failures += suite.expect("sign off", same_page(page), "the node redrawn in place, no page load")
+    tree_link(page, "Mixed").click()
+    wait_for_title(page, "Mixed")
+    box = page.locator("main .signoff")
+    ticked = box.locator("ul input:checked").evaluate_all("ts => ts.map(t => t.value)")
+    failures += suite.expect("ticked again", ticked == ["alice", "bob"], f"the last names ticked, saw {ticked}")
+    page.locator("main .stale-row a").first.click()
+    page.wait_for_selector("main .diff-head")
+    return failures + suite.expect("approval diff", page.locator("main .signoff").count() == 0, "no button on an approval diff")
+
+
+# The red light shows, with its tooltip, while the repository has uncommitted changes, and is
+# gone once they are committed.
+def uncommitted_light(page, base, suite) -> int:
+    page.goto(SIGNING + suite.node_path("map.md", "Demo"))
+    light = page.locator("#uncommitted")
+    failures = suite.expect("light", light.is_visible() and "uncommitted" in light.get_attribute("title"),
+                            "shown with its tooltip while there are uncommitted changes")
+    subprocess.run("git add -A && git -c user.name=demo -c user.email=demo@example.com commit -qm signed",
+                   shell=True, cwd=COPY, check=True)
+    page.reload()
+    return failures + suite.expect("light", page.locator("#uncommitted").count() == 0, "gone once committed")
+
+
 # --- Helpers ---
+
+def names_listed(box) -> list[str]:
+    return box.locator("ul input").evaluate_all("ts => ts.map(t => t.value)")
+
 
 def mark_page(page) -> None:
     page.evaluate("window.loadedOnce = true")

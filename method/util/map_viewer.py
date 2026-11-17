@@ -4,10 +4,11 @@
 # ///
 
 # Map viewer, a proof of concept, self-contained: serves a map in the browser so it can be read
-# node by node, with who has approved each node and, for a stale approval, what has changed since
-# it. It only reads: approvals and edits are made through the agent in the same ssh
-# session. Listens on 127.0.0.1 only, since there is no login; reach it from elsewhere
-# by port forwarding (e.g. ssh -L 8080:127.0.0.1:8080 host).
+# node by node, with who has signed off each node and, for a stale sign-off, what has changed
+# since it. It also records sign-offs, writing nothing but the signer's stamp line; edits go
+# through the agent, and committing is left to the user. Listens on 127.0.0.1 only, since there
+# is no login; reach it from elsewhere by port forwarding (e.g. ssh -L 8080:127.0.0.1:8080 host),
+# as 127.0.0.1 or localhost, since requests naming any other host are refused.
 #
 # Shipped with the method, so in a project NDD is installed in, from the project root:
 #
@@ -22,16 +23,20 @@ import argparse
 import difflib
 import hashlib
 import html
+import json
 import os
 import re
+import secrets
 import shlex
 import subprocess
 import sys
+import threading
+from datetime import date
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, quote, urlparse
 
-VERSION = "0.3.0"
+VERSION = "0.4.0"
 
 GREEN, YELLOW, RED = "32", "33", "31"  # ANSI colour codes
 
@@ -56,19 +61,49 @@ def main():
 ROOT: Path
 ENTRY: str
 
+# A random token per run, carried by the viewer's own pages and required on every sign-off.
+# Other sites can't read those pages, so can't forge a sign-off without it.
+TOKEN = secrets.token_urlsafe(18)
+
+# Sign-offs are written one at a time, so two at once can't interleave in a file.
+WRITE_LOCK = threading.Lock()
+
+
+def local_host(host: str) -> bool:
+    name, _, port = host.rpartition(":") if host.count(":") == 1 else (host, "", "")
+    return name in ("127.0.0.1", "localhost") and (port == "" or port.isdigit())
+
+
+class Refused(Exception):
+    def __init__(self, code: int, reason: str):
+        super().__init__(reason)
+        self.code, self.reason = code, reason
+
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.answer(self.get)
 
-    # A bad request gets an error page rather than a dropped connection.
+    def do_POST(self):
+        self.answer(self.post)
+
+    # A bad request gets an error page rather than a dropped connection. A request naming any
+    # host but 127.0.0.1 or localhost is refused first, so a page whose name was rebound to
+    # 127.0.0.1 can neither read the map nor write to it. Any port is accepted, so a forward
+    # to another local port still works.
     def answer(self, handle) -> None:
+        if not local_host(self.headers.get("Host") or ""):
+            self.send_error(403, "Wrong host")
+            return
         try:
             handle()
+        except Refused as refused:
+            self.send_text(refused.code, refused.reason)
         except PermissionError:
             self.send_error(403, "Outside the map's directory")
         except (KeyError, FileNotFoundError):
             self.send_error(404, "No such map file or node")
+
 
     def get(self):
         url = urlparse(self.path)
@@ -79,8 +114,40 @@ class Handler(BaseHTTPRequestHandler):
             title, body = view(url.path, query)
             side = side_pane(query["side"]) if "side" in query else None
             self.send_page(page(title, body, tree_html((query["file"], query["name"])), side))
+        elif url.path == "/signoff":
+            self.send_error(405, "Sign-offs are sent by POST")
         else:
             self.send_error(404)
+
+    # A sign-off: from this viewer's own page, carrying the run's token and the fingerprint the
+    # page was rendered with.
+    def post(self):
+        if urlparse(self.path).path != "/signoff":
+            raise Refused(404, "No such action")
+        if self.headers.get("Origin") != f"http://{self.headers.get('Host')}":
+            raise Refused(403, "Sign-offs are accepted only from the viewer's own pages")
+        length = int(self.headers.get("Content-Length") or 0)
+        if length > 65536:
+            raise Refused(413, "Request too large")
+        try:
+            request = json.loads(self.rfile.read(length) or b"{}")
+            token, file, name, shown, names = (request[k] for k in ("token", "file", "name", "fingerprint", "names"))
+        except (ValueError, KeyError, TypeError):
+            raise Refused(400, "Malformed sign-off")
+        if not isinstance(token, str) or not secrets.compare_digest(token, TOKEN):
+            raise Refused(403, "Missing or wrong token; reload the page")
+        if not all(isinstance(v, str) for v in (file, name, shown)) or not isinstance(names, list):
+            raise Refused(400, "Malformed sign-off")
+        sign_off(file, name, shown, names)
+        self.send_text(200, "Signed off")
+
+    def send_text(self, code: int, text: str) -> None:
+        data = text.encode("utf-8")
+        self.send_response(code)
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self.send_header("Content-Length", str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
 
     def send_page(self, body: str) -> None:
         data = body.encode("utf-8")
@@ -132,7 +199,23 @@ def node_view(file: str, name: str, lines: list[str]) -> tuple[str, str]:
 <section class="meta">
 <p>Current fingerprint <code>{current}</code></p>
 {approvals_html(file, name, lines, current)}
+{signoff_html(file, name, current)}
 </section>"""
+
+
+# Beside the sign-offs, a Sign off button and a drop-down of names to tick. The page script
+# fills the drop-down from the map's handles and the names added in this browser. An approval
+# diff shows an old version, so it has none; nor does Contents, which is never stamped.
+def signoff_html(file: str, name: str, current: str) -> str:
+    if name == "Contents":
+        return ""
+    attrs = " ".join(f'data-{k}="{html.escape(v)}"' for k, v in
+                     [("file", file), ("name", name), ("fingerprint", current), ("token", TOKEN),
+                      ("handles", json.dumps(map_handles()))])
+    return (f'<div class="signoff" {attrs}><button class="sign" disabled>Sign off</button>'
+            '<details class="names"><summary>Names ▾</summary><ul></ul>'
+            '<input class="new-name" placeholder="Add a name" maxlength="64">'
+            '<button class="add-name">Add</button></details></div>')
 
 
 # Who has approved the node, and whether the text has changed since. Contents is a tree
@@ -230,9 +313,13 @@ def page(title: str, body: str, sidebar: str, side: str | None = None) -> str:
     side_html = (f'<section id="side"><div class="pane-tools">{steps("side")}'
                  '<button class="swap" title="Swap the two panes">⇄ Swap</button>'
                  f'<button class="close" title="Close this pane">× Close</button></div>{side}</section>') if split else ""
+    # A red light at the top right while the repository has uncommitted changes, such as a
+    # sign-off just written; committing is left to the user. Inside <main>, so each move updates it.
+    light = ('<span id="uncommitted" title="The repository has uncommitted changes"></span>'
+             if uncommitted() else "")
     return (f'<!doctype html><html><head><meta charset="utf-8"><title>{html.escape(title)}</title>'
             f'<style>{STYLE}</style></head><body{" class=split" if split else ""}><aside>{sidebar}</aside>'
-            f"<main>{tools}{body}</main>{side_html}<script>{SCRIPT}</script></body></html>")
+            f"<main>{light}{tools}{body}</main>{side_html}<script>{SCRIPT}</script></body></html>")
 
 
 STYLE = r"""
@@ -287,6 +374,20 @@ body.split main .split { display: none; }
 .ok { color: green; }
 .stale { color: #b8860b; }
 .stale-row { background: #fff1e0; }
+
+/* Sign off: the button, and a drop-down of names to tick */
+.signoff { display: flex; gap: .5rem; align-items: flex-start; margin-top: .6rem; }
+.signoff button { font-size: .8rem; padding: .1rem .6rem; border: 1px solid #ccc; background: #fff;
+                  border-radius: 3px; cursor: pointer; }
+.signoff button:disabled { opacity: .45; cursor: default; }
+.signoff .names { border: 1px solid #ccc; border-radius: 3px; padding: .05rem .5rem; background: #fff; }
+.signoff .names summary { cursor: pointer; font-size: .8rem; }
+.signoff .names ul { list-style: none; padding: 0; margin: .3rem 0; }
+.signoff .names li { display: flex; gap: .4rem; align-items: center; }
+.signoff .names .remove { border: none; background: none; color: #b33; padding: 0 .2rem; }
+.signoff .new-name { font-size: .8rem; width: 9rem; margin-bottom: .3rem; }
+#uncommitted { position: fixed; top: .6rem; right: .6rem; width: .8rem; height: .8rem; border-radius: 50%;
+               background: #d22; box-shadow: 0 0 4px #d22; z-index: 10; cursor: help; }
 
 /* Approval diff */
 del { background: #fdd; }
@@ -427,6 +528,7 @@ async function show(url, changed, next, addToHistory = true) {
   }
   if (changed !== "left") showSide(page.querySelector("#side"));
   enableSteps();
+  fillSignoffs();
 }
 
 function enableSteps() {
@@ -474,8 +576,105 @@ function treeShape(aside) {
   }).join("\n");
 }
 
+// Sign off. The drop-down lists the map's handles and the names added in this browser, kept
+// there until removed; only added names can be removed. The names ticked last are ticked again.
+const ADDED = "signoff-added", TICKED = "signoff-ticked";
+function stored(key) {
+  try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; }
+}
+function store(key, names) { localStorage.setItem(key, JSON.stringify(names)); }
+
+function fillSignoffs() {
+  document.querySelectorAll(".signoff").forEach(fillSignoff);
+}
+function fillSignoff(box) {
+  const handles = JSON.parse(box.dataset.handles), added = stored(ADDED).filter(n => !handles.includes(n));
+  const ticked = new Set(stored(TICKED));
+  const list = box.querySelector("ul");
+  list.replaceChildren(...[...handles, ...added].map(name => {
+    const li = document.createElement("li"), label = document.createElement("label"), tick = document.createElement("input");
+    tick.type = "checkbox";
+    tick.value = name;
+    tick.checked = ticked.has(name);
+    label.append(tick, " " + name);
+    li.append(label);
+    if (added.includes(name)) {
+      const remove = document.createElement("button");
+      remove.className = "remove";
+      remove.title = "Remove this name";
+      remove.textContent = "×";
+      li.append(remove);
+    }
+    return li;
+  }));
+  enableSign(box);
+}
+function tickedIn(box) {
+  return [...box.querySelectorAll("ul input:checked")].map(tick => tick.value);
+}
+function enableSign(box) {
+  box.querySelector("button.sign").disabled = tickedIn(box).length === 0;
+}
+
+document.addEventListener("change", event => {
+  const box = event.target.closest(".signoff");
+  if (box) enableSign(box);
+});
+document.addEventListener("keydown", event => {
+  if (event.key === "Enter" && event.target.matches(".signoff .new-name")) {
+    event.preventDefault();
+    addName(event.target.closest(".signoff"));
+  }
+});
+document.addEventListener("click", event => {
+  const box = event.target.closest(".signoff");
+  const button = event.target.closest("button");
+  if (!box || !button) return;
+  event.preventDefault();
+  if (button.matches(".add-name")) addName(box);
+  else if (button.matches(".remove")) {
+    const name = button.closest("li").querySelector("input").value;
+    store(ADDED, stored(ADDED).filter(n => n !== name));
+    store(TICKED, stored(TICKED).filter(n => n !== name));
+    fillSignoffs();
+  } else if (button.matches(".sign")) signOff(box, button);
+});
+
+function addName(box) {
+  const input = box.querySelector(".new-name"), name = input.value.trim();
+  if (!name) return;
+  if (!stored(ADDED).includes(name) && !JSON.parse(box.dataset.handles).includes(name))
+    store(ADDED, [...stored(ADDED), name]);
+  const ticks = new Set(tickedIn(box));
+  ticks.add(name);
+  input.value = "";
+  fillSignoff(box);
+  box.querySelectorAll("ul input").forEach(tick => tick.checked = ticks.has(tick.value));
+  enableSign(box);
+}
+
+async function signOff(box, button) {
+  const names = tickedIn(box);
+  if (!names.length) return;
+  button.disabled = true;
+  const response = await fetch("/signoff", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({token: box.dataset.token, file: box.dataset.file, name: box.dataset.name,
+                          fingerprint: box.dataset.fingerprint, names}),
+  });
+  if (!response.ok) {
+    alert("Not signed off: " + await response.text());
+    enableSign(box);
+    return;
+  }
+  store(TICKED, names);
+  show(urlFor(state), "both", state, false);
+}
+
 bindTree();
 enableSteps();
+fillSignoffs();
 document.querySelector("aside a.here")?.scrollIntoView({block: "center"});
 """
 
@@ -546,6 +745,85 @@ def stamp_details(node: list[str]) -> dict[str, tuple[str, str]]:
             at = re.search(r"\bat:\s*([0-9-]+)", line)
             found[m.group(1) or m.group(2) or m.group(3)] = (at.group(1) if at else "", m.group(4))
     return found
+
+
+# --- Sign-offs ---
+
+# Writes each name's stamp under the node's approvals: key, adding the key if absent and
+# replacing that name's earlier stamp, and nothing else. Refused if the node's fingerprint
+# on disk is not the one its page was rendered with, so no one signs off text they weren't shown.
+def sign_off(file: str, name: str, shown: str, names: list) -> None:
+    handles = [checked_handle(n) for n in names]
+    if not handles:
+        raise Refused(400, "No names ticked")
+    if name == "Contents":
+        raise Refused(400, "Contents is never signed off")
+    with WRITE_LOCK:
+        path = map_path(file)
+        lines = path.read_text(encoding="utf-8").splitlines(keepends=True)
+        start, end = index_of(lines)[name]
+        node = lines[start:end]
+        current = fingerprint(node)
+        if current != shown:
+            raise Refused(409, "The node has changed since this page was shown; reload it and read it again")
+        body_start = start + 1
+        block = scaffolding_block(node[1:])
+        if not block:
+            raise Refused(400, "The node has no scaffolding block to hold a sign-off")
+        first = body_start + skip_nav(node[1:])
+        stamped = with_stamps(block, handles, f"{{at: {date.today().isoformat()}, hash: {current}}}")
+        lines[first:first + len(block)] = stamped
+        temporary = path.with_name(path.name + ".signing")
+        temporary.write_text("".join(lines), encoding="utf-8")
+        os.replace(temporary, path)
+
+
+# A name as a stamp key: one line, no quotes or braces, quoted if it holds a colon or opens
+# with punctuation, as the STAMP pattern reads it.
+def checked_handle(name) -> str:
+    if not isinstance(name, str) or not (name := name.strip()) or len(name) > 64 \
+            or any(c in name for c in '"\'{}\n\r#'):
+        raise Refused(400, f"Not a name a stamp can hold: {name!r}")
+    return f'"{name}"' if ":" in name or not (name[0].isalnum() or name[0] == "_") else name
+
+
+# The scaffolding block with a stamp line per handle: an earlier stamp by the same handle is
+# replaced in place, a new one goes at the end of the approvals mapping, which is added before
+# the closing fence if absent.
+def with_stamps(block: list[str], handles: list[str], value: str) -> list[str]:
+    block = list(block)
+    for handle in handles:
+        line = f"  {handle}: {value}\n"
+        key = handle.strip('"')
+        found = [i for i, l in enumerate(block) if (m := STAMP.match(l)) and (m.group(1) or m.group(2) or m.group(3)) == key]
+        if found:
+            block[found[0]] = line
+            continue
+        top = [i for i, l in enumerate(block) if re.match(r"^approvals:\s*$", l)]
+        if not top:
+            block[-1:-1] = ["approvals:\n"]
+            top = [len(block) - 2]
+        at = top[0] + 1
+        while at < len(block) - 1 and block[at].startswith((" ", "\t")):
+            at += 1
+        block[at:at] = [line]
+    return block
+
+
+# Every handle stamped anywhere in the map, for the sign-off drop-down.
+def map_handles() -> list[str]:
+    seen: set = set()
+    tree_item(ENTRY, root_node(read_map(ENTRY)), ("", ""), seen)
+    files = list(dict.fromkeys(f for f, _ in seen)) + maps_linked_beyond(seen)
+    handles = {who for file in files for name in nodes_of(read_map(file))
+               for who in stamp_details(node_lines(read_map(file), name))}
+    return sorted(handles, key=str.lower)
+
+
+# Whether the map's git repository has anything uncommitted; False outside a repository.
+def uncommitted() -> bool:
+    status = subprocess.run("git status --porcelain", shell=True, cwd=ROOT, capture_output=True, text=True)
+    return status.returncode == 0 and bool(status.stdout.strip())
 
 
 # --- Fingerprints, as method/util/fingerprint.py computes them ---
@@ -923,7 +1201,7 @@ def find_map(path: Path) -> Path:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Serve a map, read-only, for reading and reviewing changes and approvals.")
+    parser = argparse.ArgumentParser(description="Serve a map for reading and review, recording sign-offs.")
     parser.add_argument("map", nargs="?", default=".", help="a map file, or a directory holding map.md (default: here)")
     parser.add_argument("--port", type=int, default=8080, help="port to listen on, on 127.0.0.1 (default: 8080)")
     parser.add_argument("--version", action="version", version=f"%(prog)s {VERSION}")

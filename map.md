@@ -43,6 +43,8 @@ id: ct6
       - [Rule Testing](#rule-testing)
   - [Testing](testing.map.md#testing)
   - [Map Viewer](#map-viewer)
+    - [Map Viewer Sign-off](#map-viewer-sign-off)
+    - [Map Viewer Security](#map-viewer-security)
   - [Method Map Form](#method-map-form)
 
 
@@ -228,15 +230,17 @@ The task tempts the failures the rule targets and probes where it might overreac
 
 # Map Viewer
 
-[↑ NDD Project](#ndd-project)
+[↑ NDD Project](#ndd-project) \
+[Map Viewer Sign-off](#map-viewer-sign-off) \
+[Map Viewer Security](#map-viewer-security)
 
 ```yaml
 id: mv4
 approvals:
-  tearne: {at: 2026-11-16, hash: c72b6a08}
+  tearne: {at: 2026-11-17, hash: 47a8585f}
 ```
 
-A prototype: `method/util/map_viewer.py`, a single-file POS script serving a map read-only in the browser for review. It ships with the method, so a project runs it from its root as `ndd/method/util/map_viewer.py`. With no login it listens on 127.0.0.1 only, reached by ssh port forwarding; approvals and edits go through the agent in that session.
+A prototype: `method/util/map_viewer.py`, a [POS](method/standards/POS.md) script serving a map in the browser for review. It ships with the method as `ndd/method/util/map_viewer.py`. With no login it listens on 127.0.0.1 only, and it writes nothing but sign-offs.
 
 - **Tree** — the contents, followed through child links, each file's part shaded.
 
@@ -244,8 +248,43 @@ A prototype: `method/util/map_viewer.py`, a single-file POS script serving a map
 
 - **Approval diff** — for a stale stamp, the approved text found in git by its fingerprint, and what changed since.
 
-It renders markdown itself, so it runs without internet access, and carries its own copy of the [Fingerprint](method/ndd.map.md#fingerprint) rule, kept in step by [Fingerprint Check](testing.map.md#fingerprint-check).
+- **[Sign off](#map-viewer-sign-off)** — on a node, a button stamping it for the names ticked.
 
+It carries its own copy of the [Fingerprint](method/ndd.map.md#fingerprint) rule, kept in step by [Fingerprint Check](testing.map.md#fingerprint-check).
+
+
+# Map Viewer Sign-off
+
+[↑ Map Viewer](#map-viewer)
+
+```yaml
+id: vs1
+approvals:
+  tearne: {at: 2026-11-17, hash: 5db241d8}
+```
+
+On a node's page, beside its sign-offs, a *Sign off* button records a sign-off for each name ticked in its drop-down, so whoever is at the screen can record stakeholders' sign-offs in front of them. An approval diff, showing an old version, has no button.
+
+The drop-down lists every handle in the map's stamps and any name added in that browser, kept there until removed; only added names are removable. The last names ticked are ticked again.
+
+Each name gets its line under the node's `approvals:` key, with today's date and the fingerprint of the text shown; nothing else is written, and writes are guarded as [Map Viewer Security](#map-viewer-security) describes. Committing is left to the user, prompted by a red light at the page's top right whose tooltip says the repository has uncommitted changes.
+
+
+# Map Viewer Security
+
+[↑ Map Viewer](#map-viewer)
+
+```yaml
+id: vs2
+approvals:
+  tearne: {at: 2026-11-17, hash: 7268bf69}
+```
+
+- **Forged form** — another site could post a sign-off to the viewer blind. Each run picks a random token, carried in the viewer's own pages, which other sites cannot read, and required on every sign-off, sent by POST only.
+
+- **DNS rebinding** — a site could point its own name at 127.0.0.1, then read and write the map as if it were the viewer. Every request is refused unless its Host is 127.0.0.1 or localhost, and every write unless its Origin is too.
+
+- **Stale page** — a page carries the node's fingerprint as rendered, returned with a sign-off as a receipt. The server recomputes it from disk and refuses if they differ, so no one signs off text they were not shown.
 
 
 # Method Map Form
