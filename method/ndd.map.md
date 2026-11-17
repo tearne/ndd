@@ -71,6 +71,7 @@ id: ct5
       - [Lifecycle Flow Reads](#lifecycle-flow-reads)
       - [Plan](#plan)
         - [Intent](#intent)
+        - [Requirement Voice](#requirement-voice)
         - [Context](#context)
         - [Unresolved](#unresolved)
       - [Build](#build)
@@ -779,6 +780,7 @@ At each move between lifecycle stages the agent first reads the governing map no
 
 [↑ Change Lifecycle](#change-lifecycle) \
 [Intent](#intent) \
+[Requirement Voice](#requirement-voice) \
 [Context](#context) \
 [Unresolved](#unresolved)
 
@@ -795,6 +797,21 @@ What may be written meanwhile is set by [Gates and Permissions](#gates-and-permi
 A plan need not be fully formed to exist. A change that is not building is **parked** in `changes/open/`, at any degree of formation: from an [Intent](#intent)-only draft just set down via [aside](#aside-keyword), up to a completed preparation section awaiting approval.
 
 
+# Requirement Voice
+
+[↑ Plan](#plan)
+
+```yaml
+id: rv2
+approvals:
+  tearne: {at: 2026-11-17, hash: b5a28082}
+```
+
+A plan part stating what the change must do or hold, such as the [Intent](#intent), [Bounds](#bounds) or [Focus](#focus), is written in the voice of a requirement, such as "the application should…" or "update the…". In the present tense it would describe what is to be as though it already were.
+
+A [Change Specification](#change-specification) is the exception: its nodes become the map, so they describe the system as built.
+
+
 # Intent
 
 [↑ Plan](#plan)
@@ -802,10 +819,10 @@ A plan need not be fully formed to exist. A change that is not building is **par
 ```yaml
 id: i8b
 approvals:
-  tearne: {at: 2026-11-10, hash: 2df60ca2}
+  tearne: {at: 2026-11-17, hash: a7cdd95e}
 ```
 
-The opening part: what the change should achieve, in domain language and the voice of a requirement, such as "the application should…" or "update the…", so it never reads as a description of what exists, and the user can approve it. Not how it will be delivered unless relevant to the requirement, and not why it is needed: every *why* — history, provenance, the reasoning that led here — belongs in [Context](#context). It requires user approval before anything else proceeds.
+The opening part: what the change should achieve, in domain language and the [voice of a requirement](#requirement-voice), so the user can approve it. Not how it will be delivered unless relevant to the requirement, and not why it is needed: every *why* — history, provenance, the reasoning that led here — belongs in [Context](#context). It requires user approval before anything else proceeds.
 
 Its prose has a [cap](#caps), so the opening scans in seconds. Once the change's preparation section — [Bounds](#bounds), [Focus](#focus), or [Change Specification](#change-specification) — is approved, the agent re-reads the Intent and cuts whatever it now carries, surfacing the trimmed Intent with its count. Trivial changes have no preparation section and no trim step.
 
@@ -1088,10 +1105,10 @@ Uses [Intent](#intent) and a light [Bounds](#bounds) section. Chosen when the us
 ```yaml
 id: b3n
 approvals:
-  tearne: {at: 2026-11-03, hash: f7ffb588}
+  tearne: {at: 2026-11-17, hash: 512e16b8}
 ```
 
-The preparation section for a [Vibe](#vibe) change: a brief shared understanding, agreed after [Intent](#intent), of anything context-specific worth naming before [Build](#build) begins. The agent proposes Bounds. It is kept brief on purpose, since wordy Bounds would drain the very attention Vibe was chosen to save, and it need not enumerate every case.
+The preparation section for a [Vibe](#vibe) change: a brief shared understanding, agreed after [Intent](#intent), of anything context-specific worth naming before [Build](#build) begins. The agent proposes Bounds, written as a [requirement](#requirement-voice). It is kept brief on purpose, since wordy Bounds would drain the very attention Vibe was chosen to save, and it need not enumerate every case.
 
 Bounds are context-dependent — a hard constraint, a performance-sensitive piece of adjacent code, a checkpoint the user wants surfaced, or a specific decision to reserve.
 
@@ -1121,10 +1138,10 @@ Emergent is real-time collaboration on a moving target: user and agent shape the
 ```yaml
 id: f2q
 approvals:
-  tearne: {at: 2026-10-22, hash: ea35d754}
+  tearne: {at: 2026-11-17, hash: e3066e9a}
 ```
 
-The preparation section for an [Emergent](#emergent) change: the work being pursued. The agent proposes it; the user amends and confirms.
+The preparation section for an [Emergent](#emergent) change: the work being pursued, written as a [requirement](#requirement-voice). The agent proposes it; the user amends and confirms.
 
 Focus is a lightweight artefact — a sentence or two, not a plan. The work may be something to build or a question the pair is trying to understand. Judging whether it is done is part of the work, made as it goes rather than at a set point; Focus names a checkpoint only when one is genuinely useful, such as a milestone or a time limit.
 

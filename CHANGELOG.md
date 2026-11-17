@@ -2,6 +2,10 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 3.7.2-dev
+
+- Bounds and Focus, like the Intent, are written as requirements (method map: *Requirement Voice*).
+
 ## 3.7.1-dev.1
 
 - `ndd/README.md` introduces working with NDD (method map: *Installation*).
