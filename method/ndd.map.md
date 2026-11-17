@@ -478,10 +478,10 @@ A [POS-style](standards/POS.md) script run with `uv`, one map file at a time, so
 ```yaml
 id: m6x
 approvals:
-  tearne: {at: 2026-10-26, hash: f98b856b}
+  tearne: {at: 2026-11-17, hash: 4e08bb9f}
 ```
 
-The map's shape is shown at a glance by a **tree overview**: a nested list of links, one per node, in a *Contents* node that is the first child of each [map file](#map-files)'s top node. Nodes not yet written are marked `(TODO)`, so the intended shape shows before the content does. The overview is only a convenience: the real tree is the navigation links, and [Tidy](#tidy) keeps the two in step.
+The map's shape is shown at a glance by a **tree overview**: a nested list of links, one per node, in a *Contents* node that is the first child of each [map file](#map-files)'s top node. Nodes not yet written are marked `(TODO)`, so the intended shape shows before the content does. The overview is only a convenience: the real tree is the navigation links, and [Tidy](#tidy) keeps the two in step. Each file holds its nodes in the overview's order.
 
 **Detail**
 
@@ -1527,12 +1527,12 @@ With many findings, the agent recommends a [change](#change-lifecycle) to hold a
 ```yaml
 id: u8k
 approvals:
-  tearne: {at: 2026-11-04, hash: 9ce9ef04}
+  tearne: {at: 2026-11-17, hash: 19fe3790}
 ```
 
 Agent-run housekeeping, run on the nodes the user has edited as soon as the agent is told or notices, before it asks anything else, and across the whole map before an [archive](#archiving). The agent needs no prompting and reports briefly every fix made and every count it took. It is restricted to [corrections](#engagement-rule), never changes of meaning; anything needing judgement is either left for a subsequent [Map Review](#map-review) or discussed immediately.
 
-It fixes and reports a [tree overview](#map-structure) out of step with the navigation links, a missing scaffolding [id](#node-identity) or [navigation link](#navigation-links), a link left behind by a rename, and unambiguous grammatical slips. It reports nodes over the [size bound](#node-sizing) and any [draft markers](#drafts) other than those around a draft awaiting the user; a marker quoted in code is only a mention.
+It fixes and reports a [tree overview](#map-structure) out of step with the navigation links or a file's nodes out of its order, a missing scaffolding [id](#node-identity) or [navigation link](#navigation-links), a link left behind by a rename, and unambiguous grammatical slips. It reports nodes over the [size bound](#node-sizing) and any [draft markers](#drafts) other than those around a draft awaiting the user; a marker quoted in code is only a mention.
 
 
 # Shape
