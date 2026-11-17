@@ -256,7 +256,7 @@ def foreign_host_refused(base: str) -> int:
 
 # The sign-off box's data: the file, node, rendered fingerprint, the run's token and handles.
 def signoff_data(html_page: str) -> dict:
-    box = re.search(r'<div class="signoff" ([^>]*)>', html_page).group(1)
+    box = re.search(r'<details class="signoff" ([^>]*)>', html_page).group(1)
     return {k: html.unescape(v) for k, v in re.findall(r'data-(\w+)="([^"]*)"', box)}
 
 

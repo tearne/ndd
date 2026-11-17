@@ -198,12 +198,12 @@ def node_view(file: str, name: str, lines: list[str]) -> tuple[str, str]:
 {body}
 <section class="meta">
 <p>Current fingerprint <code>{current}</code></p>
-{approvals_html(file, name, lines, current)}
-{signoff_html(file, name, current)}
+{approvals_html(file, name, lines, current, signoff_html(file, name, current))}
 </section>"""
 
 
-# Beside the sign-offs, a Sign off button and a drop-down of names to tick. The page script
+# In the sign-offs table's Status heading, a Sign off button opening a drop-down of names to
+# tick, with the button that records them at its head; its … says pressing it only opens. The page script
 # fills the drop-down from the map's handles and the names added in this browser. An approval
 # diff shows an old version, so it has none; nor does Contents, which is never stamped.
 def signoff_html(file: str, name: str, current: str) -> str:
@@ -212,20 +212,20 @@ def signoff_html(file: str, name: str, current: str) -> str:
     attrs = " ".join(f'data-{k}="{html.escape(v)}"' for k, v in
                      [("file", file), ("name", name), ("fingerprint", current), ("token", TOKEN),
                       ("handles", json.dumps(map_handles()))])
-    return (f'<div class="signoff" {attrs}><button class="sign" disabled>Sign off</button>'
-            '<details class="names"><summary>Names ▾</summary><ul></ul>'
-            '<input class="new-name" placeholder="Add a name" maxlength="64">'
-            '<button class="add-name">Add</button></details></div>')
+    return (f'<details class="signoff" {attrs}><summary>Sign off …</summary><div class="names">'
+            '<button class="sign" disabled>Sign off ticked names</button><ul></ul>'
+            '<div class="add"><input class="new-name" placeholder="Add a name" maxlength="64">'
+            '<button class="add-name">Add</button></div></div></details>')
 
 
 # Who has approved the node, and whether the text has changed since. Contents is a tree
 # overview kept in step with the navigation links, so it is never stamped or due.
-def approvals_html(file: str, name: str, lines: list[str], current: str) -> str:
+def approvals_html(file: str, name: str, lines: list[str], current: str, signoff: str = "") -> str:
     if name == "Contents":
         return "<p>Contents is a tree overview of the navigation links, so it is never stamped and never due.</p>"
     rows = "".join(approval_row(file, name, who, at, hash_, current)
                    for who, (at, hash_) in stamp_details(node_lines(lines, name)).items())
-    return f"""<table><tr><th>Approver</th><th>At</th><th>Approved fingerprint</th><th>Status</th></tr>{rows or '<tr><td colspan=4>No stamps</td></tr>'}</table>"""
+    return f"""<table class=signoffs><tr><th>Approver</th><th>At</th><th>Approved fingerprint</th><th class=status>Status{signoff}</th></tr>{rows or '<tr><td colspan=4>No stamps</td></tr>'}</table>"""
 
 
 # A stale approval's row is tinted, and its fingerprint links to what changed since.
@@ -374,18 +374,33 @@ body.split main .split { display: none; }
 .ok { color: green; }
 .stale { color: #b8860b; }
 .stale-row { background: #fff1e0; }
+.signoffs th { background: #eee; color: #555; font-weight: normal; }
+.signoffs td { color: #111; }
+.signoffs td a { color: #2f4f9f; }
+.signoffs td.ok { color: green; }
+.signoffs td.stale { color: #b8860b; }
 
-/* Sign off: the button, and a drop-down of names to tick */
-.signoff { display: flex; gap: .5rem; align-items: flex-start; margin-top: .6rem; }
+/* Sign off: a button opening a drop-down of names to tick */
+.signoff { position: relative; display: inline-block; margin-left: .6rem; font-weight: normal; }
+.signoff summary { list-style: none; cursor: pointer; font-size: .8rem; padding: .1rem .6rem; border: 1px solid #ccc;
+                   background: #fff; border-radius: 3px; color: #333; white-space: nowrap; }
+.signoff summary::-webkit-details-marker { display: none; }
+.signoff[open] summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.signoff .names { position: absolute; right: 0; top: 100%; z-index: 5; min-width: 14rem; background: #fff;
+                  border: 1px solid #ccc; border-radius: 3px; padding: .4rem .6rem; box-shadow: 0 2px 6px rgba(0,0,0,.12); color: #333; }
 .signoff button { font-size: .8rem; padding: .1rem .6rem; border: 1px solid #ccc; background: #fff;
                   border-radius: 3px; cursor: pointer; }
 .signoff button:disabled { opacity: .45; cursor: default; }
-.signoff .names { border: 1px solid #ccc; border-radius: 3px; padding: .05rem .5rem; background: #fff; }
-.signoff .names summary { cursor: pointer; font-size: .8rem; }
-.signoff .names ul { list-style: none; padding: 0; margin: .3rem 0; }
-.signoff .names li { display: flex; gap: .4rem; align-items: center; }
-.signoff .names .remove { border: none; background: none; color: #b33; padding: 0 .2rem; }
-.signoff .new-name { font-size: .8rem; width: 9rem; margin-bottom: .3rem; }
+.signoff ul { list-style: none; padding: 0; margin: .4rem 0; }
+.signoff li { display: flex; gap: .4rem; align-items: center; justify-content: space-between; }
+.signoff .remove { border: none; background: none; color: #b33; padding: 0 .2rem; }
+.signoff .add { display: flex; gap: .3rem; }
+.signoff .new-name { font-size: .8rem; flex: 1; min-width: 0; }
+.signoff .sign { width: 100%; }
+/* Dimmed with nobody ticked; filled once there are names to stamp */
+.signoff .sign:disabled { opacity: .4; }
+.signoff .sign:not(:disabled) { background: #2f6fd6; border-color: #2f6fd6; color: #fff; font-weight: 600; }
+.signoff .sign:not(:disabled):hover { background: #2559b0; }
 #uncommitted { position: fixed; top: .6rem; right: .6rem; width: .8rem; height: .8rem; border-radius: 50%;
                background: #d22; box-shadow: 0 0 4px #d22; z-index: 10; cursor: help; }
 

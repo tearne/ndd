@@ -28,6 +28,10 @@ The rename is a `git mv` of `tests/map_viewer/viewer_demo.py`, updating its usag
 
 The demo map's *Linked Map* gains children, *Linked Branch* with *Linked Leaf* beneath it and *Second Child*, so its tree looks like a map; folded in at the user's request, outside the Intent.
 
+## Conclude
+
+Host check relaxed in Build to 127.0.0.1 or localhost at any port, as the strict form refused `localhost` and forwards to another port; *Map Viewer Security* re-agreed. Method map *Map Viewer* trimmed to 774 characters, and the user's edit to the project map's *Map Viewer* re-stamped. In testing, *Sign off …* moved into the sign-offs table's *Status* heading, its confirm button atop the drop-down and dimmed until a name is ticked; the table restyled. Viewer now 0.4.0.
+
 ## Log
 
 - 2026-11-17: Build Lock taken.
@@ -41,3 +45,9 @@ The demo map's *Linked Map* gains children, *Linked Branch* with *Linked Leaf* b
 - 2026-11-17: surprise: the Host check as specified refuses `localhost:8080`, and a forward to a different local port (`ssh -L 9000:127.0.0.1:8080`), since the Host must be 127.0.0.1 at the viewer's own port. Raised with the user. Resolved: *Map Viewer Security* re-agreed with the lock kept, Host 127.0.0.1 or localhost at any port, Origin matching the Host; 671 characters, stamped 7268bf69. Viewer and tests updated; all four test scripts pass.
 - 2026-11-17: promoted into the live map, whole files as the live maps had not drifted from the copies' baseline: `map.md` (*Map Viewer*, *Map Viewer Sign-off*, *Map Viewer Security*, *Contents*), `testing.map.md` (*Map Viewer Check*, *Map Viewer Browser Check*), `method/ndd.map.md` (*Sign-off*, *Map Viewer*). Each live fingerprint matches its stamp.
 - 2026-11-17: handed back for testing as 3.7.0-dev.1.
+- 2026-11-17: at the user's request in testing, the names drop-down moved onto the *Sign off* button: it opens the list, the add field and a *Sign off ticked names* button at its foot. Within the specified nodes, so no map edit. Tests updated and passing; handed back as 3.7.0-dev.2.
+- 2026-11-17: at the user's request, *Sign off ticked names* dimmed with nobody ticked and filled blue once names are ticked. Tests pass; handed back as 3.7.0-dev.3.
+- 2026-11-17: at the user's request, the *Sign off* button moved into the sign-offs table's *Status* heading, its ▾ now …, as pressing it only opens the drop-down, which now opens aligned right. Still "beside its sign-offs", so no map edit. Tests pass; handed back as 3.7.0-dev.4.
+- 2026-11-17: at the user's request, *Sign off ticked names* moved to the top of the drop-down. Tests pass; handed back as 3.7.0-dev.5.
+- 2026-11-17: at the user's request, the sign-offs table given a grey header row and black body text, the status colours kept. Tests pass; handed back as 3.7.0-dev.6.
+- 2026-11-17: at the user's request, the sign-offs table's header no longer bold. Tests pass; handed back as 3.7.0-dev.7.
