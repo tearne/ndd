@@ -13,7 +13,7 @@ Raised as item 7 of 002 Map viewer iteration on 2026-11-16 and spun out at the u
 
 ## Change Specification
 
-The agreed nodes are in copies of the live maps in [140-web-ui-approvals/](140-web-ui-approvals/): `map.md`, `testing.map.md` and `method/ndd.map.md`, taken 2026-11-16 before any edit. Each node edit was approved and stamped in the copies:
+The agreed nodes were drafted in copies of the live maps in a companion folder: `map.md`, `testing.map.md` and `method/ndd.map.md`, taken 2026-11-16 before any edit. Promoted into the live maps in Build; the folder was dropped at Archiving. Each node edit was approved and stamped in the copies:
 
 1. *Sign-off* (method map): signs off, written by the agent or in the map viewer. Stamped 983960ae.
 2. *Map Viewer* (method map): records sign-offs, refuses writes from other web pages. 774 characters, stamped 3e7b921e.

@@ -2,26 +2,30 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 3.7.0-dev.7
+
+- Map viewer records sign-offs: a *Sign off* button on each node stamps it for the names ticked (method map: *Map Viewer*, *Sign-off*).
+
 ## 3.6.0-dev
 
-- Map viewer shipped: run `ndd/method/util/map_viewer.py` from a project root to review its map in the browser (*Map Viewer*).
-- Installer no longer ships Python bytecode caches (*Shipped Assets*).
+- Map viewer shipped: run `ndd/method/util/map_viewer.py` from a project root to review its map in the browser (method map: *Map Viewer*).
+- Installer no longer ships Python bytecode caches (project map: *Shipped Assets*).
 
 ## 3.5.2-dev
 
-- Map viewer improved: fuller markdown rendering, faster approval diffs, and page tests (*Map Viewer*, *Map Viewer Check*).
+- Map viewer improved: fuller markdown rendering, faster approval diffs, and page tests (project map: *Map Viewer*; testing map: *Map Viewer Check*).
 
 ## 3.5.1-dev.34
 
-- A prototype map viewer in `tools/`, not shipped: serves a map read-only for review, including what changed since each approval (*Map Viewer*).
+- A prototype map viewer in `tools/`, not shipped: serves a map read-only for review, including what changed since each approval (project map: *Map Viewer*).
 
 ## 3.5.0 — 2026-11-10
 
-- A release step may write the files its draft shows, such as the changelog fold, once the user approves that draft, with no change in Build (*Gates and Permissions*).
-- Every git write except `git mv` and `git rm` is left to the user. The agent asks only when the task itself needs one, and otherwise at most names it in passing (*Gates and Permissions*).
+- A release step may write the files its draft shows, such as the changelog fold, once the user approves that draft, with no change in Build (method map: *Gates and Permissions*).
+- Every git write except `git mv` and `git rm` is left to the user. The agent asks only when the task itself needs one, and otherwise at most names it in passing (method map: *Gates and Permissions*).
 - A change keeps on disk all it needs to resume: worklists such as review findings go in before work starts, and a pause writes down what's left (new rule *Change Lifecycle: State on Disk*).
-- An Intent is written as a requirement, such as "the application should…" or "update the…" (*Intent*).
-- Every cap is a ceiling, not a target: if a part can be said in half the space, it should be (*Caps*).
+- An Intent is written as a requirement, such as "the application should…" or "update the…" (method map: *Intent*).
+- Every cap is a ceiling, not a target: if a part can be said in half the space, it should be (method map: *Caps*).
 - *POS* gains a short output scheme (colour and glyph by state, off without a terminal or with `NO_COLOR`), an `echo_command()` helper with `#` for root, secrets echoed as named placeholders, `--option=value` for outside values, and a clean exit 130 on Ctrl-C. `sudo()` is simpler and now really uses sudo when it is passwordless. The helpers need only the standard library, and NDD's own scripts drop `rich`.
 
 ## 3.0.0 — 2026-11-04
@@ -43,9 +47,9 @@ Notable changes to NDD, newest first. The current version is the topmost heading
 - New *Versioning* node: a project with a changelog is versioned, in semver. A change claims its version at build start with a `-dev` suffix, numbered `-dev.N` per hand-back; Archiving enters it under its final dev version, and release folds the dev headings into one dated heading. Startup Scan and Archiving report what awaits release (AGENT-RULES rules 1 and 19).
 - `standards/VERSIONING.md` is retired, its content carried by semver and *Versioning*; `standards/CHANGELOG.md` drops the dated format.
 - *Exploratory* is renamed *Emergent* and delivers within the change; answering a question is one kind of such work, and no separate delivery change is required. *Focus* names the work pursued, with a checkpoint only when one is useful. Open change files reading `**Change Style:** Exploratory` need updating.
-- A draft is only the text surfaced; an action named alongside it needs its own draft (*Approval*, AGENT-RULES Orientation).
-- A Formal change's companion folder lives in `changes/open/` beside its change file; a whole-map copy used as the target is noted in one line giving its path (*Change Specification*).
-- Any change's companion folder moves to `changes/archive/` with it, renamed to match, or is removed if nothing is retained (*Archiving*, AGENT-RULES Rule 19).
+- A draft is only the text surfaced; an action named alongside it needs its own draft (method map: *Approval*; AGENT-RULES Orientation).
+- A Formal change's companion folder lives in `changes/open/` beside its change file; a whole-map copy used as the target is noted in one line giving its path (method map: *Change Specification*).
+- Any change's companion folder moves to `changes/archive/` with it, renamed to match, or is removed if nothing is retained (method map: *Archiving*; AGENT-RULES Rule 19).
 
 A project keeping a dated changelog switches to semver headings.
 
@@ -54,9 +58,9 @@ A project keeping a dated changelog switches to semver headings.
 - NDD-level assumption introduced: specifications are expressible as maps. *Change Specification* narrows to map content only; non-map format alternatives dropped.
 - *Formal Build* promotes approved nodes into the live map as its closing act — per-node when the live map has drifted from the baseline, otherwise bulk — so drift surfaces before Conclude.
 - Agent proposes a whole-map copy as the Change Specification target when multiple nodes will be touched, pausing for baseline check-in so edits are visible as editor diffs.
-- Agent reads the governing map node at each lifecycle hinge (*Lifecycle Flow Reads*, AGENT-RULES Rule 2).
-- Agent output names nodes by their heading, not yaml id (*Node Identity*, AGENT-RULES Rule 9).
-- AGENT-RULES is a route into the map rather than a destination; drift noticed outside the current build is corrected on sight (*Agent Rules*, *Rule Form*).
+- Agent reads the governing map node at each lifecycle hinge (method map: *Lifecycle Flow Reads*; AGENT-RULES Rule 2).
+- Agent output names nodes by their heading, not yaml id (method map: *Node Identity*; AGENT-RULES Rule 9).
+- AGENT-RULES is a route into the map rather than a destination; drift noticed outside the current build is corrected on sight (project map: *Agent Rules*, *Rule Form*).
 
 ## 2.2.1 — 2026-10-02
 
