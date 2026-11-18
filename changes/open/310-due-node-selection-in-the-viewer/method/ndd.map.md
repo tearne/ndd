@@ -57,6 +57,7 @@ id: ct5
       - [Sign-off Stamp](#sign-off-stamp)
         - [Fingerprint](#fingerprint)
           - [Fingerprint Helper](#fingerprint-helper)
+        - [Stamp States](#stamp-states)
     - [Map Structure](#map-structure)
       - [Map Files](#map-files)
     - [Node Sizing](#node-sizing)
@@ -393,19 +394,20 @@ Rendered as a `> [!IMPORTANT]` blockquote.
 # Sign-off Stamp
 
 [↑ Node](#node) \
-[Fingerprint](#fingerprint)
+[Fingerprint](#fingerprint) \
+[Stamp States](#stamp-states)
 
 ```yaml
 id: p8m
 approvals:
-  tearne: {at: 2026-11-17, hash: 064255d3}
+  tearne: {at: 2026-11-18, hash: 749361bb}
 ```
 
-A sign-off stamp records that one person signed off one node. Stamps live in the node's scaffolding block under an `approvals:` mapping keyed by each [signer](#signer)'s name or handle, so each person holds exactly one and a new sign-off overwrites it. Because they are in the node rather than a separate ledger, they follow it through renames and moves. A node without the mapping is simply not signed off, and most maps never gain one.
+A sign-off stamp records one person's sign-off of one node, or a request for one. Stamps live in the node's scaffolding block under an `approvals:` mapping keyed by each [signer](#signer)'s name or handle, so each person holds exactly one and a new sign-off overwrites it. Because they are in the node rather than a separate ledger, they follow it through renames and moves. A node without the mapping is simply not signed off, and most maps never gain one.
 
 **Detail**
 
-Each value holds `at`, an ISO 8601 date, and `hash`, the [fingerprint](#fingerprint) of the text signed off. Drift uses only the hash; the date says when, and the hash finds the version a person saw. Quote the key if it contains a colon or starts with punctuation.
+Each value holds `at`, an ISO 8601 date, and `hash`, the [fingerprint](#fingerprint) of the text signed off. A [requested](#stamp-states) stamp has `hash: null`, and `at` is the date of the request. Drift uses only the hash; the date says when, and the hash finds the version a person saw. Quote the key if it contains a colon or starts with punctuation.
 
 ```yaml
 id: w9c
@@ -446,14 +448,14 @@ Take the node from its heading line to the line before the next heading. Drop, w
 ```yaml
 id: u6h
 approvals:
-  tearne: {at: 2026-11-17, hash: a2b17a20}
+  tearne: {at: 2026-11-18, hash: 442e03c4}
 ```
 
 `util/fingerprint.py` is the script an agent runs to compute node fingerprints: to write a [sign-off stamp](#sign-off-stamp), and at [Sign-off](#sign-off) to find what is due.
 
 - Given a map file it prints every node's fingerprint beside its name.
 - Given a node name it prints that one fingerprint alone.
-- With `--due` and a person's name it reads the stamps and prints the nodes due for them, in map order.
+- With `--due` and a person's name it reads the stamps and prints the nodes due for them, those whose stamp is [stale or requested](#stamp-states), in map order.
 
 It reads only; stamps are written by the agent or the [map viewer](#map-viewer).
 
@@ -468,6 +470,19 @@ ndd/method/util/fingerprint.py map.md --due "Alice Smith"
 ```
 
 A [POS-style](standards/POS.md) script run with `uv`, one map file at a time, so a map in several files takes one run per file. A name with spaces is quoted on the command line only.
+
+
+# Stamp States
+
+[↑ Sign-off Stamp](#sign-off-stamp)
+
+```yaml
+id: s3t
+approvals:
+  tearne: {at: 2026-11-18, hash: 803c0718}
+```
+
+A person's stamp on a node is in one of three states, found by comparing it with the node's [fingerprint](#fingerprint). It is *current* while its hash matches, *stale* once it does not, and *requested* while its hash is `null`, which marks a sign-off asked for but not yet given. A node with no stamp for a person is *unsigned* for them.
 
 
 # Map Structure
@@ -522,14 +537,14 @@ A file's *Contents* lists the nodes in that file; a branch that continues in ano
 ```yaml
 id: z9p
 approvals:
-  tearne: {at: 2026-11-17, hash: a17361fe}
+  tearne: {at: 2026-11-18, hash: 86d46184}
 ```
 
 A node's rough upper bound is around 800 characters, but the real test is felt during review.
 
 Each time the agent edits a node it counts and reports its characters, *Detail* included and an inline link taken as its visible text; [navigation links](#navigation-links), *See also*, tables and diagrams are excluded. Over the bound, the agent flags the node, stamped or not, since an edit reopens its length. Rather than trimming silently, it proposes the best fit: tightening the prose, cutting what another node already owns, or splitting a node that carries two concepts.
 
-On a map that carries stamps, a review, unlike an edit, does not flag a node that is not [due](#sign-off) for the session's [signer](#signer): the call was made and signed off. When the signer is not known, every node over the bound is flagged, and the agent says so.
+On a map that carries stamps, a review, unlike an edit, does not flag a node whose stamp for the session's [signer](#signer) is [current](#stamp-states): the call was made and signed off. When the signer is not known, every node over the bound is flagged, and the agent says so.
 
 **See also**
 
@@ -1640,12 +1655,12 @@ It looks for:
 ```yaml
 id: f2s
 approvals:
-  tearne: {at: 2026-11-17, hash: 13a3fa18}
+  tearne: {at: 2026-11-18, hash: 0bc8d4fc}
 ```
 
-A stakeholder signs off the map a few nodes at a time. Each node can carry a [sign-off stamp](#sign-off-stamp) per person, recording when they signed off and a [fingerprint](#fingerprint) of the text they saw. A stamp is scaffolding, written and reported rather than negotiated, by the agent or in the [map viewer](#map-viewer).
+A stakeholder signs off the map a few nodes at a time. Each node can carry a [sign-off stamp](#sign-off-stamp) per person, recording when they signed off and a [fingerprint](#fingerprint) of the text they saw. The agent or the [map viewer](#map-viewer) writes a stamp and reports it; unlike a node edit, it needs no approval.
 
-Nothing is marked when a node changes. Drift is found by comparing: a node is *due* for a person when its fingerprint no longer matches their stamp, or it has none for them. The [tree overview](#map-structure) in *Contents* is never due, since [Tidy](#tidy) keeps it in step rather than anyone signing it off. A map with no stamps shows nothing, and gains its first only when the user asks for one; from then on every approval of a node edit stamps it for the [signer](#signer).
+Nothing is marked when a node changes. Drift is found by comparing a person's stamp with the node's fingerprint, which gives the stamp its [state](#stamp-states). A node is *due* for a person when their stamp is stale or requested, and the [map viewer](#map-viewer) can step them through these. A node with no stamp for them is never due, since it may be deliberately left to others. The [tree overview](#map-structure) in *Contents* is never due, since [Tidy](#tidy) keeps it in step rather than anyone signing it off. A map with no stamps shows nothing, and gains its first only when the user asks for one.
 
 **See also**
 
