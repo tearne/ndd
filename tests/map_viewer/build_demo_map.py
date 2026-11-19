@@ -22,7 +22,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-VERSION = "0.3.0"
+VERSION = "0.4.0"
 
 GREEN, YELLOW, RED, CYAN = "32", "33", "31", "36"  # ANSI colour codes
 
@@ -37,11 +37,11 @@ NODES = [
          committed="A demo map for the viewer. Each child shows one thing: approval states, what changed since an approval, a branch in another file, and rendering. A [further map](linked.map.md#linked-map), linked only here in prose, still has its own tree beneath.",
          now="same", approved={"alice": "now"}),
     dict(file="map.md", name="Contents", nav=["[↑ Demo](#demo)"],
-         committed="- [Demo](#demo)\n  - [Approval States](#approval-states)\n    - [Current](#current)\n    - [Stale](#stale)\n    - [Mixed](#mixed)\n    - [Unstamped](#unstamped)\n    - [Quoted Handle](#quoted-handle)\n    - [Renamed](#renamed)\n    - [Lost Approval](#lost-approval)\n  - [Changes](#changes)\n    - [Edited](#edited)\n  - [Branch](branch.map.md#branch)\n    - [Branch Leaf](branch.map.md#branch-leaf)\n  - [Rendering](#rendering)",
+         committed="- [Demo](#demo)\n  - [Approval States](#approval-states)\n    - [Current](#current)\n    - [Stale](#stale)\n    - [Mixed](#mixed)\n    - [Unstamped](#unstamped)\n    - [Requested](#requested)\n    - [Quoted Handle](#quoted-handle)\n    - [Renamed](#renamed)\n    - [Lost Approval](#lost-approval)\n  - [Changes](#changes)\n    - [Edited](#edited)\n  - [Branch](branch.map.md#branch)\n    - [Branch Leaf](branch.map.md#branch-leaf)\n  - [Rendering](#rendering)",
          now="same", approved={}),
     dict(file="map.md", name="Approval States",
          nav=["[↑ Demo](#demo)", "[Current](#current)", "[Stale](#stale)", "[Mixed](#mixed)",
-              "[Unstamped](#unstamped)", "[Quoted Handle](#quoted-handle)", "[Renamed](#renamed)",
+              "[Unstamped](#unstamped)", "[Requested](#requested)", "[Quoted Handle](#quoted-handle)", "[Renamed](#renamed)",
               "[Lost Approval](#lost-approval)"],
          committed="One node for each state a stamp can be in.", now="same", approved={"alice": "now", "bob": "now"}),
     dict(file="map.md", name="Current", nav=["[↑ Approval States](#approval-states)"],
@@ -57,6 +57,9 @@ NODES = [
          approved={"alice": "now", "bob": "committed"}),
     dict(file="map.md", name="Unstamped", nav=["[↑ Approval States](#approval-states)"],
          committed="Nobody has approved this node.", now="same", approved={}),
+    dict(file="map.md", name="Requested", nav=["[↑ Approval States](#approval-states)"],
+         committed="Bob has been asked to sign this off and has not yet: his stamp is a request, so the node is due for him.",
+         now="same", approved={"bob": "requested"}),
     dict(file="map.md", name="Quoted Handle", nav=["[↑ Approval States](#approval-states)"],
          committed="Approved under a handle with a colon in it, which a stamp must quote.",
          now="same", approved={"carol: qa": "now"}),
@@ -144,8 +147,10 @@ def node_markdown(node: dict, text: str, node_id: str, viewer, version: str) -> 
     return f"# {name_of(node, version)}\n\n{nav}\n\n{yaml}\n\n{text}\n"
 
 
-# A stamp's hash is the fingerprint of the text the approver saw.
+# A stamp's hash is the fingerprint of the text the approver saw; a request's is null.
 def stamp_hash(node: dict, which: str, viewer) -> str:
+    if which == "requested":
+        return "null"
     if which == "never committed":
         return viewer.fingerprint([f"# {node['name']}\n", "Some text nobody committed.\n"])
     text = text_of(node, which)

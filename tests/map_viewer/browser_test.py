@@ -6,8 +6,9 @@
 
 # Drives the viewer's page script in headless Chromium, on the demo map that
 # map_viewer_test.py serves: the tree keeping its folds across moves, the fold button, the
-# second pane and each pane's history, and, on a copy, the Sign off button and the light shown
-# while the repository has uncommitted changes. Optional, since it needs Playwright and its
+# second pane, each scrolling on its own, and each pane's history, and, on a copy, the Sign off
+# button, due nodes and requesting, and the light shown while the repository has uncommitted
+# changes. Optional, since it needs Playwright and its
 # Chromium: with the browser missing it says so and passes, and map_viewer_test.py, which
 # needs neither, still checks the pages themselves.
 #
@@ -53,7 +54,8 @@ def main():
             return
         failures = 0
         for check in [folds_survive_moves, tree_never_redrawn, approval_diff_swapped, fold_button,
-                      second_pane, pane_history, signoff_button, uncommitted_light]:
+                      second_pane, panes_scroll_apart, pane_history, signoff_button, due_nodes,
+                      request_signoff, uncommitted_light]:
             page = browser.new_page()
             page.set_default_timeout(5000)
             errors = []
@@ -130,10 +132,10 @@ def approval_diff_swapped(page, base, suite) -> int:
 # all is folded; its label says which it would do.
 def fold_button(page, base, suite) -> int:
     page.goto(base + suite.node_path("map.md", "Demo"))
-    button = branch(page, "Demo").locator(":scope > summary .below button")
-    below = branch(page, "Demo").locator("details")
+    button = branch(page, "Linked Map").locator(":scope > summary .below button")
+    below = branch(page, "Linked Map").locator("details")
     failures = suite.expect("fold button", button.text_content() == "−", "− while anything is open")
-    page.evaluate("[...document.querySelectorAll('aside details details')][0].open = false")
+    below.first.evaluate("d => d.open = false")
     button.click(force=True)
     failures += suite.expect("fold button", below.evaluate_all("ds => ds.every(d => !d.open)"),
                              "with one part folded, folds all below")
@@ -164,6 +166,23 @@ def second_pane(page, base, suite) -> int:
     page.locator("#side button.close").click()
     page.wait_for_selector("#side", state="detached")
     return failures + suite.expect("close", "side=" not in page.url, "the side pane leaves the URL")
+
+
+# Split, each pane scrolls in its own box: scrolling one moves neither the other nor the window.
+def panes_scroll_apart(page, base, suite) -> int:
+    page.set_viewport_size({"width": 1400, "height": 300})
+    page.goto(base + suite.node_path("map.md", "Rendering") + "&side=" + suite.quote(suite.node_path("map.md", "Edited")))
+    page.wait_for_selector("#side h1:has-text('Edited')")
+    page.evaluate("document.querySelector('main').scrollTop = 200")
+    failures = suite.expect("own scroll", page.evaluate("document.querySelector('main').scrollTop") > 0,
+                            "the left pane scrolls in its own box")
+    failures += suite.expect("own scroll", page.evaluate("[window.scrollY, document.querySelector('#side').scrollTop]") == [0, 0],
+                             "neither the window nor the side pane moved")
+    page.evaluate("document.querySelector('#side').scrollTop = 100")
+    failures += suite.expect("own scroll", page.evaluate("document.querySelector('#side').scrollTop") > 0,
+                             "the side pane scrolls in its own box")
+    return failures + suite.expect("own scroll", page.evaluate("document.querySelector('main').scrollTop") >= 200,
+                                   "the left pane stayed where it was")
 
 
 # Each pane steps through its own history with its ◀ ▶, disabled at either end, and a pane
@@ -209,6 +228,9 @@ def signoff_button(page, base, suite) -> int:
     failures += suite.expect("add", box.locator("li", has_text="bob").locator(".remove").count() == 0, "a map handle not removable")
     box.locator("li", has_text="dave").locator(".remove").click()
     failures += suite.expect("remove", "dave" not in names_listed(box), "a removed name gone")
+    page.locator("main h1").click()
+    failures += suite.expect("click away", not box.evaluate("d => d.open"), "the drop-down closes on a click elsewhere")
+    box.locator("summary").click()
     box.locator("li", has_text="alice").locator("input").check()
     box.locator("li", has_text="bob").locator("input").check()
     box.locator("button.sign").click()
@@ -223,6 +245,52 @@ def signoff_button(page, base, suite) -> int:
     page.locator("main .stale-row a").first.click()
     page.wait_for_selector("main .diff-head")
     return failures + suite.expect("approval diff", page.locator("main .signoff").count() == 0, "no button on an approval diff")
+
+
+# Due for…: ticking alice marks her due nodes, stale or requested, and counts them; ticking bob
+# too marks those due for either; the drop-down closes on a click elsewhere; a sign-off clears
+# the mark in place.
+def due_nodes(page, base, suite) -> int:
+    page.goto(SIGNING + suite.node_path("map.md", "Stale"))
+    mark_page(page)
+    tick_due(page, "alice")
+    failures = suite.expect("due for", marked(page) == ["Stale", "Renamed", "Edited"], f"alice's stale nodes marked, saw {marked(page)}")
+    failures += suite.expect("due for", due_count(page) == "3 due", f"the count, saw {due_count(page)!r}")
+    page.locator("aside .due-names li", has_text="bob").locator("input").check()
+    failures += suite.expect("due for", marked(page) == ["Stale", "Mixed", "Requested", "Renamed", "Lost Approval", "Edited"],
+                             f"nodes due for either marked, bob's stale and requested, saw {marked(page)}")
+    page.locator("aside .due-names li", has_text="bob").locator("input").uncheck()
+    page.locator("main h1").click()
+    failures += suite.expect("due for", page.locator("aside .due-names").is_hidden(), "the drop-down closes on a click elsewhere")
+    box = page.locator("main .signoff")
+    box.locator("summary").click()
+    box.locator("li", has_text="alice").locator("input").check()
+    box.locator("button.sign").click()
+    page.wait_for_selector("main .meta td.ok")
+    failures += suite.expect("sign off", heading(page, "main") == "Stale", "the page stays on the node signed off")
+    failures += suite.expect("sign off", marked(page) == ["Renamed", "Edited"] and due_count(page) == "2 due",
+                             f"Stale no longer due, saw {marked(page)}, {due_count(page)!r}")
+    return failures + suite.expect("due for", same_page(page), "no page was loaded whole")
+
+
+# Request sign-off writes a requested stamp for a ticked name with no stamp, so the node is due
+# for them, and nothing for a name already stamped.
+def request_signoff(page, base, suite) -> int:
+    page.goto(SIGNING + suite.node_path("map.md", "Renamed"))
+    before = (COPY / "map.md").read_text(encoding="utf-8")
+    box = page.locator("main .signoff")
+    box.locator("summary").click()
+    box.locator("li", has_text="alice").locator("input").check()
+    box.locator("li", has_text="bob").locator("input").check()
+    box.locator("button.request").click()
+    page.wait_for_selector("main .meta td.requested")
+    after = (COPY / "map.md").read_text(encoding="utf-8")
+    added = [l for l in after.splitlines() if l not in before.splitlines()]
+    removed = [l for l in before.splitlines() if l not in after.splitlines()]
+    failures = suite.expect("request", added == [f"  bob: {{at: {suite.date.today().isoformat()}, hash: null}}"] and not removed,
+                            f"bob's request written, alice's stale stamp untouched, saw +{added} -{removed}")
+    tick_due(page, "bob")
+    return failures + suite.expect("request", "Renamed" in marked(page), f"the node due for bob, saw {marked(page)}")
 
 
 # The red light shows, with its tooltip, while the repository has uncommitted changes, and is
@@ -242,6 +310,19 @@ def uncommitted_light(page, base, suite) -> int:
 
 def names_listed(box) -> list[str]:
     return box.locator("ul input").evaluate_all("ts => ts.map(t => t.value)")
+
+
+def tick_due(page, name: str) -> None:
+    page.locator("aside .due-open").click()
+    page.locator("aside .due-names li", has_text=name).locator("input").check()
+
+
+def marked(page) -> list[str]:
+    return page.locator("aside a.due").evaluate_all("as => as.map(a => a.textContent)")
+
+
+def due_count(page) -> str:
+    return page.locator("aside .due-count").text_content()
 
 
 def mark_page(page) -> None:

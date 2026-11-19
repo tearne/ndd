@@ -4,7 +4,7 @@
 
 ## Intent
 
-The map viewer should help a stakeholder sign off what is due for them: choose a person, see which nodes are due for them, and step through those nodes in a useful order, signing each off as they go. In a split page, each pane should scroll in a box of its own, with its scrollbar at its own edge.
+The map viewer should help a stakeholder step through the nodes due for their sign-off, signing each as they go. In a split page, each pane should scroll in a box of its own.
 
 ## Context
 
@@ -22,7 +22,7 @@ Shape agreed 2026-11-17:
 - Four sign-off states: *current*, a stamp matching the node; *stale*, a stamp not matching; *requested*, a stamp with `hash: null` and `at` the request date; *unsigned*, no stamp. Due means stale or requested; unsigned is never due.
 - A *Request sign-off* button beside *Sign off* writes a request for each ticked name with no stamp on the node; a stale stamp is already due.
 
-Planned edits, on copies in [310-due-node-selection-in-the-viewer/](310-due-node-selection-in-the-viewer/) of `map.md`, `testing.map.md` and `method/ndd.map.md`, taken 2026-11-17 before any edit:
+Planned edits, on copies in the companion folder (dropped at archiving) of `map.md`, `testing.map.md` and `method/ndd.map.md`, taken 2026-11-17 before any edit:
 
 1. *Due Nodes* (project map, new, under *Map Viewer*): the selector, the marks and count, stepping, moving on after a sign-off, tree order.
 2. *Map Viewer* (project map): child link and a bullet.
@@ -44,9 +44,9 @@ Progress:
 - 2026-11-17: names agreed with the user, dropping the "Map Viewer" prefix from *Map Viewer*'s children: *Map Viewer Sign-off* becomes *Sign-off Button*, *Map Viewer Security* becomes *Request Guards*, and the new node *Due Nodes*. Headings and every link renamed in the copies, the three re-stamped. The testing map's check names stay.
 - Map Viewer Check's link repointed, re-stamped as a correction. 
 - 2 approved, 746 characters, stamped 0b89b316.
-- 3 drafted, then reopened by the stale/absent item: whole-file draft in [draft-method.md](310-due-node-selection-in-the-viewer/draft-method.md) is superseded.
+- 3 drafted, then reopened by the stale/absent item: whole-file draft in draft-method.md is superseded.
 - 2026-11-18: stale/absent item folded in; shape and edit list revised (now 9 edits), approved. Next: redraft 3.
-- 3 redrafted with the four states, 1009 characters, written in place in the copy between draft markers; a split into a new *Stamp States* node proposed, not yet agreed. The old [draft-method.md](310-due-node-selection-in-the-viewer/draft-method.md) is superseded.
+- 3 redrafted with the four states, 1009 characters, written in place in the copy between draft markers; a split into a new *Stamp States* node proposed, not yet agreed. The old draft-method.md is superseded.
 - 2026-11-18: session lost and resumed. *Sign-off*'s first paragraph reworded ("is scaffolding" sentence), written in place between draft markers, awaiting approval alongside edit 3.
 - 2026-11-18: *Sign-off*'s "requested" clause reworded in the draft region, awaiting approval. Open: *Sign-off Stamp* Detail should describe a requested stamp (`hash: null`, `at` the request date); not yet on the edit list.
 - 2026-11-18: edit list revised to 11 and approved: the states split into a new *Stamp States* under *Sign-off Stamp*; *Sign-off Stamp* gains the requested form (closes the open item). Next: redraft 3 narrowed.
@@ -67,3 +67,24 @@ Progress:
 - 11 approved: Contents entries for *Due Nodes*, *Map Viewer Due Check*, *Stamp States*. All 11 edits settled.
 - User edit to *Sign-off Button* (reason clause cut), 791 characters, re-stamped a2cb36c6.
 - 2026-11-18, paused. Next: decide whether to skip the Implementation Plan (agent recommends skip), then approve the plan whole, then Build Lock. Open: delete superseded draft-method.md; spacing correction, one blank line before *Signer* in the method map copy should be two.
+- 2026-11-19: resumed. Superseded draft-method.md deleted (`git rm`); its mentions above are history. Spacing before *Signer* in the method map copy corrected to two blank lines. Next: Implementation Plan skip decision.
+- 2026-11-19: Implementation Plan skipped, approved by the user. Next: Unresolved check, then plan approval.
+- 2026-11-19: plan approved; Build Lock taken. Next: Intent trim, then Build.
+- 2026-11-19: Intent trimmed, 174 characters, approved. Build begins.
+- Build 1: fingerprint helper 1.2.0, `hash: null` read as requested; due is stale or requested, unsigned never. fingerprint_test.py updated (new requested case, Dana Lee covers the spaced name), passes; fails on the old helper.
+- Build 2: viewer 0.5.0: requested stamps read and shown, Due for… selector with marks, count and Previous/Next due, moving on after a sign-off, Request sign-off (only names with no stamp), split panes each scrolling in their own box. Existing viewer and browser suites pass.
+- Build 3: checks added: demo gains a Requested node (build_demo_map 0.4.0); server check shows it; browser checks for panes scrolling apart, due nodes, and requesting. All suites pass; the new browser checks fail on the old viewer.
+- Build 4: copies promoted into the live map, whole files, as the live maps had not drifted from the baseline: map.md, testing.map.md, method/ndd.map.md. Nothing due for tearne.
+- Page script parse check run with pyright's bundled node (~/.cache/pyright-python/nodeenv/bin) on PATH: passes.
+- 2026-11-19: user feedback on the built viewer, before Conclude; the Change Specification is to be re-agreed with the Build Lock kept. Open, to settle one at a time:
+  1. A clearer due mark in the tree.
+  2. *Due for…* allows several people.
+  3. *Previous due* / *Next due* removed (user not bothered), so the moving-on after a sign-off needs deciding.
+  4. *Due for…* becomes a button, not full width, with the count to its right.
+  5. The *Sign off* drop-down closes on a click elsewhere; its two buttons sit side by side.
+  Spec nodes affected: *Due Nodes*, *Map Viewer*'s bullet, *Map Viewer Due Check*; 1, 4 and 5 are presentation, below the map.
+- 2026-11-19: the five feedback items parked as their own change, [320 Due and sign-off UI tweaks](../open/320-due-and-sign-off-ui-tweaks.md), at the user's request; nothing open. Build confirmed done.
+
+## Conclude
+
+Completed. Two additions: the demo map gained a Requested node, so every stamp state shows. The page-script parse check needs Node on the PATH, which pyright's nodeenv supplies; setup is parked as 160. Feedback on the built interface is parked as 320.

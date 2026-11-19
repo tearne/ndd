@@ -36,14 +36,15 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, quote, urlparse
 
-VERSION = "0.4.0"
+VERSION = "0.5.0"
 
 GREEN, YELLOW, RED = "32", "33", "31"  # ANSI colour codes
 
 FENCE = re.compile(r"^```")
 LINK_ONLY_LINE = re.compile(r"^\[[^\]]+\]\([^)]+\)\s*\\?\s*$")
-# A stamp key may hold spaces; one with a colon or leading punctuation is quoted.
-STAMP = re.compile(r"^\s+(?:\"([^\"]+)\"|'([^']+)'|([^\s\"'][^:]*?))\s*:\s*\{.*?\bhash:\s*([0-9a-f]{8})\b")
+# A stamp key may hold spaces; one with a colon or leading punctuation is quoted. A requested
+# stamp's hash is null.
+STAMP = re.compile(r"^\s+(?:\"([^\"]+)\"|'([^']+)'|([^\s\"'][^:]*?))\s*:\s*\{.*?\bhash:\s*([0-9a-f]{8}|null)\b")
 
 
 def main():
@@ -119,8 +120,8 @@ class Handler(BaseHTTPRequestHandler):
         else:
             self.send_error(404)
 
-    # A sign-off: from this viewer's own page, carrying the run's token and the fingerprint the
-    # page was rendered with.
+    # A sign-off, or with "request" a request for one: from this viewer's own page, carrying the
+    # run's token and the fingerprint the page was rendered with.
     def post(self):
         if urlparse(self.path).path != "/signoff":
             raise Refused(404, "No such action")
@@ -138,8 +139,11 @@ class Handler(BaseHTTPRequestHandler):
             raise Refused(403, "Missing or wrong token; reload the page")
         if not all(isinstance(v, str) for v in (file, name, shown)) or not isinstance(names, list):
             raise Refused(400, "Malformed sign-off")
-        sign_off(file, name, shown, names)
-        self.send_text(200, "Signed off")
+        request_only = request.get("request", False)
+        if not isinstance(request_only, bool):
+            raise Refused(400, "Malformed sign-off")
+        written = sign_off(file, name, shown, names, request_only)
+        self.send_text(200, ("Requested" if request_only else "Signed off") + f" for {len(written)}")
 
     def send_text(self, code: int, text: str) -> None:
         data = text.encode("utf-8")
@@ -203,7 +207,8 @@ def node_view(file: str, name: str, lines: list[str]) -> tuple[str, str]:
 
 
 # In the sign-offs table's Status heading, a Sign off button opening a drop-down of names to
-# tick, with the button that records them at its head; its … says pressing it only opens. The page script
+# tick, with the buttons that record them at its head: a sign-off, or a request for one from
+# each name with no stamp here; its … says pressing it only opens. The page script
 # fills the drop-down from the map's handles and the names added in this browser. A sign-off
 # diff shows an old version, so it has none; nor does Contents, which is never stamped.
 def signoff_html(file: str, name: str, current: str) -> str:
@@ -213,7 +218,8 @@ def signoff_html(file: str, name: str, current: str) -> str:
                      [("file", file), ("name", name), ("fingerprint", current), ("token", TOKEN),
                       ("handles", json.dumps(map_handles()))])
     return (f'<details class="signoff" {attrs}><summary>Sign off …</summary><div class="names">'
-            '<button class="sign" disabled>Sign off ticked names</button><ul></ul>'
+            '<div class="actions"><button class="request" disabled title="Ask each ticked name with no stamp here for a sign-off">'
+            'Request</button><button class="sign" disabled title="Sign off for each ticked name">Sign off</button></div><ul></ul>'
             '<div class="add"><input class="new-name" placeholder="Add a name" maxlength="64">'
             '<button class="add-name">Add</button></div></div></details>')
 
@@ -228,8 +234,11 @@ def approvals_html(file: str, name: str, lines: list[str], current: str, signoff
     return f"""<table class=signoffs><tr><th>Signer</th><th>At</th><th>Signed-off fingerprint</th><th class=status>Status{signoff}</th></tr>{rows or '<tr><td colspan=4>No stamps</td></tr>'}</table>"""
 
 
-# A stale sign-off's row is tinted, and its fingerprint links to what changed since.
-def approval_row(file: str, name: str, who: str, at: str, hash_: str, current: str) -> str:
+# A stale sign-off's row is tinted, and its fingerprint links to what changed since. A requested
+# one has no fingerprint, so nothing to compare.
+def approval_row(file: str, name: str, who: str, at: str, hash_: str | None, current: str) -> str:
+    if hash_ is None:
+        return f"<tr class=requested-row><td>{html.escape(who)}</td><td>{html.escape(at)}</td><td>—</td><td class=requested>requested</td></tr>"
     if hash_ == current:
         return f"<tr><td>{html.escape(who)}</td><td>{html.escape(at)}</td><td><code>{hash_}</code></td><td class=ok>current</td></tr>"
     diff = f"/approval?file={quote(file)}&name={quote(name)}&who={quote(who)}"
@@ -239,7 +248,7 @@ def approval_row(file: str, name: str, who: str, at: str, hash_: str, current: s
 
 # What changed since someone signed off a node: the details of both versions, the changed
 # passages, the whole node as it stands with the same highlights, then the sign-offs.
-def approval_view(file: str, name: str, who: str, at: str, hash_: str, lines: list[str],
+def approval_view(file: str, name: str, who: str, at: str, hash_: str | None, lines: list[str],
                   history: list[tuple[str, str, list[str] | None]]) -> tuple[str, str]:
     now = node_lines(lines, name)
     current = fingerprint(now)
@@ -276,7 +285,7 @@ def approval_view(file: str, name: str, who: str, at: str, hash_: str, lines: li
 
 # The commit where a version of the node was introduced: in the newest run of commits
 # holding text with this fingerprint, the oldest. Returns (commit, date, node lines) or None.
-def introduced(history: list[tuple[str, str, list[str] | None]], hash_: str) -> tuple[str, str, list[str]] | None:
+def introduced(history: list[tuple[str, str, list[str] | None]], hash_: str | None) -> tuple[str, str, list[str]] | None:
     found = None
     for commit, date, node in history:
         if node is not None and fingerprint(node) == hash_:
@@ -358,6 +367,23 @@ aside summary:hover .below { visibility: visible; }
 aside .below button { font-size: .7rem; line-height: 1; padding: 0 .3rem; border: 1px solid #ccc; background: #fff;
                       border-radius: 3px; cursor: pointer; }
 
+/* The map's title, its entry root's heading, above the tree; the root itself heads the tree */
+aside .map-title { display: block; font-size: 1.15rem; font-weight: 600; color: #222; margin: 0 0 .7rem .2rem; }
+
+/* Due for…: a button opening a drop-down of people to tick, their due nodes marked in the tree */
+aside .due-bar { position: relative; display: flex; gap: .5rem; align-items: center; margin-bottom: .8rem;
+                 padding-bottom: .6rem; border-bottom: 1px solid #ddd; }
+aside .due-open { font-size: .8rem; padding: .1rem .6rem; border: 1px solid #ccc; background: #fff;
+                  border-radius: 3px; cursor: pointer; color: #333; white-space: nowrap; }
+aside .due-count { color: #8a5a00; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+aside .due-names { position: absolute; left: 0; top: 100%; z-index: 5; min-width: 12rem; margin: 0; padding: .4rem .6rem;
+                   list-style: none; background: #fff; border: 1px solid #ccc; border-radius: 3px;
+                   box-shadow: 0 2px 6px rgba(0,0,0,.12); }
+aside a.due { display: inline-block; width: calc(100% - 1.4em); box-sizing: border-box; background: #fff0cc;
+              border-radius: 3px; padding: 0 .3rem; box-shadow: inset 3px 0 #f2b54d; }
+aside a.due::after { content: "due"; float: right; font-size: .65rem; font-weight: 600; color: #6b4500; background: #f2b54d;
+                     border-radius: .6rem; padding: 0 .4rem; margin-top: .2rem; line-height: 1.4; }
+
 /* The second pane, scrolled on its own beside the node */
 #side { flex: 1; min-width: 0; max-width: 52rem; box-sizing: border-box; padding: 2rem 1.5rem; height: 100vh;
         overflow-y: auto; position: sticky; top: 0; border-left: 1px solid #ddd; background: #fcfcfc; }
@@ -365,6 +391,9 @@ aside .below button { font-size: .7rem; line-height: 1; padding: 0 .3rem; border
 .pane-tools button { font-size: .75rem; padding: .1rem .5rem; border: 1px solid #ccc; background: #fff;
                      border-radius: 3px; cursor: pointer; color: #555; }
 body.split main .split { display: none; }
+/* Split, each pane scrolls in a box of its own, its scrollbar at its own edge */
+body.split { height: 100vh; overflow: hidden; }
+body.split main { height: 100vh; overflow-y: auto; box-sizing: border-box; }
 .pane-tools button:disabled { opacity: .35; cursor: default; }
 .hint { color: #888; font-style: italic; }
 
@@ -379,6 +408,8 @@ body.split main .split { display: none; }
 .signoffs td a { color: #2f4f9f; }
 .signoffs td.ok { color: green; }
 .signoffs td.stale { color: #b8860b; }
+.signoffs td.requested { color: #2f4f9f; }
+.requested-row { background: #eef3ff; }
 
 /* Sign off: a button opening a drop-down of names to tick */
 .signoff { position: relative; display: inline-block; margin-left: .6rem; font-weight: normal; }
@@ -386,7 +417,7 @@ body.split main .split { display: none; }
                    background: #fff; border-radius: 3px; color: #333; white-space: nowrap; }
 .signoff summary::-webkit-details-marker { display: none; }
 .signoff[open] summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
-.signoff .names { position: absolute; right: 0; top: 100%; z-index: 5; min-width: 14rem; background: #fff;
+.signoff .names { position: absolute; right: 0; top: 100%; z-index: 5; min-width: 11rem; background: #fff;
                   border: 1px solid #ccc; border-radius: 3px; padding: .4rem .6rem; box-shadow: 0 2px 6px rgba(0,0,0,.12); color: #333; }
 .signoff button { font-size: .8rem; padding: .1rem .6rem; border: 1px solid #ccc; background: #fff;
                   border-radius: 3px; cursor: pointer; }
@@ -396,7 +427,8 @@ body.split main .split { display: none; }
 .signoff .remove { border: none; background: none; color: #b33; padding: 0 .2rem; }
 .signoff .add { display: flex; gap: .3rem; }
 .signoff .new-name { font-size: .8rem; flex: 1; min-width: 0; }
-.signoff .sign { width: 100%; }
+.signoff .actions { display: flex; gap: .3rem; }
+.signoff .sign, .signoff .request { flex: 1; white-space: nowrap; }
 /* Dimmed with nobody ticked; filled once there are names to stamp */
 .signoff .sign:disabled { opacity: .4; }
 .signoff .sign:not(:disabled) { background: #2f6fd6; border-color: #2f6fd6; color: #fff; font-weight: 600; }
@@ -544,6 +576,7 @@ async function show(url, changed, next, addToHistory = true) {
   if (changed !== "left") showSide(page.querySelector("#side"));
   enableSteps();
   fillSignoffs();
+  markDue();
 }
 
 function enableSteps() {
@@ -568,7 +601,16 @@ function updateTree(nextAside) {
   if (treeShape(aside) !== treeShape(nextAside)) {
     aside.replaceWith(nextAside);
     bindTree();
+    restoreDueFor();
   } else {
+    // Sign-offs and requests change who has each node due, and may add a signer.
+    const due = new Map([...nextAside.querySelectorAll("a[data-due]")].map(a => [a.getAttribute("href"), a.dataset.due]));
+    aside.querySelectorAll("a[data-due]").forEach(a => a.dataset.due = due.get(a.getAttribute("href")) ?? "[]");
+    const names = aside.querySelector(".due-names"), nextNames = nextAside.querySelector(".due-names");
+    if (names && nextNames && names.innerHTML !== nextNames.innerHTML) {
+      names.innerHTML = nextNames.innerHTML;
+      restoreDueFor();
+    }
     const href = nextAside.querySelector("a.here")?.getAttribute("href");
     aside.querySelectorAll("a.here").forEach(a => a.classList.remove("here"));
     const here = href && [...aside.querySelectorAll("a")].find(a => a.getAttribute("href") === href);
@@ -628,7 +670,9 @@ function tickedIn(box) {
   return [...box.querySelectorAll("ul input:checked")].map(tick => tick.value);
 }
 function enableSign(box) {
-  box.querySelector("button.sign").disabled = tickedIn(box).length === 0;
+  const none = tickedIn(box).length === 0;
+  box.querySelector("button.sign").disabled = none;
+  box.querySelector("button.request").disabled = none;
 }
 
 document.addEventListener("change", event => {
@@ -652,7 +696,13 @@ document.addEventListener("click", event => {
     store(ADDED, stored(ADDED).filter(n => n !== name));
     store(TICKED, stored(TICKED).filter(n => n !== name));
     fillSignoffs();
-  } else if (button.matches(".sign")) signOff(box, button);
+  } else if (button.matches(".sign")) signOff(box, button, false);
+  else if (button.matches(".request")) signOff(box, button, true);
+});
+
+// An open Sign off drop-down closes on a click anywhere outside it.
+document.addEventListener("click", event => {
+  document.querySelectorAll(".signoff[open]").forEach(box => { if (!box.contains(event.target)) box.open = false; });
 });
 
 function addName(box) {
@@ -668,7 +718,8 @@ function addName(box) {
   enableSign(box);
 }
 
-async function signOff(box, button) {
+// A sign-off, or a request for one; the page is redrawn in place to show it.
+async function signOff(box, button, request) {
   const names = tickedIn(box);
   if (!names.length) return;
   button.disabled = true;
@@ -676,10 +727,10 @@ async function signOff(box, button) {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({token: box.dataset.token, file: box.dataset.file, name: box.dataset.name,
-                          fingerprint: box.dataset.fingerprint, names}),
+                          fingerprint: box.dataset.fingerprint, names, request}),
   });
   if (!response.ok) {
-    alert("Not signed off: " + await response.text());
+    alert((request ? "Not requested: " : "Not signed off: ") + await response.text());
     enableSign(box);
     return;
   }
@@ -687,9 +738,43 @@ async function signOff(box, button) {
   show(urlFor(state), "both", state, false);
 }
 
+// Due for…: the people ticked are kept in this browser. Each tree link carries the signers the
+// node is due for; a node due for any person ticked is marked, and the marked nodes counted.
+const DUE_FOR = "due-for";
+function dueFor() {
+  return [...document.querySelectorAll("aside .due-names input:checked")].map(tick => tick.value);
+}
+function markDue() {
+  const who = dueFor();
+  const due = [...document.querySelectorAll("aside a[data-due]")].filter(a => JSON.parse(a.dataset.due).some(n => who.includes(n)));
+  document.querySelectorAll("aside a[data-due]").forEach(a => a.classList.toggle("due", due.includes(a)));
+  const count = document.querySelector("aside .due-count");
+  if (count) {
+    count.textContent = who.length ? `${due.length} due` : "";
+  }
+}
+function restoreDueFor() {
+  const kept = new Set(stored(DUE_FOR));
+  document.querySelectorAll("aside .due-names input").forEach(tick => tick.checked = kept.has(tick.value));
+  markDue();
+}
+document.addEventListener("change", event => {
+  if (!event.target.matches("aside .due-names input")) return;
+  store(DUE_FOR, dueFor());
+  markDue();
+});
+// The drop-down opens from its button and closes on a click anywhere outside it.
+document.addEventListener("click", event => {
+  const names = document.querySelector("aside .due-names");
+  if (!names) return;
+  if (event.target.closest("aside .due-open")) names.hidden = !names.hidden;
+  else if (!event.target.closest("aside .due-names")) names.hidden = true;
+});
+
 bindTree();
 enableSteps();
 fillSignoffs();
+restoreDueFor();
 document.querySelector("aside a.here")?.scrollIntoView({block: "center"});
 """
 
@@ -750,16 +835,27 @@ def id_of(node: list[str]) -> str | None:
     return None
 
 
-# Each signer's stamp date and fingerprint. Stamps are read from the scaffolding block only,
-# so an example quoted later in the node is never taken for one.
-def stamp_details(node: list[str]) -> dict[str, tuple[str, str]]:
+# Each signer's stamp date and fingerprint, None for a request. Stamps are read from the
+# scaffolding block only, so an example quoted later in the node is never taken for one.
+def stamp_details(node: list[str]) -> dict[str, tuple[str, str | None]]:
     found = {}
     for line in scaffolding_block(node[1:]):
         m = STAMP.match(line)
         if m:
             at = re.search(r"\bat:\s*([0-9-]+)", line)
-            found[m.group(1) or m.group(2) or m.group(3)] = (at.group(1) if at else "", m.group(4))
+            hash_ = None if m.group(4) == "null" else m.group(4)
+            found[m.group(1) or m.group(2) or m.group(3)] = (at.group(1) if at else "", hash_)
     return found
+
+
+# Who has the node due: each signer whose stamp is stale or requested. A node with no stamp
+# for someone is never due for them, nor is Contents.
+def due_for(file: str, name: str) -> list[str]:
+    if name == "Contents":
+        return []
+    node = node_lines(read_map(file), name)
+    current = fingerprint(node)
+    return [who for who, (_, hash_) in stamp_details(node).items() if hash_ != current]
 
 
 # --- Sign-offs ---
@@ -767,7 +863,9 @@ def stamp_details(node: list[str]) -> dict[str, tuple[str, str]]:
 # Writes each name's stamp under the node's approvals: key, adding the key if absent and
 # replacing that name's earlier stamp, and nothing else. Refused if the node's fingerprint
 # on disk is not the one its page was rendered with, so no one signs off text they weren't shown.
-def sign_off(file: str, name: str, shown: str, names: list) -> None:
+# A request writes hash: null, and only for a name with no stamp on the node, so no stamp's
+# hash is lost. Returns the handles written.
+def sign_off(file: str, name: str, shown: str, names: list, request: bool = False) -> list[str]:
     handles = [checked_handle(n) for n in names]
     if not handles:
         raise Refused(400, "No names ticked")
@@ -786,11 +884,17 @@ def sign_off(file: str, name: str, shown: str, names: list) -> None:
         if not block:
             raise Refused(400, "The node has no scaffolding block to hold a sign-off")
         first = body_start + skip_nav(node[1:])
-        stamped = with_stamps(block, handles, f"{{at: {date.today().isoformat()}, hash: {current}}}")
+        if request:
+            stamped_already = stamp_details(node)
+            handles = [h for h in handles if h.strip('"') not in stamped_already]
+            if not handles:
+                return []
+        stamped = with_stamps(block, handles, f"{{at: {date.today().isoformat()}, hash: {'null' if request else current}}}")
         lines[first:first + len(block)] = stamped
         temporary = path.with_name(path.name + ".signing")
         temporary.write_text("".join(lines), encoding="utf-8")
         os.replace(temporary, path)
+        return handles
 
 
 # A name as a stamp key: one line, no quotes or braces, quoted if it holds a colon or opens
@@ -884,11 +988,23 @@ def end_of_fence(lines: list[str], start: int) -> int:
 # in prose, gets its own file's tree beneath, so the tree is the same on every page.
 def tree_html(current: tuple[str, str]) -> str:
     seen: set = set()
-    trees = [tree_item(ENTRY, root_node(read_map(ENTRY)), current, seen)]
+    root = root_node(read_map(ENTRY))
+    trees = [tree_item(ENTRY, root, current, seen)]
     for file in maps_linked_beyond(seen) + ([current[0]] if current[0] else []):
         if file not in {f for f, _ in seen}:
             trees.append(tree_item(file, root_node(read_map(file)), current, seen))
-    return "".join(f"<ul>{t}</ul>" for t in trees)
+    title = f'<div class="map-title">{html.escape(root)}</div>'
+    return title + due_bar() + "".join(f"<ul>{t}</ul>" for t in trees)
+
+
+# Above the tree: a Due for… button opening a drop-down of the map's signers to tick, and beside
+# it the count of nodes due for them. The page script marks the nodes, from each tree link's
+# data-due, the signers it is due for.
+def due_bar() -> str:
+    names = "".join(f'<li><label><input type="checkbox" value="{html.escape(h)}"> {html.escape(h)}</label></li>'
+                    for h in map_handles())
+    return ('<div class="due-bar"><button class="due-open" title="Mark the nodes due for review by the people ticked">'
+            f'Review due for …</button><span class="due-count"></span><ul class="due-names" hidden>{names}</ul></div>')
 
 
 # The map files linked from the maps already in the tree, and from those in turn, in the
@@ -926,7 +1042,8 @@ def tree_item(file: str, name: str, current: tuple[str, str], seen: set,
     kids = [k for k in children(file, name) if k not in seen]
     seen.update(kids)
     mark = ' class="here"' if (file, name) == current else ""
-    label = f'<a href="{node_url(file, name)}"{mark}>{html.escape(name)}</a>'
+    due = html.escape(json.dumps(due_for(file, name)))
+    label = f'<a href="{node_url(file, name)}" data-due="{due}"{mark}>{html.escape(name)}</a>'
     classes, shade_style, file_tag = [] if kids else ["leaf"], "", ""
     if file != parent_file:
         shade += 1

@@ -44,15 +44,15 @@ def fingerprint(node_lines: list[str]) -> str:
 
 
 # The helper's due listing, per person: a node is due when its stamp for them is
-# missing or stale. "Alice Smith" checks that a name with a space is read.
+# stale; one with no stamp for them, such as Bare Heading, is not.
 DUE = {
     "fixture.map.md": {
-        "expected": ["Bare Heading"],
-        "Alice Smith": ["Fixture", "Child", "Bare Heading", "Changed Prose"],
+        "expected": [],
+        "Alice Smith": [],
     },
     "fixture-edited.map.md": {
         "expected": ["Fixture", "Renamed Child", "Changed Prose"],
-        "Alice Smith": ["Fixture", "Renamed Child", "Bare Heading", "Changed Prose"],
+        "Alice Smith": [],
     },
 }
 
@@ -92,6 +92,7 @@ def main():
                 print(f"FAIL {file}: due for {person} expected {due}, helper listed {listed}")
     failures += quoted_stamp_ignored()
     failures += contents_never_due()
+    failures += requested_is_due()
     failures += viewer_agrees()
     print("OK" if not failures else f"{failures} failures")
     sys.exit(1 if failures else 0)
@@ -145,6 +146,24 @@ def contents_never_due() -> int:
         listed = subprocess.run([HELPER, path, "--due", "carol"], capture_output=True, text=True).stdout.split("\n")[:-1]
     if listed:
         print(f"FAIL contents: carol expected nothing due, helper listed {listed}")
+        return 1
+    return 0
+
+
+# A requested stamp, hash null, makes its node due; the node beside it, with a
+# current stamp, is not. "Dana Lee" also checks that a name with a space is read.
+def requested_is_due() -> int:
+    import tempfile
+    current = ["# Current\n", "\n", "Prose.\n", "\n"]
+    real = fingerprint(current)
+    text = (current[:1] + ["\n", "```yaml\n", "approvals:\n", f"  Dana Lee: {{at: 2026-01-01, hash: {real}}}\n", "```\n"] + current[1:]
+            + ["# Requested\n", "\n", "```yaml\n", "approvals:\n", "  Dana Lee: {at: 2026-01-02, hash: null}\n", "```\n", "\n", "Prose.\n"])
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "requested.map.md"
+        path.write_text("".join(text), encoding="utf-8")
+        listed = subprocess.run([HELPER, path, "--due", "Dana Lee"], capture_output=True, text=True).stdout.split("\n")[:-1]
+    if listed != ["Requested"]:
+        print(f"FAIL requested: Dana Lee expected ['Requested'] due, helper listed {listed}")
         return 1
     return 0
 

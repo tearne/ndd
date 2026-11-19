@@ -2,6 +2,14 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 3.8.1-dev
+
+- Map viewer: *Review due for …* takes several people, with clearer due marks; *Previous* / *Next due* removed (project map: *Due Nodes*).
+
+## 3.8.0-dev
+
+- A sign-off can be requested: a stamp with `hash: null`. A node is due for a person when their stamp is stale or requested; a node with no stamp for them is no longer due. The map viewer's *Due for…* marks and steps through a person's due nodes, and *Request sign-off* writes requests; in a split page each pane scrolls on its own (method map: *Sign-off*, *Stamp States*; project map: *Due Nodes*).
+
 ## 3.7.5-dev
 
 - Minor: a map file holds its nodes in tree order, and Tidy restores it (method map: *Map Structure*, *Tidy*).

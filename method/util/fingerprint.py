@@ -15,7 +15,7 @@ import re
 import sys
 from pathlib import Path
 
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 
 GREEN, YELLOW, RED, CYAN = "32", "33", "31", "36"  # ANSI colour codes
 
@@ -24,7 +24,7 @@ FENCE = re.compile(r"^```")
 LINK_ONLY_LINE = re.compile(r"^\[[^\]]+\]\([^)]+\)\s*\\?\s*$")
 # A key may hold spaces; one with a colon or leading punctuation is quoted, per
 # the Sign-off Stamp node.
-STAMP = re.compile(r"^\s+(?:\"([^\"]+)\"|'([^']+)'|([^\s\"'][^:]*?))\s*:\s*\{.*?\bhash:\s*([0-9a-f]{8})\b")
+STAMP = re.compile(r"^\s+(?:\"([^\"]+)\"|'([^']+)'|([^\s\"'][^:]*?))\s*:\s*\{.*?\bhash:\s*([0-9a-f]{8}|null)\b")
 
 
 def main():
@@ -66,23 +66,28 @@ def strip_scaffolding(body: list[str]) -> list[str]:
     return body[i:]
 
 
-# A node is due for a person when it has no stamp for them or the stamp's hash
-# is not the node's current fingerprint. Contents is never due. Sign-off
-# (ndd.map.md#sign-off).
+# A node is due for a person when their stamp is stale, its hash not the node's
+# current fingerprint, or requested, its hash null. A node with no stamp for
+# them is never due, nor is Contents. Stamp States (ndd.map.md#stamp-states).
 def due_for(nodes: dict[str, list[str]], person: str) -> list[str]:
-    return [name for name, lines in nodes.items() if name != "Contents" and stamps(lines).get(person) != fingerprint(lines)]
+    due = []
+    for name, lines in nodes.items():
+        found = stamps(lines)
+        if name != "Contents" and person in found and found[person] != fingerprint(lines):
+            due.append(name)
+    return due
 
 
 # Stamps are read from the scaffolding block only, so an example stamp quoted
-# later in the node is never taken for a real one. Sign-off Stamp
-# (ndd.map.md#sign-off-stamp).
-def stamps(node_lines: list[str]) -> dict[str, str]:
+# later in the node is never taken for a real one. A requested stamp's hash is
+# None. Sign-off Stamp (ndd.map.md#sign-off-stamp).
+def stamps(node_lines: list[str]) -> dict[str, str | None]:
     found = {}
     for line in scaffolding_block(node_lines[1:]):
         m = STAMP.match(line)
         if m:
             person = m.group(1) or m.group(2) or m.group(3)
-            found[person] = m.group(4)
+            found[person] = None if m.group(4) == "null" else m.group(4)
     return found
 
 

@@ -96,6 +96,7 @@ def stamps_show_their_state(base: str) -> int:
             + expect("Mixed", "class=ok>current" in (mixed := page(base, "Mixed")) and "class=stale>stale" in mixed,
                      "one stamp current, one stale")
             + expect("Unstamped", "No stamps" in page(base, "Unstamped"), "no stamps listed")
+            + expect("Requested", "class=requested>requested" in page(base, "Requested"), "bob's stamp a request")
             + expect("Quoted Handle", "carol: qa" in page(base, "Quoted Handle"), "the quoted handle shown"))
 
 
