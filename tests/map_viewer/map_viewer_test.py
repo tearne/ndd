@@ -58,6 +58,7 @@ def main():
             lambda: side_pane_served(base),
             lambda: script_parses(base),
             lambda: signoff_writes_stamps(signing, copy),
+            lambda: signoff_renames_older_key(signing, copy),
             lambda: signoff_refusals(signing, copy),
             lambda: foreign_host_refused(base),
         ])
@@ -97,7 +98,8 @@ def stamps_show_their_state(base: str) -> int:
                      "one stamp current, one stale")
             + expect("Unstamped", "No stamps" in page(base, "Unstamped"), "no stamps listed")
             + expect("Requested", "class=requested>requested" in page(base, "Requested"), "bob's stamp a request")
-            + expect("Quoted Handle", "carol: qa" in page(base, "Quoted Handle"), "the quoted handle shown"))
+            + expect("Quoted Handle", "carol: qa" in page(base, "Quoted Handle"), "the quoted handle shown")
+            + expect("Older Key", "class=ok>current" in page(base, "Older Key"), "alice's stamp under approvals: shown current"))
 
 
 def stale_stamp_links_to_its_diff(base: str) -> int:
@@ -200,7 +202,7 @@ def script_parses(base: str) -> int:
     return expect("page script", checked.returncode == 0, f"parses as JavaScript: {checked.stderr.strip()}")
 
 
-# A sign-off writes one stamp per name under the node's approvals: key, adding the key if
+# A sign-off writes one stamp per name under the node's signers: key, adding the key if
 # absent, replacing that name's earlier stamp, quoting a handle with a colon, and nothing else.
 def signoff_writes_stamps(base: str, copy: Path) -> int:
     today = date.today().isoformat()
@@ -212,13 +214,28 @@ def signoff_writes_stamps(base: str, copy: Path) -> int:
     fingerprint = signoff_data(unstamped)["fingerprint"]
     changed = [line for line in difflib.ndiff(before.splitlines(), after.splitlines()) if line[:2] in ("- ", "+ ")]
     return (expect("sign-off", (code_new, code_again) == (200, 200), f"accepted, got {code_new}, {code_again}")
-            + expect("sign-off", f"approvals:\n  dave: {{at: {today}, hash: {fingerprint}}}\n"
+            + expect("sign-off", f"signers:\n  dave: {{at: {today}, hash: {fingerprint}}}\n"
                      f'  "eve: ops": {{at: {today}, hash: {fingerprint}}}\n```' in after,
-                     "a stamp per name, under an approvals: key added for them, the colon quoted")
+                     "a stamp per name, under a signers: key added for them, the colon quoted")
             + expect("sign-off", unstamped.count("class=ok>current") == 2, "both new stamps shown current")
             + expect("sign-off", "class=stale>stale" not in stale and stale.count("<td>alice</td>") == 1,
                      "alice's stale stamp replaced, not added beside")
             + expect("sign-off", len(changed) == 5, f"only the stamp lines and the key changed, saw {changed}"))
+
+
+# A sign-off on a node whose stamps sit under the older approvals: key renames the key to
+# signers:, keeping alice's stamp, and changes nothing else.
+def signoff_renames_older_key(base: str, copy: Path) -> int:
+    today = date.today().isoformat()
+    before = (copy / "map.md").read_text(encoding="utf-8")
+    fingerprint = signoff_data(page(base, "Older Key"))["fingerprint"]
+    code = sign(base, "Older Key", ["bob"])
+    after = (copy / "map.md").read_text(encoding="utf-8")
+    changed = [line for line in difflib.ndiff(before.splitlines(), after.splitlines()) if line[:2] in ("- ", "+ ")]
+    return (expect("older key", code == 200, f"accepted, got {code}")
+            + expect("older key", f"signers:\n  alice: {{at: 2026-11-10, hash: {fingerprint}}}\n"
+                     f"  bob: {{at: {today}, hash: {fingerprint}}}\n```" in after, "the key renamed, alice's stamp kept, bob's added")
+            + expect("older key", len(changed) == 3, f"only the key and bob's stamp changed, saw {changed}"))
 
 
 # Each refusal leaves the file untouched: a node changed since its page was shown, a

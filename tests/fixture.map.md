@@ -7,7 +7,7 @@
 
 ```yaml
 id: fx1
-approvals:
+signers:
   expected: {at: 2026-09-11, hash: 11f6836e}
 ```
 
@@ -20,7 +20,7 @@ A small map whose only purpose is to pin the Fingerprint rule. Each node carries
 
 ```yaml
 id: fx2
-approvals:
+signers:
   expected: {at: 2026-09-11, hash: bcf6b47b}
   Alice Smith: {at: 2026-09-11, hash: bcf6b47b}
 ```
@@ -35,7 +35,7 @@ One paragraph of prose is the common case. Its fingerprint must survive being re
 
 ```yaml
 id: fx3
-approvals:
+signers:
   expected: {at: 2026-09-11, hash: 188f743f}
   Alice Smith: {at: 2026-09-11, hash: 188f743f}
 ```
@@ -65,7 +65,7 @@ approvals:
 
 ```yaml
 id: fx4
-approvals:
+signers:
   expected: {at: 2026-09-11, hash: 250ae92a}
 ```
 
@@ -85,7 +85,7 @@ A hand-drafted node with no scaffolding block yet. When Tidy adds one the finger
 
 ```yaml
 id: fx6
-approvals:
+signers:
   expected: {at: 2026-09-11, hash: 275d67bd}
 ```
 

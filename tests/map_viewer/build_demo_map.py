@@ -22,14 +22,14 @@ import subprocess
 import sys
 from pathlib import Path
 
-VERSION = "0.4.0"
+VERSION = "0.5.0"
 
 GREEN, YELLOW, RED, CYAN = "32", "33", "31", "36"  # ANSI colour codes
 
 VIEWER = Path(__file__).resolve().parents[2] / "method" / "util" / "map_viewer.py"
 
 # Each node: its file, its navigation links, its text as committed and as it stands
-# now (None if absent), and who approved which version.
+# now (None if absent), who approved which version, and optionally the older stamp key.
 NODES = [
     dict(file="map.md", name="Demo",
          nav=["[Contents](#contents)", "[Approval States](#approval-states)", "[Changes](#changes)",
@@ -37,11 +37,11 @@ NODES = [
          committed="A demo map for the viewer. Each child shows one thing: approval states, what changed since an approval, a branch in another file, and rendering. A [further map](linked.map.md#linked-map), linked only here in prose, still has its own tree beneath.",
          now="same", approved={"alice": "now"}),
     dict(file="map.md", name="Contents", nav=["[↑ Demo](#demo)"],
-         committed="- [Demo](#demo)\n  - [Approval States](#approval-states)\n    - [Current](#current)\n    - [Stale](#stale)\n    - [Mixed](#mixed)\n    - [Unstamped](#unstamped)\n    - [Requested](#requested)\n    - [Quoted Handle](#quoted-handle)\n    - [Renamed](#renamed)\n    - [Lost Approval](#lost-approval)\n  - [Changes](#changes)\n    - [Edited](#edited)\n  - [Branch](branch.map.md#branch)\n    - [Branch Leaf](branch.map.md#branch-leaf)\n  - [Rendering](#rendering)",
+         committed="- [Demo](#demo)\n  - [Approval States](#approval-states)\n    - [Current](#current)\n    - [Stale](#stale)\n    - [Mixed](#mixed)\n    - [Unstamped](#unstamped)\n    - [Requested](#requested)\n    - [Quoted Handle](#quoted-handle)\n    - [Older Key](#older-key)\n    - [Renamed](#renamed)\n    - [Lost Approval](#lost-approval)\n  - [Changes](#changes)\n    - [Edited](#edited)\n  - [Branch](branch.map.md#branch)\n    - [Branch Leaf](branch.map.md#branch-leaf)\n  - [Rendering](#rendering)",
          now="same", approved={}),
     dict(file="map.md", name="Approval States",
          nav=["[↑ Demo](#demo)", "[Current](#current)", "[Stale](#stale)", "[Mixed](#mixed)",
-              "[Unstamped](#unstamped)", "[Requested](#requested)", "[Quoted Handle](#quoted-handle)", "[Renamed](#renamed)",
+              "[Unstamped](#unstamped)", "[Requested](#requested)", "[Quoted Handle](#quoted-handle)", "[Older Key](#older-key)", "[Renamed](#renamed)",
               "[Lost Approval](#lost-approval)"],
          committed="One node for each state a stamp can be in.", now="same", approved={"alice": "now", "bob": "now"}),
     dict(file="map.md", name="Current", nav=["[↑ Approval States](#approval-states)"],
@@ -63,6 +63,9 @@ NODES = [
     dict(file="map.md", name="Quoted Handle", nav=["[↑ Approval States](#approval-states)"],
          committed="Approved under a handle with a colon in it, which a stamp must quote.",
          now="same", approved={"carol: qa": "now"}),
+    dict(file="map.md", name="Older Key", nav=["[↑ Approval States](#approval-states)"],
+         committed="Approved by alice under the older approvals: key, which is still read; a new sign-off renames it to signers:.",
+         now="same", approved={"alice": "now"}, key="approvals"),
     dict(file="map.md", name="Renamed", committed_name="Old Name", nav=["[↑ Approval States](#approval-states)"],
          committed="Approved by alice under its old name. The heading counts towards the fingerprint, so her stamp is stale, and the viewer still finds her version by the node's id.",
          now="same", approved={"alice": "committed"}),
@@ -143,7 +146,7 @@ def node_markdown(node: dict, text: str, node_id: str, viewer, version: str) -> 
     nav = " \\\n".join(node["nav"])
     stamps = "".join(f"  {quoted(who)}: {{at: 2026-11-10, hash: {stamp_hash(node, which, viewer)}}}\n"
                      for who, which in node["approved"].items())
-    yaml = f"```yaml\nid: {node_id}\n" + (f"approvals:\n{stamps}" if stamps else "") + "```"
+    yaml = f"```yaml\nid: {node_id}\n" + (f"{node.get('key', 'signers')}:\n{stamps}" if stamps else "") + "```"
     return f"# {name_of(node, version)}\n\n{nav}\n\n{yaml}\n\n{text}\n"
 
 

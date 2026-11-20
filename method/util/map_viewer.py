@@ -36,7 +36,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, quote, urlparse
 
-VERSION = "0.5.0"
+VERSION = "0.6.0"
 
 GREEN, YELLOW, RED = "32", "33", "31"  # ANSI colour codes
 
@@ -202,7 +202,7 @@ def node_view(file: str, name: str, lines: list[str]) -> tuple[str, str]:
 {body}
 <section class="meta">
 <p>Current fingerprint <code>{current}</code></p>
-{approvals_html(file, name, lines, current, signoff_html(file, name, current))}
+{stamps_html(file, name, lines, current, signoff_html(file, name, current))}
 </section>"""
 
 
@@ -226,7 +226,7 @@ def signoff_html(file: str, name: str, current: str) -> str:
 
 # Who has signed off the node, and whether the text has changed since. Contents is a tree
 # overview kept in step with the navigation links, so it is never stamped or due.
-def approvals_html(file: str, name: str, lines: list[str], current: str, signoff: str = "") -> str:
+def stamps_html(file: str, name: str, lines: list[str], current: str, signoff: str = "") -> str:
     if name == "Contents":
         return "<p>Contents is a tree overview of the navigation links, so it is never stamped and never due.</p>"
     rows = "".join(approval_row(file, name, who, at, hash_, current)
@@ -279,7 +279,7 @@ def approval_view(file: str, name: str, who: str, at: str, hash_: str | None, li
         old = approved[2]
         delta = changed_passages([old[0]] + strip_scaffolding(old[1:]), [now[0]] + strip_scaffolding(now[1:]))
         diff = f'{delta}<h3 class="section">Current Node</h3><pre class=diff>{word_diff("".join(old), "".join(now))}</pre>'
-    footer = f'<section class="meta">{approvals_html(file, name, lines, current)}</section>'
+    footer = f'<section class="meta">{stamps_html(file, name, lines, current)}</section>'
     return f"Sign-off Diff: {name}", head + diff + footer
 
 
@@ -860,8 +860,8 @@ def due_for(file: str, name: str) -> list[str]:
 
 # --- Sign-offs ---
 
-# Writes each name's stamp under the node's approvals: key, adding the key if absent and
-# replacing that name's earlier stamp, and nothing else. Refused if the node's fingerprint
+# Writes each name's stamp under the node's signers: key, renaming an older approvals: key
+# and adding the key if absent, and replacing that name's earlier stamp, and nothing else. Refused if the node's fingerprint
 # on disk is not the one its page was rendered with, so no one signs off text they weren't shown.
 # A request writes hash: null, and only for a name with no stamp on the node, so no stamp's
 # hash is lost. Returns the handles written.
@@ -907,10 +907,11 @@ def checked_handle(name) -> str:
 
 
 # The scaffolding block with a stamp line per handle: an earlier stamp by the same handle is
-# replaced in place, a new one goes at the end of the approvals mapping, which is added before
-# the closing fence if absent.
+# replaced in place, a new one goes at the end of the signers mapping, which is added before
+# the closing fence if absent. An older approvals: key is renamed first, as Sign-off Stamp
+# (ndd.map.md#sign-off-stamp) directs for every write.
 def with_stamps(block: list[str], handles: list[str], value: str) -> list[str]:
-    block = list(block)
+    block = [re.sub(r"^approvals:(\s*)$", r"signers:\1", l) for l in block]
     for handle in handles:
         line = f"  {handle}: {value}\n"
         key = handle.strip('"')
@@ -918,9 +919,9 @@ def with_stamps(block: list[str], handles: list[str], value: str) -> list[str]:
         if found:
             block[found[0]] = line
             continue
-        top = [i for i, l in enumerate(block) if re.match(r"^approvals:\s*$", l)]
+        top = [i for i, l in enumerate(block) if re.match(r"^signers:\s*$", l)]
         if not top:
-            block[-1:-1] = ["approvals:\n"]
+            block[-1:-1] = ["signers:\n"]
             top = [len(block) - 2]
         at = top[0] + 1
         while at < len(block) - 1 and block[at].startswith((" ", "\t")):

@@ -8,7 +8,7 @@
 
 ```yaml
 id: p1j
-approvals:
+signers:
   tearne: {at: 2026-11-17, hash: 4b86776e}
 ```
 
@@ -58,7 +58,7 @@ id: ct6
 
 ```yaml
 id: d5v
-approvals:
+signers:
   tearne: {at: 2026-11-04, hash: f34ff91c}
 ```
 
@@ -75,7 +75,7 @@ Only the method ships, as [Shipped Assets](#shipped-assets) lists; this project 
 
 ```yaml
 id: l2s
-approvals:
+signers:
   tearne: {at: 2026-11-04, hash: f3e0e188}
 ```
 
@@ -93,7 +93,7 @@ The checklist for a new version of NDD, published by moving `main`, and one of t
 
 ```yaml
 id: n5w
-approvals:
+signers:
   tearne: {at: 2026-11-04, hash: d1da4379}
 ```
 
@@ -116,7 +116,7 @@ It refuses to run from its own checkout. It checks that every shipped asset is p
 
 ```yaml
 id: s4h
-approvals:
+signers:
   tearne: {at: 2026-11-17, hash: 6be4dbca}
 ```
 
@@ -138,7 +138,7 @@ Everything else stays in the checkout, for example `map.md`, `changes/`, `tests/
 
 ```yaml
 id: r8d
-approvals:
+signers:
   tearne: {at: 2026-11-04, hash: add5868a}
 ```
 
@@ -157,7 +157,7 @@ Which rules it carries is settled by [Rule Selection](#rule-selection).
 
 ```yaml
 id: r4l
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: 44ba6e37}
 ```
 
@@ -176,7 +176,7 @@ The rendering gathers by trigger what the map holds by concept, so an agent find
 
 ```yaml
 id: f7m
-approvals:
+signers:
   tearne: {at: 2026-10-22, hash: 340edf62}
 ```
 
@@ -218,7 +218,7 @@ If, at rendering time, the agent reviewing the rule set finds it sub-optimal, th
 
 ```yaml
 id: t5r
-approvals:
+signers:
   tearne: {at: 2026-11-04, hash: 42050ea7}
 ```
 
@@ -238,7 +238,7 @@ The task tempts the failures the rule targets and probes where it might overreac
 
 ```yaml
 id: mv4
-approvals:
+signers:
   tearne: {at: 2026-11-19, hash: 047f2b94}
 ```
 
@@ -263,15 +263,15 @@ It carries its own copy of the [Fingerprint](method/ndd.map.md#fingerprint) rule
 
 ```yaml
 id: vs1
-approvals:
-  tearne: {at: 2026-11-19, hash: 8fe86aea}
+signers:
+  tearne: {at: 2026-11-20, hash: b562b2ef}
 ```
 
 On a node's page, beside its sign-offs, a *Sign off* button opens a drop-down of names to tick, with *Sign off* to record a sign-off for each and *Request* to write a [request](method/ndd.map.md#stamp-states) for each with no stamp on the node. A sign-off diff, showing an old version, has no button.
 
 The drop-down lists every handle in the map's stamps and any name added in that browser, kept there until removed; only added names are removable. The last names ticked are ticked again.
 
-Each name gets its line under the node's `approvals:` key, dated today and, for a sign-off, with the fingerprint of the text shown; nothing else is written, and writes are guarded as [Request Guards](#request-guards) describes. Committing is left to the user, prompted by a red light at the page's top right whose tooltip says the repository has uncommitted changes.
+Each name gets its line under the node's `signers:` key, dated today and, for a sign-off, with the fingerprint of the text shown; nothing else is written, and writes are guarded as [Request Guards](#request-guards) describes. Committing is left to the user, prompted by a red light at the page's top right whose tooltip says the repository has uncommitted changes.
 
 
 # Request Guards
@@ -280,7 +280,7 @@ Each name gets its line under the node's `approvals:` key, dated today and, for 
 
 ```yaml
 id: vs2
-approvals:
+signers:
   tearne: {at: 2026-11-17, hash: d162c55b}
 ```
 
@@ -297,7 +297,7 @@ approvals:
 
 ```yaml
 id: vd5
-approvals:
+signers:
   tearne: {at: 2026-11-19, hash: e935ef24}
 ```
 
@@ -310,7 +310,7 @@ Above the tree, a *Review due for …* button opens a drop-down of the [signers]
 
 ```yaml
 id: f3c
-approvals:
+signers:
   tearne: {at: 2026-11-04, hash: b9fd3121}
 ```
 

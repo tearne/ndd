@@ -12,7 +12,7 @@
 
 ```yaml
 id: a3k
-approvals:
+signers:
   tearne: {at: 2026-11-17, hash: ea3f724d}
 ```
 
@@ -158,7 +158,7 @@ The principles below are the binding constraints every change answers to, and th
 
 ```yaml
 id: d3t
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: e08a18de}
 ```
 
@@ -235,7 +235,7 @@ A tree delivers local sufficiency for free: every node has one parent, one home,
 
 ```yaml
 id: f9x
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: f2edd114}
 ```
 
@@ -250,7 +250,7 @@ Full cross-rendering is expensive, kept for high-stakes moments. Its lighter for
 
 ```yaml
 id: r5i
-approvals:
+signers:
   tearne: {at: 2026-10-26, hash: be13ae7a}
 ```
 
@@ -278,7 +278,7 @@ The focused items are where comprehension is built; skip them and the user is re
 
 ```yaml
 id: sp1
-approvals:
+signers:
   tearne: {at: 2026-10-07, hash: 531a6b23}
 ```
 
@@ -299,7 +299,7 @@ The map is the developer's conceptual model of the system. NDD assumes that any 
 
 ```yaml
 id: nd1
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: fc25e803}
 ```
 
@@ -320,7 +320,7 @@ The format is a strict superset of a plain-markdown section — strip the scaffo
 
 ```yaml
 id: w9c
-approvals:
+signers:
   tearne: {at: 2026-11-17, hash: e785da72}
 ```
 
@@ -337,7 +337,7 @@ The **scaffolding block** is fenced YAML directly under the navigation links con
 
 ```yaml
 id: b3q
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: 7f473cdf}
 ```
 
@@ -380,7 +380,7 @@ The main user-facing parts of a node are each optional and include, in a fixed o
 
 ```yaml
 id: c5k
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: 82a4fbdf}
 ```
 
@@ -399,21 +399,22 @@ Rendered as a `> [!IMPORTANT]` blockquote.
 
 ```yaml
 id: p8m
-approvals:
-  tearne: {at: 2026-11-18, hash: 749361bb}
+signers:
+  tearne: {at: 2026-11-20, hash: 097db66c}
 ```
 
-A sign-off stamp records one person's sign-off of one node, or a request for one. Stamps live in the node's scaffolding block under an `approvals:` mapping keyed by each [signer](#signer)'s name or handle, so each person holds exactly one and a new sign-off overwrites it. Because they are in the node rather than a separate ledger, they follow it through renames and moves. A node without the mapping is simply not signed off, and most maps never gain one.
+A sign-off stamp records one person's sign-off of one node, or a request for one. Stamps live in the node's scaffolding block under a `signers:` mapping keyed by each [signer](#signer)'s name or handle, so each person holds exactly one and a new sign-off overwrites it. Because they are in the node rather than a separate ledger, they follow it through renames and moves. A node without the mapping is not signed off.
 
 **Detail**
 
-Each value holds `at`, an ISO 8601 date, and `hash`, the [fingerprint](#fingerprint) of the text signed off. A [requested](#stamp-states) stamp has `hash: null`, and `at` is the date of the request. Drift uses only the hash; the date says when, and the hash finds the version a person saw. Quote the key if it contains a colon or starts with punctuation.
+Each value holds `at`, an ISO 8601 date, and `hash`, the [fingerprint](#fingerprint) of the text signed off. A [requested](#stamp-states) stamp has `hash: null`, and `at` is the date of the request. Quote the key if it contains a colon or starts with punctuation.
+
+An older map's `approvals:` key is read as `signers:`, and renamed to it whenever a stamp is written.
 
 ```yaml
 id: w9c
-approvals:
+signers:
   alice: {at: 2026-09-10, hash: 3f9a1c2e}
-  bob: {at: 2026-08-02, hash: 8d02b7e4}
 ```
 
 **See also**
@@ -428,7 +429,7 @@ approvals:
 
 ```yaml
 id: h4q
-approvals:
+signers:
   tearne: {at: 2026-11-17, hash: 68af75d3}
 ```
 
@@ -447,17 +448,17 @@ Take the node from its heading line to the line before the next heading. Drop, w
 
 ```yaml
 id: u6h
-approvals:
-  tearne: {at: 2026-11-18, hash: 442e03c4}
+signers:
+  tearne: {at: 2026-11-20, hash: 9e1df54b}
 ```
 
-`util/fingerprint.py` is the script an agent runs to compute node fingerprints: to write a [sign-off stamp](#sign-off-stamp), and at [Sign-off](#sign-off) to find what is due.
+`util/fingerprint.py` helps generate [sign-off stamps](#sign-off-stamp) and identify what's due for [Sign-off](#sign-off).
 
-- Given a map file it prints every node's fingerprint beside its name.
-- Given a node name it prints that one fingerprint alone.
-- With `--due` and a person's name it reads the stamps and prints the nodes due for them, those whose stamp is [stale or requested](#stamp-states), in map order.
+- Given a map file it prints every node's fingerprint, or given a node name, that one alone.
+- With `--due` it reads the stamps and prints the nodes due for a name, those [stale or requested](#stamp-states).
+- With `--migrate` it renames an older map's `approvals:` key to `signers:`; no fingerprint moves.
 
-It reads only; stamps are written by the agent or the [map viewer](#map-viewer).
+Besides migrating, it reads only; stamps are written by the agent or the [map viewer](#map-viewer).
 
 **Detail**
 
@@ -467,9 +468,10 @@ Example usage:
 ndd/method/util/fingerprint.py map.md
 ndd/method/util/fingerprint.py map.md "Node Name"
 ndd/method/util/fingerprint.py map.md --due "Alice Smith"
+ndd/method/util/fingerprint.py map.md --migrate
 ```
 
-A [POS-style](standards/POS.md) script run with `uv`, one map file at a time, so a map in several files takes one run per file. A name with spaces is quoted on the command line only.
+A [POS-style](standards/POS.md) script, run on one map file at a time.
 
 
 # Stamp States
@@ -478,7 +480,7 @@ A [POS-style](standards/POS.md) script run with `uv`, one map file at a time, so
 
 ```yaml
 id: s3t
-approvals:
+signers:
   tearne: {at: 2026-11-18, hash: 803c0718}
 ```
 
@@ -492,7 +494,7 @@ A person's stamp on a node is in one of three states, found by comparing it with
 
 ```yaml
 id: m6x
-approvals:
+signers:
   tearne: {at: 2026-11-17, hash: 4e08bb9f}
 ```
 
@@ -513,7 +515,7 @@ The root defaults to the project's name, preferring a term that carries domain i
 
 ```yaml
 id: k2v
-approvals:
+signers:
   tearne: {at: 2026-11-04, hash: bda1d47e}
 ```
 
@@ -536,7 +538,7 @@ A file's *Contents* lists the nodes in that file; a branch that continues in ano
 
 ```yaml
 id: z9p
-approvals:
+signers:
   tearne: {at: 2026-11-18, hash: 86d46184}
 ```
 
@@ -577,7 +579,7 @@ How map prose is written, so nodes stay readable and durable. Three sides:
 
 ```yaml
 id: h3v
-approvals:
+signers:
   tearne: {at: 2026-09-13, hash: e9c897d0}
 ```
 
@@ -602,7 +604,7 @@ A handful of habits shape how a node reads, and one trap to avoid:
 
 ```yaml
 id: f2n
-approvals:
+signers:
   tearne: {at: 2026-09-13, hash: 2f20a597}
 ```
 
@@ -625,7 +627,7 @@ Typographic conventions for map prose.
 
 ```yaml
 id: e2c
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: ee636ce4}
 ```
 
@@ -656,7 +658,7 @@ Across nodes the same holds: a fact touching several nodes has one owner, and th
 
 ```yaml
 id: e7m
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: a6197505}
 ```
 
@@ -692,7 +694,7 @@ The map describes what exists, never what is planned: an edit describing work no
 
 ```yaml
 id: n3g
-approvals:
+signers:
   tearne: {at: 2026-10-26, hash: b4bd8360}
 ```
 
@@ -718,7 +720,7 @@ The rule binds the agent, not the user, who edits the map freely and unannounced
 
 ```yaml
 id: sc7
-approvals:
+signers:
   tearne: {at: 2026-11-17, hash: 06eead64}
 ```
 
@@ -731,7 +733,7 @@ How a session runs, whatever it works on, a change, a map edit or a discussion: 
 
 ```yaml
 id: x7t
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: 88e38a52}
 ```
 
@@ -760,7 +762,7 @@ A project that hasn't started is offered [bootstrapping](#bootstrapping) instead
 
 ```yaml
 id: b6t
-approvals:
+signers:
   tearne: {at: 2026-10-26, hash: 7802eb3c}
 ```
 
@@ -778,7 +780,7 @@ Adopting an existing codebase adds a survey: the agent reads its assets and prop
 
 ```yaml
 id: g5m
-approvals:
+signers:
   tearne: {at: 2026-11-10, hash: da547e37}
 ```
 
@@ -801,7 +803,7 @@ Writing is gated by phase. Outside [Build](#build) the agent writes only inside 
 
 ```yaml
 id: k4d
-approvals:
+signers:
   tearne: {at: 2026-10-18, hash: d44461c7}
 ```
 
@@ -814,7 +816,7 @@ Approval requires a clear affirmative in response to the agent asking. Silence, 
 
 ```yaml
 id: d4r
-approvals:
+signers:
   tearne: {at: 2026-11-04, hash: 1e1e06c4}
 ```
 
@@ -831,7 +833,7 @@ A draft written in place sits between `<!-- draft -->` and `<!-- /draft -->`, vi
 
 ```yaml
 id: d7f
-approvals:
+signers:
   tearne: {at: 2026-10-26, hash: da360f8c}
 ```
 
@@ -851,7 +853,7 @@ The diff sits in a `diff`-fenced block whose fence has more backticks than any f
 
 ```yaml
 id: k9y
-approvals:
+signers:
   tearne: {at: 2026-10-18, hash: feeef867}
 ```
 
@@ -870,7 +872,7 @@ The first two are side-actions: the agent handles them, confirms in a line, and 
 
 ```yaml
 id: r4c
-approvals:
+signers:
   tearne: {at: 2026-10-18, hash: c875d9f6}
 ```
 
@@ -887,7 +889,7 @@ The entry is dated and captures the observation plus any surrounding context (ph
 
 ```yaml
 id: y2f
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: f1667f1a}
 ```
 
@@ -908,7 +910,7 @@ Placement is confirmed in one line. Overlap noticed with an existing change is n
 
 ```yaml
 id: p6r
-approvals:
+signers:
   tearne: {at: 2026-11-05, hash: 1459bece}
 ```
 
@@ -927,7 +929,7 @@ Resuming an entry's work by any route deletes it, and an empty file with it. Oth
 
 ```yaml
 id: t4m
-approvals:
+signers:
   tearne: {at: 2026-10-26, hash: 30205476}
 ```
 
@@ -954,7 +956,7 @@ While a set is in progress, every message ends with a **status line** showing th
 
 ```yaml
 id: cm4
-approvals:
+signers:
   tearne: {at: 2026-10-22, hash: 0dba9d9f}
 ```
 
@@ -973,7 +975,7 @@ A change's file name is its title in two to five hyphenated words, optionally be
 
 ```yaml
 id: q7p
-approvals:
+signers:
   tearne: {at: 2026-09-29, hash: 533c26a0}
 ```
 
@@ -986,7 +988,7 @@ A durable home for unfinished thinking that precedes an [Intent](#intent). A dis
 
 ```yaml
 id: r7b
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: 87342ca1}
 ```
 
@@ -1001,7 +1003,7 @@ On a [pause](#pause-keyword) the agent leaves a **Resume** anchor with return po
 
 ```yaml
 id: d9k
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: 11a385f9}
 ```
 
@@ -1024,7 +1026,7 @@ On approval the [record](#discussion-records) is prefixed with the ISO date and 
 
 ```yaml
 id: l5g
-approvals:
+signers:
   tearne: {at: 2026-11-05, hash: 69388622}
 ```
 
@@ -1047,7 +1049,7 @@ The Plan → Build boundary is the load-bearing gate: the change's own work wait
 
 ```yaml
 id: l9t
-approvals:
+signers:
   tearne: {at: 2026-10-22, hash: fe163e61}
 ```
 
@@ -1064,7 +1066,7 @@ At each move between lifecycle stages the agent first reads the governing map no
 
 ```yaml
 id: v3d
-approvals:
+signers:
   tearne: {at: 2026-11-10, hash: 80a9c861}
 ```
 
@@ -1081,7 +1083,7 @@ A plan need not be fully formed to exist. A change that is not building is **par
 
 ```yaml
 id: i8b
-approvals:
+signers:
   tearne: {at: 2026-11-17, hash: a7cdd95e}
 ```
 
@@ -1096,7 +1098,7 @@ Its prose has a [cap](#caps), so the opening scans in seconds. Once the change's
 
 ```yaml
 id: rv2
-approvals:
+signers:
   tearne: {at: 2026-11-17, hash: b5a28082}
 ```
 
@@ -1111,7 +1113,7 @@ A [Change Specification](#change-specification) is the exception: its nodes beco
 
 ```yaml
 id: c7d
-approvals:
+signers:
   tearne: {at: 2026-10-26, hash: 7c90e111}
 ```
 
@@ -1128,7 +1130,7 @@ Keep it to the least that lets a later reader rediscover the full detail for the
 
 ```yaml
 id: n8u
-approvals:
+signers:
   tearne: {at: 2026-10-26, hash: d6de2a7c}
 ```
 
@@ -1149,7 +1151,7 @@ An empty section is deleted; its absence is the signal that the plan is ready.
 
 ```yaml
 id: u6k
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: 69d0dc78}
 ```
 
@@ -1170,7 +1172,7 @@ The change claims its version at build start, as [Versioning](#versioning) direc
 
 ```yaml
 id: b7n
-approvals:
+signers:
   tearne: {at: 2026-10-26, hash: 804ffd4f}
 ```
 
@@ -1187,7 +1189,7 @@ At the [Startup Scan](#startup-scan), a lock on a change whose work is unfinishe
 
 ```yaml
 id: g2l
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: 68ee06ba}
 ```
 
@@ -1203,7 +1205,7 @@ Any items put to one side during Build are logged as open and must be resolved b
 
 ```yaml
 id: o4j
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: 5574d06b}
 ```
 
@@ -1226,7 +1228,7 @@ Its mere presence is the marker that the change is finished.
 
 ```yaml
 id: a9v
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: bb8e02e6}
 ```
 
@@ -1246,7 +1248,7 @@ Archiving closes a change once its [Conclude](#conclude) note is approved. Its s
 
 ```yaml
 id: c2f
-approvals:
+signers:
   tearne: {at: 2026-10-26, hash: c2a58f17}
 ```
 
@@ -1259,7 +1261,7 @@ A folder beside a change document in `changes/open/`, named to match it, holding
 
 ```yaml
 id: c5p
-approvals:
+signers:
   tearne: {at: 2026-11-10, hash: cc37c7ca}
 ```
 
@@ -1286,7 +1288,7 @@ Some parts of a change or discussion carry a cap, listed below, to keep them qui
 
 ```yaml
 id: e3n
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: 37a9e242}
 ```
 
@@ -1308,7 +1310,7 @@ The four are not a ladder: the agent proposes the style whose shape fits, not th
 
 ```yaml
 id: t0v
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: 666e287e}
 ```
 
@@ -1322,7 +1324,7 @@ Uses [Intent](#intent) only — the whole plan. Chosen when a change has virtual
 
 ```yaml
 id: v2m
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: 41c8aded}
 ```
 
@@ -1335,7 +1337,7 @@ Uses [Intent](#intent) and a light [Bounds](#bounds) section. Chosen when the us
 
 ```yaml
 id: b3n
-approvals:
+signers:
   tearne: {at: 2026-11-17, hash: 512e16b8}
 ```
 
@@ -1353,7 +1355,7 @@ Bounds has a [cap](#caps).
 
 ```yaml
 id: e5x
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: 5efd51f9}
 ```
 
@@ -1368,7 +1370,7 @@ Emergent is real-time collaboration on a moving target: user and agent shape the
 
 ```yaml
 id: f2q
-approvals:
+signers:
   tearne: {at: 2026-11-17, hash: e3066e9a}
 ```
 
@@ -1389,7 +1391,7 @@ If the work shifts, Focus can be re-agreed rather than the change concluded. Foc
 
 ```yaml
 id: f8p
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: 7cf2352e}
 ```
 
@@ -1404,7 +1406,7 @@ Formal is the default when the agent is unsure which style fits, and is particul
 
 ```yaml
 id: s7q
-approvals:
+signers:
   tearne: {at: 2026-11-17, hash: 6393ee2f}
 ```
 
@@ -1421,7 +1423,7 @@ Node approval follows the normal [Engagement Rule](#engagement-rule), with [sign
 
 ```yaml
 id: ip5
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: 252ddbe2}
 ```
 
@@ -1436,7 +1438,7 @@ If added, Build follows it; deviations go to the [Log](#log), and material rewor
 
 ```yaml
 id: fb9
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: b535d646}
 ```
 
@@ -1453,7 +1455,7 @@ Build lands non-map assets in place, matching any approved non-map targets. Last
 
 ```yaml
 id: q4m
-approvals:
+signers:
   tearne: {at: 2026-10-26, hash: a87154e6}
 ```
 
@@ -1470,7 +1472,7 @@ At Archiving, the retain-or-drop review drops whole-map copies in full — promo
 
 ```yaml
 id: vr6
-approvals:
+signers:
   tearne: {at: 2026-10-20, hash: e298df05}
 ```
 
@@ -1494,7 +1496,7 @@ A versioned project keeps a changelog and uses semver. Each change carries its o
 
 ```yaml
 id: t7v
-approvals:
+signers:
   tearne: {at: 2026-11-17, hash: 76076420}
 ```
 
@@ -1519,7 +1521,7 @@ Deferring upkeep for a stretch — an emergency fix, a push elsewhere — is saf
 
 ```yaml
 id: m3r
-approvals:
+signers:
   tearne: {at: 2026-11-05, hash: 326c7e0b}
 ```
 
@@ -1541,7 +1543,7 @@ With many findings, the agent recommends a [change](#change-lifecycle) to hold a
 
 ```yaml
 id: u8k
-approvals:
+signers:
   tearne: {at: 2026-11-17, hash: 19fe3790}
 ```
 
@@ -1556,7 +1558,7 @@ It fixes and reports a [tree overview](#map-structure) out of step with the navi
 
 ```yaml
 id: d4p
-approvals:
+signers:
   tearne: {at: 2026-11-17, hash: 80d2a65e}
 ```
 
@@ -1579,7 +1581,7 @@ It looks for:
 
 ```yaml
 id: k4c
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: 353b04df}
 ```
 
@@ -1608,7 +1610,7 @@ A node the [ambiguity test](#cross-agent-falsifiability) flags is a map-quality 
 
 ```yaml
 id: r3n
-approvals:
+signers:
   tearne: {at: 2026-11-03, hash: 6f79f14d}
 ```
 
@@ -1633,7 +1635,7 @@ Because it reads the code it is the costliest check, and the catch-up when map u
 
 ```yaml
 id: b7k
-approvals:
+signers:
   tearne: {at: 2026-10-26, hash: 2e262881}
 ```
 
@@ -1654,7 +1656,7 @@ It looks for:
 
 ```yaml
 id: f2s
-approvals:
+signers:
   tearne: {at: 2026-11-19, hash: f87127a5}
 ```
 
@@ -1674,7 +1676,7 @@ Nothing is marked when a node changes. Drift is found by comparing a person's st
 
 ```yaml
 id: v7a
-approvals:
+signers:
   tearne: {at: 2026-11-17, hash: daeff2c7}
 ```
 
@@ -1689,7 +1691,7 @@ The user can override the handle, for one sign-off or for the rest of the sessio
 
 ```yaml
 id: g8l
-approvals:
+signers:
   tearne: {at: 2026-11-16, hash: b2bce1d0}
 ```
 
@@ -1703,7 +1705,7 @@ The method needs no bespoke application — it rides generic markdown tooling. I
 
 ```yaml
 id: m8v
-approvals:
+signers:
   tearne: {at: 2026-11-17, hash: 1cb0db0a}
 ```
 
@@ -1729,7 +1731,7 @@ To view it from another machine, forward a port to it as [Map Viewer Access](#ma
 
 ```yaml
 id: va3
-approvals:
+signers:
   tearne: {at: 2026-11-17, hash: 960692e9}
 ```
 
@@ -1759,7 +1761,7 @@ The viewer listens on 127.0.0.1 alone, so another machine reaches it by forwardi
 
 ```yaml
 id: s9d
-approvals:
+signers:
   tearne: {at: 2026-11-04, hash: aa5a8b75}
 ```
 
@@ -1781,7 +1783,7 @@ Guidance for the code agents write on user projects, distinct from the map spec 
 
 ```yaml
 id: i4n
-approvals:
+signers:
   tearne: {at: 2026-11-17, hash: ac7cb95d}
 ```
 

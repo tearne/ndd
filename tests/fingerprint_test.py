@@ -93,6 +93,8 @@ def main():
     failures += quoted_stamp_ignored()
     failures += contents_never_due()
     failures += requested_is_due()
+    failures += older_key_read()
+    failures += migrate_renames_key()
     failures += viewer_agrees()
     print("OK" if not failures else f"{failures} failures")
     sys.exit(1 if failures else 0)
@@ -121,7 +123,7 @@ def quoted_stamp_ignored() -> int:
     import tempfile
     body = ["# Quoted\n", "\n", "Prose quoting a stamp:\n", "\n", "```yaml\n", "approvals:\n", "  carol: {at: 2026-01-01, hash: 00000000}\n", "```\n"]
     real = fingerprint(body)
-    node = body[:1] + ["\n", "```yaml\n", "id: q1t\n", "approvals:\n", f"  carol: {{at: 2026-01-01, hash: {real}}}\n", "```\n"] + body[1:]
+    node = body[:1] + ["\n", "```yaml\n", "id: q1t\n", "signers:\n", f"  carol: {{at: 2026-01-01, hash: {real}}}\n", "```\n"] + body[1:]
     with tempfile.TemporaryDirectory() as tmp:
         path = Path(tmp) / "quoted.map.md"
         path.write_text("".join(node), encoding="utf-8")
@@ -139,7 +141,7 @@ def contents_never_due() -> int:
     contents = ["# Contents\n", "\n", "```yaml\n", "id: c1t\n", "```\n", "\n", "- [Stamped](#stamped)\n", "\n"]
     body = ["# Stamped\n", "\n", "Prose.\n"]
     real = fingerprint(body)
-    node = body[:1] + ["\n", "```yaml\n", "id: s1t\n", "approvals:\n", f"  carol: {{at: 2026-01-01, hash: {real}}}\n", "```\n"] + body[1:]
+    node = body[:1] + ["\n", "```yaml\n", "id: s1t\n", "signers:\n", f"  carol: {{at: 2026-01-01, hash: {real}}}\n", "```\n"] + body[1:]
     with tempfile.TemporaryDirectory() as tmp:
         path = Path(tmp) / "contents.map.md"
         path.write_text("".join(contents + node), encoding="utf-8")
@@ -156,14 +158,49 @@ def requested_is_due() -> int:
     import tempfile
     current = ["# Current\n", "\n", "Prose.\n", "\n"]
     real = fingerprint(current)
-    text = (current[:1] + ["\n", "```yaml\n", "approvals:\n", f"  Dana Lee: {{at: 2026-01-01, hash: {real}}}\n", "```\n"] + current[1:]
-            + ["# Requested\n", "\n", "```yaml\n", "approvals:\n", "  Dana Lee: {at: 2026-01-02, hash: null}\n", "```\n", "\n", "Prose.\n"])
+    text = (current[:1] + ["\n", "```yaml\n", "signers:\n", f"  Dana Lee: {{at: 2026-01-01, hash: {real}}}\n", "```\n"] + current[1:]
+            + ["# Requested\n", "\n", "```yaml\n", "signers:\n", "  Dana Lee: {at: 2026-01-02, hash: null}\n", "```\n", "\n", "Prose.\n"])
     with tempfile.TemporaryDirectory() as tmp:
         path = Path(tmp) / "requested.map.md"
         path.write_text("".join(text), encoding="utf-8")
         listed = subprocess.run([HELPER, path, "--due", "Dana Lee"], capture_output=True, text=True).stdout.split("\n")[:-1]
     if listed != ["Requested"]:
         print(f"FAIL requested: Dana Lee expected ['Requested'] due, helper listed {listed}")
+        return 1
+    return 0
+
+
+# A stamp under the older approvals: key is still read: Dana Lee's is stale, so
+# Old Key is due for her.
+def older_key_read() -> int:
+    import tempfile
+    text = ["# Old Key\n", "\n", "```yaml\n", "approvals:\n", "  Dana Lee: {at: 2026-01-01, hash: 00000000}\n", "```\n", "\n", "Prose.\n"]
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "old-key.map.md"
+        path.write_text("".join(text), encoding="utf-8")
+        listed = subprocess.run([HELPER, path, "--due", "Dana Lee"], capture_output=True, text=True).stdout.split("\n")[:-1]
+    if listed != ["Old Key"]:
+        print(f"FAIL older key: Dana Lee expected ['Old Key'] due, helper listed {listed}")
+        return 1
+    return 0
+
+
+# --migrate renames the scaffolding key to signers: and nothing else: an approvals:
+# key quoted in the prose stays, and carol's stamp is still current.
+def migrate_renames_key() -> int:
+    import tempfile
+    body = ["# Migrated\n", "\n", "Prose quoting a key:\n", "\n", "```yaml\n", "approvals:\n", "```\n"]
+    real = fingerprint(body)
+    node = body[:1] + ["\n", "```yaml\n", "id: m1t\n", "approvals:\n", f"  carol: {{at: 2026-01-01, hash: {real}}}\n", "```\n"] + body[1:]
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "migrate.map.md"
+        path.write_text("".join(node), encoding="utf-8")
+        subprocess.run([HELPER, path, "--migrate"], capture_output=True, text=True)
+        after = path.read_text(encoding="utf-8").splitlines(keepends=True)
+        listed = subprocess.run([HELPER, path, "--due", "carol"], capture_output=True, text=True).stdout.split("\n")[:-1]
+    expected = [line.replace("approvals:", "signers:") if i == 4 else line for i, line in enumerate(node)]
+    if after != expected or listed:
+        print(f"FAIL migrate: expected only the scaffolding key renamed and nothing due, got {after!r}, due {listed}")
         return 1
     return 0
 

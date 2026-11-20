@@ -10,7 +10,7 @@
 
 ```yaml
 id: t4k
-approvals:
+signers:
   tearne: {at: 2026-11-18, hash: 748129d6}
 ```
 
@@ -49,15 +49,15 @@ id: ct7
 
 ```yaml
 id: c5m
-approvals:
-  tearne: {at: 2026-11-18, hash: 948fdd44}
+signers:
+  tearne: {at: 2026-11-20, hash: b7905cbd}
 ```
 
-Every agent must produce the same fingerprint for the same node text, or sign-off stamps cannot be compared. `tests/fingerprint_test.py` holds the reference: a second, independent implementation of the [Fingerprint](method/ndd.map.md#fingerprint) rule, standard library only and short enough to read whole. It passes when its fingerprints match the table in *Detail* and the shipped [helper](method/ndd.map.md#fingerprint-helper) agrees, both on those fingerprints and on which nodes are due for a person, and the [map viewer](map.md#map-viewer) on the fingerprints.
+`tests/fingerprint_test.py` holds the reference: a second, independent implementation of the [Fingerprint](method/ndd.map.md#fingerprint) rule. It passes when its fingerprints match the table in *Detail* and the shipped [helper](method/ndd.map.md#fingerprint-helper) agrees, both on those fingerprints and on which nodes are due for a person, and the [map viewer](map.md#map-viewer) on the fingerprints.
 
 **Detail**
 
-`fixture.map.md` is a small map exercising every node section; `fixture-edited.map.md` is the same map after edits that must not move a fingerprint and three that must. Further cases check that a stamp quoted in a node's prose is not read as one, that a requested stamp, `hash: null`, makes its node due, and that a node with no stamp for a person is not due for them.
+`fixture.map.md` is a small map exercising every node section; `fixture-edited.map.md` is the same map after edits that must not move a fingerprint and three that must. Further cases check that a stamp quoted in a node's prose is not read as one, that a requested stamp, `hash: null`, makes its node due, that a node with no stamp for a person is not due for them, that a stamp under an older `approvals:` key is read, and that `--migrate` renames the key and leaves every stamp current.
 
 | Node | Original | Edited | Edit made |
 |---|---|---|---|
@@ -75,7 +75,7 @@ Every agent must produce the same fingerprint for the same node text, or sign-of
 
 ```yaml
 id: k3w
-approvals:
+signers:
   tearne: {at: 2026-11-16, hash: f2e62af9}
 ```
 
@@ -104,13 +104,11 @@ It prints the shipped files, so a stray one is seen.
 
 ```yaml
 id: v8c
-approvals:
-  tearne: {at: 2026-11-17, hash: 4c2f06ed}
+signers:
+  tearne: {at: 2026-11-20, hash: 9affd6ea}
 ```
 
-`tests/map_viewer/map_viewer_test.py` builds the demo map with `build_demo_map.py` beside it, serves it with the [map viewer](map.md#map-viewer) on a free port of 127.0.0.1, and checks each page against what its demo node says it shows: stamps and sign-off diffs, one tree across files, markdown rendering, the page shape the page script swaps, a split page's second pane, and answers to bad requests. On a copy of the demo map, it checks that a [sign-off](map.md#sign-off-button) writes its stamp, and that the file is left untouched when a sign-off is for a node changed since its page was shown, lacks the run's token, is not a POST, or comes from a foreign Host or Origin. Where node is installed, it also checks that the page script parses.
-
-It needs no internet access, so it runs wherever the viewer does.
+`tests/map_viewer/map_viewer_test.py` builds the demo map, serves it with the [map viewer](map.md#map-viewer) on a free port of 127.0.0.1, and checks each page against what its demo node says it shows: stamps, including one under an older `approvals:` key, and sign-off diffs, one tree across files, markdown rendering, the page shape the page script swaps, a split page's second pane, and answers to bad requests. On a copy of the demo map, it checks that a [sign-off](map.md#sign-off-button) writes its stamp, renaming an older `approvals:` key, and that the file is left untouched when a sign-off is for a node changed since its page was shown, lacks the run's token, is not a POST, or comes from a foreign Host or Origin. Where node is installed, it also checks that the page script parses.
 
 
 # Map Viewer Browser Check
@@ -119,7 +117,7 @@ It needs no internet access, so it runs wherever the viewer does.
 
 ```yaml
 id: v9b
-approvals:
+signers:
   tearne: {at: 2026-11-18, hash: d3874e7b}
 ```
 
@@ -134,7 +132,7 @@ It needs Playwright, pinned to the version whose Chromium is installed, and skip
 
 ```yaml
 id: v9d
-approvals:
+signers:
   tearne: {at: 2026-11-19, hash: 50bf848d}
 ```
 

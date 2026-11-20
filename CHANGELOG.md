@@ -2,6 +2,12 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 3.9.0-dev
+
+- Sign-off stamps sit under a `signers:` key rather than `approvals:`. An older key is still read and is renamed whenever a stamp is written; the fingerprint helper's `--migrate` renames it across a map file (method map: *Sign-off Stamp*, *Fingerprint Helper*; project map: *Sign-off Button*).
+
+Migration: after upgrading, run `ndd/method/util/fingerprint.py <map file> --migrate` once per map file. No fingerprint moves, so every stamp stays current.
+
 ## 3.8.1-dev
 
 - Map viewer: *Review due for …* takes several people, with clearer due marks; *Previous* / *Next due* removed (project map: *Due Nodes*).

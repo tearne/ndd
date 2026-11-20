@@ -4,7 +4,8 @@
 # ///
 
 # Helper for Sign-off (ndd.map.md#sign-off): prints the fingerprints of a map's
-# nodes, or lists the nodes due for a person against their sign-off stamps. The
+# nodes, lists the nodes due for a person against their sign-off stamps, or
+# migrates a map's stamps from the older approvals: key to signers:. The
 # reference implementation of the rule is tests/fingerprint_test.py, which also
 # checks that this helper agrees with it.
 
@@ -15,7 +16,7 @@ import re
 import sys
 from pathlib import Path
 
-VERSION = "1.2.0"
+VERSION = "1.3.0"
 
 GREEN, YELLOW, RED, CYAN = "32", "33", "31", "36"  # ANSI colour codes
 
@@ -29,6 +30,9 @@ STAMP = re.compile(r"^\s+(?:\"([^\"]+)\"|'([^']+)'|([^\s\"'][^:]*?))\s*:\s*\{.*?
 
 def main():
     args = parse_args()
+    if args.migrate:
+        migrate(Path(args.map))
+        return
     nodes = parse_nodes(Path(args.map))
     if args.due:
         list_due(nodes, args.due)
@@ -91,6 +95,29 @@ def stamps(node_lines: list[str]) -> dict[str, str | None]:
     return found
 
 
+# Renames each node's older approvals: key to signers:, in the scaffolding block only, so a
+# key quoted in a node's prose is left alone. Fingerprints skip the block, so none moves.
+# Sign-off Stamp (ndd.map.md#sign-off-stamp).
+def migrate(path: Path) -> None:
+    lines = path.read_text(encoding="utf-8").splitlines(keepends=True)
+    renamed, in_fence = 0, False
+    for i, line in enumerate(lines):
+        if FENCE.match(line):
+            in_fence = not in_fence
+        if not in_fence and HEADING.match(line):
+            body = lines[i + 1:]
+            block = scaffolding_block(body)
+            if block:
+                first = i + 1 + body.index(block[0])
+                for j in range(first, first + len(block)):
+                    if re.match(r"^approvals:\s*$", lines[j]):
+                        lines[j] = lines[j].replace("approvals:", "signers:", 1)
+                        renamed += 1
+    if renamed:
+        path.write_text("".join(lines), encoding="utf-8")
+    print(f"{renamed} node{'' if renamed == 1 else 's'} migrated in {path}")
+
+
 def parse_nodes(path: Path) -> dict[str, list[str]]:
     lines = path.read_text(encoding="utf-8").splitlines(keepends=True)
     nodes, current, in_fence = {}, None, False
@@ -135,6 +162,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("map", help="a map file")
     parser.add_argument("node", nargs="?", help="a node name; omit to list every node")
     parser.add_argument("--due", metavar="PERSON", help="list the nodes due for this person instead")
+    parser.add_argument("--migrate", action="store_true", help="rename an older approvals: stamp key to signers:")
     parser.add_argument("--version", action="version", version=f"%(prog)s {VERSION}")
     return parser.parse_args()
 
