@@ -6,12 +6,13 @@
 [Install Check](#install-check) \
 [Map Viewer Check](#map-viewer-check) \
 [Map Viewer Browser Check](#map-viewer-browser-check) \
-[Map Viewer Due Check](#map-viewer-due-check)
+[Map Viewer Due Check](#map-viewer-due-check) \
+[Test Setup](#test-setup)
 
 ```yaml
 id: t4k
 signers:
-  tearne: {at: 2026-11-18, hash: 748129d6}
+  tearne: {at: 2026-11-20, hash: 3478cec5}
 ```
 
 This repository checks itself with tests, each a node in this branch stating what must hold and how it is verified. Each test's runnable form sits under `tests/` rather than in the map, so the map stays a description of what exists.
@@ -25,6 +26,8 @@ This repository checks itself with tests, each a node in this branch stating wha
 - **[Map Viewer Browser Check](#map-viewer-browser-check)** — the page script driven in a headless browser on the same demo map.
 
 - **[Map Viewer Due Check](#map-viewer-due-check)** — due nodes and requesting, driven in the same browser.
+
+- **[Test Setup](#test-setup)** — what the checks need to run, and what is skipped without each.
 
 
 # Contents
@@ -41,6 +44,7 @@ id: ct7
   - [Map Viewer Check](#map-viewer-check)
   - [Map Viewer Browser Check](#map-viewer-browser-check)
   - [Map Viewer Due Check](#map-viewer-due-check)
+  - [Test Setup](#test-setup)
 
 
 # Fingerprint Check
@@ -50,10 +54,10 @@ id: ct7
 ```yaml
 id: c5m
 signers:
-  tearne: {at: 2026-11-20, hash: b7905cbd}
+  tearne: {at: 2026-11-20, hash: 82b25cb7}
 ```
 
-`tests/fingerprint_test.py` holds the reference: a second, independent implementation of the [Fingerprint](method/ndd.map.md#fingerprint) rule. It passes when its fingerprints match the table in *Detail* and the shipped [helper](method/ndd.map.md#fingerprint-helper) agrees, both on those fingerprints and on which nodes are due for a person, and the [map viewer](map.md#map-viewer) on the fingerprints.
+[`tests/fingerprint_test.py`](tests/fingerprint_test.py) holds the reference: a second, independent implementation of the [Fingerprint](method/ndd.map.md#fingerprint) rule. It passes when its fingerprints match the table in *Detail* and the shipped [helper](method/ndd.map.md#fingerprint-helper) agrees, both on those fingerprints and on which nodes are due for a person, and the [map viewer](map.md#map-viewer) on the fingerprints.
 
 **Detail**
 
@@ -76,10 +80,10 @@ signers:
 ```yaml
 id: k3w
 signers:
-  tearne: {at: 2026-11-16, hash: f2e62af9}
+  tearne: {at: 2026-11-20, hash: aa1beedb}
 ```
 
-`tests/install_test.py` runs the [installer](map.md#installer) into a temporary directory and asserts that:
+[`tests/install_test.py`](tests/install_test.py) runs the [installer](map.md#installer) into a temporary directory and asserts that:
 
 - run from its own checkout, it exits non-zero and writes no `ndd/`;
 
@@ -105,10 +109,10 @@ It prints the shipped files, so a stray one is seen.
 ```yaml
 id: v8c
 signers:
-  tearne: {at: 2026-11-20, hash: 9affd6ea}
+  tearne: {at: 2026-11-20, hash: 2dd5feae}
 ```
 
-`tests/map_viewer/map_viewer_test.py` builds the demo map, serves it with the [map viewer](map.md#map-viewer) on a free port of 127.0.0.1, and checks each page against what its demo node says it shows: stamps, including one under an older `approvals:` key, and sign-off diffs, one tree across files, markdown rendering, the page shape the page script swaps, a split page's second pane, and answers to bad requests. On a copy of the demo map, it checks that a [sign-off](map.md#sign-off-button) writes its stamp, renaming an older `approvals:` key, and that the file is left untouched when a sign-off is for a node changed since its page was shown, lacks the run's token, is not a POST, or comes from a foreign Host or Origin. Where node is installed, it also checks that the page script parses.
+[`tests/map_viewer/map_viewer_test.py`](tests/map_viewer/map_viewer_test.py) builds the demo map, serves it with the [map viewer](map.md#map-viewer) on a free port of 127.0.0.1, and checks each page against what its demo node says it shows: stamps, including one under an older `approvals:` key, and sign-off diffs, one tree across files, markdown rendering, the page shape the page script swaps, a split page's second pane, and answers to bad requests. On a copy of the demo map, it checks that a [sign-off](map.md#sign-off-button) writes its stamp, renaming an older `approvals:` key, and that the file is left untouched when a sign-off is for a node changed since its page was shown, lacks the run's token, is not a POST, or comes from a foreign Host or Origin. Where [Node](#test-setup) is installed, it also checks that the page script parses.
 
 
 # Map Viewer Browser Check
@@ -118,12 +122,12 @@ signers:
 ```yaml
 id: v9b
 signers:
-  tearne: {at: 2026-11-18, hash: d3874e7b}
+  tearne: {at: 2026-11-20, hash: 62d94034}
 ```
 
-`tests/map_viewer/browser_test.py` drives the [map viewer](map.md#map-viewer)'s page script in headless Chromium, on the demo map [Map Viewer Check](#map-viewer-check) serves. It checks the tree keeping its folds across links and back and forward, never redrawn; the fold button; a sign-off diff swapped in; the second pane through split, reload, swap and close, each pane scrolling in its own box; and each pane's history. On a copy of the demo map, it checks the *Sign off* button: its drop-down's names, one added and removed, the last ticked ticked again, the stamps current once pressed, and none on a sign-off diff; and the red light while the repository has uncommitted changes. Any script error fails it.
+[`tests/map_viewer/browser_test.py`](tests/map_viewer/browser_test.py) drives the [map viewer](map.md#map-viewer)'s page script in headless Chromium, on the demo map [Map Viewer Check](#map-viewer-check) serves. It checks the tree keeping its folds across links and back and forward, never redrawn; the fold button; a sign-off diff swapped in; the second pane through split, reload, swap and close, each pane scrolling in its own box; and each pane's history. On a copy of the demo map, it checks the *Sign off* button: its drop-down's names, one added and removed, the last ticked ticked again, the stamps current once pressed, and none on a sign-off diff; and the red light while the repository has uncommitted changes. Any script error fails it.
 
-It needs Playwright, pinned to the version whose Chromium is installed, and skips when that browser is missing; its header says how to set both up.
+It needs Playwright and its Chromium, as [Test Setup](#test-setup) describes.
 
 
 # Map Viewer Due Check
@@ -133,7 +137,28 @@ It needs Playwright, pinned to the version whose Chromium is installed, and skip
 ```yaml
 id: v9d
 signers:
-  tearne: {at: 2026-11-19, hash: 50bf848d}
+  tearne: {at: 2026-11-20, hash: 0cd23109}
 ```
 
-On a copy of the demo map, `tests/map_viewer/browser_test.py` also checks [due nodes](map.md#due-nodes) and requesting. Ticking people in *Review due for …* marks the nodes due for any of them and shows the count, and a sign-off clears the mark in place. *Request* writes a requested stamp for a ticked name with no stamp, making the node due for them, and writes nothing for a name already stamped.
+On a copy of the demo map, [`tests/map_viewer/browser_test.py`](tests/map_viewer/browser_test.py) also checks [due nodes](map.md#due-nodes) and requesting. Ticking people in *Review due for …* marks the nodes due for any of them and shows the count, and a sign-off clears the mark in place. *Request* writes a requested stamp for a ticked name with no stamp, making the node due for them, and writes nothing for a name already stamped.
+
+
+# Test Setup
+
+[↑ Testing](#testing)
+
+```yaml
+id: ts5
+signers:
+  tearne: {at: 2026-11-20, hash: 24b3715f}
+```
+
+What the checks need to run; exact commands and version pins are in each script's header. Once set up, none needs internet access.
+
+- **uv**, required: every check is a script it runs, and on first use it fetches the Python they pin and Playwright.
+
+- **git**, required by the map viewer checks, whose demo map is a repository, as the viewer reads a node's history to show what changed.
+
+- **Node**, optional: [Map Viewer Check](#map-viewer-check) uses it to check that the page script parses, and skips that without it; it must be on the PATH.
+
+- **Playwright with its Chromium**, optional: [Map Viewer Browser Check](#map-viewer-browser-check) and [Map Viewer Due Check](#map-viewer-due-check) drive the browser, and pass with a note when it is missing.

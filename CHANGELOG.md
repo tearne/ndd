@@ -2,6 +2,14 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 3.9.2-dev
+
+- Testing map now includes dependencies (testing map: *Test Setup*).
+
+## 3.9.1-dev
+
+- Formal map targets are whole nodes, in a map copy or a `targets.md` (method map: *Change Specification*).
+
 ## 3.9.0-dev
 
 - Sign-off stamps sit under a `signers:` key rather than `approvals:`. An older key is still read and is renamed whenever a stamp is written; the fingerprint helper's `--migrate` renames it across a map file (method map: *Sign-off Stamp*, *Fingerprint Helper*; project map: *Sign-off Button*).

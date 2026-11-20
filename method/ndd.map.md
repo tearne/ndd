@@ -1249,10 +1249,10 @@ Archiving closes a change once its [Conclude](#conclude) note is approved. Its s
 ```yaml
 id: c2f
 signers:
-  tearne: {at: 2026-10-26, hash: c2a58f17}
+  tearne: {at: 2026-11-20, hash: 49a2a34c}
 ```
 
-A folder beside a change document in `changes/open/`, named to match it, holding supporting material that would crowd the document, such as evidence, experiments, or the map copy on which a [Formal](#formal) change drafts its specification. A change of any style may have one, created only when warranted. At [Archiving](#archiving) a retain-or-drop review keeps useful evidence and rationale and drops disposable experiments; the folder then moves with the change, renamed to match, or is removed if nothing is retained.
+A folder beside a change document in `changes/open/`, named to match it, holding supporting material that would crowd the document, such as evidence, experiments, or the nodes a [Formal](#formal) change drafts as its specification. A change of any style may have one, created only when warranted. At [Archiving](#archiving) a retain-or-drop review keeps useful evidence and rationale and drops disposable experiments; the folder then moves with the change, renamed to match, or is removed if nothing is retained.
 
 
 # Caps
@@ -1407,14 +1407,18 @@ Formal is the default when the agent is unsure which style fits, and is particul
 ```yaml
 id: s7q
 signers:
-  tearne: {at: 2026-11-17, hash: 6393ee2f}
+  tearne: {at: 2026-11-20, hash: 0ab47ae9}
 ```
 
 The preparation section for a [Formal](#formal) change: specifying what must hold when the change lands.
 
-The specification consists of map nodes, plus target versions of any agreed non-map assets, inline or in the [companion folder](#companion-folder) with a one-line relative path specified. When the specification will touch multiple nodes, the agent proposes a sub-map or whole-map copy in the companion folder, then pauses for the user to commit it, so that diffs against it show only the planned edits. Once built the live map must describe the completed result.
+The specification consists of whole map nodes, drafted in the [companion folder](#companion-folder). The agent proposes the format:
 
-Node approval follows the normal [Engagement Rule](#engagement-rule), with [sign-off stamps](#sign-off-stamp) that transfer to the live map during Build. Each non-map target is surfaced as a diff and approved likewise, and questioned if it takes over the map's job of describing the system.
+- A sub-map or whole-map copy, inviting a commit by the user first so later diffs against it show only the planned edits.
+
+- For a few nodes, a `targets.md` of the planned nodes.
+
+Node approval follows the normal [Engagement Rule](#engagement-rule), with [sign-off stamps](#sign-off-stamp) that transfer to the live map during Build. Any agreed non-map asset has a target version too, inline or in the companion folder by relative path, surfaced as a diff and approved likewise, and questioned if it takes over the map's job of describing the system.
 
 
 # Implementation Plan

@@ -11,6 +11,9 @@
 # Setting up: install uv (https://docs.astral.sh/uv/) and git, then run ./map_viewer_test.py
 # from this directory. The check that the page script parses also wants Node.js on the PATH
 # (https://nodejs.org/, or a package manager's nodejs); without it that check is skipped.
+# A Node installed off the PATH, such as pyright's, can be put on it for good by adding
+# this line to ~/.profile (or your shell's rc file), then opening a new shell:
+#   export PATH="$HOME/.cache/pyright-python/nodeenv/bin:$PATH"
 
 import difflib
 import html
