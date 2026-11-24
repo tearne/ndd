@@ -2,6 +2,10 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 3.10.0-dev
+
+- The map viewer takes one request for sign-off on several nodes, across map files, refused whole if any node can't take it. Requests go to their own `/request` endpoint and carry no fingerprint receipt (project map: *Request Guards*, *Write Checks*, *Sign-off Button*).
+
 ## 3.9.2-dev
 
 - Testing map now includes dependencies (testing map: *Test Setup*).

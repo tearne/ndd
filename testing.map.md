@@ -42,6 +42,7 @@ id: ct7
   - [Fingerprint Check](#fingerprint-check)
   - [Install Check](#install-check)
   - [Map Viewer Check](#map-viewer-check)
+    - [Map Viewer Write Check](#map-viewer-write-check)
   - [Map Viewer Browser Check](#map-viewer-browser-check)
   - [Map Viewer Due Check](#map-viewer-due-check)
   - [Test Setup](#test-setup)
@@ -104,15 +105,33 @@ It prints the shipped files, so a stray one is seen.
 
 # Map Viewer Check
 
-[↑ Testing](#testing)
+[↑ Testing](#testing) \
+[Map Viewer Write Check](#map-viewer-write-check)
 
 ```yaml
 id: v8c
 signers:
-  tearne: {at: 2026-11-20, hash: 2dd5feae}
+  tearne: {at: 2026-11-24, hash: f82b2fcb}
 ```
 
-[`tests/map_viewer/map_viewer_test.py`](tests/map_viewer/map_viewer_test.py) builds the demo map, serves it with the [map viewer](map.md#map-viewer) on a free port of 127.0.0.1, and checks each page against what its demo node says it shows: stamps, including one under an older `approvals:` key, and sign-off diffs, one tree across files, markdown rendering, the page shape the page script swaps, a split page's second pane, and answers to bad requests. On a copy of the demo map, it checks that a [sign-off](map.md#sign-off-button) writes its stamp, renaming an older `approvals:` key, and that the file is left untouched when a sign-off is for a node changed since its page was shown, lacks the run's token, is not a POST, or comes from a foreign Host or Origin. Where [Node](#test-setup) is installed, it also checks that the page script parses.
+[`tests/map_viewer/map_viewer_test.py`](tests/map_viewer/map_viewer_test.py) builds the demo map, serves it with the [map viewer](map.md#map-viewer) on a free port of 127.0.0.1, and checks each page against what its demo node says it shows: stamps, including one under an older `approvals:` key, and sign-off diffs, one tree across files, markdown rendering, the page shape the page script swaps, a split page's second pane, and answers to bad requests. On a copy of the demo map, it checks the writes [Map Viewer Write Check](#map-viewer-write-check) describes. Where [Node](#test-setup) is installed, it also checks that the page script parses.
+
+
+# Map Viewer Write Check
+
+[↑ Map Viewer Check](#map-viewer-check)
+
+```yaml
+id: v8d
+signers:
+  tearne: {at: 2026-11-24, hash: 12a7f738}
+```
+
+On a copy of the demo map, [Map Viewer Check](#map-viewer-check) checks each kind of write:
+
+- **[Sign-off](map.md#sign-off-button)** — writes its stamp, renaming an older `approvals:` key. The file is left untouched when a sign-off is for a node changed since its page was shown, lacks the run's token, is not a POST, carries a `request` key, or comes from a foreign Host or Origin.
+
+- **Request for sign-off** — writes `hash: null` only for names with no stamp on the node, on one node and on several across three files. A request containing any nodes which refuse fails whole, leaving every file untouched, as does one without the run's token or from a foreign Host or Origin.
 
 
 # Map Viewer Browser Check

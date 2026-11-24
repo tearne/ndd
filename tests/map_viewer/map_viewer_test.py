@@ -4,8 +4,8 @@
 # ///
 
 # Serves the demo map that build_demo_map.py beside it builds and checks the viewer's pages
-# against what each demo node says it shows, then, on a copy, that sign-offs are written and
-# refused as they should be. Standard library only, and offline: the
+# against what each demo node says it shows, then, on a copy, that sign-offs and requests for
+# them are written and refused as they should be. Standard library only, and offline: the
 # server runs in this process on a free port of 127.0.0.1.
 #
 # Setting up: install uv (https://docs.astral.sh/uv/) and git, then run ./map_viewer_test.py
@@ -63,6 +63,9 @@ def main():
             lambda: signoff_writes_stamps(signing, copy),
             lambda: signoff_renames_older_key(signing, copy),
             lambda: signoff_refusals(signing, copy),
+            lambda: request_writes_requests(signing, copy),
+            lambda: request_across_files(signing, copy),
+            lambda: request_refusals(signing, copy),
             lambda: foreign_host_refused(base),
         ])
     if failures:
@@ -257,10 +260,72 @@ def signoff_refusals(base: str, copy: Path) -> int:
         "no Origin": (sign(base, "Current", ["dave"], headers={"Origin": None}), 403),
         "a foreign Host": (sign(base, "Current", ["dave"], headers={"Host": f"evil.example:{host.split(':')[1]}"}), 403),
         "an Origin not matching its Host": (sign(base, "Current", ["dave"], headers={"Origin": "http://localhost:1"}), 403),
+        "a request key, which belongs to /request": (sign(base, "Current", ["dave"], request=True), 400),
     }
     failures = sum(expect("refused sign-off", got == want, f"{what}: {want}, got {got}") for what, (got, want) in cases.items())
     return failures + expect("refused sign-off", (copy / "map.md").read_text(encoding="utf-8") == before,
                              "the file untouched")
+
+
+# A request on one node, as its Request button sends, writes hash: null for each name with no
+# stamp there and skips a name already stamped, whether its stamp is a request or a sign-off.
+def request_writes_requests(base: str, copy: Path) -> int:
+    today = date.today().isoformat()
+    before = (copy / "map.md").read_text(encoding="utf-8")
+    code, reply = ask(base, [("map.md", "Requested")], ["bob", "erin"])
+    after = (copy / "map.md").read_text(encoding="utf-8")
+    changed = [line for line in difflib.ndiff(before.splitlines(), after.splitlines()) if line[:2] in ("- ", "+ ")]
+    return (expect("request", (code, reply) == (200, "Requested 1"), f"accepted for erin alone, got {code} {reply!r}")
+            + expect("request", f"  bob: {{at: 2026-11-10, hash: null}}\n  erin: {{at: {today}, hash: null}}\n" in after,
+                     "erin's request added beside bob's, which is kept")
+            + expect("request", len(changed) == 1, f"only erin's line added, saw {changed}"))
+
+
+# One request on several nodes in three files writes each, skipping bob on Branch, where his
+# stamp is already, and gives the number of stamps written.
+def request_across_files(base: str, copy: Path) -> int:
+    today = date.today().isoformat()
+    files = ["map.md", "branch.map.md", "linked.map.md"]
+    before = {f: (copy / f).read_text(encoding="utf-8") for f in files}
+    code, reply = ask(base, [("map.md", "Mixed"), ("branch.map.md", "Branch"), ("linked.map.md", "Linked Leaf"),
+                             ("linked.map.md", "Second Child")], ["bob", "frank"])
+    after = {f: (copy / f).read_text(encoding="utf-8") for f in files}
+    added = {f: [l[2:] for l in difflib.ndiff(before[f].splitlines(), after[f].splitlines()) if l[:2] in ("- ", "+ ")]
+             for f in files}
+    frank, bob = f"  frank: {{at: {today}, hash: null}}", f"  bob: {{at: {today}, hash: null}}"
+    return (expect("bulk request", (code, reply) == (200, "Requested 6"), f"accepted, 6 written, got {code} {reply!r}")
+            + expect("bulk request", added["map.md"] == [frank], f"Mixed: frank alone, bob's stamp kept, saw {added['map.md']}")
+            + expect("bulk request", added["branch.map.md"] == [frank], f"Branch: frank alone, saw {added['branch.map.md']}")
+            + expect("bulk request", sorted(added["linked.map.md"]) == sorted(["signers:", bob, frank] * 2),
+                     f"both linked nodes get a signers: key and both names, saw {added['linked.map.md']}"))
+
+
+# A request that any node can't take is refused whole, naming each such node, and writes
+# nothing, even to the files whose nodes could take it; the guards are those of a sign-off.
+def request_refusals(base: str, copy: Path) -> int:
+    files = ["map.md", "branch.map.md", "linked.map.md"]
+    before = {f: (copy / f).read_text(encoding="utf-8") for f in files}
+    code, reply = ask(base, [("branch.map.md", "Branch Leaf"), ("map.md", "Contents"), ("linked.map.md", "Nowhere"),
+                             ("missing.map.md", "Anything")], ["gina"])
+    token = signoff_data(page(base, "Current"))["token"]
+    host = urlparse(base).netloc
+    nodes = [("map.md", "Current")]
+    cases = {
+        "no token": (ask(base, nodes, ["gina"], token="")[0], 403),
+        "a wrong token": (ask(base, nodes, ["gina"], token=token[:-1] + "x")[0], 403),
+        "a GET": (status(base + "/request"), 405),
+        "a foreign Origin": (ask(base, nodes, ["gina"], headers={"Origin": "http://evil.example"})[0], 403),
+        "no Origin": (ask(base, nodes, ["gina"], headers={"Origin": None})[0], 403),
+        "a foreign Host": (ask(base, nodes, ["gina"], headers={"Host": f"evil.example:{host.split(':')[1]}"})[0], 403),
+        "no nodes": (ask(base, [], ["gina"])[0], 400),
+        "no names": (ask(base, nodes, [])[0], 400),
+    }
+    named = all(part in reply for part in ("map.md › Contents", "linked.map.md › Nowhere", "missing.map.md"))
+    return (expect("refused request", code == 400 and named and "Branch Leaf" not in reply,
+                   f"refused whole, naming the three nodes that can't take it, got {code} {reply!r}")
+            + sum(expect("refused request", got == want, f"{what}: {want}, got {got}") for what, (got, want) in cases.items())
+            + expect("refused request", {f: (copy / f).read_text(encoding="utf-8") for f in files} == before,
+                     "every file untouched"))
 
 
 # A page reached through a name rebound to 127.0.0.1 can't read the map either, while
@@ -294,13 +359,30 @@ def sign(base: str, name: str, names: list, headers: dict | None = None, **overr
     return send(base, "POST", body, {"Origin": base} | (headers or {}))
 
 
+# Sends a request for sign-off on each (file, node), as the viewer's own page would, returning
+# the status and the reply's text.
+def ask(base: str, nodes: list, names: list, headers: dict | None = None, **overrides) -> tuple[int, str]:
+    token = signoff_data(page(base, "Current"))["token"]
+    body = {"token": token, "nodes": [{"file": f, "name": n} for f, n in nodes], "names": names} | overrides
+    request = post_request(base, "/request", "POST", body, {"Origin": base} | (headers or {}))
+    try:
+        with urllib.request.urlopen(request) as response:
+            return response.status, response.read().decode("utf-8")
+    except urllib.error.HTTPError as error:
+        return error.code, error.read().decode("utf-8")
+
+
 def send(base: str, method: str, body: dict, headers: dict) -> int:
-    request = urllib.request.Request(base + "/signoff", data=json.dumps(body).encode("utf-8"), method=method,
+    return code_of(post_request(base, "/signoff", method, body, headers))
+
+
+def post_request(base: str, path: str, method: str, body: dict, headers: dict) -> urllib.request.Request:
+    request = urllib.request.Request(base + path, data=json.dumps(body).encode("utf-8"), method=method,
                                      headers={"Content-Type": "application/json"})
     for key, value in headers.items():
         if value is not None:
             request.add_header(key, value)
-    return code_of(request)
+    return request
 
 
 def code_of(request) -> int:

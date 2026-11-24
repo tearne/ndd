@@ -5,7 +5,7 @@
 
 # Map viewer, a proof of concept, self-contained: serves a map in the browser so it can be read
 # node by node, with who has signed off each node and, for a stale sign-off, what has changed
-# since it. It also records sign-offs, writing nothing but the signer's stamp line; edits go
+# since it. It also records sign-offs and requests for them, writing nothing but stamp lines; edits go
 # through the agent, and committing is left to the user. Listens on 127.0.0.1 only, since there
 # is no login; reach it from elsewhere by port forwarding (e.g. ssh -L 8080:127.0.0.1:8080 host),
 # as 127.0.0.1 or localhost, since requests naming any other host are refused.
@@ -36,7 +36,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, quote, urlparse
 
-VERSION = "0.6.0"
+VERSION = "0.7.0"
 
 GREEN, YELLOW, RED = "32", "33", "31"  # ANSI colour codes
 
@@ -62,11 +62,11 @@ def main():
 ROOT: Path
 ENTRY: str
 
-# A random token per run, carried by the viewer's own pages and required on every sign-off.
-# Other sites can't read those pages, so can't forge a sign-off without it.
+# A random token per run, carried by the viewer's own pages and required on every write.
+# Other sites can't read those pages, so can't forge a sign-off or request without it.
 TOKEN = secrets.token_urlsafe(18)
 
-# Sign-offs are written one at a time, so two at once can't interleave in a file.
+# Writes go one at a time, so two at once can't interleave in a file.
 WRITE_LOCK = threading.Lock()
 
 
@@ -115,35 +115,58 @@ class Handler(BaseHTTPRequestHandler):
             title, body = view(url.path, query)
             side = side_pane(query["side"]) if "side" in query else None
             self.send_page(page(title, body, tree_html((query["file"], query["name"])), side))
-        elif url.path == "/signoff":
-            self.send_error(405, "Sign-offs are sent by POST")
+        elif url.path in ("/signoff", "/request"):
+            self.send_error(405, "Sign-offs and requests are sent by POST")
         else:
             self.send_error(404)
 
-    # A sign-off, or with "request" a request for one: from this viewer's own page, carrying the
-    # run's token and the fingerprint the page was rendered with.
+    # A sign-off on one node, carrying the fingerprint the page was rendered with, or a request
+    # for sign-off on a list of nodes; either from this viewer's own page, carrying the run's token.
     def post(self):
-        if urlparse(self.path).path != "/signoff":
+        action = urlparse(self.path).path
+        if action not in ("/signoff", "/request"):
             raise Refused(404, "No such action")
         if self.headers.get("Origin") != f"http://{self.headers.get('Host')}":
-            raise Refused(403, "Sign-offs are accepted only from the viewer's own pages")
+            raise Refused(403, "Writes are accepted only from the viewer's own pages")
         length = int(self.headers.get("Content-Length") or 0)
         if length > 65536:
             raise Refused(413, "Request too large")
         try:
-            request = json.loads(self.rfile.read(length) or b"{}")
-            token, file, name, shown, names = (request[k] for k in ("token", "file", "name", "fingerprint", "names"))
-        except (ValueError, KeyError, TypeError):
-            raise Refused(400, "Malformed sign-off")
+            body = json.loads(self.rfile.read(length) or b"{}")
+        except ValueError:
+            raise Refused(400, "Malformed body")
+        if not isinstance(body, dict):
+            raise Refused(400, "Malformed body")
+        token = body.get("token")
         if not isinstance(token, str) or not secrets.compare_digest(token, TOKEN):
             raise Refused(403, "Missing or wrong token; reload the page")
+        if action == "/signoff":
+            self.post_signoff(body)
+        else:
+            self.post_request(body)
+
+    # A request key is refused rather than ignored, so nothing meant as a request is written
+    # as a sign-off.
+    def post_signoff(self, body: dict) -> None:
+        if "request" in body:
+            raise Refused(400, "A request for sign-off is sent to /request")
+        try:
+            file, name, shown, names = (body[k] for k in ("file", "name", "fingerprint", "names"))
+        except KeyError:
+            raise Refused(400, "Malformed sign-off")
         if not all(isinstance(v, str) for v in (file, name, shown)) or not isinstance(names, list):
             raise Refused(400, "Malformed sign-off")
-        request_only = request.get("request", False)
-        if not isinstance(request_only, bool):
-            raise Refused(400, "Malformed sign-off")
-        written = sign_off(file, name, shown, names, request_only)
-        self.send_text(200, ("Requested" if request_only else "Signed off") + f" for {len(written)}")
+        written = sign_off(file, name, shown, names)
+        self.send_text(200, f"Signed off for {len(written)}")
+
+    def post_request(self, body: dict) -> None:
+        nodes, names = body.get("nodes"), body.get("names")
+        if not isinstance(nodes, list) or not nodes or not isinstance(names, list) \
+                or not all(isinstance(n, dict) and isinstance(n.get("file"), str) and isinstance(n.get("name"), str)
+                           for n in nodes):
+            raise Refused(400, "Malformed request")
+        written = request_signoffs([(n["file"], n["name"]) for n in nodes], names)
+        self.send_text(200, f"Requested {written}")
 
     def send_text(self, code: int, text: str) -> None:
         data = text.encode("utf-8")
@@ -723,11 +746,11 @@ async function signOff(box, button, request) {
   const names = tickedIn(box);
   if (!names.length) return;
   button.disabled = true;
-  const response = await fetch("/signoff", {
+  const {token, file, name, fingerprint} = box.dataset;
+  const response = await fetch(request ? "/request" : "/signoff", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({token: box.dataset.token, file: box.dataset.file, name: box.dataset.name,
-                          fingerprint: box.dataset.fingerprint, names, request}),
+    body: JSON.stringify(request ? {token, nodes: [{file, name}], names} : {token, file, name, fingerprint, names}),
   });
   if (!response.ok) {
     alert((request ? "Not requested: " : "Not signed off: ") + await response.text());
@@ -863,42 +886,101 @@ def due_for(file: str, name: str) -> list[str]:
 # Writes each name's stamp under the node's signers: key, renaming an older approvals: key
 # and adding the key if absent, and replacing that name's earlier stamp, and nothing else. Refused if the node's fingerprint
 # on disk is not the one its page was rendered with, so no one signs off text they weren't shown.
-# A request writes hash: null, and only for a name with no stamp on the node, so no stamp's
-# hash is lost. Returns the handles written.
-def sign_off(file: str, name: str, shown: str, names: list, request: bool = False) -> list[str]:
-    handles = [checked_handle(n) for n in names]
-    if not handles:
-        raise Refused(400, "No names ticked")
+# Returns the handles written.
+def sign_off(file: str, name: str, shown: str, names: list) -> list[str]:
+    handles = checked_handles(names)
     if name == "Contents":
         raise Refused(400, "Contents is never signed off")
     with WRITE_LOCK:
         path = map_path(file)
         lines = path.read_text(encoding="utf-8").splitlines(keepends=True)
         start, end = index_of(lines)[name]
-        node = lines[start:end]
-        current = fingerprint(node)
+        current = fingerprint(lines[start:end])
         if current != shown:
             raise Refused(409, "The node has changed since this page was shown; reload it and read it again")
-        body_start = start + 1
-        block = scaffolding_block(node[1:])
-        if not block:
+        if not scaffolding_block(lines[start + 1:end]):
             raise Refused(400, "The node has no scaffolding block to hold a sign-off")
-        first = body_start + skip_nav(node[1:])
-        if request:
-            stamped_already = stamp_details(node)
-            handles = [h for h in handles if h.strip('"') not in stamped_already]
-            if not handles:
-                return []
-        stamped = with_stamps(block, handles, f"{{at: {date.today().isoformat()}, hash: {'null' if request else current}}}")
-        lines[first:first + len(block)] = stamped
-        temporary = path.with_name(path.name + ".signing")
-        temporary.write_text("".join(lines), encoding="utf-8")
-        os.replace(temporary, path)
+        restamp(lines, start, end, handles, f"{{at: {date.today().isoformat()}, hash: {current}}}")
+        replace_file(path, lines)
         return handles
 
 
-# A name as a stamp key: one line, no quotes or braces, quoted if it holds a colon or opens
-# with punctuation, as the STAMP pattern reads it.
+# A request for sign-off from each name on each node, across map files: hash: null, and only
+# for a name with no stamp on the node, so no stamp is replaced. Every node is checked before
+# anything is written, and if any can't take the request, nothing is and the refusal names each
+# such node and why. Each changed file is then written to a temporary and swapped in; a failure
+# among the swaps is not rolled back, but each swap is whole. Returns the number of stamps written.
+def request_signoffs(nodes: list[tuple[str, str]], names: list) -> int:
+    handles = checked_handles(names)
+    with WRITE_LOCK:
+        files: dict[Path, list[str]] = {}
+        targets, problems = [], []
+        for file, name in nodes:
+            try:
+                path = map_path(file)
+                if path not in files:
+                    files[path] = path.read_text(encoding="utf-8").splitlines(keepends=True)
+            except PermissionError:
+                problems.append(f"{file}: outside the map's directory")
+                continue
+            except (FileNotFoundError, IsADirectoryError):
+                problems.append(f"{file}: no such map file")
+                continue
+            span = index_of(files[path]).get(name)
+            if name == "Contents":
+                problems.append(f"{file} › {name}: Contents is never signed off")
+            elif span is None:
+                problems.append(f"{file} › {name}: no such node")
+            elif not scaffolding_block(files[path][span[0] + 1:span[1]]):
+                problems.append(f"{file} › {name}: no scaffolding block to hold a request")
+            else:
+                targets.append((path, name))
+        if problems:
+            raise Refused(400, "Nothing requested:\n" + "\n".join(problems))
+        written, changed = 0, []
+        value = f"{{at: {date.today().isoformat()}, hash: null}}"
+        for path, name in targets:
+            lines = files[path]
+            start, end = index_of(lines)[name]
+            stamped = stamp_details(lines[start:end])
+            unstamped = [h for h in handles if h.strip('"') not in stamped]
+            if unstamped:
+                restamp(lines, start, end, unstamped, value)
+                written += len(unstamped)
+                if path not in changed:
+                    changed.append(path)
+        temporaries = []
+        for path in changed:
+            temporary = path.with_name(path.name + ".signing")
+            temporary.write_text("".join(files[path]), encoding="utf-8")
+            temporaries.append((temporary, path))
+        for temporary, path in temporaries:
+            os.replace(temporary, path)
+        return written
+
+
+def checked_handles(names: list) -> list[str]:
+    handles = [checked_handle(n) for n in names]
+    if not handles:
+        raise Refused(400, "No names ticked")
+    return handles
+
+
+# Puts the handles' stamps, with the value given, into the scaffolding block of the node
+# spanning lines[start:end], in place.
+def restamp(lines: list[str], start: int, end: int, handles: list[str], value: str) -> None:
+    node = lines[start:end]
+    block = scaffolding_block(node[1:])
+    first = start + 1 + skip_nav(node[1:])
+    lines[first:first + len(block)] = with_stamps(block, handles, value)
+
+
+def replace_file(path: Path, lines: list[str]) -> None:
+    temporary = path.with_name(path.name + ".signing")
+    temporary.write_text("".join(lines), encoding="utf-8")
+    os.replace(temporary, path)
+
+
 def checked_handle(name) -> str:
     if not isinstance(name, str) or not (name := name.strip()) or len(name) > 64 \
             or any(c in name for c in '"\'{}\n\r#'):

@@ -45,6 +45,7 @@ id: ct6
   - [Map Viewer](#map-viewer)
     - [Sign-off Button](#sign-off-button)
     - [Request Guards](#request-guards)
+    - [Write Checks](#write-checks)
     - [Due Nodes](#due-nodes)
   - [Method Map Form](#method-map-form)
 
@@ -234,6 +235,7 @@ The task tempts the failures the rule targets and probes where it might overreac
 [↑ NDD Project](#ndd-project) \
 [Sign-off Button](#sign-off-button) \
 [Request Guards](#request-guards) \
+[Write Checks](#write-checks) \
 [Due Nodes](#due-nodes)
 
 ```yaml
@@ -264,14 +266,14 @@ It carries its own copy of the [Fingerprint](method/ndd.map.md#fingerprint) rule
 ```yaml
 id: vs1
 signers:
-  tearne: {at: 2026-11-20, hash: b562b2ef}
+  tearne: {at: 2026-11-24, hash: 60246042}
 ```
 
 On a node's page, beside its sign-offs, a *Sign off* button opens a drop-down of names to tick, with *Sign off* to record a sign-off for each and *Request* to write a [request](method/ndd.map.md#stamp-states) for each with no stamp on the node. A sign-off diff, showing an old version, has no button.
 
 The drop-down lists every handle in the map's stamps and any name added in that browser, kept there until removed; only added names are removable. The last names ticked are ticked again.
 
-Each name gets its line under the node's `signers:` key, dated today and, for a sign-off, with the fingerprint of the text shown; nothing else is written, and writes are guarded as [Request Guards](#request-guards) describes. Committing is left to the user, prompted by a red light at the page's top right whose tooltip says the repository has uncommitted changes.
+Each name gets its line under the node's `signers:` key, dated today and, for a sign-off, with the fingerprint of the text shown; nothing else is written, and writes are guarded as [Request Guards](#request-guards) and [Write Checks](#write-checks) describe. Committing is left to the user, prompted by a red light at the page's top right while the repository has uncommitted changes.
 
 
 # Request Guards
@@ -281,14 +283,27 @@ Each name gets its line under the node's `signers:` key, dated today and, for a 
 ```yaml
 id: vs2
 signers:
-  tearne: {at: 2026-11-17, hash: d162c55b}
+  tearne: {at: 2026-11-24, hash: fc9768cb}
 ```
 
-- **Forged form** — another site could post a sign-off to the viewer blind. Each run picks a random token, carried in the viewer's own pages, which other sites cannot read, and required on every sign-off, sent by POST only.
+- **Forged form** — another site could have a visitor's browser post a write to the viewer, unseen. Each run picks a random token, carried only in the viewer's own pages, which other sites cannot read; a write is accepted only by POST and only with the token.
 
-- **DNS rebinding** — a site could point its own name at 127.0.0.1, then read and write the map as if it were the viewer. Every request is refused unless its Host is 127.0.0.1 or localhost, and every write unless its Origin is too.
+- **DNS rebinding** — a site could point its own name at 127.0.0.1, so that the browser treats it as the viewer and lets it read and write the map. Every request is refused unless its Host is 127.0.0.1 or localhost, and every write unless its Origin is too.
 
-- **Stale page** — a page carries the node's fingerprint as rendered, returned with a sign-off as a receipt. The server recomputes it from disk and refuses if they differ, so no one signs off text they were not shown.
+
+# Write Checks
+
+[↑ Map Viewer](#map-viewer)
+
+```yaml
+id: vw3
+signers:
+  tearne: {at: 2026-11-24, hash: 9b05e7da}
+```
+
+- **Stale page** — if a node changed on disk after its page was rendered, someone could sign off text they were not shown. The page carries the node's fingerprint as rendered, returned with a sign-off as a receipt, and the server refuses if it differs from the fingerprint on disk. A request for sign-off needs no receipt: it records no fingerprint and replaces no stamp.
+
+- **Partial write** — a request on several nodes, across map files, could be written for some nodes and not others. Every node is checked before anything is written: if any cannot take the request, nothing is, and the reply names each such node and why. Names already stamped on a node are skipped, not counted as failures.
 
 
 # Due Nodes
