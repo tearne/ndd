@@ -3,7 +3,7 @@
 # requires-python = "==3.12.*"
 # ///
 
-# Map viewer, a proof of concept, self-contained: serves a map in the browser so it can be read
+# Map viewer, self-contained: serves a map in the browser so it can be read
 # node by node, with who has signed off each node and, for a stale sign-off, what has changed
 # since it. It also records sign-offs and requests for them, writing nothing but stamp lines; edits go
 # through the agent, and committing is left to the user. Listens on 127.0.0.1 only, since there

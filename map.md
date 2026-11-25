@@ -9,16 +9,16 @@
 ```yaml
 id: p1j
 signers:
-  tearne: {at: 2026-11-17, hash: 4b86776e}
+  tearne: {at: 2026-11-25, hash: dde5957a}
 ```
 
-The repository that develops and ships Non-Dead Design. The method itself has its own map, [NDD](method/ndd.map.md#ndd), which this project builds and ships as an asset rather than as a branch. This map describes how the method is distributed, released and installed, and the tooling prototyped beside it. The reasoning behind the method is under [Principles](method/ndd.map.md#principles).
+The repository that develops and ships Non-Dead Design. The method itself has its own map, [NDD](method/ndd.map.md#ndd), which this project builds and ships as an asset rather than as a branch. This map describes how the method is distributed, released and installed, and the tooling built beside it. The reasoning behind the method is under [Principles](method/ndd.map.md#principles).
 
 - **[Distribution](#distribution)** — how NDD reaches a client project: the shipped layout, the release checklist, the installer and the agent rules.
 
 - **[Testing](testing.map.md#testing)** — how this repository checks itself: the checks and their runnable forms under `tests/`.
 
-- **[Map Viewer](#map-viewer)** — a prototype that serves a map in the browser for review and sign-off.
+- **[Map Viewer](#map-viewer)** — a tool that serves a map in the browser for review and sign-off.
 
 - **[Method Map Form](#method-map-form)** — the convention this project's method map follows.
 
@@ -48,6 +48,7 @@ id: ct6
     - [Write Checks](#write-checks)
     - [Due Nodes](#due-nodes)
     - [Request Bar](#request-bar)
+    - [Navigation](#navigation)
   - [Method Map Form](#method-map-form)
 
 
@@ -238,7 +239,8 @@ The task tempts the failures the rule targets and probes where it might overreac
 [Request Guards](#request-guards) \
 [Write Checks](#write-checks) \
 [Due Nodes](#due-nodes) \
-[Request Bar](#request-bar)
+[Request Bar](#request-bar) \
+[Navigation](#navigation)
 
 ```yaml
 id: mv4
@@ -350,6 +352,21 @@ Above the tree, *Request …* toggles a bar to request sign-off on several nodes
 - an *Apply* button.
 
 *Apply* acts as chosen for each name ticked on each node picked, checked as [Write Checks](#write-checks) describes. The bar then closes, clearing the picks, and *Due for* opens on the names ticked. Opening the bar closes the Due for bar, and whether *children* is ticked is kept in that browser.
+
+
+# Navigation
+
+[↑ Map Viewer](#map-viewer)
+
+```yaml
+id: vn7
+signers:
+  tearne: {at: 2026-11-25, hash: 1f1dbdb3}
+```
+
+Following a link replaces only the page's content, so the tree keeps its folds, and the current node is marked in it and scrolled into view. A branch's button, shown on hover, folds it and everything below, or opens it all once all of it is folded.
+
+*Split* opens a second pane beside the node, where the node's links then open, as do the pane's own. Each pane scrolls on its own and has its own back and forward buttons. *Swap* exchanges the panes and *Close* shuts the second.
 
 
 # Method Map Form
