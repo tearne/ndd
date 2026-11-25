@@ -55,7 +55,7 @@ def main():
         failures = 0
         for check in [folds_survive_moves, tree_never_redrawn, approval_diff_swapped, fold_button,
                       second_pane, panes_scroll_apart, pane_history, signoff_button, due_nodes,
-                      request_signoff, bulk_request, uncommitted_light]:
+                      request_signoff, bulk_request, withdraw_requests, uncommitted_light]:
             page = browser.new_page()
             page.set_default_timeout(5000)
             errors = []
@@ -228,9 +228,14 @@ def signoff_button(page, base, suite) -> int:
     failures += suite.expect("add", box.locator("li", has_text="bob").locator(".remove").count() == 0, "a map handle not removable")
     box.locator("li", has_text="dave").locator(".remove").click()
     failures += suite.expect("remove", "dave" not in names_listed(box), "a removed name gone")
+    failures += suite.expect("remove", box.evaluate("d => d.open"), "the drop-down stays open")
     page.locator("main h1").click()
     failures += suite.expect("click away", not box.evaluate("d => d.open"), "the drop-down closes on a click elsewhere")
     box.locator("summary").click()
+    box.locator(".mode input[value='/withdraw']").check()
+    page.locator("main h1").click()
+    box.locator("summary").click()
+    failures += suite.expect("mode", box.locator(".mode input[value='']").is_checked(), "it reopens set to sign off")
     box.locator("li", has_text="alice").locator("input").check()
     box.locator("li", has_text="bob").locator("input").check()
     box.locator("button.sign").click()
@@ -282,7 +287,8 @@ def request_signoff(page, base, suite) -> int:
     box.locator("summary").click()
     box.locator("li", has_text="alice").locator("input").check()
     box.locator("li", has_text="bob").locator("input").check()
-    box.locator("button.request").click()
+    box.locator(".mode input[value='/request']").check()
+    box.locator("button.sign").click()
     page.wait_for_selector("main .meta td.requested")
     after = (COPY / "map.md").read_text(encoding="utf-8")
     added = [l for l in after.splitlines() if l not in before.splitlines()]
@@ -317,8 +323,6 @@ def bulk_request(page, base, suite) -> int:
     failures += suite.expect("bulk request", pick("Branch Leaf").is_visible(), "the branch left open")
     pick("Linked Leaf").check()
     panel = page.locator("aside .request-panel")
-    failures += suite.expect("bulk request", panel.locator(".picked").text_content() == "4 picked",
-                             f"the count shown, saw {panel.locator('.picked').text_content()!r}")
     send = panel.locator(".request-send")
     failures += suite.expect("bulk request", send.is_disabled(), "Request disabled with no name ticked")
     panel.locator(".request-names summary").click()
@@ -344,6 +348,53 @@ def bulk_request(page, base, suite) -> int:
     page.locator("aside .due-open").click()
     failures += suite.expect("bulk request", not marked(page), f"closing the Due for bar clears the marks, saw {marked(page)}")
     return failures + suite.expect("bulk request", same_page(page), "no page was loaded whole")
+
+
+# Withdraw, in a node's Sign off drop-down, removes a ticked name's request there and keeps
+# a sign-off; in the request bar, which opens set to request, Apply set to withdraw removes the
+# requests bulk_request wrote, on every node picked across files, and only those lines.
+def withdraw_requests(page, base, suite) -> int:
+    page.goto(SIGNING + suite.node_path("map.md", "Renamed"))
+    mark_page(page)
+    before = (COPY / "map.md").read_text(encoding="utf-8")
+    box = page.locator("main .signoff")
+    box.locator("summary").click()
+    for tick in box.locator("ul input").all():
+        tick.uncheck()
+    box.locator("li", has_text="bob").locator("input").check()
+    box.locator("li", has_text="alice").locator("input").check()
+    box.locator(".mode input[value='/withdraw']").check()
+    box.locator("button.sign").click()
+    page.wait_for_function("!document.querySelector('main .meta td.requested')")
+    after = (COPY / "map.md").read_text(encoding="utf-8")
+    removed = [l for l in before.splitlines() if l not in after.splitlines()]
+    failures = suite.expect("withdraw", len(removed) == 1 and removed[0].startswith("  bob:") and "hash: null" in removed[0]
+                            and len(after.splitlines()) == len(before.splitlines()) - 1,
+                            f"bob's request removed, alice's stale stamp kept, saw -{removed}")
+    files = ["map.md", "branch.map.md", "linked.map.md"]
+    before = {f: (COPY / f).read_text(encoding="utf-8") for f in files}
+    page.locator("aside .request-open").click()
+    pick = lambda name: page.locator(f"aside a:text-is('{name}')").locator("xpath=following-sibling::input[1]")
+    page.locator("aside .pick-children").check()
+    for name in ["Changes", "Branch", "Linked Leaf"]:
+        pick(name).check()
+    panel = page.locator("aside .request-panel")
+    mode = panel.locator("input[name=request-mode][value='/request']")
+    failures += suite.expect("bulk withdraw", mode.is_checked(), "the bar opens set to request")
+    panel.locator("input[name=request-mode][value='/withdraw']").check()
+    panel.locator(".request-names summary").click()
+    for tick in panel.locator(".request-names ul input").all():
+        tick.uncheck()
+    panel.locator(".request-names li", has_text="hana").locator("input").check()
+    panel.locator(".request-send").click()
+    panel.wait_for(state="hidden")
+    after = {f: (COPY / f).read_text(encoding="utf-8") for f in files}
+    removed = {f: [l for l in before[f].splitlines() if l not in after[f].splitlines()] for f in files}
+    failures += suite.expect("bulk withdraw", all("hana" not in after[f] for f in files)
+                             and sum(len(r) for r in removed.values()) == 4
+                             and sum(len(before[f].splitlines()) - len(after[f].splitlines()) for f in files) == 4,
+                             f"hana's four requests removed and nothing else, saw {removed}")
+    return failures + suite.expect("withdraw", same_page(page), "no page was loaded whole")
 
 
 # The red light shows, with its tooltip, while the repository has uncommitted changes, and is

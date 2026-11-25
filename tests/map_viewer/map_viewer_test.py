@@ -66,6 +66,8 @@ def main():
             lambda: request_writes_requests(signing, copy),
             lambda: request_across_files(signing, copy),
             lambda: request_refusals(signing, copy),
+            lambda: withdraw_removes_requests(signing, copy),
+            lambda: withdraw_refusals(signing, copy),
             lambda: foreign_host_refused(base),
         ])
     if failures:
@@ -328,6 +330,50 @@ def request_refusals(base: str, copy: Path) -> int:
                      "every file untouched"))
 
 
+# A withdrawal on several nodes, across files, removes each ticked name's request and nothing
+# else: current and stale stamps are kept, a node with no request is passed by, and a node
+# left with no stamps keeps its signers: key. Runs after the requests above, which wrote them.
+def withdraw_removes_requests(base: str, copy: Path) -> int:
+    files = ["map.md", "linked.map.md"]
+    before = {f: (copy / f).read_text(encoding="utf-8") for f in files}
+    code, reply = ask(base, [("map.md", "Current"), ("map.md", "Mixed"), ("map.md", "Requested"),
+                             ("map.md", "Unstamped"), ("linked.map.md", "Linked Leaf")],
+                      ["alice", "bob", "frank"], path="/withdraw")
+    after = {f: (copy / f).read_text(encoding="utf-8") for f in files}
+    diff = {f: [l for l in difflib.ndiff(before[f].splitlines(), after[f].splitlines()) if l[:2] in ("- ", "+ ")]
+            for f in files}
+    removed = [l[2:] for f in files for l in diff[f]]
+    leaf = node_text(after["linked.map.md"], "Linked Leaf")
+    return (expect("withdraw", (code, reply) == (200, "Withdrew 4"), f"accepted, 4 removed, got {code} {reply!r}")
+            + expect("withdraw", all(l[:2] == "- " for f in files for l in diff[f]), f"lines only removed, saw {diff}")
+            + expect("withdraw", len(removed) == 4 and all("hash: null" in l for l in removed),
+                     f"only requests removed: frank on Mixed, bob on Requested, both on Linked Leaf; saw {removed}")
+            + expect("withdraw", "  erin:" in node_text(after["map.md"], "Requested"), "erin's request, not ticked, kept")
+            + expect("withdraw", "signers:\n```" in leaf, f"Linked Leaf keeps an empty signers: key, saw {leaf!r}"))
+
+
+# A withdrawal that any node can't take is refused whole and writes nothing; the guards are
+# those of a request.
+def withdraw_refusals(base: str, copy: Path) -> int:
+    files = ["map.md", "branch.map.md", "linked.map.md"]
+    before = {f: (copy / f).read_text(encoding="utf-8") for f in files}
+    code, reply = ask(base, [("branch.map.md", "Branch"), ("map.md", "Contents")], ["frank"], path="/withdraw")
+    token = signoff_data(page(base, "Current"))["token"]
+    host, nodes = urlparse(base).netloc, [("map.md", "Mixed")]
+    return (expect("refused withdrawal", code == 400 and "map.md › Contents" in reply and reply.startswith("Nothing withdrawn"),
+                   f"refused whole, naming Contents, got {code} {reply!r}")
+            + sum(expect("refused withdrawal", got == want, f"{what}: {want}, got {got}") for what, (got, want) in {
+                "no token": (ask(base, nodes, ["frank"], token="", path="/withdraw")[0], 403),
+                "a wrong token": (ask(base, nodes, ["frank"], token=wrong(token), path="/withdraw")[0], 403),
+                "a GET": (status(base + "/withdraw"), 405),
+                "a foreign Origin": (ask(base, nodes, ["frank"], headers={"Origin": "http://evil.example"}, path="/withdraw")[0], 403),
+                "a foreign Host": (ask(base, nodes, ["frank"], headers={"Host": f"evil.example:{host.split(':')[1]}"},
+                                       path="/withdraw")[0], 403),
+            }.items())
+            + expect("refused withdrawal", {f: (copy / f).read_text(encoding="utf-8") for f in files} == before,
+                     "every file untouched"))
+
+
 # A page reached through a name rebound to 127.0.0.1 can't read the map either, while
 # localhost and another local port, as a port forward gives, are served.
 def foreign_host_refused(base: str) -> int:
@@ -361,15 +407,21 @@ def sign(base: str, name: str, names: list, headers: dict | None = None, **overr
 
 # Sends a request for sign-off on each (file, node), as the viewer's own page would, returning
 # the status and the reply's text.
-def ask(base: str, nodes: list, names: list, headers: dict | None = None, **overrides) -> tuple[int, str]:
+def ask(base: str, nodes: list, names: list, headers: dict | None = None, path: str = "/request",
+        **overrides) -> tuple[int, str]:
     token = signoff_data(page(base, "Current"))["token"]
     body = {"token": token, "nodes": [{"file": f, "name": n} for f, n in nodes], "names": names} | overrides
-    request = post_request(base, "/request", "POST", body, {"Origin": base} | (headers or {}))
+    request = post_request(base, path, "POST", body, {"Origin": base} | (headers or {}))
     try:
         with urllib.request.urlopen(request) as response:
             return response.status, response.read().decode("utf-8")
     except urllib.error.HTTPError as error:
         return error.code, error.read().decode("utf-8")
+
+
+# A node's lines in a map file's text, from its heading to the next.
+def node_text(text: str, name: str) -> str:
+    return re.search(rf"^# {re.escape(name)}\n.*?(?=^# |\Z)", text, re.M | re.S).group(0)
 
 
 def send(base: str, method: str, body: dict, headers: dict) -> int:

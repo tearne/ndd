@@ -243,10 +243,10 @@ The task tempts the failures the rule targets and probes where it might overreac
 ```yaml
 id: mv4
 signers:
-  tearne: {at: 2026-11-25, hash: f49760ac}
+  tearne: {at: 2026-11-25, hash: c6f692ec}
 ```
 
-A prototype: `method/util/map_viewer.py`, a [POS](method/standards/POS.md) script serving a map in the browser for review. Having no login, it listens on 127.0.0.1 only, and it writes nothing but sign-offs and requests.
+`method/util/map_viewer.py` is a [POS](method/standards/POS.md) script serving a map in the browser for review. Having no login, it listens on 127.0.0.1 only, and it writes nothing but sign-offs and requests.
 
 - **Tree** — the contents beneath the entry map's root heading, followed through child links, each file's part shaded and named.
 
@@ -254,11 +254,11 @@ A prototype: `method/util/map_viewer.py`, a [POS](method/standards/POS.md) scrip
 
 - **Sign-off diff** — for a stale stamp, the signed-off text found in git by its fingerprint, and what changed since.
 
-- **[Sign off](#sign-off-button)** — on a node, a button stamping it for the names ticked.
+- **[Sign off](#sign-off-button)** — on a node, a button stamping it, or requesting or withdrawing a request, for the names ticked.
 
 - **[Due for](#due-nodes)** — the nodes due for the people ticked, marked in the tree.
 
-- **[Request](#request-bar)** — the nodes picked in the tree, requested from the people ticked.
+- **[Request](#request-bar)** — the nodes picked in the tree, requested from the people ticked or their requests withdrawn.
 
 It carries its own copy of the [Fingerprint](method/ndd.map.md#fingerprint) rule, kept in step by [Fingerprint Check](testing.map.md#fingerprint-check).
 
@@ -270,14 +270,22 @@ It carries its own copy of the [Fingerprint](method/ndd.map.md#fingerprint) rule
 ```yaml
 id: vs1
 signers:
-  tearne: {at: 2026-11-24, hash: 60246042}
+  tearne: {at: 2026-11-25, hash: 5f6d903f}
 ```
 
-On a node's page, beside its sign-offs, a *Sign off* button opens a drop-down of names to tick, with *Sign off* to record a sign-off for each and *Request* to write a [request](method/ndd.map.md#stamp-states) for each with no stamp on the node. A sign-off diff, showing an old version, has no button.
+Beside a node's sign-offs, a *Sign off* button opens a drop-down of names to tick and a choice of what *Apply* does for each, set to *sign off* on opening:
 
-The drop-down lists every handle in the map's stamps and any name added in that browser, kept there until removed; only added names are removable. The last names ticked are ticked again.
+- **sign off** — stamp the fingerprint of the text shown;
 
-Each name gets its line under the node's `signers:` key, dated today and, for a sign-off, with the fingerprint of the text shown; nothing else is written, and writes are guarded as [Request Guards](#request-guards) and [Write Checks](#write-checks) describe. Committing is left to the user, prompted by a red light at the page's top right while the repository has uncommitted changes.
+- **request** — add a [request](method/ndd.map.md#stamp-states), if the name has no stamp;
+
+- **withdraw** — remove the name's request.
+
+A sign-off diff, showing an old version, has no button.
+
+The drop-down lists every handle in the map's stamps and any name added in that browser, which alone are removable and are kept there until removed. The last names ticked are ticked again.
+
+Each stamp is a line under the node's `signers:` key, dated today, and nothing else is written; writes are guarded as [Request Guards](#request-guards) and [Write Checks](#write-checks) describe. Committing is left to the user, prompted by a red light at the page's top right while anything is uncommitted.
 
 
 # Request Guards
@@ -302,12 +310,12 @@ signers:
 ```yaml
 id: vw3
 signers:
-  tearne: {at: 2026-11-24, hash: 9b05e7da}
+  tearne: {at: 2026-11-25, hash: 21e2ed15}
 ```
 
-- **Stale page** — if a node changed on disk after its page was rendered, someone could sign off text they were not shown. The page carries the node's fingerprint as rendered, returned with a sign-off as a receipt, and the server refuses if it differs from the fingerprint on disk. A request for sign-off needs no receipt: it records no fingerprint and replaces no stamp.
+- **Stale page** — if a node changed on disk after its page was rendered, someone could sign off text they were not shown. The page carries the node's fingerprint as rendered, returned with a sign-off as a receipt, and the server refuses if it differs from the fingerprint on disk. A request or its withdrawal needs no receipt: neither records a fingerprint or touches a sign-off.
 
-- **Partial write** — a request on several nodes, across map files, could be written for some nodes and not others. Every node is checked before anything is written: if any cannot take the request, nothing is, and the reply names each such node and why. Names already stamped on a node are skipped, not counted as failures.
+- **Partial write** — a request or withdrawal on several nodes, across map files, could be written for some nodes and not others. Every node is checked before anything is written: if any cannot take the write — a missing file or node, *Contents*, or for a request no scaffolding block — nothing is, and the reply names each such node and why. A name already stamped, or with no request to withdraw, is skipped, not counted as a failure.
 
 
 # Due Nodes
@@ -330,18 +338,18 @@ Above the tree, *Due for …* toggles a bar holding a drop-down of the [signers]
 ```yaml
 id: vr6
 signers:
-  tearne: {at: 2026-11-25, hash: 80e0a80d}
+  tearne: {at: 2026-11-25, hash: ceab9d20}
 ```
 
-Above the tree, *Request …* toggles a bar to request sign-off on several nodes at once. While it is open, each node in the tree gains a box to pick it by, and with *children* ticked, picking a node picks everything below it too. The bar holds:
+Above the tree, *Request …* toggles a bar to request sign-off on several nodes at once, or withdraw requests. While it is open, each node in the tree gains a box to pick it by, and with *children* ticked, picking a node picks everything below it too. The bar holds:
 
 - a drop-down of names, offering the same as [Sign off](#sign-off-button)'s and closing like [Due for](#due-nodes)'s;
 
-- a count of the nodes picked;
+- a choice of *request* or *withdraw*, as in Sign off's, set to *request* on opening;
 
 - an *Apply* button.
 
-*Apply* writes a [request](method/ndd.map.md#stamp-states) for each name ticked on each node picked where that name has no stamp, checked as [Write Checks](#write-checks) describes. The bar then closes, clearing the picks, and *Due for* opens on the names just asked. Opening the bar closes the Due for bar, and whether *children* is ticked is kept in that browser.
+*Apply* acts as chosen for each name ticked on each node picked, checked as [Write Checks](#write-checks) describes. The bar then closes, clearing the picks, and *Due for* opens on the names ticked. Opening the bar closes the Due for bar, and whether *children* is ticked is kept in that browser.
 
 
 # Method Map Form

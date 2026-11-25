@@ -124,14 +124,16 @@ signers:
 ```yaml
 id: v8d
 signers:
-  tearne: {at: 2026-11-24, hash: 12a7f738}
+  tearne: {at: 2026-11-25, hash: 8adcbe3e}
 ```
 
-On a copy of the demo map, [Map Viewer Check](#map-viewer-check) checks each kind of write:
+On a copy of the demo map, [Map Viewer Check](#map-viewer-check) checks each kind of write. Each is refused, leaving every file untouched, without the run's token, when not a POST, or from a foreign Host or Origin.
 
-- **[Sign-off](map.md#sign-off-button)** — writes its stamp, renaming an older `approvals:` key. The file is left untouched when a sign-off is for a node changed since its page was shown, lacks the run's token, is not a POST, carries a `request` key, or comes from a foreign Host or Origin.
+- **[Sign-off](map.md#sign-off-button)** — writes its stamp, renaming an older `approvals:` key; refused for a node changed since its page was shown, or with a `request` key.
 
-- **Request for sign-off** — writes `hash: null` only for names with no stamp on the node, on one node and on several across three files. A request containing any nodes which refuse fails whole, leaving every file untouched, as does one without the run's token or from a foreign Host or Origin.
+- **Request for sign-off** — writes `hash: null` only for names with no stamp on the node, on one node and on several across three files; refused whole if any node refuses.
+
+- **Withdrawal** — removes only the ticked names' requests, across two files, keeping current and stale stamps, others' requests and an emptied `signers:` key; refused whole if any node refuses.
 
 
 # Map Viewer Browser Check
@@ -141,10 +143,10 @@ On a copy of the demo map, [Map Viewer Check](#map-viewer-check) checks each kin
 ```yaml
 id: v9b
 signers:
-  tearne: {at: 2026-11-20, hash: 62d94034}
+  tearne: {at: 2026-11-25, hash: adaa2da5}
 ```
 
-[`tests/map_viewer/browser_test.py`](tests/map_viewer/browser_test.py) drives the [map viewer](map.md#map-viewer)'s page script in headless Chromium, on the demo map [Map Viewer Check](#map-viewer-check) serves. It checks the tree keeping its folds across links and back and forward, never redrawn; the fold button; a sign-off diff swapped in; the second pane through split, reload, swap and close, each pane scrolling in its own box; and each pane's history. On a copy of the demo map, it checks the *Sign off* button: its drop-down's names, one added and removed, the last ticked ticked again, the stamps current once pressed, and none on a sign-off diff; and the red light while the repository has uncommitted changes. Any script error fails it.
+[`tests/map_viewer/browser_test.py`](tests/map_viewer/browser_test.py) drives the [map viewer](map.md#map-viewer)'s page script in headless Chromium, on the demo map [Map Viewer Check](#map-viewer-check) serves. It checks the tree keeping its folds across links and back and forward, never redrawn; the fold button; a sign-off diff swapped in; the second pane through split, reload, swap and close, each pane scrolling in its own box; and each pane's history. On a copy of the demo map, it checks the *Sign off* button: its drop-down's names, one added and removed without the drop-down closing, the last ticked ticked again, the drop-down reopening set to sign off, the stamps current once pressed, and none on a sign-off diff; and the red light while the repository has uncommitted changes. Any script error fails it.
 
 It needs Playwright and its Chromium, as [Test Setup](#test-setup) describes.
 
@@ -156,12 +158,12 @@ It needs Playwright and its Chromium, as [Test Setup](#test-setup) describes.
 ```yaml
 id: v9d
 signers:
-  tearne: {at: 2026-11-25, hash: f140a7b7}
+  tearne: {at: 2026-11-25, hash: cddd2b67}
 ```
 
-On a copy of the demo map, [`tests/map_viewer/browser_test.py`](tests/map_viewer/browser_test.py) also checks [due nodes](map.md#due-nodes), requesting and the [request bar](map.md#request-bar). Ticking people in the *Due for* bar marks the nodes due for any of them and shows the count, and a sign-off clears the mark in place. *Request* in a node's *Sign off* drop-down writes a requested stamp for a ticked name with no stamp, making the node due for them, and writes nothing for a name already stamped.
+On a copy of the demo map, [`tests/map_viewer/browser_test.py`](tests/map_viewer/browser_test.py) also checks [due nodes](map.md#due-nodes), requesting, withdrawing and the [request bar](map.md#request-bar). Ticking people in the *Due for* bar marks the nodes due for any of them and shows the count, and a sign-off clears the mark in place. In a node's *Sign off* drop-down, *request* writes a requested stamp for a ticked name with no stamp, making the node due for them, and nothing for one already stamped; *withdraw* removes the request, keeping a sign-off.
 
-In the request bar, picking a branch picks it alone, or with *children* ticked what is below it too. *Apply* stays disabled until a name is ticked, then writes one request for each node picked, across files, clears the picks and opens *Due for* on that name; closing *Due for* clears the marks.
+In the request bar, picking a branch picks it alone, or with *children* ticked what is below it too. *Apply* stays disabled until a name is ticked, then writes one request for each node picked, across files, clears the picks and opens *Due for* on that name; closing *Due for* clears the marks. The bar opens set to *request*; set to *withdraw*, it removes those requests alone.
 
 
 # Test Setup

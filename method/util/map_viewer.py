@@ -36,7 +36,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, quote, urlparse
 
-VERSION = "0.8.0"
+VERSION = "0.9.0"
 
 GREEN, YELLOW, RED = "32", "33", "31"  # ANSI colour codes
 
@@ -115,16 +115,17 @@ class Handler(BaseHTTPRequestHandler):
             title, body = view(url.path, query)
             side = side_pane(query["side"]) if "side" in query else None
             self.send_page(page(title, body, tree_html((query["file"], query["name"])), side))
-        elif url.path in ("/signoff", "/request"):
-            self.send_error(405, "Sign-offs and requests are sent by POST")
+        elif url.path in ("/signoff", "/request", "/withdraw"):
+            self.send_error(405, "Sign-offs, requests and withdrawals are sent by POST")
         else:
             self.send_error(404)
 
     # A sign-off on one node, carrying the fingerprint the page was rendered with, or a request
-    # for sign-off on a list of nodes; either from this viewer's own page, carrying the run's token.
+    # for sign-off on a list of nodes, or its withdrawal; each from this viewer's own page,
+    # carrying the run's token.
     def post(self):
         action = urlparse(self.path).path
-        if action not in ("/signoff", "/request"):
+        if action not in ("/signoff", "/request", "/withdraw"):
             raise Refused(404, "No such action")
         if self.headers.get("Origin") != f"http://{self.headers.get('Host')}":
             raise Refused(403, "Writes are accepted only from the viewer's own pages")
@@ -143,7 +144,7 @@ class Handler(BaseHTTPRequestHandler):
         if action == "/signoff":
             self.post_signoff(body)
         else:
-            self.post_request(body)
+            self.post_request(body, withdraw=action == "/withdraw")
 
     # A request key is refused rather than ignored, so nothing meant as a request is written
     # as a sign-off.
@@ -159,14 +160,14 @@ class Handler(BaseHTTPRequestHandler):
         written = sign_off(file, name, shown, names)
         self.send_text(200, f"Signed off for {len(written)}")
 
-    def post_request(self, body: dict) -> None:
+    def post_request(self, body: dict, withdraw: bool) -> None:
         nodes, names = body.get("nodes"), body.get("names")
         if not isinstance(nodes, list) or not nodes or not isinstance(names, list) \
                 or not all(isinstance(n, dict) and isinstance(n.get("file"), str) and isinstance(n.get("name"), str)
                            for n in nodes):
-            raise Refused(400, "Malformed request")
-        written = request_signoffs([(n["file"], n["name"]) for n in nodes], names)
-        self.send_text(200, f"Requested {written}")
+            raise Refused(400, "Malformed withdrawal" if withdraw else "Malformed request")
+        written = request_signoffs([(n["file"], n["name"]) for n in nodes], names, withdraw)
+        self.send_text(200, f"{'Withdrew' if withdraw else 'Requested'} {written}")
 
     def send_text(self, code: int, text: str) -> None:
         data = text.encode("utf-8")
@@ -240,9 +241,16 @@ def signoff_html(file: str, name: str, current: str) -> str:
     attrs = " ".join(f'data-{k}="{html.escape(v)}"' for k, v in
                      [("file", file), ("name", name), ("fingerprint", current), ("token", TOKEN),
                       ("handles", json.dumps(map_handles()))])
+    group = f"signoff-mode-{secrets.token_hex(4)}"  # each drop-down's own radio group, as two panes may each show one
     return (f'<details class="signoff" {attrs}><summary>Sign off …</summary><div class="names">'
-            '<div class="actions"><button class="request" disabled title="Ask each ticked name with no stamp here for a sign-off">'
-            'Request</button><button class="sign" disabled title="Sign off for each ticked name">Sign off</button></div><ul></ul>'
+            '<div class="actions"><span class="mode">'
+            f'<label title="Sign off for each ticked name"><input type="radio" name="{group}" value="" checked>sign off</label>'
+            '<label title="Ask each ticked name with no stamp here for a sign-off">'
+            f'<input type="radio" name="{group}" value="/request">request</label>'
+            '<label title="Withdraw each ticked name\'s request here; a sign-off is never removed">'
+            f'<input type="radio" name="{group}" value="/withdraw">withdraw</label></span>'
+            '<button class="sign" disabled title="Sign off, request or withdraw, as chosen, for each ticked name">Apply</button>'
+            '</div><ul></ul>'
             '<div class="add"><input class="new-name" placeholder="Add a name" maxlength="64">'
             '<button class="add-name">Add</button></div></div></details>')
 
@@ -416,10 +424,12 @@ aside .review-panel { position: sticky; top: -1rem; z-index: 4; margin: -.4rem -
                       background: #f8faff; border-bottom: 1px solid #c8d4ee; box-shadow: 0 2px 6px rgba(0,0,0,.06); }
 aside .review-panel .row { display: flex; gap: .4rem; align-items: center; }
 aside .review-panel .row + .row { margin-top: .35rem; }
-aside .review-panel .picked { color: #333; font-weight: 600; font-size: .8rem; }
 aside .review-panel .children { margin-left: auto; font-size: .8rem; color: #555; cursor: pointer;
                                 display: flex; align-items: center; gap: .3rem; }
 aside .review-panel .children input { margin: 0; }
+aside .review-panel .mode { display: flex; gap: .5rem; font-size: .8rem; color: #555; }
+aside .review-panel .mode label { display: flex; align-items: center; gap: .2rem; cursor: pointer; }
+aside .review-panel .mode input { margin: 0; accent-color: #2f6fd6; }
 aside .review-panel button, aside .names-pick summary { font-size: .8rem; padding: .1rem .6rem; border: 1px solid #ccc;
                       background: #fff; border-radius: 3px; cursor: pointer; white-space: nowrap; }
 aside .review-panel button:disabled { opacity: .45; cursor: default; }
@@ -450,7 +460,6 @@ aside .request-panel { background: #f5f8ff; border-bottom-color: #c8d4ee; }
 aside .request-panel .names-pick summary { border-color: #c8d4ee; }
 aside .request-panel .names-box { border-color: #c8d4ee; }
 aside .request-panel input[type=checkbox], aside .pick { accent-color: #2f6fd6; }
-aside .request-panel .picked { color: #2f4f9f; }
 aside .due-count { color: #8a5a00; font-weight: 600; font-size: .8rem; white-space: nowrap; }
 aside a.due { display: inline-block; width: calc(100% - 1.4em); box-sizing: border-box; background: #fff0cc;
               border-radius: 3px; padding: 0 .3rem; box-shadow: inset 3px 0 #f2b54d; }
@@ -498,8 +507,12 @@ body.split main { height: 100vh; overflow-y: auto; box-sizing: border-box; }
 .signoff .remove { border: none; background: none; color: #b33; padding: 0 .2rem; }
 .signoff .add { display: flex; gap: .3rem; }
 .signoff .new-name { font-size: .8rem; flex: 1; min-width: 0; }
-.signoff .actions { display: flex; gap: .3rem; }
-.signoff .sign, .signoff .request { flex: 1; white-space: nowrap; }
+.signoff .names { min-width: 15rem; }
+.signoff .actions { display: flex; gap: .4rem; align-items: center; }
+.signoff .mode { display: flex; gap: .5rem; flex: 1; font-size: .8rem; color: #555; }
+.signoff .mode label { display: flex; align-items: center; gap: .2rem; cursor: pointer; white-space: nowrap; }
+.signoff .mode input { margin: 0; accent-color: #2f6fd6; }
+.signoff .sign { white-space: nowrap; }
 /* Dimmed with nobody ticked; filled once there are names to stamp */
 .signoff .sign:disabled { opacity: .4; }
 .signoff .sign:not(:disabled) { background: #2f6fd6; border-color: #2f6fd6; color: #fff; font-weight: 600; }
@@ -532,6 +545,7 @@ function toggleAll(event) {
   const branch = branchOf(event.target.closest("details"));
   const open = !branch.some(d => d.open);
   branch.forEach(d => d.open = open);
+  labelButtons();  // now, not on the toggle events, which arrive after the click
 }
 function branchOf(details) {
   return [details, ...details.querySelectorAll("details")];
@@ -754,7 +768,6 @@ function tickedIn(box) {
 function enableSign(box) {
   const none = tickedIn(box).length === 0;
   box.querySelector("button.sign").disabled = none;
-  box.querySelector("button.request").disabled = none;
 }
 
 document.addEventListener("change", event => {
@@ -779,12 +792,18 @@ document.addEventListener("click", event => {
     store(TICKED, stored(TICKED).filter(n => n !== name));
     fillSignoffs();
     fillRequest();
-  } else if (button.matches(".sign")) signOff(box, button, false);
-  else if (button.matches(".request")) signOff(box, button, true);
+  } else if (button.matches(".sign")) signOff(box, button, box.querySelector(".mode input:checked").value);
+});
+
+// The Sign off drop-down opens set to sign off, so a request or withdrawal is never left chosen.
+document.addEventListener("click", event => {
+  const box = event.target.closest(".signoff");
+  if (box && !box.open && event.target.closest("summary")) box.querySelector(".mode input[value='']").checked = true;
 });
 
 // An open Sign off drop-down closes on a click anywhere outside it.
 document.addEventListener("click", event => {
+  if (!event.target.isConnected) return;  // a row just removed from inside it, such as an added name
   document.querySelectorAll(".signoff[open]").forEach(box => { if (!box.contains(event.target)) box.open = false; });
 });
 
@@ -802,19 +821,21 @@ function addName(box) {
   else enableRequest();
 }
 
-// A sign-off, or a request for one; the page is redrawn in place to show it.
-async function signOff(box, button, request) {
+// A sign-off, or a request for one sent to /request, or its withdrawal sent to /withdraw; the
+// page is redrawn in place to show it.
+const REFUSED = {"": "Not signed off: ", "/request": "Not requested: ", "/withdraw": "Not withdrawn: "};
+async function signOff(box, button, action) {
   const names = tickedIn(box);
   if (!names.length) return;
   button.disabled = true;
   const {token, file, name, fingerprint} = box.dataset;
-  const response = await fetch(request ? "/request" : "/signoff", {
+  const response = await fetch(action || "/signoff", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
-    body: JSON.stringify(request ? {token, nodes: [{file, name}], names} : {token, file, name, fingerprint, names}),
+    body: JSON.stringify(action ? {token, nodes: [{file, name}], names} : {token, file, name, fingerprint, names}),
   });
   if (!response.ok) {
-    alert((request ? "Not requested: " : "Not signed off: ") + await response.text());
+    alert(REFUSED[action] + await response.text());
     enableSign(box);
     return;
   }
@@ -862,6 +883,7 @@ document.addEventListener("click", event => {
   const button = event.target.closest("button");
   if (button?.matches("aside .due-open")) setDue(duePanel().hidden);
   // An open names drop-down closes on a click anywhere outside it.
+  if (!event.target.isConnected) return;  // a row just removed from inside it, such as an added name
   document.querySelectorAll("aside .names-pick[open]").forEach(d => { if (!d.contains(event.target)) d.open = false; });
 });
 
@@ -888,7 +910,6 @@ function enableRequest() {
   const panel = requestPanel();
   if (!panel) return;
   const nodes = picked().length, names = tickedIn(panel);
-  panel.querySelector(".picked").textContent = nodes ? `${nodes} picked` : "Pick nodes below";
   panel.querySelector(".request-names .ticked").textContent = names.length ? names.join(", ") : "Names";
   panel.querySelector(".request-send").disabled = !nodes || !names.length;
 }
@@ -904,24 +925,25 @@ function setPicking(on) {
   }
   else {
     aside.querySelector(".pick-children").checked = localStorage.getItem(PICK_CHILDREN) === "true";
+    panel.querySelector("input[name=request-mode][value='/request']").checked = true;
     fillRequest();
   }
 }
-async function sendRequest(button) {
+async function sendRequest(button, action) {
   const panel = requestPanel(), names = tickedIn(panel), nodes = picked();
   if (!names.length || !nodes.length) return;
   button.disabled = true;
-  const response = await fetch("/request", {
+  const response = await fetch(action, {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({token: panel.dataset.token, nodes, names}),
   });
   if (!response.ok) {
-    alert("Not requested: " + await response.text());
+    alert(REFUSED[action] + await response.text());
     enableRequest();
     return;
   }
-  // The request done, the Due for bar opens on the names just asked, marking what awaits them.
+  // The request or withdrawal done, the Due for bar opens on the names, marking what awaits them.
   store(TICKED, names);
   store(DUE_FOR, names);
   setPicking(false);
@@ -942,7 +964,8 @@ document.addEventListener("click", event => {
   const button = event.target.closest("button");
   if (!button || !button.closest("aside .due-bar, aside .request-panel")) return;
   if (button.matches(".request-open")) setPicking(!document.querySelector("aside").classList.contains("picking"));
-  else if (button.matches(".request-send")) sendRequest(button);
+  else if (button.matches(".request-send"))
+    sendRequest(button, requestPanel().querySelector("input[name=request-mode]:checked").value);
   else if (button.closest(".request-panel")) {
     event.preventDefault();
     if (button.matches(".add-name")) addName(requestPanel());
@@ -1068,11 +1091,14 @@ def sign_off(file: str, name: str, shown: str, names: list) -> list[str]:
 
 
 # A request for sign-off from each name on each node, across map files: hash: null, and only
-# for a name with no stamp on the node, so no stamp is replaced. Every node is checked before
-# anything is written, and if any can't take the request, nothing is and the refusal names each
+# for a name with no stamp on the node, so no stamp is replaced. Or, withdrawing, each name's
+# requested stamp removed, a name with no request on the node passed by, so no sign-off given
+# is ever removed; the signers: key stays, even if left empty. Every node is checked before
+# anything is written, and if any can't take the write, nothing is and the refusal names each
 # such node and why. Each changed file is then written to a temporary and swapped in; a failure
-# among the swaps is not rolled back, but each swap is whole. Returns the number of stamps written.
-def request_signoffs(nodes: list[tuple[str, str]], names: list) -> int:
+# among the swaps is not rolled back, but each swap is whole. Returns the number of stamps
+# written or removed.
+def request_signoffs(nodes: list[tuple[str, str]], names: list, withdraw: bool = False) -> int:
     handles = checked_handles(names)
     with WRITE_LOCK:
         files: dict[Path, list[str]] = {}
@@ -1094,21 +1120,28 @@ def request_signoffs(nodes: list[tuple[str, str]], names: list) -> int:
             elif span is None:
                 problems.append(f"{file} › {name}: no such node")
             elif not scaffolding_block(files[path][span[0] + 1:span[1]]):
-                problems.append(f"{file} › {name}: no scaffolding block to hold a request")
+                if not withdraw:
+                    problems.append(f"{file} › {name}: no scaffolding block to hold a request")
             else:
                 targets.append((path, name))
         if problems:
-            raise Refused(400, "Nothing requested:\n" + "\n".join(problems))
+            raise Refused(400, ("Nothing withdrawn:\n" if withdraw else "Nothing requested:\n") + "\n".join(problems))
         written, changed = 0, []
         value = f"{{at: {date.today().isoformat()}, hash: null}}"
         for path, name in targets:
             lines = files[path]
             start, end = index_of(lines)[name]
             stamped = stamp_details(lines[start:end])
-            unstamped = [h for h in handles if h.strip('"') not in stamped]
-            if unstamped:
-                restamp(lines, start, end, unstamped, value)
-                written += len(unstamped)
+            if withdraw:
+                chosen = [h for h in handles if h.strip('"') in stamped and stamped[h.strip('"')][1] is None]
+            else:
+                chosen = [h for h in handles if h.strip('"') not in stamped]
+            if chosen:
+                if withdraw:
+                    unstamp(lines, start, end, chosen)
+                else:
+                    restamp(lines, start, end, chosen, value)
+                written += len(chosen)
                 if path not in changed:
                     changed.append(path)
         temporaries = []
@@ -1135,6 +1168,17 @@ def restamp(lines: list[str], start: int, end: int, handles: list[str], value: s
     block = scaffolding_block(node[1:])
     first = start + 1 + skip_nav(node[1:])
     lines[first:first + len(block)] = with_stamps(block, handles, value)
+
+
+# Removes the handles' stamp lines from the scaffolding block of the node spanning
+# lines[start:end], in place, leaving the signers: key.
+def unstamp(lines: list[str], start: int, end: int, handles: list[str]) -> None:
+    node = lines[start:end]
+    block = scaffolding_block(node[1:])
+    first = start + 1 + skip_nav(node[1:])
+    keys = {h.strip('"') for h in handles}
+    lines[first:first + len(block)] = [l for l in block
+                                       if not ((m := STAMP.match(l)) and (m.group(1) or m.group(2) or m.group(3)) in keys)]
 
 
 def replace_file(path: Path, lines: list[str]) -> None:
@@ -1259,8 +1303,8 @@ def due_bar() -> str:
 
 
 # Above the tree, kept in view while picking, which Request… toggles: a drop-down of names to
-# tick and the button sending the request; beneath them, the count of nodes picked and the Select
-# children toggle.
+# tick and Apply; beneath them, whether Apply requests or withdraws, and the Select children
+# toggle.
 def request_panel() -> str:
     attrs = f'data-token="{html.escape(TOKEN)}" data-handles="{html.escape(json.dumps(map_handles()))}"'
     return (f'<div class="review-panel request-panel" hidden {attrs}>'
@@ -1269,8 +1313,13 @@ def request_panel() -> str:
             '<div class="add"><input class="new-name" placeholder="Add a name" maxlength="64">'
             '<button class="add-name">Add</button></div></div></details>'
             '<button class="request-send" disabled '
-            'title="Ask each ticked name with no stamp on each picked node for a sign-off">Apply</button></div>'
-            '<div class="row"><span class="picked"></span><label class="children" '
+            'title="Request, or withdraw a request, from each ticked name on each picked node">Apply</button></div>'
+            '<div class="row">'
+            '<span class="mode"><label title="Ask each ticked name with no stamp for a sign-off">'
+            '<input type="radio" name="request-mode" value="/request" checked>request</label>'
+            '<label title="Withdraw each ticked name\'s request; a sign-off is never removed">'
+            '<input type="radio" name="request-mode" value="/withdraw">withdraw</label></span>'
+            '<label class="children" '
             'title="Picking a node picks everything below it too"><input type="checkbox" class="pick-children">'
             'children</label></div></div>')
 

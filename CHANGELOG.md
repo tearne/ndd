@@ -2,6 +2,10 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 3.12.0-dev
+
+- The map viewer can withdraw a request for sign-off, on one node or many, never removing a sign-off given (method map: *Stamp States*; project map: *Sign-off Button*, *Request Bar*).
+
 ## 3.11.0-dev
 
 - The map viewer's tree can request sign-off on many nodes at once, from a *Request …* bar beside *Due for …* (project map: *Request Bar*, *Due Nodes*).

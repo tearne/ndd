@@ -481,10 +481,10 @@ A [POS-style](standards/POS.md) script, run on one map file at a time.
 ```yaml
 id: s3t
 signers:
-  tearne: {at: 2026-11-18, hash: 803c0718}
+  tearne: {at: 2026-11-25, hash: d33dfff9}
 ```
 
-A person's stamp on a node is in one of three states, found by comparing it with the node's [fingerprint](#fingerprint). It is *current* while its hash matches, *stale* once it does not, and *requested* while its hash is `null`, which marks a sign-off asked for but not yet given. A node with no stamp for a person is *unsigned* for them.
+A person's stamp on a node is in one of three states, found by comparing it with the node's [fingerprint](#fingerprint). It is *current* while its hash matches, *stale* once it does not, and *requested* while its hash is `null`, which marks a sign-off asked for but not yet given; withdrawing the request deletes the stamp. A node with no stamp for a person is *unsigned* for them.
 
 
 # Map Structure
