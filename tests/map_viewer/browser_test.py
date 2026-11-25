@@ -7,7 +7,7 @@
 # Drives the viewer's page script in headless Chromium, on the demo map that
 # map_viewer_test.py serves: the tree keeping its folds across moves, the fold button, the
 # second pane, each scrolling on its own, and each pane's history, and, on a copy, the Sign off
-# button, due nodes and requesting, and the light shown while the repository has uncommitted
+# button, due nodes, requesting on one node and on several picked in the tree, and the light shown while the repository has uncommitted
 # changes. Optional, since it needs Playwright and its
 # Chromium: with the browser missing it says so and passes, and map_viewer_test.py, which
 # needs neither, still checks the pages themselves.
@@ -55,7 +55,7 @@ def main():
         failures = 0
         for check in [folds_survive_moves, tree_never_redrawn, approval_diff_swapped, fold_button,
                       second_pane, panes_scroll_apart, pane_history, signoff_button, due_nodes,
-                      request_signoff, uncommitted_light]:
+                      request_signoff, bulk_request, uncommitted_light]:
             page = browser.new_page()
             page.set_default_timeout(5000)
             errors = []
@@ -293,6 +293,59 @@ def request_signoff(page, base, suite) -> int:
     return failures + suite.expect("request", "Renamed" in marked(page), f"the node due for bob, saw {marked(page)}")
 
 
+# Request… gives each node in the tree a box: picking a branch picks it alone, or with Select
+# children ticked what is below it too, without folding it. The bar above the tree sends
+# one request for every node picked, across files, from a name added there; then the picks
+# clear, the bar closes, and the Due for bar opens on that name, marking the nodes; closing it
+# again from its button clears the marks.
+def bulk_request(page, base, suite) -> int:
+    page.goto(SIGNING + suite.node_path("map.md", "Demo"))
+    mark_page(page)
+    today = suite.date.today().isoformat()
+    files = ["map.md", "branch.map.md", "linked.map.md"]
+    before = {f: (COPY / f).read_text(encoding="utf-8") for f in files}
+    failures = suite.expect("bulk request", page.locator("aside .pick").first.is_hidden(), "no boxes until Request… is pressed")
+    page.locator("aside .request-open").click()
+    pick = lambda name: page.locator(f"aside a:text-is('{name}')").locator("xpath=following-sibling::input[1]")
+    failures += suite.expect("bulk request", page.locator("aside a:text-is('Contents')").count() == 0
+                             or pick("Contents").count() == 0, "Contents has no box")
+    pick("Changes").check()
+    failures += suite.expect("bulk request", not pick("Edited").is_checked(), "picking Changes alone leaves Edited")
+    page.locator("aside .pick-children").check()
+    pick("Branch").check()
+    failures += suite.expect("bulk request", pick("Branch Leaf").is_checked(), "picking Branch picks Branch Leaf")
+    failures += suite.expect("bulk request", pick("Branch Leaf").is_visible(), "the branch left open")
+    pick("Linked Leaf").check()
+    panel = page.locator("aside .request-panel")
+    failures += suite.expect("bulk request", panel.locator(".picked").text_content() == "4 picked",
+                             f"the count shown, saw {panel.locator('.picked').text_content()!r}")
+    send = panel.locator(".request-send")
+    failures += suite.expect("bulk request", send.is_disabled(), "Request disabled with no name ticked")
+    panel.locator(".request-names summary").click()
+    panel.locator(".new-name").fill("hana")
+    panel.locator(".add-name").click()
+    failures += suite.expect("bulk request", panel.locator(".request-names .ticked").text_content() == "hana",
+                             f"the names ticked shown on the drop-down, saw {panel.locator('.request-names summary').text_content()!r}")
+    send.click()
+    panel.wait_for(state="hidden")
+    after = {f: (COPY / f).read_text(encoding="utf-8") for f in files}
+    added = {f: [l for l in after[f].splitlines() if l not in before[f].splitlines()] for f in files}
+    hana = f"  hana: {{at: {today}, hash: null}}"
+    failures += suite.expect("bulk request", added["map.md"].count(hana) == 1 and added["branch.map.md"].count(hana) == 2
+                             and added["linked.map.md"].count(hana) == 1,
+                             f"hana's request on Changes, Branch, Branch Leaf and Linked Leaf, saw {added}")
+    failures += suite.expect("bulk request", page.locator("aside .pick:checked").count() == 0, "the picks cleared")
+    page.wait_for_function("document.querySelectorAll('aside a.due').length === 4")
+    failures += suite.expect("bulk request", page.locator("aside .due-panel").is_visible()
+                             and page.locator("aside .due-panel .ticked").text_content() == "hana",
+                             "the Due for bar opened on hana")
+    failures += suite.expect("bulk request", sorted(marked(page)) == ["Branch", "Branch Leaf", "Changes", "Linked Leaf"],
+                             f"the four due for hana marked, saw {marked(page)}")
+    page.locator("aside .due-open").click()
+    failures += suite.expect("bulk request", not marked(page), f"closing the Due for bar clears the marks, saw {marked(page)}")
+    return failures + suite.expect("bulk request", same_page(page), "no page was loaded whole")
+
+
 # The red light shows, with its tooltip, while the repository has uncommitted changes, and is
 # gone once they are committed.
 def uncommitted_light(page, base, suite) -> int:
@@ -313,7 +366,10 @@ def names_listed(box) -> list[str]:
 
 
 def tick_due(page, name: str) -> None:
-    page.locator("aside .due-open").click()
+    if page.locator("aside .due-panel").is_hidden():
+        page.locator("aside .due-open").click()
+    if page.locator("aside .due-names").is_hidden():
+        page.locator("aside .due-panel summary").click()
     page.locator("aside .due-names li", has_text=name).locator("input").check()
 
 

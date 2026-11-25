@@ -36,7 +36,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, quote, urlparse
 
-VERSION = "0.7.0"
+VERSION = "0.8.0"
 
 GREEN, YELLOW, RED = "32", "33", "31"  # ANSI colour codes
 
@@ -382,30 +382,78 @@ aside summary::before, aside li.leaf::before { display: inline-block; width: 1em
 aside summary::before { content: "▸"; }
 aside details[open] > summary::before { content: "▾"; }
 aside li.leaf::before { content: ""; }
-aside li.branch { position: relative; border-radius: 4px; padding: .1rem 0; }
-aside .branch-file { display: none; position: absolute; top: 0; right: .3rem; font-size: .7rem; color: #888; }
-aside li.branch:hover > .branch-file { display: block; }
+/* Each file's part of the tree has its file name always shown, just above its shading at the
+   top right, with room made for it */
+aside li.branch { position: relative; border-radius: 4px; padding: .1rem 0; margin-top: 1rem; }
+aside .branch-file { position: absolute; bottom: 100%; right: .3rem; font-size: .7rem; line-height: 1.3; color: #888; }
 aside .below { visibility: hidden; margin-left: .3rem; }
 aside summary:hover .below { visibility: visible; }
 aside .below button { font-size: .7rem; line-height: 1; padding: 0 .3rem; border: 1px solid #ccc; background: #fff;
                       border-radius: 3px; cursor: pointer; }
 
-/* The map's title, its entry root's heading, above the tree; the root itself heads the tree */
-aside .map-title { display: block; font-size: 1.15rem; font-weight: 600; color: #222; margin: 0 0 .7rem .2rem; }
 
 /* Due for…: a button opening a drop-down of people to tick, their due nodes marked in the tree */
-aside .due-bar { position: relative; display: flex; gap: .5rem; align-items: center; margin-bottom: .8rem;
-                 padding-bottom: .6rem; border-bottom: 1px solid #ddd; }
+aside .due-bar { position: relative; display: flex; gap: .5rem; align-items: center; margin: 0 -.5rem .8rem;
+                 padding: 0 .5rem .6rem; border-bottom: 1px solid #ddd; }
 aside .due-open { font-size: .8rem; padding: .1rem .6rem; border: 1px solid #ccc; background: #fff;
-                  border-radius: 3px; cursor: pointer; color: #333; white-space: nowrap; }
-aside .due-count { color: #8a5a00; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-aside .due-names { position: absolute; left: 0; top: 100%; z-index: 5; min-width: 12rem; margin: 0; padding: .4rem .6rem;
-                   list-style: none; background: #fff; border: 1px solid #ccc; border-radius: 3px;
-                   box-shadow: 0 2px 6px rgba(0,0,0,.12); }
+                  border-radius: 3px; cursor: pointer; color: #333; white-space: nowrap; flex: 1; }
+aside .review-label { color: #555; }
+aside .request-open { font-size: .8rem; padding: .1rem .6rem; border: 1px solid #ccc; background: #fff;
+                      border-radius: 3px; cursor: pointer; color: #333; white-space: nowrap; flex: 1; }
+aside.picking .request-open { background: #e3ecff; border-color: #2f6fd6; }
+/* While picking, each node's box sits in a column at the tree's right edge */
+aside .pick { display: none; float: right; margin: .25rem .3rem 0 .3rem; }
+aside.picking .pick { display: block; }
+aside.picking a.due { width: calc(100% - 2.9em); }
+/* A branch's fold button shows on hover at the row's right end, inside any due badge or box,
+   so it never moves the label or its highlight */
+aside summary { position: relative; }
+aside .below { position: absolute; top: .1rem; right: .3rem; margin: 0; }
+aside.picking .below { right: 1.7rem; }
+/* The Due for and request bars, beneath the Review row and kept in view while the tree scrolls */
+aside .review-panel[hidden] { display: none; }
+aside .review-panel { position: sticky; top: -1rem; z-index: 4; margin: -.4rem -.5rem .6rem; padding: .45rem .6rem;
+                      background: #f8faff; border-bottom: 1px solid #c8d4ee; box-shadow: 0 2px 6px rgba(0,0,0,.06); }
+aside .review-panel .row { display: flex; gap: .4rem; align-items: center; }
+aside .review-panel .row + .row { margin-top: .35rem; }
+aside .review-panel .picked { color: #333; font-weight: 600; font-size: .8rem; }
+aside .review-panel .children { margin-left: auto; font-size: .8rem; color: #555; cursor: pointer;
+                                display: flex; align-items: center; gap: .3rem; }
+aside .review-panel .children input { margin: 0; }
+aside .review-panel button, aside .names-pick summary { font-size: .8rem; padding: .1rem .6rem; border: 1px solid #ccc;
+                      background: #fff; border-radius: 3px; cursor: pointer; white-space: nowrap; }
+aside .review-panel button:disabled { opacity: .45; cursor: default; }
+aside .review-panel .request-send:not(:disabled) { background: #2f6fd6; border-color: #2f6fd6; color: #fff; font-weight: 600; }
+aside .names-pick { position: relative; flex: 1; min-width: 0; }
+aside .names-pick summary { list-style: none; display: flex; gap: .3rem; align-items: center; }
+aside .names-pick .ticked { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+aside .names-pick summary::-webkit-details-marker { display: none; }
+aside .names-pick summary::before, aside .names-pick[open] > summary::before { content: none; }
+aside .names-pick summary::after { content: "▾"; color: #666; }
+aside .names-pick .names-box { position: absolute; left: 0; top: calc(100% + .3rem); z-index: 5; min-width: 12rem;
+                      padding: .4rem .6rem; background: #fff; border: 1px solid #ccc; border-radius: 3px;
+                      box-shadow: 0 2px 6px rgba(0,0,0,.12); }
+aside .names-pick ul { padding: 0; margin: 0; }
+aside .request-names ul { margin-bottom: .3rem; }
+aside .names-pick li { display: flex; gap: .4rem; align-items: center; justify-content: space-between; }
+aside .names-pick .remove { border: none; background: none; color: #b33; padding: 0 .2rem; }
+aside .names-pick .add { display: flex; gap: .3rem; }
+aside .names-pick .new-name { font-size: .8rem; flex: 1; min-width: 0; }
+aside.due-marking .due-open { background: #fff0cc; border-color: #f2b54d; color: #6b4500; }
+/* Two colour families: orange for Due for, matching the due highlight, and blue for Request,
+   matching the Sign off and Apply buttons */
+aside .due-panel { background: #fffaf0; border-bottom-color: #f2d29a; }
+aside .due-panel .names-pick summary { border-color: #f2d29a; }
+aside .due-panel .names-box { border-color: #f2d29a; }
+aside .due-panel input[type=checkbox] { accent-color: #e0962a; }
+aside .request-panel { background: #f5f8ff; border-bottom-color: #c8d4ee; }
+aside .request-panel .names-pick summary { border-color: #c8d4ee; }
+aside .request-panel .names-box { border-color: #c8d4ee; }
+aside .request-panel input[type=checkbox], aside .pick { accent-color: #2f6fd6; }
+aside .request-panel .picked { color: #2f4f9f; }
+aside .due-count { color: #8a5a00; font-weight: 600; font-size: .8rem; white-space: nowrap; }
 aside a.due { display: inline-block; width: calc(100% - 1.4em); box-sizing: border-box; background: #fff0cc;
               border-radius: 3px; padding: 0 .3rem; box-shadow: inset 3px 0 #f2b54d; }
-aside a.due::after { content: "due"; float: right; font-size: .65rem; font-weight: 600; color: #6b4500; background: #f2b54d;
-                     border-radius: .6rem; padding: 0 .4rem; margin-top: .2rem; line-height: 1.4; }
 
 /* The second pane, scrolled on its own beside the node */
 #side { flex: 1; min-width: 0; max-width: 52rem; box-sizing: border-box; padding: 2rem 1.5rem; height: 100vh;
@@ -490,7 +538,7 @@ function branchOf(details) {
 }
 // Each button shows what it would do, kept up to date however the tree was opened or folded.
 function labelButtons() {
-  document.querySelectorAll("aside details").forEach(d => {
+  document.querySelectorAll("aside > ul details").forEach(d => {
     const button = d.querySelector(":scope > summary .below button");
     const anyOpen = branchOf(d).some(x => x.open);
     button.textContent = anyOpen ? "−" : "+";
@@ -498,7 +546,7 @@ function labelButtons() {
   });
 }
 function bindTree() {
-  document.querySelectorAll("aside details").forEach(d => d.addEventListener("toggle", labelButtons));
+  document.querySelectorAll("aside > ul details").forEach(d => d.addEventListener("toggle", labelButtons));
   labelButtons();
 }
 
@@ -622,9 +670,11 @@ function updateTree(nextAside) {
   const aside = document.querySelector("aside");
   if (!aside || !nextAside) return;
   if (treeShape(aside) !== treeShape(nextAside)) {
+    const picking = aside.classList.contains("picking");
     aside.replaceWith(nextAside);
     bindTree();
     restoreDueFor();
+    if (picking) setPicking(true);
   } else {
     // Sign-offs and requests change who has each node due, and may add a signer.
     const due = new Map([...nextAside.querySelectorAll("a[data-due]")].map(a => [a.getAttribute("href"), a.dataset.due]));
@@ -633,6 +683,11 @@ function updateTree(nextAside) {
     if (names && nextNames && names.innerHTML !== nextNames.innerHTML) {
       names.innerHTML = nextNames.innerHTML;
       restoreDueFor();
+    }
+    const panel = aside.querySelector(".request-panel"), nextPanel = nextAside.querySelector(".request-panel");
+    if (panel && nextPanel && panel.dataset.handles !== nextPanel.dataset.handles) {
+      panel.dataset.handles = nextPanel.dataset.handles;
+      if (!panel.hidden) fillRequest();
     }
     const href = nextAside.querySelector("a.here")?.getAttribute("href");
     aside.querySelectorAll("a.here").forEach(a => a.classList.remove("here"));
@@ -668,6 +723,11 @@ function fillSignoffs() {
   document.querySelectorAll(".signoff").forEach(fillSignoff);
 }
 function fillSignoff(box) {
+  fillNames(box);
+  enableSign(box);
+}
+// The names to tick in a box: the map's handles, then those added in this browser.
+function fillNames(box) {
   const handles = JSON.parse(box.dataset.handles), added = stored(ADDED).filter(n => !handles.includes(n));
   const ticked = new Set(stored(TICKED));
   const list = box.querySelector("ul");
@@ -687,7 +747,6 @@ function fillSignoff(box) {
     }
     return li;
   }));
-  enableSign(box);
 }
 function tickedIn(box) {
   return [...box.querySelectorAll("ul input:checked")].map(tick => tick.value);
@@ -703,9 +762,9 @@ document.addEventListener("change", event => {
   if (box) enableSign(box);
 });
 document.addEventListener("keydown", event => {
-  if (event.key === "Enter" && event.target.matches(".signoff .new-name")) {
+  if (event.key === "Enter" && event.target.matches(".signoff .new-name, .request-panel .new-name")) {
     event.preventDefault();
-    addName(event.target.closest(".signoff"));
+    addName(event.target.closest(".signoff, .request-panel"));
   }
 });
 document.addEventListener("click", event => {
@@ -719,6 +778,7 @@ document.addEventListener("click", event => {
     store(ADDED, stored(ADDED).filter(n => n !== name));
     store(TICKED, stored(TICKED).filter(n => n !== name));
     fillSignoffs();
+    fillRequest();
   } else if (button.matches(".sign")) signOff(box, button, false);
   else if (button.matches(".request")) signOff(box, button, true);
 });
@@ -736,9 +796,10 @@ function addName(box) {
   const ticks = new Set(tickedIn(box));
   ticks.add(name);
   input.value = "";
-  fillSignoff(box);
+  fillNames(box);
   box.querySelectorAll("ul input").forEach(tick => tick.checked = ticks.has(tick.value));
-  enableSign(box);
+  if (box.matches(".signoff")) enableSign(box);
+  else enableRequest();
 }
 
 // A sign-off, or a request for one; the page is redrawn in place to show it.
@@ -761,24 +822,35 @@ async function signOff(box, button, request) {
   show(urlFor(state), "both", state, false);
 }
 
-// Due for…: the people ticked are kept in this browser. Each tree link carries the signers the
-// node is due for; a node due for any person ticked is marked, and the marked nodes counted.
-const DUE_FOR = "due-for";
+// Due for…: its bar marks the nodes due for any person ticked, and counts them. The people
+// ticked, and whether the bar is open, are kept in this browser; closed, nothing is marked.
+const DUE_FOR = "due-for", DUE_OPEN = "due-open";
+function duePanel() { return document.querySelector("aside .due-panel"); }
 function dueFor() {
   return [...document.querySelectorAll("aside .due-names input:checked")].map(tick => tick.value);
 }
 function markDue() {
-  const who = dueFor();
+  const panel = duePanel(), open = panel && !panel.hidden, who = open ? dueFor() : [];
   const due = [...document.querySelectorAll("aside a[data-due]")].filter(a => JSON.parse(a.dataset.due).some(n => who.includes(n)));
   document.querySelectorAll("aside a[data-due]").forEach(a => a.classList.toggle("due", due.includes(a)));
   const count = document.querySelector("aside .due-count");
-  if (count) {
-    count.textContent = who.length ? `${due.length} due` : "";
-  }
+  if (count) count.textContent = who.length ? `${due.length} due` : "";
+  const ticked = panel?.querySelector(".ticked");
+  if (ticked) ticked.textContent = dueFor().length ? dueFor().join(", ") : "Names";
 }
 function restoreDueFor() {
   const kept = new Set(stored(DUE_FOR));
   document.querySelectorAll("aside .due-names input").forEach(tick => tick.checked = kept.has(tick.value));
+  setDue(localStorage.getItem(DUE_OPEN) === "true");
+}
+function setDue(on) {
+  const aside = document.querySelector("aside"), panel = duePanel();
+  if (!aside || !panel) return;
+  if (on && aside.classList.contains("picking")) setPicking(false);
+  panel.hidden = !on;
+  aside.classList.toggle("due-marking", on);
+  if (!on) panel.querySelector(".names-pick").open = false;
+  localStorage.setItem(DUE_OPEN, on);
   markDue();
 }
 document.addEventListener("change", event => {
@@ -786,12 +858,102 @@ document.addEventListener("change", event => {
   store(DUE_FOR, dueFor());
   markDue();
 });
-// The drop-down opens from its button and closes on a click anywhere outside it.
 document.addEventListener("click", event => {
-  const names = document.querySelector("aside .due-names");
-  if (!names) return;
-  if (event.target.closest("aside .due-open")) names.hidden = !names.hidden;
-  else if (!event.target.closest("aside .due-names")) names.hidden = true;
+  const button = event.target.closest("button");
+  if (button?.matches("aside .due-open")) setDue(duePanel().hidden);
+  // An open names drop-down closes on a click anywhere outside it.
+  document.querySelectorAll("aside .names-pick[open]").forEach(d => { if (!d.contains(event.target)) d.open = false; });
+});
+
+// Request…: while picking, each node in the tree has a box to pick it by; with Select children
+// ticked, picking a node picks everything below it too, each then unpickable singly. The panel
+// above the tree sends one request for every node picked, from each name ticked; on success
+// the picks clear and the tree's due marks are redrawn. Select children is kept in this browser.
+const PICK_CHILDREN = "pick-children";
+function requestPanel() { return document.querySelector("aside .request-panel"); }
+function picked() {
+  const seen = new Set();
+  return [...document.querySelectorAll("aside .pick:checked")].map(box => {
+    const url = new URL(box.previousElementSibling.href);
+    return {file: url.searchParams.get("file"), name: url.searchParams.get("name")};
+  }).filter(n => !seen.has(n.file + "\n" + n.name) && seen.add(n.file + "\n" + n.name));
+}
+function fillRequest() {
+  const panel = requestPanel();
+  if (!panel) return;
+  fillNames(panel);
+  enableRequest();
+}
+function enableRequest() {
+  const panel = requestPanel();
+  if (!panel) return;
+  const nodes = picked().length, names = tickedIn(panel);
+  panel.querySelector(".picked").textContent = nodes ? `${nodes} picked` : "Pick nodes below";
+  panel.querySelector(".request-names .ticked").textContent = names.length ? names.join(", ") : "Names";
+  panel.querySelector(".request-send").disabled = !nodes || !names.length;
+}
+function setPicking(on) {
+  const aside = document.querySelector("aside"), panel = requestPanel();
+  if (!aside || !panel) return;
+  if (on && !duePanel()?.hidden) setDue(false);
+  aside.classList.toggle("picking", on);
+  panel.hidden = !on;
+  if (!on) {
+    aside.querySelectorAll(".pick").forEach(box => box.checked = false);
+    panel.querySelector(".request-names").open = false;
+  }
+  else {
+    aside.querySelector(".pick-children").checked = localStorage.getItem(PICK_CHILDREN) === "true";
+    fillRequest();
+  }
+}
+async function sendRequest(button) {
+  const panel = requestPanel(), names = tickedIn(panel), nodes = picked();
+  if (!names.length || !nodes.length) return;
+  button.disabled = true;
+  const response = await fetch("/request", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({token: panel.dataset.token, nodes, names}),
+  });
+  if (!response.ok) {
+    alert("Not requested: " + await response.text());
+    enableRequest();
+    return;
+  }
+  // The request done, the Due for bar opens on the names just asked, marking what awaits them.
+  store(TICKED, names);
+  store(DUE_FOR, names);
+  setPicking(false);
+  localStorage.setItem(DUE_OPEN, true);
+  await show(urlFor(state), "both", state, false);
+  restoreDueFor();
+}
+document.addEventListener("change", event => {
+  if (event.target.matches("aside .pick")) {
+    if (document.querySelector("aside .pick-children")?.checked)
+      event.target.closest("li").querySelectorAll(".pick").forEach(box => box.checked = event.target.checked);
+    enableRequest();
+  } else if (event.target.matches("aside .pick-children")) {
+    localStorage.setItem(PICK_CHILDREN, event.target.checked);
+  } else if (event.target.closest("aside .request-panel")) enableRequest();
+});
+document.addEventListener("click", event => {
+  const button = event.target.closest("button");
+  if (!button || !button.closest("aside .due-bar, aside .request-panel")) return;
+  if (button.matches(".request-open")) setPicking(!document.querySelector("aside").classList.contains("picking"));
+  else if (button.matches(".request-send")) sendRequest(button);
+  else if (button.closest(".request-panel")) {
+    event.preventDefault();
+    if (button.matches(".add-name")) addName(requestPanel());
+    else if (button.matches(".remove")) {
+      const name = button.closest("li").querySelector("input").value;
+      store(ADDED, stored(ADDED).filter(n => n !== name));
+      store(TICKED, stored(TICKED).filter(n => n !== name));
+      fillSignoffs();
+      fillRequest();
+    }
+  }
 });
 
 bindTree();
@@ -1076,18 +1238,41 @@ def tree_html(current: tuple[str, str]) -> str:
     for file in maps_linked_beyond(seen) + ([current[0]] if current[0] else []):
         if file not in {f for f, _ in seen}:
             trees.append(tree_item(file, root_node(read_map(file)), current, seen))
-    title = f'<div class="map-title">{html.escape(root)}</div>'
-    return title + due_bar() + "".join(f"<ul>{t}</ul>" for t in trees)
+    return due_bar() + request_panel() + "".join(f"<ul>{t}</ul>" for t in trees)
 
 
-# Above the tree: a Due for… button opening a drop-down of the map's signers to tick, and beside
-# it the count of nodes due for them. The page script marks the nodes, from each tree link's
-# data-due, the signers it is due for.
+# Above the tree, under Review: a Due for… button and a Request… button, each opening its bar
+# beneath, one at a time. The Due for bar has a drop-down of the map's signers to tick, the
+# count of nodes due for them, its button above closing it again; the page script marks the due nodes,
+# from each tree link's data-due, the signers it is due for.
 def due_bar() -> str:
     names = "".join(f'<li><label><input type="checkbox" value="{html.escape(h)}"> {html.escape(h)}</label></li>'
                     for h in map_handles())
-    return ('<div class="due-bar"><button class="due-open" title="Mark the nodes due for review by the people ticked">'
-            f'Review due for …</button><span class="due-count"></span><ul class="due-names" hidden>{names}</ul></div>')
+    return ('<div class="due-bar"><span class="review-label">Review:</span>'
+            '<button class="due-open" title="Mark the nodes due for review by the people ticked">Due for …</button>'
+            '<button class="request-open" title="Pick nodes in the tree and ask the people ticked to sign them off">'
+            'Request …</button></div>'
+            '<div class="review-panel due-panel" hidden><div class="row">'
+            '<details class="names-pick" title="Whose due nodes to mark"><summary><span class="ticked">Names</span></summary>'
+            f'<div class="names-box"><ul class="due-names">{names}</ul></div></details>'
+            '<span class="due-count"></span></div></div>')
+
+
+# Above the tree, kept in view while picking, which Request… toggles: a drop-down of names to
+# tick and the button sending the request; beneath them, the count of nodes picked and the Select
+# children toggle.
+def request_panel() -> str:
+    attrs = f'data-token="{html.escape(TOKEN)}" data-handles="{html.escape(json.dumps(map_handles()))}"'
+    return (f'<div class="review-panel request-panel" hidden {attrs}>'
+            '<div class="row"><details class="names-pick request-names" title="Who to ask">'
+            '<summary><span class="ticked">Names</span></summary><div class="names-box"><ul></ul>'
+            '<div class="add"><input class="new-name" placeholder="Add a name" maxlength="64">'
+            '<button class="add-name">Add</button></div></div></details>'
+            '<button class="request-send" disabled '
+            'title="Ask each ticked name with no stamp on each picked node for a sign-off">Apply</button></div>'
+            '<div class="row"><span class="picked"></span><label class="children" '
+            'title="Picking a node picks everything below it too"><input type="checkbox" class="pick-children">'
+            'children</label></div></div>')
 
 
 # The map files linked from the maps already in the tree, and from those in turn, in the
@@ -1114,8 +1299,8 @@ def linked_maps(file: str) -> list[str]:
     return linked
 
 
-# Each file's part of the tree is shaded, its file name at the top right on hover. Shades
-# alternate grey and green as the tree crosses from file to file, so neighbours differ.
+# Each file's part of the tree is shaded, its file name always shown just above it at the top
+# right. Shades alternate grey and green as the tree crosses from file to file, so neighbours differ.
 FILE_SHADES = ["#f3f3f3", "#eaf5ea"]
 
 
@@ -1126,7 +1311,8 @@ def tree_item(file: str, name: str, current: tuple[str, str], seen: set,
     seen.update(kids)
     mark = ' class="here"' if (file, name) == current else ""
     due = html.escape(json.dumps(due_for(file, name)))
-    label = f'<a href="{node_url(file, name)}" data-due="{due}"{mark}>{html.escape(name)}</a>'
+    pick = "" if name == "Contents" else '<input type="checkbox" class="pick" title="Pick for a request">'
+    label = f'<a href="{node_url(file, name)}" data-due="{due}"{mark}>{html.escape(name)}</a>{pick}'
     classes, shade_style, file_tag = [] if kids else ["leaf"], "", ""
     if file != parent_file:
         shade += 1

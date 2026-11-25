@@ -2,6 +2,10 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
+## 3.11.0-dev
+
+- The map viewer's tree can request sign-off on many nodes at once, from a *Request …* bar beside *Due for …* (project map: *Request Bar*, *Due Nodes*).
+
 ## 3.10.0-dev
 
 - The map viewer takes one request for sign-off on several nodes, across map files, refused whole if any node can't take it. Requests go to their own `/request` endpoint and carry no fingerprint receipt (project map: *Request Guards*, *Write Checks*, *Sign-off Button*).

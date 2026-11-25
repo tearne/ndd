@@ -47,6 +47,7 @@ id: ct6
     - [Request Guards](#request-guards)
     - [Write Checks](#write-checks)
     - [Due Nodes](#due-nodes)
+    - [Request Bar](#request-bar)
   - [Method Map Form](#method-map-form)
 
 
@@ -236,17 +237,18 @@ The task tempts the failures the rule targets and probes where it might overreac
 [Sign-off Button](#sign-off-button) \
 [Request Guards](#request-guards) \
 [Write Checks](#write-checks) \
-[Due Nodes](#due-nodes)
+[Due Nodes](#due-nodes) \
+[Request Bar](#request-bar)
 
 ```yaml
 id: mv4
 signers:
-  tearne: {at: 2026-11-19, hash: 047f2b94}
+  tearne: {at: 2026-11-25, hash: f49760ac}
 ```
 
-A prototype: `method/util/map_viewer.py`, a [POS](method/standards/POS.md) script serving a map in the browser for review. It ships with the method as `ndd/method/util/map_viewer.py`. With no login it listens on 127.0.0.1 only, and it writes nothing but sign-offs.
+A prototype: `method/util/map_viewer.py`, a [POS](method/standards/POS.md) script serving a map in the browser for review. Having no login, it listens on 127.0.0.1 only, and it writes nothing but sign-offs and requests.
 
-- **Tree** — the contents beneath the entry map's root heading as a title, followed through child links, each file's part shaded.
+- **Tree** — the contents beneath the entry map's root heading, followed through child links, each file's part shaded and named.
 
 - **Node** — the node rendered, with each signer's [stamp state](method/ndd.map.md#stamp-states) marked.
 
@@ -254,7 +256,9 @@ A prototype: `method/util/map_viewer.py`, a [POS](method/standards/POS.md) scrip
 
 - **[Sign off](#sign-off-button)** — on a node, a button stamping it for the names ticked.
 
-- **[Review due](#due-nodes)** — the nodes due for the people ticked, marked in the tree.
+- **[Due for](#due-nodes)** — the nodes due for the people ticked, marked in the tree.
+
+- **[Request](#request-bar)** — the nodes picked in the tree, requested from the people ticked.
 
 It carries its own copy of the [Fingerprint](method/ndd.map.md#fingerprint) rule, kept in step by [Fingerprint Check](testing.map.md#fingerprint-check).
 
@@ -313,10 +317,31 @@ signers:
 ```yaml
 id: vd5
 signers:
-  tearne: {at: 2026-11-19, hash: e935ef24}
+  tearne: {at: 2026-11-25, hash: c148157e}
 ```
 
-Above the tree, a *Review due for …* button opens a drop-down of the [signers](method/ndd.map.md#signer) in the map's stamps, which closes on a click elsewhere. Each node [due](method/ndd.map.md#sign-off) for any person ticked is marked in the tree, so what awaits their sign-off shows at a glance, and the count of those nodes shows beside the button. The people ticked are kept in that browser.
+Above the tree, *Due for …* toggles a bar holding a drop-down of the [signers](method/ndd.map.md#signer) in the map's stamps, which closes on a click elsewhere, and a count. Each node [due](method/ndd.map.md#sign-off) for any person ticked is shaded orange in the tree, so what awaits their sign-off shows at a glance, and the count is of those nodes. Opening it closes the [request bar](#request-bar). Whether it is open, and who is ticked, are kept in that browser.
+
+
+# Request Bar
+
+[↑ Map Viewer](#map-viewer)
+
+```yaml
+id: vr6
+signers:
+  tearne: {at: 2026-11-25, hash: 80e0a80d}
+```
+
+Above the tree, *Request …* toggles a bar to request sign-off on several nodes at once. While it is open, each node in the tree gains a box to pick it by, and with *children* ticked, picking a node picks everything below it too. The bar holds:
+
+- a drop-down of names, offering the same as [Sign off](#sign-off-button)'s and closing like [Due for](#due-nodes)'s;
+
+- a count of the nodes picked;
+
+- an *Apply* button.
+
+*Apply* writes a [request](method/ndd.map.md#stamp-states) for each name ticked on each node picked where that name has no stamp, checked as [Write Checks](#write-checks) describes. The bar then closes, clearing the picks, and *Due for* opens on the names just asked. Opening the bar closes the Due for bar, and whether *children* is ticked is kept in that browser.
 
 
 # Method Map Form

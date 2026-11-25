@@ -253,7 +253,7 @@ def signoff_refusals(base: str, copy: Path) -> int:
     cases = {
         "a node changed since its page was shown": (sign(base, "Current", ["dave"], fingerprint="00000000"), 409),
         "no token": (sign(base, "Current", ["dave"], token=""), 403),
-        "a wrong token": (sign(base, "Current", ["dave"], token=data["token"][:-1] + "x"), 403),
+        "a wrong token": (sign(base, "Current", ["dave"], token=wrong(data["token"])), 403),
         "a GET": (status(base + "/signoff"), 405),
         "a PUT": (send(base, "PUT", signoff_body(base, "Current", ["dave"]), {}), 501),
         "a foreign Origin": (sign(base, "Current", ["dave"], headers={"Origin": "http://evil.example"}), 403),
@@ -312,7 +312,7 @@ def request_refusals(base: str, copy: Path) -> int:
     nodes = [("map.md", "Current")]
     cases = {
         "no token": (ask(base, nodes, ["gina"], token="")[0], 403),
-        "a wrong token": (ask(base, nodes, ["gina"], token=token[:-1] + "x")[0], 403),
+        "a wrong token": (ask(base, nodes, ["gina"], token=wrong(token))[0], 403),
         "a GET": (status(base + "/request"), 405),
         "a foreign Origin": (ask(base, nodes, ["gina"], headers={"Origin": "http://evil.example"})[0], 403),
         "no Origin": (ask(base, nodes, ["gina"], headers={"Origin": None})[0], 403),
@@ -383,6 +383,11 @@ def post_request(base: str, path: str, method: str, body: dict, headers: dict) -
         if value is not None:
             request.add_header(key, value)
     return request
+
+
+# The token with its last character changed, so it is always wrong.
+def wrong(token: str) -> str:
+    return token[:-1] + ("y" if token.endswith("x") else "x")
 
 
 def code_of(request) -> int:

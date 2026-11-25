@@ -156,10 +156,12 @@ It needs Playwright and its Chromium, as [Test Setup](#test-setup) describes.
 ```yaml
 id: v9d
 signers:
-  tearne: {at: 2026-11-20, hash: 0cd23109}
+  tearne: {at: 2026-11-25, hash: f140a7b7}
 ```
 
-On a copy of the demo map, [`tests/map_viewer/browser_test.py`](tests/map_viewer/browser_test.py) also checks [due nodes](map.md#due-nodes) and requesting. Ticking people in *Review due for …* marks the nodes due for any of them and shows the count, and a sign-off clears the mark in place. *Request* writes a requested stamp for a ticked name with no stamp, making the node due for them, and writes nothing for a name already stamped.
+On a copy of the demo map, [`tests/map_viewer/browser_test.py`](tests/map_viewer/browser_test.py) also checks [due nodes](map.md#due-nodes), requesting and the [request bar](map.md#request-bar). Ticking people in the *Due for* bar marks the nodes due for any of them and shows the count, and a sign-off clears the mark in place. *Request* in a node's *Sign off* drop-down writes a requested stamp for a ticked name with no stamp, making the node due for them, and writes nothing for a name already stamped.
+
+In the request bar, picking a branch picks it alone, or with *children* ticked what is below it too. *Apply* stays disabled until a name is ticked, then writes one request for each node picked, across files, clears the picks and opens *Due for* on that name; closing *Due for* clears the marks.
 
 
 # Test Setup
