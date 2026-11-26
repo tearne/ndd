@@ -245,10 +245,10 @@ The task tempts the failures the rule targets and probes where it might overreac
 ```yaml
 id: mv4
 signers:
-  tearne: {at: 2026-11-25, hash: c6f692ec}
+  tearne: {at: 2026-11-26, hash: fc370aa0}
 ```
 
-`method/util/map_viewer.py` is a [POS](method/standards/POS.md) script serving a map in the browser for review. Having no login, it listens on 127.0.0.1 only, and it writes nothing but sign-offs and requests.
+`method/util/map_viewer.py` is a [POS](method/standards/POS.md) script serving a map in the browser for review. Having no login, it listens on 127.0.0.1 only, and it writes nothing but the stamps in a node's [scaffolding block](method/ndd.map.md#node-identity).
 
 - **Tree** — the contents beneath the entry map's root heading, followed through child links, each file's part shaded and named.
 
@@ -272,7 +272,7 @@ It carries its own copy of the [Fingerprint](method/ndd.map.md#fingerprint) rule
 ```yaml
 id: vs1
 signers:
-  tearne: {at: 2026-11-25, hash: 5f6d903f}
+  tearne: {at: 2026-11-26, hash: fe49cfea}
 ```
 
 Beside a node's sign-offs, a *Sign off* button opens a drop-down of names to tick and a choice of what *Apply* does for each, set to *sign off* on opening:
@@ -287,7 +287,7 @@ A sign-off diff, showing an old version, has no button.
 
 The drop-down lists every handle in the map's stamps and any name added in that browser, which alone are removable and are kept there until removed. The last names ticked are ticked again.
 
-Each stamp is a line under the node's `signers:` key, dated today, and nothing else is written; writes are guarded as [Request Guards](#request-guards) and [Write Checks](#write-checks) describe. Committing is left to the user, prompted by a red light at the page's top right while anything is uncommitted.
+Each stamp is a line under the node's `signers:` key, dated today; the key is added if missing, or renamed from an older `approvals:`, and nothing else is written; writes are guarded as [Request Guards](#request-guards) and [Write Checks](#write-checks) describe. Committing is left to the user, prompted by a red light at the page's top right while anything is uncommitted.
 
 
 # Request Guards

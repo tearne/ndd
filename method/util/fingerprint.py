@@ -16,11 +16,12 @@ import re
 import sys
 from pathlib import Path
 
-VERSION = "1.3.0"
+VERSION = "1.3.1"
 
 GREEN, YELLOW, RED, CYAN = "32", "33", "31", "36"  # ANSI colour codes
 
-HEADING = re.compile(r"^#{1,6} (.+?)\s*$")
+# A node starts at a level-1 heading; a deeper one is part of the node it sits in.
+HEADING = re.compile(r"^# (.+?)\s*$")
 FENCE = re.compile(r"^```")
 LINK_ONLY_LINE = re.compile(r"^\[[^\]]+\]\([^)]+\)\s*\\?\s*$")
 # A key may hold spaces; one with a colon or leading punctuation is quoted, per

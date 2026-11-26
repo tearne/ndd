@@ -55,14 +55,14 @@ id: ct7
 ```yaml
 id: c5m
 signers:
-  tearne: {at: 2026-11-20, hash: 82b25cb7}
+  tearne: {at: 2026-11-26, hash: 5e9b8ba0}
 ```
 
 [`tests/fingerprint_test.py`](tests/fingerprint_test.py) holds the reference: a second, independent implementation of the [Fingerprint](method/ndd.map.md#fingerprint) rule. It passes when its fingerprints match the table in *Detail* and the shipped [helper](method/ndd.map.md#fingerprint-helper) agrees, both on those fingerprints and on which nodes are due for a person, and the [map viewer](map.md#map-viewer) on the fingerprints.
 
 **Detail**
 
-`fixture.map.md` is a small map exercising every node section; `fixture-edited.map.md` is the same map after edits that must not move a fingerprint and three that must. Further cases check that a stamp quoted in a node's prose is not read as one, that a requested stamp, `hash: null`, makes its node due, that a node with no stamp for a person is not due for them, that a stamp under an older `approvals:` key is read, and that `--migrate` renames the key and leaves every stamp current.
+`fixture.map.md` is a small map exercising every node section; `fixture-edited.map.md` is the same map after edits that must not move a fingerprint and three that must. Further cases check that a stamp quoted in a node's prose is not read as one, that a requested stamp, `hash: null`, makes its node due, that a node with no stamp for a person is not due for them, that a stamp under an older `approvals:` key is read, that `--migrate` renames the key and leaves every stamp current, and that a `##` heading stays part of its node for the reference, helper and viewer alike.
 
 | Node | Original | Edited | Edit made |
 |---|---|---|---|

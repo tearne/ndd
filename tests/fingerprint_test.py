@@ -57,13 +57,14 @@ DUE = {
 }
 
 
-# A node runs from a heading to the next heading of any level, fences excluded.
+# A node runs from a level-1 heading to the next, fences excluded; a deeper heading
+# is part of the node it sits in.
 def nodes(path: Path) -> dict[str, list[str]]:
     found, name, in_fence = {}, None, False
     for line in path.read_text(encoding="utf-8").splitlines(keepends=True):
         if line.startswith("```"):
             in_fence = not in_fence
-        if not in_fence and (m := re.match(r"#{1,6} (.+?)\s*$", line)):
+        if not in_fence and (m := re.match(r"# (.+?)\s*$", line)):
             name = m.group(1)
             found[name] = []
         if name:
@@ -96,6 +97,7 @@ def main():
     failures += older_key_read()
     failures += migrate_renames_key()
     failures += viewer_agrees()
+    failures += subheading_stays_in_node()
     print("OK" if not failures else f"{failures} failures")
     sys.exit(1 if failures else 0)
 
@@ -115,6 +117,31 @@ def viewer_agrees() -> int:
                 failures += 1
                 print(f"FAIL {file}: {name} expected {expected[name]}, viewer computed {viewer.fingerprint(lines)}")
     return failures
+
+
+# A level-2 heading is part of the node above it, for the reference, the helper and
+# the viewer alike, each splitting the file itself.
+def subheading_stays_in_node() -> int:
+    import importlib.util
+    import tempfile
+    spec = importlib.util.spec_from_file_location("map_viewer", VIEWER)
+    viewer = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(viewer)
+    text = "# Outer\n\nProse.\n\n## Inner\n\nMore prose.\n\n# Next\n\nOther.\n"
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "sub.map.md"
+        path.write_text(text, encoding="utf-8")
+        reference = nodes(path)
+        helper = subprocess.run([HELPER, path, "Outer"], capture_output=True, text=True).stdout.strip()
+    lines = text.splitlines(keepends=True)
+    start, end = dict(viewer.node_ranges(lines))["Outer"]
+    expected = fingerprint(lines[:8])
+    got = {"names": list(reference), "reference": fingerprint(reference["Outer"]), "helper": helper, "viewer": viewer.fingerprint(lines[start:end])}
+    want = {"names": ["Outer", "Next"], "reference": expected, "helper": expected, "viewer": expected}
+    if got != want:
+        print(f"FAIL subheading: expected {want}, got {got}")
+        return 1
+    return 0
 
 
 # A stamp quoted in a node's prose, after its scaffolding block, must not be read

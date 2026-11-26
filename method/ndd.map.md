@@ -430,7 +430,7 @@ signers:
 ```yaml
 id: h4q
 signers:
-  tearne: {at: 2026-11-17, hash: 68af75d3}
+  tearne: {at: 2026-11-26, hash: 1d5b37cd}
 ```
 
 A fingerprint is a hash of what a reader sees in a node. It covers the heading, prose, callouts, *Detail* and *See also*; it excludes the scaffolding block and navigation links.
@@ -439,7 +439,7 @@ Comparing fingerprints is a test of equality: a node put back to earlier text re
 
 **Detail**
 
-Take the node from its heading line to the line before the next heading. Drop, whole, the navigation-link lines under the heading and the scaffolding block; any other link stays as written, markdown included. Remove every whitespace character. The fingerprint is the first eight hex digits of the SHA-256 of that UTF-8 string. An agent computes it with the shipped `util/fingerprint.py`, never by reasoning.
+Take the node from its heading line to the line before the next level-1 heading outside a code fence. Drop, whole, the navigation-link lines under the heading and the scaffolding block; any other link stays as written, markdown included. Remove every whitespace character. The fingerprint is the first eight hex digits of the SHA-256 of that UTF-8 string. An agent computes it with the shipped `util/fingerprint.py`, never by reasoning.
 
 
 # Fingerprint Helper
@@ -781,7 +781,7 @@ Adopting an existing codebase adds a survey: the agent reads its assets and prop
 ```yaml
 id: g5m
 signers:
-  tearne: {at: 2026-11-10, hash: da547e37}
+  tearne: {at: 2026-11-26, hash: 3ce7f1ec}
 ```
 
 Three rules gating what the agent may do without asking:
@@ -792,7 +792,7 @@ Three rules gating what the agent may do without asking:
 
 - **Git writes** — any git command that changes the repository or its index. Only `git mv` and `git rm` go ahead unasked, on files the agent may move or delete. The rest happen only when the user asks: where the task itself needs one, the agent asks for it; otherwise it may name one in passing, but neither asks nor waits.
 
-Writing is gated by phase. Outside [Build](#build) the agent writes only inside `changes/`. A project file needs a change in Build holding the lock in `active.md`, unless the [map exemption](#edit-governance) applies or the write is a release step whose draft the user has approved; a change returned to planning keeps the lock but not the permission. Reading anything is always allowed.
+Writing is gated by phase. Outside [Build](#build) the agent writes only inside `changes/`. A project file needs a change in Build holding the lock in `active.md`, unless the [map exemption](#edit-governance) applies or the write is a release step whose draft the user has approved; a change returned to planning loses the permission even if it keeps the [lock](#build-lock). Reading anything is always allowed.
 
 
 # Approval
@@ -1710,12 +1710,12 @@ The method needs no bespoke application — it rides generic markdown tooling. I
 ```yaml
 id: m8v
 signers:
-  tearne: {at: 2026-11-17, hash: 1cb0db0a}
+  tearne: {at: 2026-11-26, hash: d375de8b}
 ```
 
 `util/map_viewer.py` serves a project's map in the browser for reading and review: the contents tree, each node with its [sign-off stamps](#sign-off-stamp) marked current or stale, and, for a stale one, what changed since. A second pane keeps one node in view while following its links.
 
-It also records [sign-offs](#sign-off) for the names ticked on the page, refusing a node changed since it loaded; it edits nothing else and commits nothing. With no login, it listens on 127.0.0.1 only and refuses writes from other web pages.
+It also records [sign-offs](#sign-off) for the names ticked on the page, refusing a node changed since it loaded, and requests or withdraws [requests](#stamp-states) for them; it edits nothing but the stamps in a node's [scaffolding block](#node-identity), and commits nothing. With no login, it listens on 127.0.0.1 only and refuses writes from other web pages.
 
 **Detail**
 

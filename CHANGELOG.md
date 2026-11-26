@@ -2,77 +2,36 @@
 
 Notable changes to NDD, newest first. The current version is the topmost heading; re-running the installer refreshes an install to the latest. Entries stay brief: the method map is where the detail lives.
 
-## 3.12.0-dev
+## 3.12.0 — 2026-11-26
 
-- The map viewer can withdraw a request for sign-off, on one node or many, never removing a sign-off given (method map: *Stamp States*; project map: *Sign-off Button*, *Request Bar*).
+### Map viewer
 
-## 3.11.0-dev
+- Map viewer shipped: run `ndd/method/util/map_viewer.py` from a project root to review its map in the browser.
+- A *Sign off* button on each node stamps it for the names ticked, or requests or withdraws their sign-off.
+- *Due for …* shades the nodes due for the people ticked.
+- *Request …* requests sign-off on many nodes at once, across map files, or withdraws requests, never removing a sign-off given.
+- The method map says how to [reach the viewer from another machine](method/ndd.map.md#map-viewer-access), through an SSH port forward.
 
-- The map viewer's tree can request sign-off on many nodes at once, from a *Request …* bar beside *Due for …* (project map: *Request Bar*, *Due Nodes*).
+### Sign-off
 
-## 3.10.0-dev
+- A person's recorded approval of a node is now a sign-off, kept in a stamp under a `signers:` key; *approval* means only the yes given in chat. An older `approvals:` key is still read, and is renamed whenever a stamp is written.
+- A sign-off can be requested: a stamp with `hash: null`. A node is due for a person when their stamp is stale or requested; a node with no stamp for them is no longer due.
 
-- The map viewer takes one request for sign-off on several nodes, across map files, refused whole if any node can't take it. Requests go to their own `/request` endpoint and carry no fingerprint receipt (project map: *Request Guards*, *Write Checks*, *Sign-off Button*).
+Optional: to rename every `approvals:` key at once, run `ndd/method/util/fingerprint.py <map file> --migrate` once per map file. No fingerprint moves, so every stamp stays current.
 
-## 3.9.2-dev
+### Method
 
-- Testing map now includes dependencies (testing map: *Test Setup*).
+- Formal map targets are whole nodes, in a map copy or a `targets.md`.
+- Bounds and Focus, like the Intent, are written as requirements.
+- A map file holds its nodes in tree order, and Tidy restores it.
+- The method map's session nodes move to a new *Session Conduct* branch.
+- A node ends at the next level-1 heading, so a `##` heading inside it is fingerprinted with it; the fingerprint helper now agrees with the map viewer on this.
 
-## 3.9.1-dev
+### Installation and testing
 
-- Formal map targets are whole nodes, in a map copy or a `targets.md` (method map: *Change Specification*).
-
-## 3.9.0-dev
-
-- Sign-off stamps sit under a `signers:` key rather than `approvals:`. An older key is still read and is renamed whenever a stamp is written; the fingerprint helper's `--migrate` renames it across a map file (method map: *Sign-off Stamp*, *Fingerprint Helper*; project map: *Sign-off Button*).
-
-Migration: after upgrading, run `ndd/method/util/fingerprint.py <map file> --migrate` once per map file. No fingerprint moves, so every stamp stays current.
-
-## 3.8.1-dev
-
-- Map viewer: *Review due for …* takes several people, with clearer due marks; *Previous* / *Next due* removed (project map: *Due Nodes*).
-
-## 3.8.0-dev
-
-- A sign-off can be requested: a stamp with `hash: null`. A node is due for a person when their stamp is stale or requested; a node with no stamp for them is no longer due. The map viewer's *Due for…* marks and steps through a person's due nodes, and *Request sign-off* writes requests; in a split page each pane scrolls on its own (method map: *Sign-off*, *Stamp States*; project map: *Due Nodes*).
-
-## 3.7.5-dev
-
-- Minor: a map file holds its nodes in tree order, and Tidy restores it (method map: *Map Structure*, *Tidy*).
-
-## 3.7.4-dev
-
-- In the map, a person's recorded approval of a node is now a sign-off, kept in a sign-off stamp for its signer; *approval* means only the yes given in chat. The `approvals:` key is unchanged (method map: *Sign-off Stamp*, *Signer*).
-
-## 3.7.3-dev
-
-- Minor: session nodes move to a new branch (method map: *Session Conduct*).
-
-## 3.7.2-dev
-
-- Bounds and Focus, like the Intent, are written as requirements (method map: *Requirement Voice*).
-
-## 3.7.1-dev.1
-
-- `ndd/README.md` introduces working with NDD (method map: *Installation*).
-- Reaching the map viewer from another machine (method map: *Map Viewer Access*).
-
-## 3.7.0-dev.7
-
-- Map viewer records sign-offs: a *Sign off* button on each node stamps it for the names ticked (method map: *Map Viewer*, *Sign-off*).
-
-## 3.6.0-dev
-
-- Map viewer shipped: run `ndd/method/util/map_viewer.py` from a project root to review its map in the browser (method map: *Map Viewer*).
-- Installer no longer ships Python bytecode caches (project map: *Shipped Assets*).
-
-## 3.5.2-dev
-
-- Map viewer improved: fuller markdown rendering, faster approval diffs, and page tests (project map: *Map Viewer*; testing map: *Map Viewer Check*).
-
-## 3.5.1-dev.34
-
-- A prototype map viewer in `tools/`, not shipped: serves a map read-only for review, including what changed since each approval (project map: *Map Viewer*).
+- A new shipped `ndd/README.md` introduces NDD to a project's people: starting a session, the keywords, the map viewer, and upgrading.
+- Installer no longer ships Python bytecode caches.
+- The testing map now lists the dependencies tests need.
 
 ## 3.5.0 — 2026-11-10
 
